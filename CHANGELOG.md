@@ -1,5 +1,19 @@
 # Changelog
 
+## 14.0.2 - 2026-08-14 — Skill Compendium Cleanup
+
+### Changed
+
+- Kept the canonical Skill Items solely in the system Item compendium instead
+  of also creating duplicate copies in the world Items directory.
+- Made the system Item compendium the default advancement source for new
+  worlds and used the configured source for Skill choices on Item sheets.
+
+### Fixed
+
+- Added a one-time cleanup for system-created world Skill duplicates while
+  preserving Actor-embedded Skill ratings and stored Item references.
+
 ## 14.0.1 - 2026-08-14 — Initial Release
 
 This is the first release of **Year Zero Engine - Generic Stepped Dice**, an

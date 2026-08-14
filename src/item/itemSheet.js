@@ -2,6 +2,7 @@ import { enrichTextFields } from '@utils/utils';
 import { getCharacterFieldLabels } from '../system/character-field-labels.js';
 import { activateRatingMenus } from '../components/rating-menu.js';
 import { activateCheckboxControls } from '../components/checkbox-control.js';
+import { getAdvancementSourceItems } from '../system/experience.js';
 
 const ITEM_SHEET_HEIGHTS = {
   ammunition: 360,
@@ -82,7 +83,7 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
     const actorSkills = ['character', 'npc'].includes(this.item.actor?.type)
       ? this.item.actor.itemTypes.skill
       : null;
-    const availableSkills = actorSkills ?? game.items.filter(item => item.type === 'skill');
+    const availableSkills = actorSkills ?? await getAdvancementSourceItems('skill');
     const attributeOptions = Object.fromEntries(Object.keys(CONFIG.YZEGS.attributes).map(attribute => [
       `attribute.${attribute}`,
       characterFieldLabels[attribute],

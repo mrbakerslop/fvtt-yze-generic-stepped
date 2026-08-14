@@ -144,6 +144,26 @@ export async function advanceSkill(actor, skillId, { trained = false } = {}) {
   }
 }
 
+/** Return Items of one type from the world-configured advancement source. */
+export async function getAdvancementSourceItems(itemType) {
+  const source = getExperienceConfig().advancementItemSource;
+
+  if (source === WORLD_ADVANCEMENT_ITEM_SOURCE) {
+    return game.items.filter(candidate => candidate.type === itemType);
+  }
+  if (!source.startsWith('compendium:')) return [];
+
+  const pack = game.packs.get(source.slice('compendium:'.length));
+  if (!pack || pack.documentName !== 'Item' || !pack.visible) return [];
+  const index = await pack.getIndex({ fields: ['name', 'type'] });
+  return index.filter(candidate => candidate.type === itemType).map(entry => ({
+    id: entry._id,
+    uuid: entry.uuid ?? `Compendium.${pack.collection}.${entry._id}`,
+    name: entry.name,
+    type: entry.type,
+  }));
+}
+
 async function getAvailableItemOptions(actor, itemType) {
   const options = {};
   const excludedNames = new Set(actor.itemTypes[itemType].map(item => item.name.toLocaleLowerCase()));
@@ -154,20 +174,8 @@ async function getAvailableItemOptions(actor, itemType) {
     optionNames.add(normalizedName);
     options[uuid] = itemName;
   };
-  const source = getExperienceConfig().advancementItemSource;
-
-  if (source === WORLD_ADVANCEMENT_ITEM_SOURCE) {
-    for (const item of game.items.filter(candidate => candidate.type === itemType)) {
-      addOption(item.uuid, item.name);
-    }
-  }
-  else if (source.startsWith('compendium:')) {
-    const pack = game.packs.get(source.slice('compendium:'.length));
-    if (!pack || pack.documentName !== 'Item' || !pack.visible) return {};
-    const index = await pack.getIndex({ fields: ['name', 'type'] });
-    for (const entry of index.filter(candidate => candidate.type === itemType)) {
-      addOption(entry.uuid ?? `Compendium.${pack.collection}.${entry._id}`, entry.name);
-    }
+  for (const item of await getAdvancementSourceItems(itemType)) {
+    addOption(item.uuid, item.name);
   }
 
   return Object.fromEntries(Object.entries(options).sort(([, a], [, b]) => (

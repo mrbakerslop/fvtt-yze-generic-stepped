@@ -5,6 +5,7 @@ const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
 export const EXPERIENCE_CONFIG_SETTING = 'experienceConfig';
 export const WORLD_ADVANCEMENT_ITEM_SOURCE = 'world';
+export const SYSTEM_ADVANCEMENT_ITEM_SOURCE = `compendium:${SYSTEM_ID}.system-items`;
 
 export const EXPERIENCE_QUESTION_KEYS = Object.freeze({
   participated: 'YZEGS.Experience.Questions.Participated',
@@ -20,7 +21,7 @@ export const DEFAULT_EXPERIENCE_CONFIG = Object.freeze({
   specialtyCost: 10,
   prerequisiteMode: 'require',
   gmOnlyAdvancement: false,
-  advancementItemSource: WORLD_ADVANCEMENT_ITEM_SOURCE,
+  advancementItemSource: SYSTEM_ADVANCEMENT_ITEM_SOURCE,
   questions: Object.fromEntries(Object.keys(EXPERIENCE_QUESTION_KEYS).map(key => [key, true])),
   customQuestions: [],
 });
@@ -141,7 +142,7 @@ export class ExperienceConfig extends foundry.applications.api.HandlebarsApplica
       gmOnlyAdvancement: asBoolean(submitted.gmOnlyAdvancement),
       advancementItemSource: availableItemSources.has(submitted.advancementItemSource)
         ? submitted.advancementItemSource
-        : WORLD_ADVANCEMENT_ITEM_SOURCE,
+        : SYSTEM_ADVANCEMENT_ITEM_SOURCE,
       questions: Object.fromEntries(
         Object.keys(EXPERIENCE_QUESTION_KEYS).map(key => [key, asBoolean(submitted[`question-${key}`])]),
       ),

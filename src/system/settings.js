@@ -4,7 +4,10 @@ import {
   DEFAULT_CHARACTER_FIELD_LABELS,
   refreshCharacterSheets,
 } from './character-field-labels.js';
-import { SKILL_ITEMS_MIGRATION_SETTING } from './skill-migration.js';
+import {
+  SKILL_ITEMS_MIGRATION_SETTING,
+  WORLD_SKILL_CLEANUP_SETTING,
+} from './skill-migration.js';
 import {
   DEFAULT_EXPERIENCE_CONFIG,
   EXPERIENCE_CONFIG_SETTING,
@@ -43,6 +46,14 @@ export function registerSystemSettings() {
     config: false,
     scope: 'world',
     name: 'Skill Items Migration Complete',
+    type: Boolean,
+    default: false,
+  });
+
+  game.settings.register(SYSTEM_ID, WORLD_SKILL_CLEANUP_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'World Skill Item Cleanup Complete',
     type: Boolean,
     default: false,
   });

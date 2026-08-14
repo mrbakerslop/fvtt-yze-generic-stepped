@@ -47,7 +47,7 @@ import ItemSheetYZEGS from './item/itemSheet.js';
 
 // Imports Helpers.
 import { checkMigration } from './system/migration.js';
-import { migrateLegacySkills } from './system/skill-migration.js';
+import { migrateLegacySkills, removeMigratedWorldSkills } from './system/skill-migration.js';
 import * as YZUR from './lib/yzur.js';
 import * as Experience from './system/experience.js';
 
@@ -165,6 +165,7 @@ Hooks.once('ready', async function () {
   // Determines whether a system migration is required and feasible.
   await checkMigration();
   await migrateLegacySkills();
+  await removeMigratedWorldSkills();
 
   // Displays starting messages.
   displayMessages();
