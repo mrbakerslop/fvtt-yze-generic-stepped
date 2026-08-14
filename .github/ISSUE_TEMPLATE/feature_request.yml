@@ -1,6 +1,6 @@
 name: '✨ Feature request'
 description: Suggest an idea for this project
-labels: ['feature request']
+labels: ['enhancement']
 body:
   - type: markdown
     attributes:
@@ -9,7 +9,7 @@ body:
     id: feature-description
     attributes:
       label: Description
-      description: 'Clear and concise description of the request. Please make the reason and usecases as detailed as possible. If you intend to submit a PR for this issue, tell us in the description. Thanks!'
+      description: 'Clearly describe the request and its use cases. If you intend to submit a PR for this issue, tell us in the description. Thanks!'
       placeholder: When using the Year Zero Engine - Generic Stepped Dice system I would like to see [wish].
     validations:
       required: true
@@ -36,5 +36,5 @@ body:
       label: Validations
       description: Before submitting the issue, please make sure you do the following
       options:
-        - label: Check that there isn't already an issue that request the same feature to avoid creating a duplicate.
+        - label: Check that there is not already an issue requesting the same feature.
           required: true

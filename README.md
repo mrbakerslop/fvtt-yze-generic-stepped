@@ -18,7 +18,20 @@ setting.
 - Minimum Foundry version: 14.359
 - Verified Foundry version: 14.365
 
-## Installation and development
+## Installation
+
+Paste the following URL into Foundry VTT's **Install System** dialog:
+
+```text
+https://github.com/mrbakerslop/fvtt-yze-generic-stepped/releases/latest/download/system.json
+```
+
+Alternatively, download the ZIP archive from the
+[latest release](https://github.com/mrbakerslop/fvtt-yze-generic-stepped/releases/latest),
+extract it into the Foundry `Data/systems` directory, and ensure the resulting
+folder is named `fvtt-yze-generic-stepped`.
+
+## Development
 
 Development requires Node.js 24 LTS or later. The repository includes an
 `.nvmrc` file so Node version managers can select the intended release line.
@@ -30,9 +43,7 @@ npm install
 npm test
 ```
 
-The production build is written to `dist`. For a manual installation, copy
-that directory into the Foundry systems directory as
-`fvtt-yze-generic-stepped`.
+The production build is written to `dist`.
 
 Development commands:
 
@@ -49,6 +60,10 @@ npm run build
 - JavaScript namespace: `game.yzegs`
 - Configuration namespace: `CONFIG.YZEGS`
 - Localization namespace: `YZEGS`
+
+English is the source language. The included German, Spanish, French, Russian,
+Swedish, and Ukrainian localizations are community translations and may lag
+behind newly added English text. Translation contributions are welcome.
 
 ## Project origin and acknowledgements
 
@@ -79,7 +94,7 @@ Year Zero Engine System Reference Document is used under Fria Ligan AB's Free
 Tabletop License.
 
 - [Year Zero Engine Free Tabletop License, version 1.0](https://freeleaguepublishing.com/wp-content/uploads/2023/11/Year-Zero-Engine-License-Agreement.pdf)
-- [Year Zero Engine Standard Reference Document, version 1.0](https://freeleaguepublishing.com/wp-content/uploads/2023/11/YZE-Standard-Reference-Document.pdf)
+- [Year Zero Engine System Reference Document, version 1.0](https://freeleaguepublishing.com/wp-content/uploads/2023/11/YZE-Standard-Reference-Document.pdf)
 - [Free League's current Free Tabletop License page](https://freeleaguepublishing.com/community-content/free-tabletop-licenses/)
 
 The Free Tabletop License permits the SRD to be copied, modified, translated,
@@ -96,12 +111,16 @@ guidelines.
 
 - Source code is licensed under the
   [GNU General Public License version 3 or later](LICENSE).
+- The bundled Year Zero Universal Dice Roller code is distributed under the
+  MIT License. Its required copyright and permission notice is included in
+  [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - Foundry VTT is owned by Foundry Gaming LLC. This project is developed in
   accordance with Foundry's
   [Limited License Agreement for module development](https://foundryvtt.com/article/license/).
 - The bundled Mukta and Nunito Sans fonts are distributed under the SIL Open
   Font License 1.1. Copies of their licenses are included alongside the font
-  files in `static/fonts`.
+  files in `static/fonts` and summarized in
+  [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - Interface pictograms use icons supplied by Foundry VTT's Font Awesome
   integration rather than a separately bundled icon font.
 

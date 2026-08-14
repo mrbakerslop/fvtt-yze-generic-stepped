@@ -10,14 +10,14 @@ body:
     attributes:
       label: Describe the bug
       description: A clear and concise description of what the bug is. If you intend to submit a PR for this issue, tell us in the description. Thanks!
-      placeholder: I am doing ... What I expect is ... What actually happening is ...
+      placeholder: I did ... I expected ... What actually happened was ...
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
       label: Reproduction
-      description: Please provide a step by step guide to reproduce the issue.
+      description: Please provide a step-by-step guide to reproduce the issue.
       placeholder: Reproduction steps
     validations:
       required: true
@@ -29,7 +29,8 @@ body:
         Please provide a bullet list of your system information.
           - OS: [e.g. macOS]
           - Client [e.g. Foundry Desktop app, Chrome, Firefox]
-          - Foundry Version [e.g. 9.269, 10]
+          - Foundry Version [e.g. 14.365]
+          - System Version [e.g. 14.0.1]
       render: sh
       placeholder: System, OS, version, etc.
     validations:
@@ -43,7 +44,7 @@ body:
   - type: dropdown
     id: severity
     attributes:
-      label: Priority this issue should have?
+      label: What priority should this issue have?
       description: Please be realistic. If you need to elaborate on your reasoning, please use the Issue description field above.
       multiple: false
       options:

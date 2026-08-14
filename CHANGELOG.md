@@ -90,6 +90,8 @@ Dice version of the Year Zero Engine.
   references, and setting-specific presentation content from the system.
 - Removed Twilight: 2000 logos, banners, stamps, paper textures, dice filenames,
   legacy icon fonts, and old screenshots.
+- Removed unused legacy presentation assets, duplicate dice artwork, and stale
+  generated CSS files from the source and release archives.
 - Removed third-party organization and maintainer identities from active project
   metadata while retaining appropriate historical acknowledgement in the
   README.
@@ -105,3 +107,7 @@ Dice version of the Year Zero Engine.
   Foundry VTT release-publishing requirements.
 - Added a reproducible production build that emits the installable system into
   `dist`; `npm test` now runs both linting and that production build.
+- Added public installation and project metadata, pull-request validation, and
+  complete third-party licensing notices to the release archive.
+- Made clean installs reproducible by declaring the patching tool explicitly
+  and removing the unused legacy changelog dependency.

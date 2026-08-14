@@ -18,7 +18,7 @@ const sourceDirectory = './src';
 const distDirectory = './dist';
 const templateExt = 'hbs';
 const staticFiles = ['system.json', 'assets', 'fonts', 'packs'];
-const rootFiles = ['LICENSE', 'README.md'];
+const rootFiles = ['LICENSE', 'README.md', 'THIRD_PARTY_NOTICES.md'];
 const packageJson = JSON.parse(fs.readFileSync('package.json'));
 
 /* ------------------------------------------ */
@@ -167,16 +167,6 @@ function getTargetVersion(currentVersion, release) {
   }
 }
 
-/* ------------------------------------------ */
-
-/**
- * Makes a changelog.
- * @async
- */
-async function changelog() {
-  // await execa('npx', ['standard-version', '--skip.bump', '--skip.tag', '--skip.commit'], { stdio });
-}
-
 /**
  * Updates the package and manifest versions.
  * @param {function} cb Callback function
@@ -234,4 +224,4 @@ const execBuild = gulp.parallel(buildSource, pipeStyles, pipeTemplates, pipeTran
 export const clean = cleanDist;
 export const build = gulp.series(clean, execBuild);
 export const watch = gulp.series(buildWatch);
-export const bump = gulp.series(bumpVersion, changelog, clean, execBuild);
+export const bump = gulp.series(bumpVersion, clean, execBuild);

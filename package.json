@@ -1,7 +1,20 @@
 {
   "name": "fvtt-yze-generic-stepped",
   "version": "14.0.1",
+  "private": true,
   "description": "A generic Foundry VTT system for Year Zero Engine games using stepped dice",
+  "author": {
+    "name": "MrBaker",
+    "url": "https://github.com/mrbakerslop"
+  },
+  "homepage": "https://github.com/mrbakerslop/fvtt-yze-generic-stepped",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrbakerslop/fvtt-yze-generic-stepped.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mrbakerslop/fvtt-yze-generic-stepped/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=24"
@@ -31,7 +44,7 @@
     "lint:fix": "eslint --ext .js --fix .",
     "format": "prettier-eslint \"**/*.js\" --write",
     "format:hbs": "prettier-eslint **/*.hbs --write --parser=glimmer",
-    "postinstall": "npx husky install && npx patch-package",
+    "postinstall": "husky install && patch-package",
     "upd": "npm list -g --depth=0 & npm outdated & npx npm-check -u",
     "test": "npm run lint && npm run build"
   },
@@ -53,9 +66,9 @@
     "gulp-yaml": "2.0.4",
     "husky": "^8.0.3",
     "less": "^4.8.1",
+    "patch-package": "8.0.1",
     "prettier": "^3.9.6",
     "prettier-eslint-cli": "^7.1.0",
-    "semver": "^7.8.5",
-    "standard-version": "^9.3.2"
+    "semver": "^7.8.5"
   }
 }
