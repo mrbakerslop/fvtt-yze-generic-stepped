@@ -1,0 +1,114 @@
+name: Release CI
+
+on:
+  release:
+    types:
+      - published
+
+env:
+  # 'system' or 'module'
+  TYPE: system
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create & Publish Release
+    # if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    env:
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+
+    steps:
+      - name: 📡 Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Configures NodeJS.
+      - name: ⚙️ Setup Node.js 24 LTS
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          check-latest: true
+          cache: npm
+
+      # Installs & builds.
+      - name: 🔧 Install Dependencies
+        run: npm ci
+      - name: 🧱 Build Project
+        run: npm run build
+
+      # Reads the package metadata used by the remaining steps.
+      - name: 📄 Read Package Metadata
+        id: metadata
+        run: |
+          echo "name=$(jq -r '.id' dist/${{ env.TYPE }}.json)" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r '.version' dist/${{ env.TYPE }}.json)" >> "$GITHUB_OUTPUT"
+
+      # Substitute the Manifest and Download URLs in the module.json
+      - name: 📝 Substitute Manifest and Download Links For Versioned Ones
+        run: |
+          jq \
+            --arg manifest "$MANIFEST_URL" \
+            --arg download "$DOWNLOAD_URL" \
+            '.manifest = $manifest | .download = $download' \
+            "dist/${{ env.TYPE }}.json" > "dist/${{ env.TYPE }}.json.tmp"
+          mv "dist/${{ env.TYPE }}.json.tmp" "dist/${{ env.TYPE }}.json"
+        env:
+          MANIFEST_URL: https://github.com/${{ github.repository }}/releases/latest/download/${{ env.TYPE }}.json
+          DOWNLOAD_URL: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/${{ steps.metadata.outputs.name }}-fvtt_v${{ steps.metadata.outputs.version }}.zip
+
+      # Creates the ZIP artifact.
+      - name: 📦 Create ZIP Archive
+        run: |
+          cd dist/
+          zip -r ../${{ steps.metadata.outputs.name }}-fvtt_v${{ steps.metadata.outputs.version }}.zip .
+
+      # Uploads artifacts to the release which triggered this workflow.
+      - name: 🚀 Upload Release Artifacts
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            "./${{ steps.metadata.outputs.name }}-fvtt_v${{ steps.metadata.outputs.version }}.zip" \
+            "./dist/${{ env.TYPE }}.json" \
+            --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Compatibility
+        run: echo "COMPATIBILITY=$(jq -c '.compatibility' dist/${{ env.TYPE }}.json)" >> "$GITHUB_ENV"
+
+      - name: 🚩 Publish System to Foundry VTT Website
+        if: ${{ env.PACKAGE_TOKEN != '' }}
+        run: |
+          REQUEST_BODY=$(jq -n \
+            --arg id "$PACKAGE_ID" \
+            --arg version "$PACKAGE_VERSION" \
+            --arg manifest "$MANIFEST_URL" \
+            --arg notes "$NOTES_URL" \
+            --argjson dryRun "$DRY_RUN" \
+            --argjson compatibility "$COMPATIBILITY" \
+            '{
+              id: $id,
+              "dry-run": $dryRun,
+              release: {
+                version: $version,
+                manifest: $manifest,
+                notes: $notes,
+                compatibility: $compatibility
+              }
+            }')
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header "Authorization: $PACKAGE_TOKEN" \
+            --header 'Content-Type: application/json' \
+            --data "$REQUEST_BODY" \
+            'https://foundryvtt.com/_api/packages/release_version/'
+        env:
+          PACKAGE_ID: ${{ steps.metadata.outputs.name }}
+          PACKAGE_VERSION: ${{ steps.metadata.outputs.version }}
+          DRY_RUN: ${{ github.event.release.prerelease }}
+          MANIFEST_URL: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/${{ env.TYPE }}.json
+          NOTES_URL: https://github.com/${{ github.repository }}/releases/tag/${{ github.event.release.tag_name }}

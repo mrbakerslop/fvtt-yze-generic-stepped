@@ -1,0 +1,593 @@
+YZEGS.SheetClassCharacter: Character Sheet
+YZEGS.SheetClassVehicle: Vehicle Sheet
+YZEGS.SheetClassUnit: Unit Sheet
+YZEGS.SheetClassParty: Party Sheet
+YZEGS.Attribute: Attribute
+YZEGS.Attributes: Attributes
+YZEGS.AttributeNames.str: Strength
+YZEGS.AttributeNames.agl: Agility
+YZEGS.AttributeNames.int: Intelligence
+YZEGS.AttributeNames.emp: Empathy
+YZEGS.Skill: Skill
+YZEGS.Skills: Skills
+YZEGS.SkillNames.none: –
+YZEGS.SkillNames.heavyWeapons: Heavy Weapons
+YZEGS.SkillNames.closeCombat: Close Combat
+YZEGS.SkillNames.stamina: Stamina
+YZEGS.SkillNames.driving: Driving
+YZEGS.SkillNames.mobility: Mobility
+YZEGS.SkillNames.rangedCombat: Ranged Combat
+YZEGS.SkillNames.recon: Recon
+YZEGS.SkillNames.survival: Survival
+YZEGS.SkillNames.tech: Tech
+YZEGS.SkillNames.command: Command
+YZEGS.SkillNames.persuasion: Persuasion
+YZEGS.SkillNames.medicalAid: Medical Aid
+YZEGS.Action: Action
+YZEGS.Actions: Actions
+YZEGS.ActionNames.unarmedAttack: Unarmed attack
+YZEGS.ActionNames.meleeAttack: Melee attack
+YZEGS.ActionNames.grapple: Grapple
+YZEGS.ActionNames.breakFree: Break free
+YZEGS.ActionNames.shootFirearm: Shoot firearm
+YZEGS.ActionNames.clearJam: Clear jam
+YZEGS.ActionNames.aimSniper: Sniper aim
+YZEGS.ActionNames.shootBow: Shoot bow
+YZEGS.ActionNames.throwWeapon: Throw weapon
+YZEGS.ActionNames.aimMortar: Aim mortar or howitzer
+YZEGS.ActionNames.shootHeavyWeapon: Fire heavy weapon
+YZEGS.ActionNames.firstAid: First aid
+YZEGS.ActionNames.rally: Rally
+YZEGS.ActionNames.directFire: Direct indirect fire
+YZEGS.ActionNames.seekCover: Seek cover
+YZEGS.ActionNames.run: Run
+YZEGS.ActionNames.crawl: Crawl
+YZEGS.ActionNames.shove: Shove
+YZEGS.ActionNames.disarm: Disarm
+YZEGS.ActionNames.retreat: Retreat
+YZEGS.ActionNames.aim: Aim
+YZEGS.ActionNames.prepareBow: Prepare bow
+YZEGS.ActionNames.overwatch: Assume overwatch position
+YZEGS.ActionNames.reload: Reload
+YZEGS.ActionNames.drive: Drive
+YZEGS.Constants: Constants
+YZEGS.ConstantNames.encumbrance: Encumbrance
+YZEGS.ConstantNames.awareness: Combat awareness
+YZEGS.ConstantNames.cuf: CUF
+YZEGS.TravelTasks: Travel Tasks
+YZEGS.TravelTaskNames.marching: Marching
+YZEGS.TravelTaskNames.driving: Driving
+YZEGS.TravelTaskNames.gathering: Gathering
+YZEGS.TravelTaskNames.keepingWatch: Keeping Watch
+YZEGS.TravelTaskNames.scrounging: Scrounging
+YZEGS.TravelTaskNames.foraging: Foraging
+YZEGS.TravelTaskNames.hunting: Hunting
+YZEGS.TravelTaskNames.fishing: Fishing
+YZEGS.TravelTaskNames.makingCamp: Making Camp
+YZEGS.TravelTaskNames.cooking: Cooking
+YZEGS.TravelTaskNames.resting: Resting
+YZEGS.TravelTaskNames.sleeping: Sleeping
+YZEGS.TravelTaskNames.exploring: Exploring
+YZEGS.ArmorLocationNames.head: Head
+YZEGS.ArmorLocationNames.arms: Arms
+YZEGS.ArmorLocationNames.torso: Torso
+YZEGS.ArmorLocationNames.legs: Legs
+YZEGS.ConditionNames.starving: Starving
+YZEGS.ConditionNames.dehydrated: Dehydrated
+YZEGS.ConditionNames.sleepless: Sleep Deprived
+YZEGS.ConditionNames.hypothermic: Hypothermic
+YZEGS.InjuryCategoryNames.physical: Physical
+YZEGS.InjuryCategoryNames.mental: Mental
+YZEGS.ActionTypes.fast: Fast
+YZEGS.ActionTypes.slow: Slow
+YZEGS.Ranges.close: In close combat
+YZEGS.Ranges.short: Short
+YZEGS.Ranges.medium: Medium
+YZEGS.Ranges.long: Long
+YZEGS.Ranges.extreme: Extreme
+YZEGS.ItemTypes.ammunition: Ammunition
+YZEGS.ItemTypes.armor: Armor
+YZEGS.ItemTypes.gear: Gear
+YZEGS.ItemTypes.grenade: Explosive
+YZEGS.ItemTypes.injury: Injury
+YZEGS.ItemTypes.specialty: Specialty
+YZEGS.ItemTypes.weapon: Weapon
+YZEGS.ItemPropNames.twoHanded: Two-Handed
+YZEGS.ItemPropNames.mounted: Mounted
+YZEGS.ItemPropNames.disposable: Disposable
+YZEGS.ItemPropNames.ammoBelt: Ammo Belt
+YZEGS.ItemPropNames.magazine: Is Magazine
+YZEGS.ItemPropNames.armored: Armored
+YZEGS.ItemPropNames.bipod: Bipod
+YZEGS.ItemPropNames.tripod: Tripod
+YZEGS.ItemPropNames.scope: Scope
+YZEGS.ItemPropNames.nightVision: Night Vision
+YZEGS.ItemPropNames.bayonet: Bayonet
+YZEGS.ItemPropNames.suppressor: Suppressor
+YZEGS.ActorTypes.character: Player Character (PC)
+YZEGS.ActorTypes.npc: Non-Player Character (NPC)
+YZEGS.ActorTypes.vehicle: Vehicle
+YZEGS.ActorSheet.Name: Name
+YZEGS.ActorSheet.MainTab: Stats
+YZEGS.ActorSheet.CombatTab: Combat
+YZEGS.ActorSheet.EquipmentTab: Gear
+YZEGS.ActorSheet.BiographyTab: Bio
+YZEGS.ActorSheet.NoteTab: Notes
+YZEGS.ActorSheet.Nationality: Nationality
+YZEGS.ActorSheet.Branch: Branch
+YZEGS.ActorSheet.MilitaryRank: Rank
+YZEGS.ActorSheet.HitCapacity: Hit Capacity
+YZEGS.ActorSheet.StressCapacity: Stress Capacity
+YZEGS.ActorSheet.CapacityModifier: 'Modifier:'
+YZEGS.ActorSheet.Experience: Experience
+YZEGS.ActorSheet.ExperienceCurrent: XP Current
+YZEGS.ActorSheet.ExperienceTotal: XP Total
+YZEGS.ActorSheet.Appearance: Appearance
+YZEGS.ActorSheet.MoralCode: Moral Code
+YZEGS.ActorSheet.Buddy: Buddy
+YZEGS.ActorSheet.BigDream: Big Dream
+YZEGS.ActorSheet.GroupMeeting: 'How you met the group:'
+YZEGS.ActorSheet.AttributesAndSkills: Attributes & Skills
+YZEGS.ActorSheet.Rating: Rating
+YZEGS.ActorSheet.BaseDie: Base Die
+YZEGS.ActorSheet.Specialties: Specialties
+YZEGS.ActorSheet.AddSpecialty: Add a new specialty
+YZEGS.ActorSheet.NoSpecialty: This character has no specialty. Click the "+" icon to add a new specialty.
+YZEGS.ActorSheet.Combat: Combat
+YZEGS.ActorSheet.Actions: Actions
+YZEGS.ActorSheet.Current: Current
+YZEGS.ActorSheet.Max: Max
+YZEGS.ActorSheet.CuF: Coolness Under Fire
+YZEGS.ActorSheet.UnitMorale: Unit Morale
+YZEGS.ActorSheet.NoArmor: This character has no equipped armor.
+YZEGS.ActorSheet.Conditions: Conditions
+YZEGS.ActorSheet.CriticalInjuries: Critical Injuries
+YZEGS.ActorSheet.AddInjury: Add a new injury
+YZEGS.ActorSheet.InjuryTimeLeft: '{time} left'
+YZEGS.ActorSheet.Diseases: Diseases
+YZEGS.ActorSheet.Radiation: Radiation
+YZEGS.ActorSheet.RadiationRoll: Rad Attack
+YZEGS.ActorSheet.TemporaryRadiation: Temporary
+YZEGS.ActorSheet.PermanentRadiation: Permanent
+YZEGS.ActorSheet.EncumbranceFull: FULL
+YZEGS.ActorSheet.EncumbranceTooHeavy: TOO HEAVY
+YZEGS.ActorSheet.Weapons: Weapons
+YZEGS.ActorSheet.AddWeapon: Add a new weapon
+YZEGS.ActorSheet.Unarmed: Unarmed
+YZEGS.ActorSheet.Cover: Covers
+YZEGS.ActorSheet.Add: Add
+YZEGS.ActorSheet.AddArmor: Add a new armor
+YZEGS.ActorSheet.AddGear: Add new gear
+YZEGS.ActorSheet.AddAmmo: Add new ammunition
+YZEGS.ActorSheet.Encumbrance: Encumbrance
+YZEGS.ActorSheet.CombatGearEncumbrance: Combat Gear (Encumbrance)
+YZEGS.ActorSheet.BackpackEncumbrance: Backpack (Encumbrance)
+YZEGS.ActorSheet.Equip: Equip
+YZEGS.ActorSheet.Store: Store in the backpack
+YZEGS.ActorSheet.Edit: Edit
+YZEGS.ActorSheet.Delete: Delete
+YZEGS.ActorSheet.NewItem.weapon: New Weapon
+YZEGS.ActorSheet.NewItem.armor: New Armor
+YZEGS.ActorSheet.NewItem.gear: New Gear
+YZEGS.ActorSheet.NewItem.ammunition: New Ammunition
+YZEGS.ActorSheet.NewItem.specialty: New Specialty
+YZEGS.ActorSheet.NewItem.injury: New Injury
+YZEGS.ActorSheet.NotifWrongItemType: '"{type}" items cannot be added to a {actor}!'
+YZEGS.VehicleSheet.CrewTab: Crew
+YZEGS.VehicleSheet.ComponentsTab: Components
+YZEGS.VehicleSheet.CombatTab: Combat
+YZEGS.VehicleSheet.CargoTab: Cargo
+YZEGS.VehicleSheet.VehicleType: Vehicle Type
+YZEGS.VehicleSheet.Reliability: Reliability
+YZEGS.VehicleSheet.Movement: Movement
+YZEGS.VehicleSheet.CombatSpeed: Combat Speed
+YZEGS.VehicleSheet.TravelSpeed: Travel Speed
+YZEGS.VehicleSheet.Wheels: Wheels
+YZEGS.VehicleSheet.Tracks: Tracks
+YZEGS.VehicleSheet.Hovercraft: Hovercraft
+YZEGS.VehicleSheet.Flying: Flying
+YZEGS.VehicleSheet.Naval: Naval
+YZEGS.VehicleSheet.Fuel: Fuel
+YZEGS.VehicleSheet.FuelCapacity: Fuel Capacity
+YZEGS.VehicleSheet.FuelConsumption: Fuel Consumption
+YZEGS.VehicleSheet.Gasoline: Gasoline
+YZEGS.VehicleSheet.Diesel: Diesel
+YZEGS.VehicleSheet.Alcohol: Alcohol
+YZEGS.VehicleSheet.Nuclear: Nuclear
+YZEGS.VehicleSheet.CrewQty: 'Crew:'
+YZEGS.VehicleSheet.PassengerQty: 'Passengers:'
+YZEGS.VehicleSheet.EmptyCrew: Drag-'n-drop an actor to add it to the crew.
+YZEGS.VehicleSheet.Armor: Armor
+YZEGS.VehicleSheet.FrontArmor: Front
+YZEGS.VehicleSheet.SideLeftArmor: Left
+YZEGS.VehicleSheet.SideRightArmor: Right
+YZEGS.VehicleSheet.RearArmor: Rear
+YZEGS.VehicleSheet.Damage: Damage
+YZEGS.VehicleSheet.MountedWeapons1: Primary Weapons
+YZEGS.VehicleSheet.MountedWeapons2: Secondary Weapons
+YZEGS.VehicleSheet.MountedWeaponType: Type
+YZEGS.VehicleSheet.CargoCapacity: 'Cargo Capacity:'
+YZEGS.VehicleSheet.CrewCargo: 'Crew Weight:'
+YZEGS.VehicleSheet.VehicleEncumbrance: Encumbrance (Vehicle)
+YZEGS.VehicleSheet.Mount: Mount weapon
+YZEGS.VehicleSheet.Unmount: Unmount weapon
+YZEGS.VehicleSheet.MoveMount: Toggle weapon mount
+YZEGS.VehicleSheet.Price: Price
+YZEGS.VehicleSheet.CrewPositions.Driver: DRIVER
+YZEGS.VehicleSheet.CrewPositions.Gunner: GUNNER
+YZEGS.VehicleSheet.CrewPositions.Commander: COMMANDER
+YZEGS.VehicleSheet.CrewPositions.Passenger: PASSENGER
+YZEGS.VehicleSheet.ExposedPassenger: Exposed
+YZEGS.VehicleSheet.InnerComponents: Inner Components
+YZEGS.VehicleSheet.OuterComponents: Outer Components
+YZEGS.VehicleSheet.ComponentDamage: Quantity of damage dealt to this component
+YZEGS.VehicleSheet.FcsType: Type
+YZEGS.VehicleSheet.Components.fuel: Fuel
+YZEGS.VehicleSheet.Components.engine: Engine
+YZEGS.VehicleSheet.Components.suspension: Suspension
+YZEGS.VehicleSheet.Components.ammunition: Ammunition
+YZEGS.VehicleSheet.Components.radio: Radio
+YZEGS.VehicleSheet.Components.trackWheel: Tracks / Wheels
+YZEGS.VehicleSheet.Components.fcs: Fire Control System
+YZEGS.VehicleSheet.Components.antenna: Antenna
+YZEGS.VehicleSheet.HasTrailer: Has a trailer
+YZEGS.VehicleSheet.HasSmokeDischarger: Smoke Discharger
+YZEGS.UnitSheet.Name: Full Name
+YZEGS.UnitSheet.Info: Additional information
+YZEGS.UnitSheet.Faction: Faction
+YZEGS.UnitSheet.UnitAffiliation: Affiliation
+YZEGS.UnitSheet.UnitSize: Unit Size
+YZEGS.UnitSheet.UnitType: Unit Type
+YZEGS.UnitSheet.UnitModifiers: Unit Modifiers
+YZEGS.UnitSheet.Personnel: Personnel
+YZEGS.UnitSheet.Vehicles: Combat Vehicles
+YZEGS.UnitSheet.HQ: Headquarters (HQ)
+YZEGS.UnitAffiliationNames.friendly: Friendly
+YZEGS.UnitAffiliationNames.hostile: Hostile
+YZEGS.UnitAffiliationNames.neutral: Neutral
+YZEGS.UnitAffiliationNames.unknown: Unknown
+YZEGS.UnitModifierNames.airborne: Airborne
+YZEGS.UnitModifierNames.parachute: Parachute
+YZEGS.UnitModifierNames.airmobile: Airmobile
+YZEGS.UnitModifierNames.airmobileOrganicLift: Airm. O. L.
+YZEGS.UnitModifierNames.amphibious: Amphibious
+YZEGS.UnitModifierNames.motorized: Motorized
+YZEGS.UnitModifierNames.moutain: Mountain
+YZEGS.UnitModifierNames.cannon: Cannon
+YZEGS.UnitModifierNames.wheeled: Wheeled
+YZEGS.UnitSizeNames.army: Army XXXX
+YZEGS.UnitSizeNames.corps: Corps XXX
+YZEGS.UnitSizeNames.division: Division XX
+YZEGS.UnitSizeNames.Brigade: Brigade X
+YZEGS.UnitSizeNames.regiment: Regiment | | |
+YZEGS.UnitSizeNames.battalion: Battalion | |
+YZEGS.UnitSizeNames.company: Company |
+YZEGS.UnitSizeNames.staffel: Staffel ••••
+YZEGS.UnitSizeNames.platoon: Platoon •••
+YZEGS.UnitSizeNames.section: Section ••
+YZEGS.UnitSizeNames.squad: Squad •
+YZEGS.UnitSizeNames.fireteam: Fireteam
+YZEGS.ItemSheet.Name: Name
+YZEGS.ItemSheet.FeaturesTab: Features
+YZEGS.ItemSheet.ModifiersTab: Modifiers
+YZEGS.ItemSheet.RollModifiers: Roll Modifiers
+YZEGS.ItemSheet.AddNewRollModifier: Add a new roll modifier to this item
+YZEGS.ItemSheet.DeleteRollModifier: Remove this roll modifier
+YZEGS.ItemSheet.NoRollModifier: This item has no modifier. To add one, click the "+" icon.
+YZEGS.ItemSheet.SelectRollModifier: Choose a name
+YZEGS.ItemSheet.DescriptionTab: Notes
+YZEGS.ItemSheet.AttributeUsed: Attribute Used
+YZEGS.ItemSheet.SkillUsed: Skill Used
+YZEGS.ItemSheet.WeaponMagazine: Magazine
+YZEGS.ItemSheet.Quantity: Quantity
+YZEGS.ItemSheet.ItemType: Type
+YZEGS.ItemSheet.Ammo: Ammo
+YZEGS.ItemSheet.AmmoType: Ammo Identifier
+YZEGS.ItemSheet.OverrideOption: Override Weapon's Features
+YZEGS.ItemSheet.Reliability: Rel
+YZEGS.ItemSheet.RoF: RoF
+YZEGS.ItemSheet.Damage: Damage
+YZEGS.ItemSheet.Crit: Crit
+YZEGS.ItemSheet.Blast: Blast
+YZEGS.ItemSheet.Range: Range
+YZEGS.ItemSheet.Mag: Mag
+YZEGS.ItemSheet.Armor: Armor
+YZEGS.ItemSheet.Weight: Weight
+YZEGS.ItemSheet.Price: Price
+YZEGS.ItemSheet.ArmorLocation: Protected Location
+YZEGS.ItemSheet.Equipped: Equipped
+YZEGS.ItemSheet.StoredInBackpack: Stored in the backpack
+YZEGS.ItemSheet.CreateAmmo: Generate Ammo
+YZEGS.ItemSheet.CreateAmmoNotif: Generated 1x <b>{ammo}</b> for weapon <b>{weapon}</b>
+YZEGS.ItemSheet.FeaturesForVehicle: Vehicle Features
+YZEGS.InjurySheet.Category: Category
+YZEGS.InjurySheet.Location: Location
+YZEGS.InjurySheet.TimeLimit: Time Limit
+YZEGS.InjurySheet.HealTime: Heal Time
+YZEGS.InjurySheet.Effect: Effect
+YZEGS.InjurySheet.Lethal: Lethal
+YZEGS.InjurySheet.day: day
+YZEGS.InjurySheet.days: days
+YZEGS.Chat.Actions.Attack: Attack
+YZEGS.Chat.Actions.Reload: Reload
+YZEGS.Chat.Actions.Roll: Roll
+YZEGS.Chat.Actions.Push: Push
+YZEGS.Chat.Actions.ApplyDamage: Apply Damage
+YZEGS.Chat.Roll.Success: Success
+YZEGS.Chat.Roll.Successes: Successes
+YZEGS.Chat.Roll.Pushed: — Pushed
+YZEGS.Chat.Roll.Suppression: Suppression
+YZEGS.Chat.Roll.ExtraHit: Extra Hit
+YZEGS.Chat.Roll.ExtraHits: Extra Hits
+YZEGS.Chat.Roll.Mishap: Mishap
+YZEGS.Chat.Roll.AmmoSpent: Ammo Spent
+YZEGS.Chat.Roll.NoItemNotif: The item does not exist anymore.
+YZEGS.Chat.Roll.NoReliabilityNotif: The current reliability value of this item does not allow to use it.
+YZEGS.Chat.Damage.Incapacited: INCAPACITED
+YZEGS.Chat.Damage.DamagedArmor: Damaged
+YZEGS.Chat.Damage.DamageDealt: <b>{name}</b> is dealt <b>{amount}</b> damage.
+YZEGS.Chat.Damage.NoDamageDealt: No damage was dealt to <b>{name}</b>.
+YZEGS.Chat.Damage.InitialAmount: >-
+  The attack had an initial amount of <b>{damage}</b> damage, with an armor
+  modifier of {mod}.
+YZEGS.Chat.Damage.DeflectedDamage: deflected {damage} damage
+YZEGS.Chat.Damage.DeflectedAllDamage: deflected all damage
+YZEGS.Chat.Damage.NoEffect: no effect
+YZEGS.Combat.Attack: '{weapon} — Attack'
+YZEGS.Combat.Barrier: Barrier
+YZEGS.Combat.BodyArmor: Body Armor
+YZEGS.Combat.NoQuantityLeft: No unit left for weapon {weapon}.
+YZEGS.Combat.NoAmmoLeft: No ammo left in the magazine of the weapon {weapon}.
+YZEGS.Combat.NoMag: Please insert a magazine for the weapon {weapon}.
+YZEGS.Dialog.Actions.Normal: Roll
+YZEGS.Dialog.Actions.Reload: Reload
+YZEGS.Dialog.Actions.Ok: OK
+YZEGS.Dialog.Actions.Cancel: Cancel
+YZEGS.Dialog.Roll.Attribute: Attribute
+YZEGS.Dialog.Roll.Skill: Skill
+YZEGS.Dialog.Roll.Formula: Formula
+YZEGS.Dialog.Roll.RoF: Rate of Fire
+YZEGS.Dialog.Roll.Modifier: Modifier
+YZEGS.Dialog.Roll.Locate: Add a Hit Die?
+YZEGS.Dialog.Roll.MaxPush: Max Pushes
+YZEGS.Dialog.Roll.RollMode: Roll Mode
+YZEGS.Dialog.CuF.CoolnessUnderFire: Coolness Under Fire (CUF)
+YZEGS.Dialog.CuF.UnitMorale: Add the Unit Morale?
+YZEGS.Dialog.Actor.ChooseActor: Choose an Actor
+YZEGS.Dialog.Damage.ChooseDamage: Amount of Damage
+YZEGS.Dialog.Damage.Description: Choose how much damage to inflict to <b>{target}</b>.
+YZEGS.Dialog.Damage.DamageQuantity: Base Amount
+YZEGS.Dialog.Damage.ExtraHits: Extra Hits
+YZEGS.Dialog.Damage.BarrierArmors: Barrier's Armor Levels
+YZEGS.Dialog.Damage.BarrierArmorsHint: Multiple barriers are comma-separated.
+YZEGS.MACRO.GetActorTitle: Choose an Actor
+YZEGS.MACRO.GetActorHint: You have selected multiple tokens. Please choose one of them.
+YZEGS.MACRO.MultipleItems: >-
+  Your controlled Actor {actor} has more than one Item with name {item}. The first matched item will be chosen.
+YZEGS.MACRO.NoActor: Your controlled Actor {actor} was not found.
+YZEGS.MACRO.NoItem: Your controlled Actor {actor} does not have an item named {item}.
+YZEGS.MACRO.RollAction: Action {action}
+YZEGS.MACRO.RollStat: Roll {stat}
+FLPS.TAB.MAIN: Party Team
+FLPS.TAB.TRAVEL: Travel Actions
+FLPS.TAB.NOTE: Notes
+FLPS.PARTY.NAME: Party Name
+FLPS.PARTY.MEMBERS: Party Members
+FLPS.PARTY.HINT_ADD: Drag & drop characters here to add them to the party.
+FLPS.PARTY.HINT_ASSIGN: Drag & drop characters to assign them to the desired travel activities.
+FLPS.TRAVEL.MARCH: Marching
+FLPS.TRAVEL.DRIVE: Driving
+FLPS.TRAVEL.WATCH: Keeping Watch
+FLPS.TRAVEL.REST: Resting
+FLPS.TRAVEL.SLEEP: Sleeping
+FLPS.TRAVEL.SCROUNGE: Scrounging
+FLPS.TRAVEL.FORAGE: Foraging
+FLPS.TRAVEL.HUNT: Hunting
+FLPS.TRAVEL.FISH: Fishing
+FLPS.TRAVEL.CAMP: Making Camp
+FLPS.TRAVEL.COOK: Cooking
+FLPS.TRAVEL.OTHER: Other
+FLPS.TRAVEL.RESET: RESET
+FLPS.UI.WHO_ROLLS: Who rolls?
+FLPS.UI.WHO_PUSHES: Who pushes?
+FLPS.UI.ATTENTION: Attention
+FLPS.UI.ERROR.OPEN_SHEET: Please open your character sheet at least once before making travel rolls.
+FLPS.TRAVEL_ROLL.FORCED_MARCH: Forced March
+FLPS.TRAVEL_ROLL.MARCH_IN_DARKNESS: March in Darkness
+FLPS.TRAVEL_ROLL.DRIVE: Drive
+FLPS.TRAVEL_ROLL.KEEP_WATCH: Keep Watch
+FLPS.TRAVEL_ROLL.RECOVER: Recover
+FLPS.TRAVEL_ROLL.FIND_SCRAP: Scrounge
+FLPS.TRAVEL_ROLL.FIND_FOOD: Forage
+FLPS.TRAVEL_ROLL.FIND_PREY: Find Prey
+FLPS.TRAVEL_ROLL.RECON_PREY: Approach Prey
+FLPS.TRAVEL_ROLL.KILL_PREY: Kill Prey
+FLPS.TRAVEL_ROLL.CATCH_FISH: Fish
+FLPS.TRAVEL_ROLL.MAKE_CAMP: Make Camp
+FLPS.TRAVEL_ROLL.HIDE_CAMP: Hide Camp
+FLPS.TRAVEL_ROLL.COOK_FOOD: Cook Food
+FLPS.SETTINGS.ALLOW_PUSH: Allow Unlimited Pushed Rolls
+FLPS.SETTINGS.ALLOW_PUSH_HINT: >-
+  If your GM allows an unlimited number of pushed rolls. Or perhaps you are a GM
+  who wants to be able to push this encounter's rolls; check this setting to
+  display a push button on almost any roll.
+SETTINGS.trackPcAmmo.name: Track Player Characters' Ammunitions
+SETTINGS.trackPcAmmo.label: Whether the ammo consumption should be tracked for PCs.
+SETTINGS.trackNpcAmmo.name: Track NPCs' Ammunitions
+SETTINGS.trackNpcAmmo.label: Whether the ammo consumption should be tracked for NPCs.
+SETTINGS.trackVehicleAmmo.name: Track Vehicles' Ammunitions
+SETTINGS.trackVehicleAmmo.label: Whether the ammo consumption should be tracked for weaponized vehicles.
+SETTINGS.showTaskCheckOptions.name: Ask for Task Check Options by Default
+SETTINGS.showTaskCheckOptions.label: Hold Shift to toggle.
+SETTINGS.closeRollTooltipDelay.name: Close Roll Tooltip Delay
+SETTINGS.closeRollTooltipDelay.label: >-
+  How many seconds to wait before automatically closing dice results tooltips.
+  Maximum is 15 minutes. Set this value to -1 for never.
+SETTINGS.defaultCharTokenSize.name: Default Token Size for Characters & NPCs
+SETTINGS.defaultCharTokenSize.label: >-
+  Set a default size between [0.3, 2.0] for newly created character & npc
+  Actors.
+SETTINGS.hideCapacitiesButtons.name: Hide Capacities Modifiers
+SETTINGS.hideCapacitiesButtons.label: >-
+  Whether to hide from the players the plus-minus buttons used to modify the Hit
+  & Stress maximum capacities in the character sheet.
+SETTINGS.hideWeaponProps.name: Hide Weapon Properties
+SETTINGS.hideWeaponProps.label: >-
+  Whether to hide from the players the properties checkboxes in the weapon
+  sheet.
+YZUR.CHAT.ROLL.Push: Push
+YZUR.CHAT.ROLL.HitLocation: 'Hit Location:'
+YZUR.CHAT.ROLL.HitLocations: 'Hit Locations:'
+YZUR.CHAT.ROLL.Locations.1: Legs
+YZUR.CHAT.ROLL.Locations.2: Torso
+YZUR.CHAT.ROLL.Locations.3: Torso
+YZUR.CHAT.ROLL.Locations.4: Torso
+YZUR.CHAT.ROLL.Locations.5: Arms
+YZUR.CHAT.ROLL.Locations.6: Head
+YZUR.CHAT.ROLL.ExtraHit: 'Extra Hit:'
+YZUR.CHAT.ROLL.ExtraHits: 'Extra Hits:'
+YZUR.CHAT.ROLL.Suppression: 'Suppression:'
+YZUR.CHAT.ROLL.AmmoSpent: 'Ammunition Spent:'
+YZUR.CHAT.ROLL.DamageOrStress: 'Damage/Stress:'
+YZUR.CHAT.ROLL.JamCount: 'Reliability:'
+YZUR.CHAT.ROLL.Jammed: WEAPON JAM!!
+YZUR.DIETERMS.D6SteppedDie: Base D6
+YZUR.DIETERMS.D8SteppedDie: Base D8
+YZUR.DIETERMS.D10SteppedDie: Base D10
+YZUR.DIETERMS.D12SteppedDie: Base D12
+YZUR.DIETERMS.AmmoDie: Ammo
+YZUR.DIETERMS.LocationDie: Hit Die
+TYPES.Actor.character: Player Character
+TYPES.Actor.npc: Non-Player Character
+TYPES.Actor.vehicle: Vehicle
+TYPES.Actor.unit: Military Unit
+TYPES.Actor.party: Travel Party
+TYPES.Item.weapon: Weapon
+TYPES.Item.armor: Body Armor
+TYPES.Item.ammunition: Ammo
+TYPES.Item.grenade: Explosive
+TYPES.Item.gear: Gear
+TYPES.Item.injury: Critical Injury
+TYPES.Item.specialty: Specialty
+EFFECT.StatusFullCover: Full Cover
+EFFECT.StatusPartialCover: Partial Cover
+EFFECT.StatusOverwatch: Overwatch
+EFFECT.StatusSuppressed: Suppressed
+EFFECT.StatusStop: Stop
+EFFECT.StatusSmoke: Smoke
+EFFECT.StatusFire: Fire
+EFFECT.StatusSlowAction: Slow Action Spent
+EFFECT.StatusFastAction: Fast Action Spent
+YZEGS.ActorSheet.ToChat: Send item to chat
+YZUR.CHAT.ROLL.Accept: Accept
+YZEGS.Dialog.ChooseValue.Value: Modifier
+YZEGS.Dialog.ChooseValue.Armor: Modify Armor for {name}
+YZEGS.Dialog.ChooseValue.Ammo: Modify Ammunition Amount for {name}
+YZEGS.Dialog.ChooseValue.Qty: Modify Quantity for {name}
+YZEGS.ActorSheet.Age: Age
+SETTINGS.characterFieldLabels.name: Character Field Labels
+SETTINGS.characterFieldLabels.label: Configure Character Field Labels
+SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes used by character and NPC sheets.
+SETTINGS.characterFieldLabels.headerFields: Header Fields
+SETTINGS.characterFieldLabels.attributeFields: Attribute Fields
+SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
+SETTINGS.characterFieldLabels.save: Save Labels
+SETTINGS.characterFieldLabels.saved: Character field labels saved.
+YZEGS.ItemTypes.skill: Skill
+TYPES.Item.skill: Skill
+YZEGS.ItemSheet.ParentAttribute: Parent Attribute
+YZEGS.ItemSheet.SkillRating: Rating
+YZEGS.ActorSheet.NewItem.skill: New Skill
+YZEGS.ActorSheet.DropSkillsHere: Drop Skill Items here
+YZEGS.ActorSheet.SkillDropHint: Skill Items must have a parent attribute and be dropped in the Skills section.
+YZEGS.ActorSheet.ExperienceTab: Experience
+YZEGS.Experience.AwardXp: Award XP
+YZEGS.Experience.AwardTitle: Award Experience
+YZEGS.Experience.AwardInstructions: Select every question that applies to this character for the completed session.
+YZEGS.Experience.Adjustment: GM Adjustment
+YZEGS.Experience.Note: Session Note
+YZEGS.Experience.AwardTotal: XP to Award
+YZEGS.Experience.SkillAdvancement: Skill Advancement
+YZEGS.Experience.SpecialtyAdvancement: Specialty Advancement
+YZEGS.Experience.SkillEligibilityHint: Mark a Skill after meaningful successful use or suitable instruction.
+YZEGS.Experience.CurrentRating: Current
+YZEGS.Experience.TargetRating: Target
+YZEGS.Experience.CurrentXp: Current XP
+YZEGS.Experience.Eligibility: Eligibility
+YZEGS.Experience.Eligible: Eligible
+YZEGS.Experience.NotEligible: Not Eligible
+YZEGS.Experience.Cost: Cost
+YZEGS.Experience.Advance: Advance
+YZEGS.Experience.Learn: Learn
+YZEGS.Experience.AdvanceSkillTitle: Advance Skill
+YZEGS.Experience.Maximum: Maximum
+YZEGS.Experience.NoSkills: This character has no Skills available for advancement.
+YZEGS.Experience.LearnSkill: Learn Skill
+YZEGS.Experience.LearnSkillTitle: Learn a Skill
+YZEGS.Experience.NewSkillInstructions: Choose a Skill the character does not currently possess. It will be learned at rating D.
+YZEGS.Experience.NewSkillExperienceConfirmation: The character used this untrained Skill successfully in a meaningful situation.
+YZEGS.Experience.NewSkillTrainingConfirmation: The character received one shift of instruction from a teacher who has this Skill.
+YZEGS.Experience.NewSkillPrerequisiteWarning: No prerequisite has to be selected because the world setting is warning-only.
+YZEGS.Experience.SkillLearnedNotification: Skill learned at rating D and XP spent.
+YZEGS.Experience.LearnSpecialty: Learn Specialty
+YZEGS.Experience.LearnSpecialtyTitle: Learn a Specialty
+YZEGS.Experience.Specialty: Specialty
+YZEGS.Experience.SpecialtyInstructions: Choose a Specialty after the required instruction and successful teaching roll.
+YZEGS.Experience.SkillTrainingConfirmation: The character received one shift of instruction from a teacher with a higher Skill rating.
+YZEGS.Experience.SpecialtyTrainingConfirmation: The teacher knows this Specialty, completed one shift of instruction, and succeeded on the Persuasion roll.
+YZEGS.Experience.PrerequisiteWarning: This Skill has not been marked eligible. Advancement is allowed because the world setting is warning-only.
+YZEGS.Experience.SpendXp: Spend XP
+YZEGS.Experience.SpendingTimingReminder: Under the SRD rules, XP is spent while the character rests or between game sessions.
+YZEGS.Experience.NoSpecialties: This character has no Specialties.
+YZEGS.Experience.History: Experience History
+YZEGS.Experience.NoHistory: No experience transactions have been recorded yet.
+YZEGS.Experience.HistoryAward: Session experience awarded
+YZEGS.Experience.HistorySkill: '{name} advanced from {from} to {to}'
+YZEGS.Experience.HistorySkillLearned: '{name} learned at rating {to}'
+YZEGS.Experience.HistorySpecialty: 'Learned Specialty: {name}'
+YZEGS.Experience.WorldItems: World Items
+YZEGS.Experience.AwardedNotification: Awarded {amount} XP to {name}.
+YZEGS.Experience.AdvancedNotification: '{name} advanced to {rating}.'
+YZEGS.Experience.SpecialtyLearnedNotification: Specialty learned and XP spent.
+YZEGS.Experience.Questions.Participated: Did you participate in the game session?
+YZEGS.Experience.Questions.Explored: Did you explore a new location?
+YZEGS.Experience.Questions.Adversaries: Did you defeat one or more dangerous adversaries?
+YZEGS.Experience.Questions.NonViolent: Did you overcome an obstacle without using force?
+YZEGS.Experience.Questions.Personality: Did you act according to your weakness, dark secret, big dream, or relationships?
+YZEGS.Experience.Questions.Extraordinary: Did you perform another extraordinary action of some kind?
+YZEGS.Experience.Errors.SkillMissing: The selected Skill could not be found.
+YZEGS.Experience.Errors.SkillKnown: This character already knows that Skill.
+YZEGS.Experience.Errors.InvalidSkill: The selected Skill does not have a valid parent Attribute.
+YZEGS.Experience.Errors.NoAvailableSkills: No unlearned Skill Items are available in the world or visible compendiums.
+YZEGS.Experience.Errors.ChooseSkill: Choose a Skill before continuing.
+YZEGS.Experience.Errors.NoAward: At least 1 XP must be awarded.
+YZEGS.Experience.Errors.MaximumSkill: This Skill is already at its maximum rating.
+YZEGS.Experience.Errors.InsufficientXp: This character does not have enough XP.
+YZEGS.Experience.Errors.PrerequisiteRequired: Meaningful successful use or qualifying instruction is required before advancing this Skill.
+YZEGS.Experience.Errors.SpecialtyTrainingRequired: The teaching requirements must be completed successfully before learning this Specialty.
+YZEGS.Experience.Errors.SpecialtyMissing: The selected Specialty could not be found.
+YZEGS.Experience.Errors.SpecialtyKnown: This character already knows that Specialty.
+YZEGS.Experience.Errors.NoAvailableSpecialties: No unlearned Specialty Items are available in the world or visible compendiums.
+YZEGS.Experience.Errors.ChooseSpecialty: Choose a Specialty before continuing.
+YZEGS.Experience.Errors.NotPermitted: You do not have permission to perform this experience action.
+SETTINGS.experienceConfig.name: Experience and Advancement
+SETTINGS.experienceConfig.label: Configure Experience Rules
+SETTINGS.experienceConfig.hint: Configure Stepped Dice Skill costs, Specialty costs, prerequisites, and session award questions for this world.
+SETTINGS.experienceConfig.skillCosts: Skill Target Rating Costs
+SETTINGS.experienceConfig.specialtyCost: Specialty Cost
+SETTINGS.experienceConfig.prerequisiteMode: Skill Prerequisites
+SETTINGS.experienceConfig.prerequisiteModeHint: Control whether meaningful successful use or instruction is required before spending XP.
+SETTINGS.experienceConfig.prerequisiteModes.require: Required
+SETTINGS.experienceConfig.prerequisiteModes.warn: Warning Only
+SETTINGS.experienceConfig.prerequisiteModes.off: Disabled
+SETTINGS.experienceConfig.gmOnlyAdvancement: Only GMs Can Spend XP
+SETTINGS.experienceConfig.advancementItemSource: Advancement Item Source
+SETTINGS.experienceConfig.advancementItemSourceHint: Choose the sole source used by Learn Skill and Learn Specialty. This prevents duplicate entries from world Items and compendium packs.
+SETTINGS.experienceConfig.unavailableItemSource: "Unavailable source: {source}"
+SETTINGS.experienceConfig.awardQuestions: Session Award Questions
+SETTINGS.experienceConfig.awardQuestionsHint: Each enabled question awards 1 XP when selected.
+SETTINGS.experienceConfig.customQuestions: Additional Award Questions
+SETTINGS.experienceConfig.customQuestionsPlaceholder: Enter one question per line.
+SETTINGS.experienceConfig.customQuestionsHint: Each non-empty line becomes an additional 1 XP question in the award dialog.
+SETTINGS.experienceConfig.save: Save Experience Rules
+SETTINGS.experienceConfig.saved: Experience rules saved.

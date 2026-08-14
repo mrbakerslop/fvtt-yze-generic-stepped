@@ -1,0 +1,154 @@
+.application.dialog.yzegs,
+.application.yzegs.experience-config,
+.application.yzegs.character-field-label-settings {
+  --background: #fff;
+  --color-header-background: #000;
+  --color-border: #000;
+  --color-form-label: #000;
+  --color-form-label-hover: #000;
+  --color-form-hint: #000;
+  --color-form-hint-hover: #000;
+  --color-select-option-bg: #fff;
+  --color-scrollbar: #000;
+  --color-scrollbar-track: #fff;
+  --color-text-emphatic: #000;
+  --color-text-primary: #000;
+  --color-text-secondary: #000;
+  --color-text-subtle: #000;
+  --color-text-accent: @colorRed;
+  --color-text-selection: #fff;
+  --color-text-selection-bg: #000;
+  --input-background-color: #fff;
+  --input-border-color: #000;
+  --input-box-shadow: none;
+  --input-text-color: #000;
+  --input-placeholder-color: #000;
+  --input-focus-outline-color: @colorRed;
+  --input-focus-text-color: #000;
+  --checkbox-background-color: #000;
+  --checkbox-checked-color: #000;
+  --checkbox-checkmark-color: #fff;
+  --checkbox-disabled-color: #000;
+  --range-track-color: #fff;
+  --range-track-border-color: #000;
+  --range-thumb-background-color: #000;
+  --range-thumb-border-color: #000;
+  --button-background-color: #fff;
+  --button-border-color: #000;
+  --button-text-color: #000;
+  --button-focus-outline-color: #000;
+  --button-hover-background-color: #fff;
+  --button-hover-border-color: #000;
+  --button-hover-text-color: #000;
+  --hr-border: 1px solid #000;
+  --hr-gradient: none;
+  color-scheme: light;
+  background: #fff;
+  color: #000;
+  font-family: var(--yzegs-font-body);
+
+  .window-content {
+    font-family: var(--yzegs-font-body);
+  }
+
+  > .window-header {
+    background: #000;
+    border-color: #000;
+    color: #fff;
+    font-family: var(--yzegs-font-body);
+    font-size: var(--font-size-13);
+    font-weight: normal;
+
+    .window-title {
+      color: #fff;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      text-transform: none;
+    }
+
+    button.header-control {
+      --button-background-color: transparent;
+      --button-border-color: transparent;
+      --button-text-color: #fff;
+      --button-hover-background-color: #fff;
+      --button-hover-border-color: #fff;
+      --button-hover-text-color: #000;
+      background: transparent;
+      border: none;
+      color: #fff;
+    }
+  }
+
+  .window-content,
+  .dialog-form,
+  .dialog-content,
+  .form-footer {
+    background: #fff;
+    color: #000;
+  }
+
+  .dialog-content {
+    line-height: 1.15;
+
+    font-family: var(--yzegs-font-body);
+
+    label,
+    span,
+    p,
+    a,
+    legend {
+      color: #000;
+    }
+
+    input,
+    select,
+    textarea,
+    option {
+      background-color: #fff;
+      border-color: #000;
+      color: #000;
+      opacity: 1;
+    }
+
+    input:disabled,
+    select:disabled,
+    textarea:disabled {
+      background-color: #fff;
+      border-color: #000;
+      color: #000;
+      opacity: 1;
+    }
+  }
+
+  .form-footer button {
+    background: #fff;
+    border-color: #000;
+    color: #000;
+
+    &:hover,
+    &:focus {
+      background: #fff;
+      border-color: #000;
+      color: #000;
+      box-shadow: @hoverShadow;
+    }
+  }
+}
+
+.application.yzegs.character-field-label-settings .character-field-labels-form {
+  .character-field-label-group {
+    padding: 8px 10px 4px;
+    border: 1px solid #000;
+
+    + .character-field-label-group {
+      margin-top: 12px;
+    }
+
+    legend {
+      padding: 0 5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+  }
+}

@@ -1,0 +1,505 @@
+YZEGS.SheetClassCharacter: Fiche de personnage
+YZEGS.SheetClassVehicle: Fiche de véhicule
+YZEGS.SheetClassUnit: Fiche d'unité
+YZEGS.SheetClassParty: Fiche de groupe
+YZEGS.Attribute: Attribut
+YZEGS.Attributes: Attributs
+YZEGS.AttributeNames.str: Vigueur
+YZEGS.AttributeNames.agl: Agilité
+YZEGS.AttributeNames.int: Intellect
+YZEGS.AttributeNames.emp: Empathie
+YZEGS.Skill: Compétence
+YZEGS.Skills: Compétences
+YZEGS.SkillNames.none: –
+YZEGS.SkillNames.heavyWeapons: Artillerie lourde
+YZEGS.SkillNames.closeCombat: Combat rapproché
+YZEGS.SkillNames.stamina: Endurance
+YZEGS.SkillNames.driving: Conduite
+YZEGS.SkillNames.mobility: Mobilité
+YZEGS.SkillNames.rangedCombat: Combat à distance
+YZEGS.SkillNames.recon: Reconnaissance
+YZEGS.SkillNames.survival: Survie
+YZEGS.SkillNames.tech: Tech
+YZEGS.SkillNames.command: Commandement
+YZEGS.SkillNames.persuasion: Persuasion
+YZEGS.SkillNames.medicalAid: Aide médicale
+YZEGS.Action: Action
+YZEGS.Actions: Actions
+YZEGS.ActionNames.unarmedAttack: Attaque à mains nues
+YZEGS.ActionNames.meleeAttack: Attaque de mêlée
+YZEGS.ActionNames.grapple: Attraper
+YZEGS.ActionNames.breakFree: Se libérer
+YZEGS.ActionNames.shootFirearm: Tirer avec une arme à feu
+YZEGS.ActionNames.clearJam: Nettoyer le bourrage
+YZEGS.ActionNames.aimSniper: Viser (tireur d'élite)
+YZEGS.ActionNames.shootBow: Tirer à l'arc
+YZEGS.ActionNames.throwWeapon: Lancer une arme
+YZEGS.ActionNames.aimMortar: Viser avec le mortier ou l'obusier
+YZEGS.ActionNames.shootHeavyWeapon: Tirer avec une arme lourde
+YZEGS.ActionNames.firstAid: Premiers secours
+YZEGS.ActionNames.rally: Rallier
+YZEGS.ActionNames.directFire: Tir indirect direct
+YZEGS.ActionNames.seekCover: Se mettre à couvert
+YZEGS.ActionNames.run: Courir
+YZEGS.ActionNames.crawl: Ramper
+YZEGS.ActionNames.shove: Bousculer
+YZEGS.ActionNames.disarm: Désarmer
+YZEGS.ActionNames.retreat: Battre en retraite
+YZEGS.ActionNames.aim: Viser
+YZEGS.ActionNames.prepareBow: Préparer l'arc
+YZEGS.ActionNames.overwatch: Assumer la position de surveillance
+YZEGS.ActionNames.reload: Recharger
+YZEGS.ActionNames.drive: Conduire
+YZEGS.Constants: Constantes
+YZEGS.ConstantNames.encumbrance: Encombrement
+YZEGS.ConstantNames.awareness: Sensibilisation au combat
+YZEGS.ConstantNames.cuf: SF
+YZEGS.TravelTasks: Actions de voyage
+YZEGS.TravelTaskNames.marching: Marche
+YZEGS.TravelTaskNames.driving: Conduite
+YZEGS.TravelTaskNames.gathering: Cueillette
+YZEGS.TravelTaskNames.keepingWatch: Veille
+YZEGS.TravelTaskNames.scrounging: Fouiller
+YZEGS.TravelTaskNames.foraging: Recherche de nourriture
+YZEGS.TravelTaskNames.hunting: Chasse
+YZEGS.TravelTaskNames.fishing: Pêche
+YZEGS.TravelTaskNames.makingCamp: Établir le camp
+YZEGS.TravelTaskNames.cooking: Cuisine
+YZEGS.TravelTaskNames.resting: Repos
+YZEGS.TravelTaskNames.sleeping: Sommeil
+YZEGS.TravelTaskNames.exploring: Exploration
+YZEGS.ArmorLocationNames.head: Tête
+YZEGS.ArmorLocationNames.arms: Bras
+YZEGS.ArmorLocationNames.torso: Torse
+YZEGS.ArmorLocationNames.legs: Jambes
+YZEGS.ConditionNames.starving: Affamé
+YZEGS.ConditionNames.dehydrated: Déshydraté
+YZEGS.ConditionNames.sleepless: Privé de sommeil
+YZEGS.ConditionNames.hypothermic: Hypothermique
+YZEGS.InjuryCategoryNames.physical: Physique
+YZEGS.InjuryCategoryNames.mental: Mental
+YZEGS.ActionTypes.fast: Rapide
+YZEGS.ActionTypes.slow: Lente
+YZEGS.Ranges.close: En combat rapproché
+YZEGS.Ranges.short: Courte
+YZEGS.Ranges.medium: Medium
+YZEGS.Ranges.long: Longue
+YZEGS.Ranges.extreme: Extrême
+YZEGS.ItemTypes.ammunition: Munition
+YZEGS.ItemTypes.armor: Armure
+YZEGS.ItemTypes.gear: Équipement
+YZEGS.ItemTypes.grenade: Explosif
+YZEGS.ItemTypes.injury: Blessure
+YZEGS.ItemTypes.specialty: Spécialité
+YZEGS.ItemTypes.weapon: Arme
+YZEGS.ItemPropNames.twoHanded: 'Deux mains'
+YZEGS.ItemPropNames.mounted: Monté
+YZEGS.ItemPropNames.disposable: Jetable
+YZEGS.ItemPropNames.ammoBelt: Cartouchière
+YZEGS.ItemPropNames.magazine: Chargeur
+YZEGS.ItemPropNames.armored: Protégé
+YZEGS.ItemPropNames.bipod: Bipied
+YZEGS.ItemPropNames.tripod: Trépied
+YZEGS.ItemPropNames.scope: Lunette
+YZEGS.ItemPropNames.nightVision: 'Vision nocturne'
+YZEGS.ItemPropNames.bayonet: Baïonnette
+YZEGS.ItemPropNames.suppressor: Silencieux
+YZEGS.ActorTypes.character: Personnage joueur (PJ)
+YZEGS.ActorTypes.npc: Personnage non-joueur (PNJ)
+YZEGS.ActorTypes.vehicle: Véhicule
+YZEGS.ActorSheet.Name: Nom
+YZEGS.ActorSheet.MainTab: Stats
+YZEGS.ActorSheet.CombatTab: Combat
+YZEGS.ActorSheet.EquipmentTab: Équipement
+YZEGS.ActorSheet.BiographyTab: Bio
+YZEGS.ActorSheet.NoteTab: Notes
+YZEGS.ActorSheet.Nationality: Nationalité
+YZEGS.ActorSheet.Branch: Branche
+YZEGS.ActorSheet.MilitaryRank: Rang
+YZEGS.ActorSheet.HitCapacity: Capacité de vie
+YZEGS.ActorSheet.StressCapacity: Capacité de stress
+YZEGS.ActorSheet.CapacityModifier: 'Modificateur :'
+YZEGS.ActorSheet.Experience: Expérience
+YZEGS.ActorSheet.ExperienceCurrent: XP actuel
+YZEGS.ActorSheet.ExperienceTotal: XP total
+YZEGS.ActorSheet.Appearance: Apparence
+YZEGS.ActorSheet.MoralCode: Code moral
+YZEGS.ActorSheet.Buddy: Pote
+YZEGS.ActorSheet.BigDream: Votre grand rêve
+YZEGS.ActorSheet.GroupMeeting: 'Comment vous avez rencontré le groupe :'
+YZEGS.ActorSheet.AttributesAndSkills: Attributs & compétences
+YZEGS.ActorSheet.Rating: Score
+YZEGS.ActorSheet.BaseDie: Dé de base
+YZEGS.ActorSheet.Specialties: Spécialités
+YZEGS.ActorSheet.AddSpecialty: Ajouter une nouvelle spécialité
+YZEGS.ActorSheet.NoSpecialty: >-
+  Ce personnage n'a pas de spécialité. Cliquez sur l'icône "+" pour ajouter une
+  nouvelle spécialité.
+YZEGS.ActorSheet.Combat: Combat
+YZEGS.ActorSheet.Actions: Actions
+YZEGS.ActorSheet.Current: Actuel
+YZEGS.ActorSheet.Max: Max
+YZEGS.ActorSheet.CuF: Sang-froid
+YZEGS.ActorSheet.UnitMorale: Moral de l'unité
+YZEGS.ActorSheet.NoArmor: Ce personnage n'a pas d'armure équipée.
+YZEGS.ActorSheet.Conditions: Conditions
+YZEGS.ActorSheet.CriticalInjuries: Blessures critiques
+YZEGS.ActorSheet.AddInjury: Ajouter une nouvelle blessure
+YZEGS.ActorSheet.InjuryTimeLeft: '{time} restant'
+YZEGS.ActorSheet.Diseases: Maladies
+YZEGS.ActorSheet.Radiation: Irradiation
+YZEGS.ActorSheet.RadiationRoll: Attaque Rad
+YZEGS.ActorSheet.TemporaryRadiation: Temporaire
+YZEGS.ActorSheet.PermanentRadiation: Permanent
+YZEGS.ActorSheet.EncumbranceFull: PLEIN
+YZEGS.ActorSheet.EncumbranceTooHeavy: TROP LOURD
+YZEGS.ActorSheet.Weapons: Armes
+YZEGS.ActorSheet.AddWeapon: Ajouter une nouvelle arme
+YZEGS.ActorSheet.Unarmed: Sans armes
+YZEGS.ActorSheet.Cover: Protections
+YZEGS.ActorSheet.Add: Ajouter
+YZEGS.ActorSheet.AddArmor: Ajouter une nouvelle armure
+YZEGS.ActorSheet.AddGear: Ajouter un nouvel équipement
+YZEGS.ActorSheet.AddAmmo: Ajouter une nouvelle munition
+YZEGS.ActorSheet.Encumbrance: Encombrement
+YZEGS.ActorSheet.CombatGearEncumbrance: Équipement de combat (encombrement)
+YZEGS.ActorSheet.BackpackEncumbrance: Sac à dos (encombrement)
+YZEGS.ActorSheet.Equip: Équiper
+YZEGS.ActorSheet.Store: Ranger dans le sac à dos
+YZEGS.ActorSheet.Edit: Éditer
+YZEGS.ActorSheet.Delete: Supprimer
+YZEGS.ActorSheet.NewItem.weapon: Nouvelle arme
+YZEGS.ActorSheet.NewItem.armor: Nouvelle armure
+YZEGS.ActorSheet.NewItem.gear: Nouvel équipement
+YZEGS.ActorSheet.NewItem.ammunition: Nouvelle munition
+YZEGS.ActorSheet.NewItem.specialty: Nouvelle spécialité
+YZEGS.ActorSheet.NewItem.injury: Nouvelle blessure
+YZEGS.ActorSheet.NotifWrongItemType: Les objets de type "{type}" ne peuvent pas être ajouté à {actor}!
+YZEGS.VehicleSheet.CrewTab: Équipage
+YZEGS.VehicleSheet.ComponentsTab: Composants
+YZEGS.VehicleSheet.CombatTab: Combat
+YZEGS.VehicleSheet.CargoTab: Cargaison
+YZEGS.VehicleSheet.VehicleType: Type de véhicule
+YZEGS.VehicleSheet.Reliability: Fiabilité
+YZEGS.VehicleSheet.Movement: Mouvement
+YZEGS.VehicleSheet.CombatSpeed: Vitesse de combat
+YZEGS.VehicleSheet.TravelSpeed: Vitesse de voyage
+YZEGS.VehicleSheet.Wheels: Roues
+YZEGS.VehicleSheet.Tracks: Chenilles
+YZEGS.VehicleSheet.Hovercraft: Aéroglisseur
+YZEGS.VehicleSheet.Flying: Vol
+YZEGS.VehicleSheet.Naval: Naval
+YZEGS.VehicleSheet.Fuel: Carburant
+YZEGS.VehicleSheet.FuelCapacity: Réservoir
+YZEGS.VehicleSheet.FuelConsumption: Consommation de carburant
+YZEGS.VehicleSheet.Gasoline: Essence
+YZEGS.VehicleSheet.Diesel: Diesel
+YZEGS.VehicleSheet.Alcohol: Alcool
+YZEGS.VehicleSheet.Nuclear: Nucléaire
+YZEGS.VehicleSheet.CrewQty: 'Équipage :'
+YZEGS.VehicleSheet.PassengerQty: 'Passagers :'
+YZEGS.VehicleSheet.EmptyCrew: Glissez-déposez un acteur pour l'ajouter à l'équipage.
+YZEGS.VehicleSheet.Armor: Armure
+YZEGS.VehicleSheet.FrontArmor: Avant
+YZEGS.VehicleSheet.SideLeftArmor: Gauche
+YZEGS.VehicleSheet.SideRightArmor: Droite
+YZEGS.VehicleSheet.RearArmor: Arrière
+YZEGS.VehicleSheet.Damage: Dégats
+YZEGS.VehicleSheet.MountedWeapons1: Armes principales
+YZEGS.VehicleSheet.MountedWeapons2: Armes secondaires
+YZEGS.VehicleSheet.MountedWeaponType: Type
+YZEGS.VehicleSheet.CargoCapacity: 'Capacité de chargement :'
+YZEGS.VehicleSheet.CrewCargo: "Poids de l'équipage :"
+YZEGS.VehicleSheet.VehicleEncumbrance: Encombrement (véhicule)
+YZEGS.VehicleSheet.Mount: Monter l'arme
+YZEGS.VehicleSheet.Unmount: Démonter l'arme
+YZEGS.VehicleSheet.MoveMount: Basculer le montage de l'arme
+YZEGS.VehicleSheet.Price: Prix
+YZEGS.VehicleSheet.CrewPositions.Driver: CONDUCTEUR
+YZEGS.VehicleSheet.CrewPositions.Gunner: CANONNIER
+YZEGS.VehicleSheet.CrewPositions.Commander: COMMANDANT
+YZEGS.VehicleSheet.CrewPositions.Passenger: PASSAGER
+YZEGS.VehicleSheet.ExposedPassenger: Exposé
+YZEGS.VehicleSheet.InnerComponents: Composants internes
+YZEGS.VehicleSheet.OuterComponents: Composants extérieurs
+YZEGS.VehicleSheet.ComponentDamage: Quantité de dégâts infligés à ce composant
+YZEGS.VehicleSheet.FcsType: Type
+YZEGS.VehicleSheet.Components.fuel: Carburant
+YZEGS.VehicleSheet.Components.engine: Moteur
+YZEGS.VehicleSheet.Components.suspension: Suspension
+YZEGS.VehicleSheet.Components.ammunition: Munitions
+YZEGS.VehicleSheet.Components.radio: Radio
+YZEGS.VehicleSheet.Components.trackWheel: Chenilles / Roues
+YZEGS.VehicleSheet.Components.fcs: Système de conduite de tir
+YZEGS.VehicleSheet.Components.antenna: Antenne
+YZEGS.VehicleSheet.HasTrailer: Remorque
+YZEGS.VehicleSheet.HasSmokeDischarger: Déchargeur de fumée
+YZEGS.UnitSheet.Name: Nom complet
+YZEGS.UnitSheet.Info: Informations additionnelles
+YZEGS.UnitSheet.Faction: Faction
+YZEGS.UnitSheet.UnitAffiliation: Affiliation
+YZEGS.UnitSheet.UnitSize: Taille
+YZEGS.UnitSheet.UnitType: Type
+YZEGS.UnitSheet.UnitModifiers: Modificateurs
+YZEGS.UnitSheet.Personnel: Personnel
+YZEGS.UnitSheet.Vehicles: Véhicules de combat
+YZEGS.UnitSheet.HQ: Quartier général (QG)
+YZEGS.UnitAffiliationNames.friendly: Amical
+YZEGS.UnitAffiliationNames.hostile: Hostile
+YZEGS.UnitAffiliationNames.neutral: Neutre
+YZEGS.UnitAffiliationNames.unknown: Inconnue
+YZEGS.UnitModifierNames.airborne: Aéroporté
+YZEGS.UnitModifierNames.parachute: Parachute
+YZEGS.UnitModifierNames.airmobile: Aéromobile
+YZEGS.UnitModifierNames.airmobileOrganicLift: Héli-aérom.
+YZEGS.UnitModifierNames.amphibious: Amphibie
+YZEGS.UnitModifierNames.motorized: Motorisé
+YZEGS.UnitModifierNames.moutain: Montagne
+YZEGS.UnitModifierNames.cannon: Canon
+YZEGS.UnitModifierNames.wheeled: À roues
+YZEGS.UnitSizeNames.army: Armée XXXX
+YZEGS.UnitSizeNames.corps: Corps XXX
+YZEGS.UnitSizeNames.division: Division XX
+YZEGS.UnitSizeNames.Brigade: Brigade X
+YZEGS.UnitSizeNames.regiment: Régiment | | |
+YZEGS.UnitSizeNames.battalion: Bataillon | |
+YZEGS.UnitSizeNames.company: Compagnie |
+YZEGS.UnitSizeNames.staffel: Staffel ••••
+YZEGS.UnitSizeNames.platoon: Peloton •••
+YZEGS.UnitSizeNames.section: Section ••
+YZEGS.UnitSizeNames.squad: Escouade •
+YZEGS.UnitSizeNames.fireteam: Équipe
+YZEGS.ItemSheet.Name: Nom
+YZEGS.ItemSheet.FeaturesTab: Caractéristiques
+YZEGS.ItemSheet.ModifiersTab: Modificateurs
+YZEGS.ItemSheet.RollModifiers: Modificateurs de lancer
+YZEGS.ItemSheet.AddNewRollModifier: Ajouter un nouveau modificateur de lancer à cet objet
+YZEGS.ItemSheet.DeleteRollModifier: Supprimer ce modificateur de lancer
+YZEGS.ItemSheet.NoRollModifier: >-
+  Cet article n'a pas de modificateur. Pour en ajouter un, cliquez sur l'icône
+  "+".
+YZEGS.ItemSheet.SelectRollModifier: Choisissez un nom
+YZEGS.ItemSheet.DescriptionTab: Notes
+YZEGS.ItemSheet.AttributeUsed: Attribut utilisé
+YZEGS.ItemSheet.SkillUsed: Compétence utilisée
+YZEGS.ItemSheet.WeaponMagazine: Chargeur
+YZEGS.ItemSheet.Quantity: Quantité
+YZEGS.ItemSheet.ItemType: Type
+YZEGS.ItemSheet.Ammo: Munitions
+YZEGS.ItemSheet.AmmoType: Identificateur de munitions
+YZEGS.ItemSheet.OverrideOption: Remplacer les fonctionnalités de l'arme
+YZEGS.ItemSheet.Reliability: Fiab
+YZEGS.ItemSheet.RoF: CdT
+YZEGS.ItemSheet.Damage: Dégats
+YZEGS.ItemSheet.Crit: Crit
+YZEGS.ItemSheet.Blast: Souffle
+YZEGS.ItemSheet.Range: Portée
+YZEGS.ItemSheet.Mag: Mag
+YZEGS.ItemSheet.Armor: Armure
+YZEGS.ItemSheet.Weight: Poids
+YZEGS.ItemSheet.Price: Prix
+YZEGS.ItemSheet.ArmorLocation: Partie protégée
+YZEGS.ItemSheet.Equipped: Équipé
+YZEGS.ItemSheet.StoredInBackpack: Stocké dans le sac à dos
+YZEGS.ItemSheet.CreateAmmo: Générer des munitions
+YZEGS.ItemSheet.CreateAmmoNotif: Généré 1x <b>{ammo}</b> pour l'arme <b>{weapon}</b>
+YZEGS.ItemSheet.FeaturesForVehicle: Caractéristiques du véhicule
+YZEGS.InjurySheet.Category: Catégorie
+YZEGS.InjurySheet.Location: Partie du corps
+YZEGS.InjurySheet.TimeLimit: Limite de temps
+YZEGS.InjurySheet.HealTime: Temps de rétablissement
+YZEGS.InjurySheet.Effect: Effet
+YZEGS.InjurySheet.Lethal: Létale
+YZEGS.InjurySheet.day: jour
+YZEGS.InjurySheet.days: jours
+YZEGS.Chat.Actions.Attack: Attaquer
+YZEGS.Chat.Actions.Reload: Recharger
+YZEGS.Chat.Actions.Roll: Lancer
+YZEGS.Chat.Actions.Push: Pousser
+YZEGS.Chat.Actions.ApplyDamage: Appliquer les dégâts
+YZEGS.Chat.Roll.Success: Succès
+YZEGS.Chat.Roll.Successes: Succès
+YZEGS.Chat.Roll.Pushed: — Poussé
+YZEGS.Chat.Roll.Suppression: Suppression
+YZEGS.Chat.Roll.ExtraHit: Touché supplémentaire
+YZEGS.Chat.Roll.ExtraHits: Touchés supplémentaires
+YZEGS.Chat.Roll.Mishap: Malchance
+YZEGS.Chat.Roll.AmmoSpent: Munitions dépensées
+YZEGS.Chat.Roll.NoItemNotif: Cet objet n'existe plus.
+YZEGS.Chat.Roll.NoReliabilityNotif: La valeur de fiabilité actuelle de cet objet ne permet pas de l'utiliser.
+YZEGS.Chat.Damage.Incapacited: IMMOBILISÉ
+YZEGS.Chat.Damage.DamagedArmor: Endommagé
+YZEGS.Chat.Damage.DamageDealt: <b>{name}</b> a reçu <b>{amount}</b> dégats.
+YZEGS.Chat.Damage.NoDamageDealt: Aucun dégats n'a été infligé à <b>{name}</b>.
+YZEGS.Chat.Damage.InitialAmount: >-
+  L'attaque avait un montant initial de <b>{damage}</b> dégâts, avec un
+  modificateur d'armure de {mod}.
+YZEGS.Chat.Damage.DeflectedDamage: dévié {damage} dégâts
+YZEGS.Chat.Damage.DeflectedAllDamage: dévié tous les dégâts
+YZEGS.Chat.Damage.NoEffect: aucun effet
+YZEGS.Combat.Attack: '{weapon} — Attaque'
+YZEGS.Combat.Barrier: Couverture
+YZEGS.Combat.BodyArmor: Protection du corps
+YZEGS.Combat.NoQuantityLeft: Il ne reste plus d'unité pour l'arme {arme}.
+YZEGS.Combat.NoAmmoLeft: Il ne reste plus de munitions dans le chargeur de l'arme {weapon}.
+YZEGS.Combat.NoMag: Veuillez insérer un chargeur pour l'arme {arme}.
+YZEGS.Dialog.Actions.Normal: Lancer
+YZEGS.Dialog.Actions.Reload: Recharger
+YZEGS.Dialog.Actions.Ok: OK
+YZEGS.Dialog.Actions.Cancel: Annuler
+YZEGS.Dialog.Roll.Attribute: Attribut
+YZEGS.Dialog.Roll.Skill: Compétence
+YZEGS.Dialog.Roll.Formula: Formule
+YZEGS.Dialog.Roll.RoF: Cadence de tir
+YZEGS.Dialog.Roll.Modifier: Modificateur
+YZEGS.Dialog.Roll.Locate: Ajouter un dé de toucher ?
+YZEGS.Dialog.Roll.MaxPush: Poussées max
+YZEGS.Dialog.Roll.RollMode: Mode de lancer
+YZEGS.Dialog.CuF.CoolnessUnderFire: Sang-froid (SF)
+YZEGS.Dialog.CuF.UnitMorale: Ajouter le moral de la compagnie ?
+YZEGS.Dialog.Actor.ChooseActor: Choisissez un Acteur
+YZEGS.Dialog.Damage.ChooseDamage: Quantité de dégats
+YZEGS.Dialog.Damage.Description: Choisissez la quantité de dégâts à infliger à <b>{cible}</b>.
+YZEGS.Dialog.Damage.DamageQuantity: Quantité de base
+YZEGS.Dialog.Damage.ExtraHits: Touchés supplémentaires
+YZEGS.Dialog.Damage.BarrierArmors: Niveaux d'armure de l'obstacle
+YZEGS.Dialog.Damage.BarrierArmorsHint: Les obstacles multiples sont séparés par des virgules.
+YZEGS.Macro.MultipleItems: >-
+  L'acteur {actor} que vous contrôlez a plus d'un Item avec le nom {item}. Le
+  premier objet correspondant sera choisi.
+YZEGS.Macro.NoItem: L'acteur {actor} que vous contrôlez n'a pas d'objet nommé {item}.
+FLPS.TAB.MAIN: Composition
+FLPS.TAB.TRAVEL: Actions
+FLPS.TAB.NOTE: Notes
+FLPS.PARTY.NAME: Nom du groupe
+FLPS.PARTY.MEMBERS: Membres du groupe
+FLPS.PARTY.HINT_ADD: Glissez-déposez des personnages ici pour les ajouter au groupe.
+FLPS.PARTY.HINT_ASSIGN: Glissez-déposez des personnages pour les affecter aux activités souhaitées.
+FLPS.TRAVEL.MARCH: Marche
+FLPS.TRAVEL.DRIVE: Conduite
+FLPS.TRAVEL.WATCH: Surveillance
+FLPS.TRAVEL.REST: Repos
+FLPS.TRAVEL.SLEEP: Sommeil
+FLPS.TRAVEL.SCROUNGE: Fouille
+FLPS.TRAVEL.FORAGE: Nourriture
+FLPS.TRAVEL.HUNT: Chasse
+FLPS.TRAVEL.FISH: Pêche
+FLPS.TRAVEL.CAMP: Camp
+FLPS.TRAVEL.COOK: Cuisine
+FLPS.TRAVEL.OTHER: Autre
+FLPS.TRAVEL.RESET: RÉINITIALISER
+FLPS.UI.WHO_ROLLS: Qui lance les dés ?
+FLPS.UI.WHO_PUSHES: Qui pousse les dés ?
+FLPS.UI.ATTENTION: Attention
+FLPS.UI.ERROR.OPEN_SHEET: >-
+  Veuillez ouvrir votre feuille de personnage au moins une fois avant de faire
+  des lancers de voyage.
+FLPS.TRAVEL_ROLL.FORCED_MARCH: Marche forcée
+FLPS.TRAVEL_ROLL.MARCH_IN_DARKNESS: Marcher de nuit
+FLPS.TRAVEL_ROLL.DRIVE: Conduire
+FLPS.TRAVEL_ROLL.KEEP_WATCH: Faire le guet
+FLPS.TRAVEL_ROLL.RECOVER: Récupérer
+FLPS.TRAVEL_ROLL.FIND_SCRAP: Fouiller
+FLPS.TRAVEL_ROLL.FIND_FOOD: Chercher de la nourriture
+FLPS.TRAVEL_ROLL.FIND_PREY: Trouver une proie
+FLPS.TRAVEL_ROLL.RECON_PREY: S'approcher d'une proie
+FLPS.TRAVEL_ROLL.KILL_PREY: Abattre une proie
+FLPS.TRAVEL_ROLL.CATCH_FISH: Pêcher
+FLPS.TRAVEL_ROLL.MAKE_CAMP: Établir le camp
+FLPS.TRAVEL_ROLL.HIDE_CAMP: Camoufler le camp
+FLPS.TRAVEL_ROLL.COOK_FOOD: Cuire des aliments
+FLPS.SETTINGS.ALLOW_PUSH: Autoriser un nombre illimités de pousses sur les lancers
+FLPS.SETTINGS.ALLOW_PUSH_HINT: 'Si votre MJ autorise un nombre illimité de lancers poussés. Ou peut-être êtes-vous un MJ qui veut pouvoir pousser les jets de cette rencontre ; cochez ce paramètre pour afficher un bouton pour pousser sur presque tous les lancers.'
+SETTINGS.trackPcAmmo.name: Suivre les munitions des PJs
+SETTINGS.trackPcAmmo.label: Si la consommation de munitions doit être suivie pour les personnages joueurs.
+SETTINGS.trackNpcAmmo.name: Suivre les munitions des PNJs
+SETTINGS.trackNpcAmmo.label: >-
+  Si la consommation de munitions doit être suivie pour les personnages
+  non-joueurs.
+SETTINGS.trackVehicleAmmo.name: Suivre les munitions des véhicules
+SETTINGS.trackVehicleAmmo.label: Si la consommation de munitions doit être suivie pour les véhicules armés.
+SETTINGS.showTaskCheckOptions.name: Afficher les options pour un lancer de compétence par défaut
+SETTINGS.showTaskCheckOptions.label: Maintenez la touche Maj enfoncée pour basculer.
+SETTINGS.closeRollTooltipDelay.name: Délai d'info-bulle de fermeture de lancer
+SETTINGS.closeRollTooltipDelay.label: >-
+  Combien de secondes à attendre avant de fermer automatiquement les info-bulles
+  des résultats des dés. La durée maximale est de 15 minutes. Définissez cette
+  valeur sur -1 pour jamais.
+SETTINGS.defaultCharTokenSize.name: Taille de jeton par défaut pour les PJs et les PNJs
+SETTINGS.defaultCharTokenSize.label: >-
+  Définissez une taille par défaut entre [0,3 et 2,0] pour les acteurs
+  Personnage et NPC nouvellement créés.
+YZUR.CHAT.ROLL.Push: Pousser
+YZUR.CHAT.ROLL.HitLocation: 'Cible :'
+YZUR.CHAT.ROLL.HitLocations: 'Cibles :'
+YZUR.CHAT.ROLL.Locations.1: Jambes
+YZUR.CHAT.ROLL.Locations.2: Torse
+YZUR.CHAT.ROLL.Locations.3: Torse
+YZUR.CHAT.ROLL.Locations.4: Torse
+YZUR.CHAT.ROLL.Locations.5: Bras
+YZUR.CHAT.ROLL.Locations.6: Tête
+YZUR.CHAT.ROLL.ExtraHit: 'Toucher supplémentaire :'
+YZUR.CHAT.ROLL.ExtraHits: 'Touchers supplémentaires :'
+YZUR.CHAT.ROLL.Suppression: 'Suppression :'
+YZUR.CHAT.ROLL.AmmoSpent: 'Munitions dépensées :'
+YZUR.CHAT.ROLL.DamageOrStress: 'Dégâts/Stress :'
+YZUR.CHAT.ROLL.JamCount: 'Fiabilité :'
+YZUR.CHAT.ROLL.Jammed: ARME ENRAYÉE!!
+YZUR.DIETERMS.D6SteppedDie: D6
+YZUR.DIETERMS.D8SteppedDie: D8
+YZUR.DIETERMS.D10SteppedDie: D10
+YZUR.DIETERMS.D12SteppedDie: D12
+YZUR.DIETERMS.AmmoDie: Muns
+YZUR.DIETERMS.LocationDie: Cible
+TYPES.Actor.character: Personnage joueur (PJ)
+TYPES.Actor.npc: Personnage non-joueur (PNJ)
+TYPES.Actor.vehicle: Véhicule
+TYPES.Actor.unit: Unité militaire
+TYPES.Actor.party: Groupe de voyage
+TYPES.Item.weapon: Arme
+TYPES.Item.armor: Armure personnelle
+TYPES.Item.ammunition: Munition
+TYPES.Item.grenade: Explosif
+TYPES.Item.gear: Objet
+TYPES.Item.injury: Blessure critique
+TYPES.Item.specialty: Spécialité
+EFFECT.StatusFullCover: Couverture totale
+EFFECT.StatusPartialCover: Couverture partielle
+EFFECT.StatusOverwatch: Surveillance
+EFFECT.StatusSuppressed: Supprimé
+EFFECT.StatusStop: Stop
+EFFECT.StatusSmoke: Fumée
+EFFECT.StatusFire: Feu
+EFFECT.StatusSlowAction: Action lente dépensée
+EFFECT.StatusFastAction: Action rapide dépensée
+YZEGS.ActorSheet.ToChat: Envoyer l'objet dans le chat
+YZUR.CHAT.ROLL.Accept: Accepter
+SETTINGS.hideCapacitiesButtons.name: Cacher les modificateurs de capacités
+SETTINGS.hideCapacitiesButtons.label: Cacher aux joueurs les boutons de modification des capacités de toucher et de Stress dans la feuille de personnage.
+YZEGS.ActorSheet.Age: Age
+SETTINGS.hideWeaponProps.name: Cacher les propriétés des armes
+SETTINGS.hideWeaponProps.label: Cacher aux joueurs les case à cocher des propriétés dans la fiche d'arme.
+YZEGS.Dialog.ChooseValue.Ammo: Modifier la quantité de munitions pour {name}
+YZEGS.Dialog.ChooseValue.Qty: Modifier la quantité pour {name}
+YZEGS.Dialog.ChooseValue.Value: Modificateur
+YZEGS.Dialog.ChooseValue.Armor: Modifier l'armure de {name}
+YZEGS.MACRO.GetActorTitle: Choisir un acteur
+YZEGS.MACRO.GetActorHint: Vous avez sélectionné plusieurs jetons. Veuillez en choisir un.
+YZEGS.MACRO.NoItem: L'acteur {actor} que vous contrôlez n'a pas d'objet nommé {item}.
+YZEGS.MACRO.MultipleItems: L'acteur {actor} que vous contrôlez a plus d'un Item avec le nom {item}. Le premier objet correspondant sera choisi.
+YZEGS.MACRO.NoActor: Votre acteur contrôlé {actor} n'a pas été trouvé.
+YZEGS.MACRO.RollAction: Action {action}
+YZEGS.MACRO.RollStat: Lancer {stat}
+SETTINGS.characterFieldLabels.name: Character Field Labels
+SETTINGS.characterFieldLabels.label: Configure Character Field Labels
+SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes used by character and NPC sheets.
+SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
+SETTINGS.characterFieldLabels.save: Save Labels
+SETTINGS.characterFieldLabels.saved: Character field labels saved.
+YZEGS.ItemTypes.skill: Skill
+TYPES.Item.skill: Skill
+YZEGS.ItemSheet.ParentAttribute: Parent Attribute
+YZEGS.ItemSheet.SkillRating: Rating
+YZEGS.ActorSheet.NewItem.skill: New Skill
+YZEGS.ActorSheet.DropSkillsHere: Drop Skill Items here
+YZEGS.ActorSheet.SkillDropHint: Skill Items must have a parent attribute and be dropped in the Skills section.

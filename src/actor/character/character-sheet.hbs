@@ -1,0 +1,163 @@
+<div class="sheet-root flexcol">
+
+  {{!-- Actor Sheet Header --}}
+  <header class="sheet-header">
+    <img class="yzegs-trombone" src="./systems/fvtt-yze-generic-stepped/assets/textures/trombone.png" name="trombone"/>
+
+    <div class="grid-actor-header">
+
+      {{!-- Actor's name --}}
+      <h1 class="name">
+        <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'YZEGS.ActorSheet.Name'}}"/>
+      </h1>
+
+      {{!-- Nationality, Branch & Rank --}}
+      <div class="nation">
+        <h3>{{characterFieldLabels.nationality}}</h3>
+        <input type="text" name="system.bio.nationality" value="{{system.bio.nationality}}"/>
+      </div>
+      <div class="branch">
+        <h3>{{characterFieldLabels.branch}}</h3>
+        <input type="text" name="system.bio.branch" value="{{system.bio.branch}}"/>
+      </div>
+      <div class="rank">
+        <h3>{{characterFieldLabels.rank}}</h3>
+        <input type="text" name="system.bio.militaryRank" value="{{system.bio.militaryRank}}"/>
+      </div>
+      <div class="age">
+        <h3>{{characterFieldLabels.age}}</h3>
+        <input type="text" name="system.bio.age" value="{{system.bio.age}}"/>
+      </div>
+
+      {{!-- Hit Capacity --}}
+      <div class="capacity hit flexrow flex-middle">
+        <div class="capacity-track">
+          <h3>{{localize "YZEGS.ActorSheet.HitCapacity"}}</h3>
+          {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/capacity-boxes.hbs" field="health" value=system.health.trauma min=0 max=system.hitCapacity}}
+        </div>
+        <div class="capacity-value boxed-value" title="{{localize 'YZEGS.ActorSheet.CapacityModifier'}} {{#if (gte system.health.modifier 1)}}+{{/if}}{{system.health.modifier}}"><span>{{system.health.value}}/{{system.hitCapacity}}</span></div>
+        {{#unless hideCapacitiesButtons}}
+        <div class="capacity-buttons flexcol">
+          <a class="button capacity-increase" data-field="health">
+            <i class="far fa-plus-square"></i>
+          </a>
+          <a class="button capacity-decrease" data-field="health">
+            <i class="far fa-minus-square"></i>
+          </a>
+        </div>
+        {{/unless}}
+      </div>
+
+      {{!-- Stress Capacity --}}
+      {{#if (eq actor.type 'character')}}
+      <div class="capacity stress flexrow flex-middle">
+        <div class="capacity-track">
+          <h3>{{localize "YZEGS.ActorSheet.StressCapacity"}}</h3>
+          {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/capacity-boxes.hbs" field="sanity" value=system.sanity.trauma min=0 max=system.stressCapacity}}
+        </div>
+        <div class="capacity-value boxed-value" title="{{localize 'YZEGS.ActorSheet.CapacityModifier'}} {{#if (gte system.sanity.modifier 1)}}+{{/if}}{{system.sanity.modifier}}"><span>{{system.sanity.value}}/{{system.stressCapacity}}</span></div>
+        {{#unless hideCapacitiesButtons}}
+        <div class="capacity-buttons flexcol">
+          <a class="button capacity-increase" data-field="sanity">
+            <i class="far fa-plus-square"></i>
+          </a>
+          <a class="button capacity-decrease" data-field="sanity">
+            <i class="far fa-minus-square"></i>
+          </a>
+        </div>
+        {{/unless}}
+      </div>
+      {{/if}}
+
+      {{!-- Profile IMG & XP --}}
+      <div class="img">
+        <img class="profile" src="{{actor.img}}" data-edit="img" data-action="editImage" title="{{actor.name}}" height="64" width="64"/>
+
+        {{#if (eq actor.type 'character')}}
+        <div class="experience flexrow flex-middle">
+          <h5>{{localize "YZEGS.ActorSheet.ExperienceCurrent"}}</h5>
+          <input type="number" class="smallbox" value="{{system.xp.value}}" readonly/>
+        </div>
+        <div class="experience flexrow flex-middle">
+          <h5>{{localize "YZEGS.ActorSheet.ExperienceTotal"}}</h5>
+          <input type="number" class="smallbox" value="{{system.xp.total}}" readonly/>
+        </div>
+        {{/if}}
+      </div>
+
+    </div>
+
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs slanted-tabs flexrow flex-center" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="main">{{localize "YZEGS.ActorSheet.MainTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="combat">{{localize "YZEGS.ActorSheet.CombatTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="equipment">{{localize "YZEGS.ActorSheet.EquipmentTab"}}</a>
+    {{#if (eq actor.type 'character')}}
+    <a class="item" data-action="tab" data-group="primary" data-tab="biography">{{localize "YZEGS.ActorSheet.BiographyTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="experience">{{localize "YZEGS.ActorSheet.ExperienceTab"}}</a>
+    {{/if}}
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ActorSheet.NoteTab"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Main Tab --}}
+    <div class="tab tab-main flexcol" data-group="primary" data-tab="main">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-stats.hbs"}}
+    </div>
+
+    {{!-- Combat Tab --}}
+    <div class="tab tab-combat" data-group="primary" data-tab="combat">
+{{!-- HANDLEBAR.JS BUG WITH TEXTAREA INSIDE PARTIALS: --}}
+{{!-- ADDS INFINTE SPACES AFTER A LINE BREAK!! --}}
+{{!-- SOLUTION: REMOVE LEADING SPACES WHEN CALLING THE PARTIAL --}}
+{{!-- SEE: https://codepen.io/Munvier/post/stranges-white-spaces-with-backbone-handlebars --}}
+{{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-combat.hbs"}}
+    </div>
+
+    {{!-- Equipment Tab --}}
+    <div class="tab tab-equipment flexcol" data-group="primary" data-tab="equipment">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-equipment.hbs"}}
+    </div>
+
+    {{!-- Biography Tab --}}
+    {{#if (eq actor.type 'character')}}
+    <div class="tab tab-biography" data-group="primary" data-tab="biography">
+      <div class="flexcol">
+        <h2>{{localize "YZEGS.ActorSheet.Appearance"}}</h2>
+        <prose-mirror name="system.bio.appearance" value="{{appearanceValue}}" data-document-uuid="{{documentUuid}}" toggled
+          {{#unless editable}}disabled{{/unless}}>{{{system.bio.appearance}}}</prose-mirror>
+
+        <h2>{{localize "YZEGS.ActorSheet.Buddy"}}</h2>
+        <input type="text" name="system.bio.buddy" value="{{system.bio.buddy}}"/>
+
+        <h2>{{localize "YZEGS.ActorSheet.MoralCode"}}</h2>
+        <input type="text" name="system.bio.moralCode" value="{{system.bio.moralCode}}"/>
+
+        <h2>{{localize "YZEGS.ActorSheet.BigDream"}}</h2>
+        <input type="text" name="system.bio.bigDream" value="{{system.bio.bigDream}}"/>
+
+        <h2>{{localize "YZEGS.ActorSheet.GroupMeeting"}}</h2>
+        <textarea name="system.bio.groupMeeting" rows="5">{{system.bio.groupMeeting}}</textarea>
+      </div>
+    </div>
+    {{/if}}
+
+    {{!-- Experience Tab --}}
+    {{#if (eq actor.type 'character')}}
+    <div class="tab tab-experience" data-group="primary" data-tab="experience">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-experience.hbs"}}
+    </div>
+    {{/if}}
+
+    {{!-- Description Tab --}}
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
+    </div>
+
+  </section>
+
+</div>

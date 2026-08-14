@@ -1,0 +1,84 @@
+<div class="experience-config-form">
+  <p class="hint">{{localize "SETTINGS.experienceConfig.hint"}}</p>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.experienceConfig.skillCosts"}}</legend>
+    <div class="experience-cost-grid">
+      {{#each config.skillCosts as |cost rating|}}
+      <div class="form-group">
+        <label for="yzegs-xp-skill-{{rating}}">{{rating}}</label>
+        <div class="form-fields">
+          <input id="yzegs-xp-skill-{{rating}}" type="number" min="0" step="1"
+            name="skill{{rating}}" value="{{cost}}" />
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </fieldset>
+
+  <div class="form-group">
+    <label for="yzegs-xp-specialty-cost">{{localize "SETTINGS.experienceConfig.specialtyCost"}}</label>
+    <div class="form-fields">
+      <input id="yzegs-xp-specialty-cost" type="number" min="0" step="1"
+        name="specialtyCost" value="{{config.specialtyCost}}" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="yzegs-xp-prerequisite-mode">{{localize "SETTINGS.experienceConfig.prerequisiteMode"}}</label>
+    <div class="form-fields">
+      {{> optionMenu name="prerequisiteMode" selected=config.prerequisiteMode options=prerequisiteModes
+        localize=true editable=true noBlank=true menuClass="experience-prerequisite-menu"}}
+    </div>
+    <p class="hint">{{localize "SETTINGS.experienceConfig.prerequisiteModeHint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="yzegs-xp-gm-only">{{localize "SETTINGS.experienceConfig.gmOnlyAdvancement"}}</label>
+    <div class="form-fields">
+      <input type="hidden" name="gmOnlyAdvancement" value="{{config.gmOnlyAdvancement}}" />
+      {{> checkboxControl id="yzegs-xp-gm-only" name="gmOnlyAdvancement"
+        value=config.gmOnlyAdvancement editable=true
+        ariaLabel=(localize "SETTINGS.experienceConfig.gmOnlyAdvancement")}}
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "SETTINGS.experienceConfig.advancementItemSource"}}</label>
+    <div class="form-fields">
+      {{> optionMenu name="advancementItemSource" selected=config.advancementItemSource
+        options=itemSources editable=true noBlank=true menuClass="experience-item-source-menu"}}
+    </div>
+    <p class="hint">{{localize "SETTINGS.experienceConfig.advancementItemSourceHint"}}</p>
+  </div>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.experienceConfig.awardQuestions"}}</legend>
+    <p class="hint">{{localize "SETTINGS.experienceConfig.awardQuestionsHint"}}</p>
+    {{#each questions as |question|}}
+    <div class="form-group experience-question">
+      <label for="yzegs-xp-question-{{question.id}}" title="{{question.label}}">{{question.label}}</label>
+      <div class="form-fields">
+        <input type="hidden" name="question-{{question.id}}" value="{{question.enabled}}" />
+        {{> checkboxControl id=(concat "yzegs-xp-question-" question.id)
+          name=(concat "question-" question.id) value=question.enabled editable=true
+          ariaLabel=question.label}}
+      </div>
+    </div>
+    {{/each}}
+  </fieldset>
+
+  <div class="form-group stacked">
+    <label for="yzegs-xp-custom-questions">{{localize "SETTINGS.experienceConfig.customQuestions"}}</label>
+    <textarea id="yzegs-xp-custom-questions" name="customQuestions" rows="4"
+      placeholder="{{localize 'SETTINGS.experienceConfig.customQuestionsPlaceholder'}}">{{customQuestions}}</textarea>
+    <p class="hint">{{localize "SETTINGS.experienceConfig.customQuestionsHint"}}</p>
+  </div>
+
+  <footer class="form-footer">
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "SETTINGS.experienceConfig.save"}}</span>
+    </button>
+  </footer>
+</div>

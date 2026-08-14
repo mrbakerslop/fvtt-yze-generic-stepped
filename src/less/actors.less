@@ -1,0 +1,826 @@
+.yzegs.sheet.actor.character {
+  min-width: 1000px;
+  min-height: 400px;
+}
+
+// .yzegs.sheet.actor:not(.minimized) {
+//   .actor-sheet-background();
+//   .actor-sheet-border();
+
+//   .window-header {
+//     margin-top: -20px;
+//     border: none;
+//   }
+
+//   .window-resizable-handle {
+//     right: -15px;
+//     bottom: -15px;
+//   }
+// }
+
+.yzegs.sheet.actor.character {
+  .window-content {
+    // padding: 0 (@gap * 1.5) @gap (@gap * 1.5);
+    background: none;
+    .actor-sheet-background();
+    .font-monospace();
+    // font-size: 11pt; // = 1em
+    color: @colorBrown;
+  }
+
+  // Fixes h1 margin for the actor's name
+  h1 input {
+    margin: 0;
+  }
+
+  // Custom colors for editable inputs
+  input,
+  select,
+  textarea,
+  div.editable,
+  .editor-content,
+  .item-slot,
+  .inventory .item {
+    .font-text-normal();
+    color: @colorBlue;
+  }
+
+  /* ------------------------------------------- */
+  /*  Headings                                   */
+  /* ------------------------------------------- */
+
+  h1, h2 {
+    border: 0;
+  }
+
+  h1, h2, h3, h4, h5 {
+    margin: 0;
+  }
+
+  h2, h3, h5 {
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  h2 {
+    font-size: 1rem;
+    background-color: @colorActorH2;
+    padding: 4px @gap;
+    border-top: @borderSheetBold;
+    border-bottom: @borderSheetBold;
+  }
+
+  h3, h4 {
+    font-size: 1rem * (9pt / 11pt);
+  }
+
+  h5 {
+    font-size: 1rem * (7pt / 11pt);
+  }
+
+  /* ------------------------------------------- */
+  /*  Sheet Header                               */
+  /* ------------------------------------------- */
+
+  .sheet-header {
+    padding-left: 6px;
+    padding-right: @gap;
+
+    .yzegs-trombone {
+      display: none;
+    }
+
+    img.profile {
+      border: 2px solid @colorBrown;
+      border-radius: 4px;
+      margin: @gap 0 4px @gap;
+      width: 120px;
+      max-width: 120px;
+      height: 120px;
+      flex-basis: 120px;
+      transform: none;
+      background-color: #fff;
+    }
+
+    .name {
+      border-bottom: @borderSheetBold;
+      margin-bottom: @gap;
+    }
+
+    .nation,
+    .branch,
+    .rank,
+    .age {
+      border-bottom: @borderSheet;
+      box-sizing: border-box;
+      padding-right: 3px;
+      padding-left: 3px;
+
+      h3 {
+        margin-left: 1px;
+      }
+    }
+
+    .branch,
+    .rank,
+    .age {
+      border-left: @borderSheet;
+    }
+
+    .capacity {
+      border-bottom: @borderSheet;
+      padding-bottom: 4px;
+
+      &.hit {
+        padding-left: 4px;
+        height: 100%;
+      }
+
+      &.stress {
+        padding-left: @gap;
+        height: 100%;
+        border-left: @borderSheet;
+      }
+
+      .capacity-track {
+        min-width: 0;
+
+        h3 {
+          position: relative;
+          top: -2px;
+          margin-left: 3px;
+          line-height: 1;
+        }
+
+        .boxes-capacity {
+          display: flex;
+          align-items: center;
+          min-height: 16px;
+          line-height: 1;
+        }
+      }
+
+      .capacity-value {
+        flex: 0 0 52px;
+        width: 52px;
+        max-width: 52px;
+        height: 24px;
+        padding: 0 4px;
+        margin-right: 6px;
+        box-sizing: border-box;
+        align-self: center;
+        display: grid;
+        place-items: center;
+        text-align: center;
+
+        span {
+          display: block;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+          line-height: 1;
+          text-align: center;
+          transform: translateY(1px);
+        }
+      }
+
+      .capacity-buttons {
+        flex:0 ;
+        margin-right: @gap;
+
+        a.button {
+          font-size: .7rem;
+        }
+      }
+    }
+
+    .experience {
+      padding-left: @gap;
+
+      input {
+        font-size: smaller;
+      }
+    }
+  }
+
+  /* ------------------------------------------- */
+  /*  Sheet Navigation                           */
+  /* ------------------------------------------- */
+
+  .sheet-tabs {
+    color: @colorBrown;
+    text-transform: uppercase;
+    font-size: 11pt;
+
+  }
+
+  /* ------------------------------------------- */
+  /*  Sheet Body                                 */
+  /* ------------------------------------------- */
+
+  .sheet-body {
+    background: @colorVeryLightBrown;
+
+    .stat-header {
+      text-align: center;
+      padding-top: 4px;
+      margin-bottom: 4px;
+      background: @colorActorH2;
+      border-bottom: @borderSheetBold;
+
+      .header-rating,
+      .header-die {
+        padding-bottom: 1px;
+        border-left: @borderSheet;
+      }
+    }
+
+    .stat-block + .stat-block {
+      border-left: @borderSheetBold;
+    }
+
+    .stat {
+      align-items: stretch;
+      min-height: 34px;
+      padding: 2px 0;
+
+      .stat-name {
+        display: flex;
+        align-items: center;
+        align-self: stretch;
+        padding-left: @gap;
+      }
+
+      .stat-score {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .stat-value {
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .boxed-value {
+          display: grid;
+          place-items: center;
+          height: 24px;
+          padding: 0;
+          box-sizing: border-box;
+          line-height: 1;
+
+          span {
+            display: block;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+            text-align: center;
+            transform: translateY(1px);
+          }
+        }
+      }
+
+      &.stat-attribute {
+        .stat-name {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          text-align: left;
+          border-bottom: @borderSheetBold;
+
+          .attribute-name {
+            display: block;
+            width: 100%;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+            text-align: left !important;
+
+            .attribute-roll {
+              display: block;
+              width: 100%;
+              padding: 0;
+              color: inherit;
+              background: transparent;
+              border: none;
+              box-shadow: none;
+              line-height: 1;
+              text-align: left !important;
+              cursor: pointer;
+
+              &:hover {
+                color: @colorRed;
+              }
+
+              &:focus {
+                color: inherit;
+                outline: none;
+              }
+
+              &:focus-visible {
+                color: @colorRed;
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+      }
+
+      .stat-value .attribute-roll,
+      .stat-value .skill-roll {
+        &:hover,
+        &:focus {
+          color: @colorRed;
+          background: #fff;
+          border-color: @colorDark;
+          box-shadow: none;
+          text-shadow: none;
+        }
+      }
+
+      &.stat-skill:not(:last-child) {
+        .stat-name {
+          border-bottom: @borderSheet;
+        }
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-main {
+      overflow-y: auto;
+
+      h2:first-child {
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .stats-list {
+        align-items: stretch;
+        flex-wrap: nowrap;
+        margin-bottom: @gap;
+
+        .stat-block {
+          flex: 0 0 25%;
+          width: 25%;
+          min-width: 0;
+          padding-bottom: 4px;
+          border-bottom: @borderSheetBold;
+        }
+
+        .stat-skill .skill-name {
+          display: flex;
+          align-items: center;
+          min-width: 0;
+          text-align: left;
+
+          h4 {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            min-width: 0;
+            .font-text-normal();
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: left;
+
+            .skill-roll {
+              display: block;
+              width: 100%;
+              padding: 0;
+              color: inherit;
+              background: transparent;
+              border: none;
+              box-shadow: none;
+              line-height: 1;
+              text-align: left;
+              cursor: pointer;
+
+              &:hover {
+                color: @colorRed;
+              }
+
+              &:focus {
+                color: inherit;
+                outline: none;
+              }
+
+              &:focus-visible {
+                color: @colorRed;
+                text-decoration: underline;
+              }
+            }
+          }
+        }
+
+        .empty-skills {
+          min-height: 32px;
+          padding: 8px 4px;
+          color: #555;
+          font-size: 10px;
+          font-style: italic;
+          text-align: center;
+        }
+      }
+
+      .specialty-title {
+        align-items: center;
+        flex: 0 0 auto;
+        min-height: 30px;
+        padding: 4px @gap;
+        border-bottom: @borderSheet;
+
+        h2 {
+          flex: 1 1 auto;
+          padding: 0;
+          border: none;
+          background: none;
+          font-size: 1rem;
+          line-height: 1.2;
+        }
+
+        a.button {
+          flex: 0 0 auto;
+        }
+      }
+
+      .specialties-slots {
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        height: 100%;
+        min-height: 60px;
+
+        .slot-specialty {
+          display: flex;
+          align-items: center;
+          flex-wrap: nowrap;
+          min-height: 28px;
+
+          .specialty-content {
+            display: flex;
+            align-items: baseline;
+            flex: 1 1 auto;
+            min-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+
+          .specialty-name,
+          .specialty-separator {
+            flex: 0 0 auto;
+          }
+
+          .specialty-name {
+            text-decoration: underline;
+          }
+
+          .specialty-separator {
+            margin-right: .35em;
+          }
+
+          .specialty-description {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: .85em;
+
+            &,
+            * {
+              display: inline;
+              margin: 0;
+              padding: 0;
+              white-space: nowrap;
+            }
+
+            br {
+              display: none;
+            }
+          }
+
+          .item-buttons {
+            display: flex;
+            align-items: center;
+            flex: 0 0 auto;
+            margin-left: @gap;
+            white-space: nowrap;
+          }
+        }
+
+        .no-specialty {
+          padding: 0 @gap;
+          font-style: italic;
+          font-size: smaller;
+        }
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-combat {
+      .combat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: stretch;
+
+        > div {
+          box-sizing: border-box;
+          min-width: 0;
+        }
+      }
+
+      .combat-secondary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+
+        &[data-actor-type="npc"] {
+          grid-template-columns: 1fr;
+        }
+
+        > div {
+          box-sizing: border-box;
+          min-width: 0;
+
+          > h2 {
+            display: flex;
+            align-items: center;
+            min-height: 28px;
+          }
+        }
+      }
+
+      .combat,
+      .action {
+        padding-bottom: 4px;
+
+        h2 {
+          display: flex;
+          align-items: center;
+          min-height: 30px;
+          padding-bottom: 0;
+          border-bottom: none;
+        }
+      }
+
+      .combat {
+        .stat-header,
+        .stat {
+          flex-wrap: nowrap;
+        }
+
+        .stat-cuf {
+          .stat-name {
+            align-self: center;
+            border-bottom: @borderSheet;
+          }
+        }
+      }
+
+      .action {
+        border-left: @borderSheetBold;
+
+        .action-header,
+        .action-row {
+          display: grid;
+          grid-template-columns: minmax(90px, 1fr) minmax(150px, 1.5fr) 48px 84px;
+          align-items: center;
+        }
+
+        .action-header {
+          padding-top: 4px;
+          margin-bottom: 4px;
+          background: @colorActorH2;
+          border-bottom: @borderSheetBold;
+          text-align: center;
+
+          .header-current {
+            grid-column: 2 / 4;
+          }
+
+          .header-max {
+            grid-column: 4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            align-self: stretch;
+            padding-bottom: 1px;
+            border-left: @borderSheet;
+          }
+        }
+
+        .action-row {
+          min-height: 36px;
+        }
+
+        .action-name {
+          padding-left: @gap;
+        }
+
+        .action-value,
+        .action-max {
+          text-align: center;
+        }
+
+        .action-slider {
+          padding: 0 8px;
+        }
+
+        .action-max input {
+          width: 42px;
+          height: 22px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        input {
+          font-size: smaller;
+        }
+      }
+
+      .armor,
+      .conditions,
+      .critical-injuries,
+      .radiation {
+        h2 + div {
+          padding: 4px 0 @gap @gap;
+        }
+      }
+
+      .armor {
+        .no-armor {
+          font-size: smaller;
+          font-style: italic;
+          margin-right: @gap;
+        }
+      }
+
+      .conditions {
+        border-left: @borderSheetBold;
+
+        > .flexrow {
+          align-content: flex-start;
+          row-gap: 4px;
+
+          > .col-6 {
+            display: flex;
+            align-items: center;
+          }
+        }
+
+        .condition-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          min-height: 14px;
+          margin: 0;
+          line-height: 14px;
+
+          .condition-label {
+            display: inline-flex;
+            align-items: center;
+            min-height: 14px;
+            line-height: 14px;
+          }
+        }
+      }
+
+      .critical-injuries {
+        border-left: @borderSheetBold;
+
+        .injuries-title {
+          justify-content: space-between;
+          box-sizing: border-box;
+          height: 28px;
+          max-height: 28px;
+          padding-right: @gap;
+
+          .item-controls {
+            display: flex;
+            align-items: center;
+            flex: none;
+            height: 16px;
+
+            .item-create {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 16px;
+              height: 16px;
+              padding: 0;
+              font-size: 10px;
+              line-height: 1;
+            }
+          }
+        }
+      }
+
+      .combat-details {
+        width: 100%;
+
+        .diseases-title {
+          padding-top: 8px;
+        }
+
+        textarea {
+          width: 100%;
+          margin: 4px 0 @gap;
+        }
+      }
+
+      .injuries-list {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-left: 4px;
+
+        .injury {
+          display: inline-block;
+          margin-right: 2px;
+          padding: 2px 6px 2px 8px;
+          background-color: #fff;
+          border: 1px solid #000;
+          border-radius: 20px;
+          .font-text-normal();
+          color: @colorBlue;
+
+          .injury-name {
+            font-weight: bold;
+          }
+
+          .item-delete {
+            color: transparent;
+          }
+
+          &:hover,
+          &:focus {
+            background-color: #fff;
+            border: 1px solid @colorDark;
+            box-shadow: @hoverShadow;
+  
+            .item-delete {
+              color: @colorDark;
+            }
+          }
+        }
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-equipment {
+      overflow-y: hidden;
+
+      > .inventory {
+        flex: 1 1 auto;
+        height: auto;
+        min-height: 0;
+      }
+
+      > .encumbrance {
+        flex: 0 0 @encumbranceBarHeight;
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-biography {
+      h2:not(:first-of-type) {
+        margin-top: @gap;
+      }
+
+      textarea {
+        margin-top: 4px;
+        // min-height: 100px;
+      }
+
+      .editor {
+        .editor-content {
+          margin-left: 4px;
+        }
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-description {
+      .editor .editor-content {
+        .font-text-normal();
+        color: #000;
+      }
+    }
+  }
+}

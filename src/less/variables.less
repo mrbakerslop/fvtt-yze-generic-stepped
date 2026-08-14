@@ -1,0 +1,142 @@
+/* ------------------------------------------- */
+/*  Fonts                                      */
+/* ------------------------------------------- */
+
+:root {
+  --yzegs-font-heading: 'Nunito Sans', sans-serif;
+  --yzegs-font-body: 'Mukta', sans-serif;
+  --yzegs-font-monospace: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --font-size--extra-small: .5rem;
+  --font-size--very-small: .7rem;
+  --font-size--small: .8rem;
+  --font-size--default: 1rem;
+  --font-size--large: 1.4rem;
+  --font-size--extra-large: 2rem;
+}
+
+/* Font for headers */
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 800;
+  src:
+    local('Nunito Sans Extra Bold'),
+    local('NunitoSans Extra Bold'),
+    local('NunitoSans ExtraBold'),
+    local('NunitoSans-ExtraBold'),
+    url('fonts/NunitoSans-ExtraBold.woff') format('woff');
+}
+
+/* Font for body text */
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 500;
+  src:
+    local('Mukta Medium'),
+    local('Mukta-Medium'),
+    url('fonts/Mukta-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Mukta';
+  font-style: normal;
+  font-weight: 700;
+  src:
+    local('Mukta Bold'),
+    local('Mukta-Bold'),
+    url('fonts/Mukta-Bold.woff') format('woff');
+}
+
+.font-header() {
+  font-family: var(--yzegs-font-heading);
+  font-weight: 800;
+  // font-size: 20px;
+  text-transform: uppercase;
+}
+
+.font-text-normal() {
+  font-family: var(--yzegs-font-body);
+  font-weight: 500;
+  // font-size: 1em;
+}
+
+.font-text-bold() {
+  font-family: var(--yzegs-font-body);
+  font-weight: 700;
+  // font-size: .9em;
+  text-transform: uppercase;
+}
+
+.font-monospace() {
+  font-family: var(--yzegs-font-monospace);
+  font-weight: 400;
+  // font-size: 1em;
+}
+
+.yzegs-symbol {
+  display: inline-flex;
+  gap: .15em;
+  align-items: baseline;
+  font-family: var(--yzegs-font-heading);
+  font-size: 1em;
+  line-height: 1;
+  font-style: normal;
+}
+
+/* ------------------------------------------- */
+/*  Styles                                     */
+/* ------------------------------------------- */
+
+// The legacy variable names are retained to avoid needless churn throughout the
+// sheet styles. The visual palette itself is deliberately monochrome.
+@colorDark: #000;
+@colorBeige: #fff;
+@colorBrown: #000;
+@colorItemLabel: #fff;
+@colorLightBrown: #000;
+@colorVeryLightBrown: #fff;
+@colorTan: #000;
+@colorKhaki: #000;
+@colorLightKhaki: #fff;
+@colorRed: #9b2423;
+@colorGreen: #000;
+@colorBlue: #000;
+@colorActorH2: #fff;
+
+@colorFriendly: #000;
+@colorUnknown: #000;
+@colorNeutral: #000;
+@colorHostile: #000;
+@colorGrey: #000;
+
+@colorCoresetBrown: #000;
+@colorCoresetLightGreen: #000;
+@colorCoresetGreen: #000;
+@colorCoresetTeal: #000;
+@colorCoresetTableHeader: #fff;
+@colorCoresetTableLine: #000;
+
+@gap: 10px;
+
+@hoverShadow: 0 0 0 1px @colorDark;
+
+@borderGroove: 2px solid @colorKhaki;
+@borderSheet: 2px solid @colorLightBrown;
+@borderSheetBold: 2px solid @colorBrown;
+
+.actor-sheet-background() {
+  background: #fff;
+}
+
+.item-sheet-background() {
+  background: #fff;
+}
+
+.actor-sheet-border() {
+  border: 2px solid #000;
+}
+
+// .sheet-outline() {
+// 	border-image-source: url(assets/textures/papper_outline.png);
+// }

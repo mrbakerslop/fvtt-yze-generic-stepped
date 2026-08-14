@@ -1,0 +1,160 @@
+<div class="inventory">
+
+  {{!-- Weapons & Grenades --}}
+  <div class="inventory-weapons">
+    <div class="items-header flexrow">
+      <div class="item-name">
+        <h2>{{localize "YZEGS.ActorSheet.Weapons"}}</h2>
+      </div>
+      <div class="item-detail item-rof">
+        <h5>{{localize "YZEGS.ItemSheet.RoF"}}</h5>
+      </div>
+      <div class="item-detail item-damage">
+        <h5>{{localize "YZEGS.ItemSheet.Damage"}}</h5>
+      </div>
+      <div class="item-detail item-crit">
+        <h5>{{localize "YZEGS.ItemSheet.Crit"}}</h5>
+      </div>
+      <div class="item-detail item-armor">
+        <h5>{{localize "YZEGS.ItemSheet.Armor"}}</h5>
+      </div>
+      <div class="item-detail item-range">
+        <h5>{{localize "YZEGS.ItemSheet.Range"}}</h5>
+      </div>
+      <div class="item-detail item-mag">
+        <h5>{{localize "YZEGS.ItemSheet.Mag"}}</h5>
+      </div>
+      <div class="item-detail item-reliability">
+        <h5>{{localize "YZEGS.ItemSheet.Reliability"}}</h5>
+      </div>
+      <div class="item-detail item-blast">
+        <h5>{{localize "YZEGS.ItemSheet.Blast"}}</h5>
+      </div>
+      <div class="item-detail item-weight">
+        <h5>{{localize "YZEGS.ItemSheet.Weight"}}</h5>
+      </div>
+      <div class="item-controls">
+        <a class="button item-create" data-type="weapon" title="{{localize "YZEGS.ActorSheet.AddWeapon"}}">
+          {{{config.Icons.buttons.plus}}}
+        </a>
+      </div>
+    </div>
+    <div class="item-list">
+      {{#each actor.itemTypes.weapon}}
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/weapon-slot.hbs" this}}
+      {{else}}
+      <div class="item">–</div>
+      {{/each}}
+      {{#each actor.itemTypes.grenade}}
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/weapon-slot.hbs" this}}
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- Armor --}}
+  <div class="inventory-armor">
+    <div class="items-header flexrow">
+      <div class="item-name">
+        <h2>{{localize "YZEGS.ItemTypes.armor"}}</h2>
+      </div>
+      <div class="item-detail item-cover">
+        <h5>{{localize "YZEGS.ActorSheet.Cover"}}</h5>
+      </div>
+      <div class="item-detail item-rating">
+        <h5>{{localize "YZEGS.ActorSheet.Rating"}}</h5>
+      </div>
+      <div class="item-detail item-weight">
+        <h5>{{localize "YZEGS.ItemSheet.Weight"}}</h5>
+      </div>
+      <div class="item-controls">
+        <a class="button item-create" data-type="armor" title="{{localize "YZEGS.ActorSheet.AddArmor"}}">
+          {{{config.Icons.buttons.plus}}}
+        </a>
+      </div>
+    </div>
+    <div class="item-list">
+      {{#each actor.itemTypes.armor}}
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/armor-slot.hbs" this}}
+      {{else}}
+      <div class="item">–</div>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- Gear --}}
+  <div class="inventory-gear">
+    <div class="items-header flexrow">
+      <div class="item-name">
+        <h2>{{localize "YZEGS.ItemTypes.gear"}}</h2>
+      </div>
+      {{!-- <div class="item-detail item-quantity">
+        <h5>{{localize "YZEGS.ItemSheet.Quantity"}}</h5>
+      </div> --}}
+      <div class="item-detail item-weight">
+        <h5>{{localize "YZEGS.ItemSheet.Weight"}}</h5>
+      </div>
+      <div class="item-controls">
+        <a class="button item-create" data-type="gear" title="{{localize "YZEGS.ActorSheet.AddGear"}}">
+          {{{config.Icons.buttons.plus}}}
+        </a>
+      </div>
+    </div>
+    <div class="item-list">
+      {{#each actor.itemTypes.gear}}
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/gear-slot.hbs" this}}
+      {{else}}
+      <div class="item">–</div>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- Ammunitions --}}
+  <div class="inventory-ammo">
+    <div class="items-header flexrow">
+      <div class="item-name">
+        <h2>{{localize "YZEGS.ItemTypes.ammunition"}}</h2>
+      </div>
+      {{!-- <div class="item-detail item-quantity">
+        <h5>{{localize "YZEGS.ItemSheet.Quantity"}}</h5>
+      </div> --}}
+      <div class="item-detail item-weight">
+        <h5>{{localize "YZEGS.ItemSheet.Weight"}}</h5>
+      </div>
+      <div class="item-controls">
+        <a class="button item-create" data-type="ammunition" title="{{localize "YZEGS.ActorSheet.AddAmmo"}}">
+          {{{config.Icons.buttons.plus}}}
+        </a>
+      </div>
+    </div>
+    <div class="item-list">
+      {{#each actor.itemTypes.ammunition}}
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/ammo-slot.hbs" this}}
+      {{else}}
+      <div class="item">–</div>
+      {{/each}}
+    </div>
+  </div>
+
+</div>
+
+{{!-- ENCUMBRANCE --}}
+{{#with system.encumbrance}}
+<div class="encumbrance{{#if encumbered}} encumbered{{/if}}" title="{{localize 'YZEGS.ActorSheet.CombatGearEncumbrance'}}">
+  <span class="encumbrance-bar" style="width: {{pct}}%;"></span>
+  <span class="encumbrance-label">
+    {{localize "YZEGS.ActorSheet.CombatGearEncumbrance"}}:&nbsp;
+    {{value}}&nbsp;/&nbsp;{{max}}
+  </span>
+</div>
+{{/with}}
+
+{{!-- BACKPACK --}}
+{{#with system.encumbrance.backpack}}
+<div class="encumbrance{{#if encumbered}} encumbered{{/if}}" title="{{localize 'YZEGS.ActorSheet.BackpackEncumbrance'}}">
+  <span class="encumbrance-bar" style="width: {{pct}}%;"></span>
+  <span class="encumbrance-label">
+    {{localize "YZEGS.ActorSheet.BackpackEncumbrance"}}:&nbsp;
+    {{value}}&nbsp;/&nbsp;{{max}}
+  </span>
+</div>
+{{/with}}

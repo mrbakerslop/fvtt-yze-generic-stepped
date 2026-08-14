@@ -1,0 +1,64 @@
+<div class="yzegs dialog damage-choice-dialog">
+
+  {{!-- INPUT VARIABLES (IN DATA):
+        damage: number
+        hitCount: number
+        barrier: number
+        location: string
+        target: string
+        isGM: boolean
+
+        OUTPUT VARIABLES:
+        damage: number
+        hitCount: number
+        barriers: string<number>[]
+  --}}
+
+  {{#with data}}
+
+  {{!-- ================================================== --}}
+
+  <p>
+    {{{localize "YZEGS.Dialog.Damage.Description" target=target}}}
+    {{#if location}}
+    <br/>{{localize "YZUR.CHAT.ROLL.HitLocation"}}&nbsp;<b>{{localize (concat "YZEGS.ArmorLocationNames." location)}}</b>
+    {{/if}}
+  </p>
+
+
+  {{!-- BASE DAMAGE --}}
+  <div class="form-group">
+    <label>{{localize "YZEGS.Dialog.Damage.DamageQuantity"}}</label>
+    <input type="number" name="damage" value="{{damage}}"{{#unless isGM}} disabled{{/unless}}/>
+  </div>
+
+  {{!-- ================================================== --}}
+
+  {{!-- EXTRA HITS --}}
+  {{#if hitCount}}
+  <div class="form-group">
+    <label>{{localize "YZEGS.Dialog.Damage.ExtraHits"}}&nbsp;
+      {{#times hitCount}}
+      <img src="systems/fvtt-yze-generic-stepped/assets/icons/bullet2.svg" height="24px"/>
+      {{/times}}
+    </label>
+    <div class="flexrow"><range-picker name="hits" value="0" min="0" max="{{hitCount}}" step="1"/></div>
+  </div>
+  {{/if}}
+
+  {{!-- ================================================== --}}
+
+  {{!-- BARRIER --}}
+  {{#if barrier}}
+  <div class="form-group">
+    <label style="line-height: 1;">
+      {{localize "YZEGS.Dialog.Damage.BarrierArmors"}}
+      <br/><small>{{localize "YZEGS.Dialog.Damage.BarrierArmorsHint"}}</small>
+    </label>
+    <input type="text" name="barriers" value="{{barrier}}"/>
+  </div>
+  {{/if}}
+
+  {{/with}}
+
+</div>

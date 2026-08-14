@@ -1,0 +1,437 @@
+/* ------------------------------------------- */
+/*  Experience and advancement                 */
+/* ------------------------------------------- */
+
+.yzegs.sheet.actor.character .sheet-body .tab-experience {
+  padding: 8px 10px 16px;
+
+  .experience-overview {
+    display: grid;
+    grid-template-columns: 170px 170px minmax(180px, 1fr);
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .experience-total-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 1px solid #000;
+    background: #fff;
+
+    span {
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    strong {
+      font-size: 1.45rem;
+      line-height: 1;
+    }
+  }
+
+  button.experience-award {
+    justify-self: end;
+    align-self: center;
+    width: auto;
+    min-width: 160px;
+  }
+
+  .experience-subtabs {
+    display: flex;
+    margin-top: 10px;
+    border: 1px solid #000;
+
+    .item {
+      flex: 1 1 0;
+      height: 30px;
+      padding: 0 8px;
+      overflow: hidden;
+      border: 0;
+      background: #fff;
+      color: #000;
+      line-height: 30px;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      + .item {
+        border-left: 1px solid #000;
+      }
+
+      &:hover,
+      &:focus {
+        background: #fff;
+        color: #000;
+        text-shadow: none;
+      }
+
+      &.active {
+        background: #000;
+        color: #fff;
+      }
+    }
+  }
+
+  .experience-subtab {
+    padding-top: 6px;
+  }
+
+  .experience-subtab-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 28px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #000;
+
+    > span {
+      flex: 1 1 auto;
+      padding: 0 6px;
+      font-size: .75rem;
+    }
+
+    button {
+      width: auto;
+      min-width: 190px;
+      height: 24px;
+      min-height: 24px;
+      margin-right: 4px;
+      padding: 0 8px;
+    }
+  }
+
+  .experience-table-header,
+  .experience-skill-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 1fr) 42px 42px 54px 56px 82px;
+    align-items: center;
+  }
+
+  .experience-skill-table {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    > .experience-empty {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .experience-skill-column {
+    min-width: 0;
+
+    &:first-child:not(:last-child) {
+      padding-right: 10px;
+      border-right: 1px solid #000;
+    }
+
+    + .experience-skill-column {
+      padding-left: 10px;
+    }
+  }
+
+  .experience-table-header {
+    min-height: 20px;
+    border-bottom: 1px solid #000;
+    font-size: .6rem;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+
+    span:first-child {
+      padding-left: 5px;
+      text-align: left;
+    }
+  }
+
+  .experience-skill-row {
+    min-height: 25px;
+    border-bottom: 1px solid #000;
+    background: #fff;
+
+    > strong {
+      min-width: 0;
+      padding-left: 5px;
+      overflow: hidden;
+      font-size: .75rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    > span {
+      font-size: .72rem;
+      text-align: center;
+    }
+
+    .experience-eligibility {
+      display: flex;
+      justify-content: center;
+    }
+
+    .experience-advance-skill {
+      width: 76px;
+      height: 20px;
+      min-height: 20px;
+      margin: 0 auto;
+      padding: 0 4px;
+      font-size: .65rem;
+      line-height: 18px;
+    }
+  }
+
+  .experience-specialty-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 7px 4px 2px;
+
+    > span {
+      padding: 2px 8px;
+      border: 1px solid #000;
+      border-radius: 12px;
+      background: #fff;
+    }
+  }
+
+  .experience-history-row {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr) 55px;
+    align-items: center;
+    min-height: 28px;
+    border-bottom: 1px solid #000;
+    background: #fff;
+
+    time {
+      padding-left: 8px;
+      font-size: .75rem;
+    }
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    strong {
+      padding-right: 8px;
+      text-align: right;
+
+      &.earned {
+        color: #000;
+      }
+
+      &.spent {
+        color: @colorRed;
+      }
+    }
+  }
+
+  .experience-empty {
+    margin: 8px;
+    font-style: italic;
+  }
+}
+
+.application.yzegs .experience-dialog {
+  min-width: 420px;
+
+  > p:first-child {
+    margin-top: 0;
+  }
+
+  .experience-award-questions {
+    border-top: 1px solid #000;
+  }
+
+  .experience-award-question,
+  .experience-training-confirmation {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    gap: 6px;
+    align-items: center;
+    min-height: 28px;
+    border-bottom: 1px solid #000;
+  }
+
+  .experience-training-confirmation {
+    grid-template-columns: 18px minmax(0, 1fr);
+    margin-top: 10px;
+    padding: 5px;
+    border: 1px solid #000;
+  }
+
+  .experience-dialog-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding: 7px 10px;
+    border: 2px solid #000;
+    background: #fff;
+    font-size: 1rem;
+  }
+
+  .experience-dialog-details {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin: 10px 0 0;
+
+    dt,
+    dd {
+      margin: 0;
+      padding: 4px 6px;
+      border-bottom: 1px solid #000;
+    }
+
+    dd {
+      font-weight: 700;
+      text-align: right;
+    }
+  }
+
+  .experience-specialty-menu,
+  .experience-source-menu {
+    --option-menu-width: 290px;
+  }
+
+  .warning {
+    color: @colorRed;
+    font-weight: 700;
+  }
+}
+
+.application.yzegs.experience-config,
+.application.yzegs.character-field-label-settings {
+  --background: #fff;
+  --color-border: #000;
+  --color-form-label: #000;
+  --color-form-label-hover: #000;
+  --color-form-hint: #000;
+  --color-form-hint-hover: #000;
+  --color-text-accent: #000;
+  --color-text-primary: #000;
+  --color-text-secondary: #000;
+  --color-text-subtle: #000;
+  --input-background-color: #fff;
+  --input-border-color: #000;
+  --input-focus-outline-color: #000;
+  --input-text-color: #000;
+  color-scheme: light;
+
+  .window-content {
+    background: #fff;
+    color: #000;
+  }
+
+  .standard-form,
+  .experience-config-form,
+  .character-field-labels-form {
+    color: #000;
+
+    label,
+    legend,
+    .hint {
+      color: #000;
+      opacity: 1;
+    }
+
+    fieldset {
+      border-color: #000;
+    }
+
+    input:not([type='hidden']),
+    select,
+    textarea {
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+
+      &:hover,
+      &:focus {
+        border-color: #000;
+        background: #fff;
+        color: #000;
+        box-shadow: none;
+        outline: 1px solid #000;
+      }
+    }
+
+    button[type='submit'] {
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+
+      &:hover,
+      &:focus {
+        background: #000;
+        color: #fff;
+        box-shadow: none;
+      }
+    }
+
+    .rating-menu {
+      .rating-menu-trigger,
+      .rating-menu-options {
+        border-color: #000;
+      }
+
+      .rating-menu-trigger:focus-visible {
+        outline-color: #000;
+      }
+    }
+
+    .checkbox-control .checkbox-control-toggle:focus-visible {
+      outline-color: #000;
+    }
+  }
+}
+
+.application.experience-config .experience-config-form {
+  .experience-cost-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    resize: vertical;
+  }
+
+  .experience-prerequisite-menu {
+    --option-menu-width: 100%;
+  }
+
+  .experience-item-source-menu {
+    --option-menu-width: 100%;
+  }
+
+  fieldset .experience-question {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24px;
+    gap: 8px;
+    align-items: center;
+    min-height: 28px;
+    margin: 0;
+    padding: 2px 0;
+
+    label {
+      width: auto;
+      overflow: hidden;
+      color: #000;
+      font-size: var(--font-size-13);
+      font-weight: normal;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .form-fields {
+      display: flex;
+      justify-content: flex-end;
+      min-width: 14px;
+    }
+  }
+}

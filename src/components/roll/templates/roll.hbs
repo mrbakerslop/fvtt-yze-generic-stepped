@@ -1,0 +1,31 @@
+<div class='yzegs chat-card' data-actor-id="{{roll.options.actorId}}">
+  <div class='card-content'>
+    <div class='dice-roll'>
+      {{#if flavor}}
+        <div class='dice-flavor'>{{flavor}}</div>
+      {{/if}}
+      <div class='dice-result'>
+        <div class='dice-formula'>{{formula}}</div>
+        {{{tooltip}}}
+        {{#if (and (eq roll.game 'yzegs') (not isPrivate))}}
+          <h4 class='dice-total'>{{roll.baseSuccessQty}}{{#if roll.ammoSpent}}&nbsp;({{roll.hitCount}}){{/if}}</h4>
+        {{else}}
+          <h4 class='dice-total'>{{total}}</h4>
+        {{/if}}
+      </div>
+    </div>
+
+    {{! Extra info added for Year Zero rolls }}
+    {{#if showInfos}}
+      {{{infos}}}
+    {{/if}}
+
+    {{! Push button }}
+    {{#if pushable}}
+      <div class='dice-buttons' >
+        <button class='dice-button push' data-action='push' data-actor-id="{{roll.options.actorId}}">{{localize 'YZUR.CHAT.ROLL.Push'}}</button>
+        <button class='dice-button accept' data-action='accept' data-actor-id="{{roll.options.actorId}}">{{localize 'YZUR.CHAT.ROLL.Accept'}}</button>
+      </div>
+    {{/if}}
+  </div>
+</div>

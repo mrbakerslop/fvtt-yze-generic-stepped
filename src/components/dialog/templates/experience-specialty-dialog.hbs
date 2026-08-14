@@ -1,0 +1,23 @@
+<div class="experience-dialog experience-specialty-dialog">
+  <p>{{localize "YZEGS.Experience.SpecialtyInstructions"}}</p>
+  <p class="hint">{{localize "YZEGS.Experience.SpendingTimingReminder"}}</p>
+
+  <div class="form-group">
+    <label>{{localize "YZEGS.Experience.Specialty"}}</label>
+    {{> optionMenu name="specialty" selected="" options=data.specialties editable=true noBlank=true
+      menuClass="experience-specialty-menu"}}
+  </div>
+
+  <dl class="experience-dialog-details">
+    <dt>{{localize "YZEGS.Experience.Cost"}}</dt>
+    <dd>{{data.cost}} XP</dd>
+    <dt>{{localize "YZEGS.Experience.CurrentXp"}}</dt>
+    <dd>{{data.currentXp}} XP</dd>
+  </dl>
+
+  <label class="experience-training-confirmation">
+    <input type="hidden" name="trainingSucceeded" value="false" />
+    {{> checkboxControl name="trainingSucceeded" value=false editable=true}}
+    <span>{{localize "YZEGS.Experience.SpecialtyTrainingConfirmation"}}</span>
+  </label>
+</div>

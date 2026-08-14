@@ -1,0 +1,11 @@
+<a class="boxes boxes-radiation" data-field="rads.{{field}}">
+{{#times 10}}
+  {{#if (gte ../value @index)}}
+  {{!-- Full square --}}
+  {{{@root.config.Icons.boxes.full}}}
+  {{else}}
+  {{!-- Empty square --}}
+  {{{@root.config.Icons.boxes.empty}}}
+  {{/if}}
+{{/times}}
+</a>

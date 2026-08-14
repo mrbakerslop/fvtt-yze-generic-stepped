@@ -1,0 +1,107 @@
+<div class="experience-overview">
+  <div class="experience-total-card">
+    <span>{{localize "YZEGS.ActorSheet.ExperienceCurrent"}}</span>
+    <strong>{{experience.current}}</strong>
+  </div>
+  <div class="experience-total-card">
+    <span>{{localize "YZEGS.ActorSheet.ExperienceTotal"}}</span>
+    <strong>{{experience.total}}</strong>
+  </div>
+  {{#if experience.canAward}}
+  <button type="button" class="experience-award button">
+    <i class="fa-solid fa-plus"></i>
+    {{localize "YZEGS.Experience.AwardXp"}}
+  </button>
+  {{/if}}
+</div>
+
+<nav class="experience-subtabs tabs" data-group="experience">
+  <a class="item" data-action="tab" data-group="experience" data-tab="skills">
+    {{localize "YZEGS.Experience.SkillAdvancement"}}
+  </a>
+  <a class="item" data-action="tab" data-group="experience" data-tab="specialties">
+    {{localize "YZEGS.Experience.SpecialtyAdvancement"}}
+  </a>
+  <a class="item" data-action="tab" data-group="experience" data-tab="history">
+    {{localize "YZEGS.Experience.History"}}
+  </a>
+</nav>
+
+<section class="tab experience-subtab experience-skills" data-group="experience" data-tab="skills">
+  <div class="experience-subtab-toolbar">
+    <span>{{localize "YZEGS.Experience.SkillEligibilityHint"}}</span>
+  </div>
+
+  <div class="experience-table experience-skill-table">
+    {{#each experience.skillColumns as |skills|}}
+    <div class="experience-skill-column">
+      <div class="experience-table-header">
+        <span>{{localize "YZEGS.Skill"}}</span>
+        <span>{{localize "YZEGS.Experience.CurrentRating"}}</span>
+        <span>{{localize "YZEGS.Experience.TargetRating"}}</span>
+        <span>{{localize "YZEGS.Experience.Eligible"}}</span>
+        <span>{{localize "YZEGS.Experience.Cost"}}</span>
+        <span></span>
+      </div>
+      {{#each skills as |skill|}}
+      <div class="experience-skill-row" data-item-id="{{skill.id}}">
+        <strong title="{{skill.name}}">{{skill.name}}</strong>
+        <span>{{skill.current}}</span>
+        <span>{{#if skill.target}}{{skill.target}}{{else}}&mdash;{{/if}}</span>
+        <span class="experience-eligibility">
+          {{> checkboxControl value=skill.eligible editable=@root.experience.canMarkEligibility
+            inputClass="experience-skill-eligibility"}}
+        </span>
+        <span>{{#if skill.target}}{{skill.cost}} XP{{else}}&mdash;{{/if}}</span>
+        <button type="button" class="experience-advance-skill button"
+          {{#unless skill.canPurchase}}disabled{{/unless}}>
+          {{#if skill.maximum}}
+            {{localize "YZEGS.Experience.Maximum"}}
+          {{else if skill.learning}}
+            {{localize "YZEGS.Experience.Learn"}}
+          {{else}}
+            {{localize "YZEGS.Experience.Advance"}}
+          {{/if}}
+        </button>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <p class="experience-empty">{{localize "YZEGS.Experience.NoSkills"}}</p>
+    {{/each}}
+  </div>
+</section>
+
+<section class="tab experience-subtab experience-specialties" data-group="experience" data-tab="specialties">
+  <div class="experience-subtab-toolbar">
+    <span></span>
+    {{#if experience.canManage}}
+    <button type="button" class="experience-learn-specialty button"
+      {{#unless experience.canAffordSpecialty}}disabled{{/unless}}>
+      <i class="fa-solid fa-plus"></i>
+      {{localize "YZEGS.Experience.LearnSpecialty"}} ({{experience.specialtyCost}} XP)
+    </button>
+    {{/if}}
+  </div>
+  <div class="experience-specialty-list">
+    {{#each experience.specialties as |specialty|}}
+    <span>{{specialty.name}}</span>
+    {{else}}
+    <p class="experience-empty">{{localize "YZEGS.Experience.NoSpecialties"}}</p>
+    {{/each}}
+  </div>
+</section>
+
+<section class="tab experience-subtab experience-history" data-group="experience" data-tab="history">
+  <div class="experience-table experience-history-table">
+    {{#each experience.history as |entry|}}
+    <div class="experience-history-row">
+      <time>{{entry.date}}</time>
+      <span>{{entry.description}}</span>
+      <strong class="{{#if entry.earned}}earned{{else}}spent{{/if}}">{{entry.amount}}</strong>
+    </div>
+    {{else}}
+    <p class="experience-empty">{{localize "YZEGS.Experience.NoHistory"}}</p>
+    {{/each}}
+  </div>
+</section>

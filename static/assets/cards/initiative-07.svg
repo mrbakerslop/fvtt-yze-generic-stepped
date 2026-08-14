@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" role="img" aria-label="Initiative card 7">
+  <rect width="500" height="700" fill="#fff"/>
+  <rect x="12" y="12" width="476" height="676" rx="24" fill="#fff" stroke="#000" stroke-width="12"/>
+  <path d="M42 128V42h86M458 572v86h-86" fill="none" stroke="#000" stroke-width="6"/>
+  <text x="58" y="104" fill="#000" font-family="system-ui, sans-serif" font-size="72" font-weight="800">7</text>
+  <text x="-442" y="-596" fill="#000" font-family="system-ui, sans-serif" font-size="72" font-weight="800" transform="rotate(180)">7</text>
+  <circle cx="250" cy="350" r="152" fill="#fff" stroke="#000" stroke-width="8"/>
+  <text x="250" y="430" fill="#000" font-family="system-ui, sans-serif" font-size="230" font-weight="800" text-anchor="middle">7</text>
+  <text x="250" y="548" fill="#000" font-family="system-ui, sans-serif" font-size="24" font-weight="700" letter-spacing="7" text-anchor="middle">INITIATIVE</text>
+</svg>

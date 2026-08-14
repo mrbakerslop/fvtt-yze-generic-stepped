@@ -1,0 +1,55 @@
+/* ------------------------------------------- */
+/*  Shared checkbox control                    */
+/* ------------------------------------------- */
+
+.application.yzegs .window-content .checkbox-control {
+  display: inline-flex;
+  flex: 0 0 14px;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+
+  .checkbox-control-toggle {
+    display: block;
+    width: 14px;
+    min-width: 14px;
+    height: 14px;
+    min-height: 14px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background-color: #fff;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+    box-shadow: none;
+    cursor: pointer;
+
+    &.is-checked {
+      border: 1px solid #000;
+      background-color: #fff;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7.5 5.5 10.5 11.5 3.5' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+
+    &:hover,
+    &:focus {
+      border: 1px solid #000;
+      background-color: #fff;
+      color: #000;
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      outline: 1px solid @colorRed;
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+  }
+}

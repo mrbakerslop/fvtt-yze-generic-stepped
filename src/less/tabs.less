@@ -1,0 +1,45 @@
+.yzegs.sheet {
+  nav.slanted-tabs {
+    display: flex;
+    white-space: nowrap;
+    // Leave breathing room below the header, then overlap the content border
+    // by one pixel so the tabs and panel read as one continuous control.
+    margin: 4px 0 -1px;
+    padding: 0;
+    border: none;
+    gap: 0;
+    z-index: 2;
+
+    a.item {
+      display: block;
+      position: relative;
+      flex: 1 1 0;
+      min-width: 0;
+      height: 32px;
+      margin: 0;
+      padding: 0 10px;
+      overflow: hidden;
+      text-align: center;
+      text-overflow: ellipsis;
+      line-height: 30px;
+      color: #000;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 0;
+
+      & + a.item {
+        border-left: none;
+      }
+
+      // Remove the old perspective/slanted tab shape.
+      &:before {
+        content: none;
+      }
+
+      &.active {
+        color: #fff;
+        background: #000;
+      }
+    }
+  }
+}

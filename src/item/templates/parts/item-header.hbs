@@ -1,0 +1,26 @@
+<header class='sheet-header flexrow'>
+
+  <img class='profile' src='{{item.img}}' data-edit='img' data-action='editImage' title='{{item.name}}' height='64' width='64' />
+
+  <div class='header-details flexcol'>
+    <div class='item-subtitle flexrow'>
+      <h4 class='item-type'>{{localize (concat 'YZEGS.ItemTypes.' item.type)}}</h4>
+      {{#if item.isPhysical}}
+        <div class='item-qty flexrow flex-right'>
+          <input
+            type='text'
+            name='system.qty'
+            value='{{system.qty}}'
+            data-dtype='Number'
+            title='{{localize "YZEGS.ItemSheet.Quantity"}}'
+          />
+          <div class='flex0'>&times;</div>
+        </div>
+      {{/if}}
+    </div>
+    <h1>
+      <input name='name' type='text' value='{{item.name}}' placeholder='{{localize "YZEGS.ItemSheet.Name"}}' />
+    </h1>
+  </div>
+
+</header>

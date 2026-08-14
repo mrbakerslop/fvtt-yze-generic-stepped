@@ -1,0 +1,247 @@
+/* eslint-disable no-unused-vars */
+import ActorYZEGS from '../../actor/actor.js';
+import ItemYZEGS from '../../item/item.js';
+import YZEGSDialog from '../dialog/dialog.js';
+import { getRollingActor, rollPush } from '../roll/dice.js';
+import { YZEGS } from '../../system/config.js';
+
+export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
+  prepareData() {
+    super.prepareData();
+  }
+
+  /** 
+ * Adds Event Listeners to the Chat log.
+ * @param {HTMLElement} html The DOM
+ */
+  static addChatListeners(html) {
+    ActorYZEGS.chatListeners(html);
+    ItemYZEGS.chatListeners(html);
+
+    const buttonsPush = html.querySelectorAll('.dice-button.push');
+    for (let i = 0; i < buttonsPush.length; i++) {
+      buttonsPush[i].addEventListener('click', _onRollPush);
+    }
+    const buttonsApply = html.querySelectorAll('.dice-button.accept');
+    for (let i = 0; i < buttonsApply.length; i++) {
+      buttonsApply[i].addEventListener('click', _onRollAccept);
+    }
+  }
+
+  /* ------------------------------------------- */
+  /*  Hiding Buttons                             */
+  /* ------------------------------------------- */
+
+  /**
+ * Hides buttons of Chat messages for non-owners.
+ * @param {HTMLElement} html DOM
+ */
+  static hideChatActionButtons(html) {
+    // const button = html.querySelectorAll('.card-buttons button');
+    const chatCard = html.querySelectorAll('.yzegs.chat-card');
+
+    // Exits early if no chatCard were found.
+    if (chatCard.length <= 0) return;
+    // Hides buttons.
+    chatCard.forEach(card =>{
+      const actor = game.actors.get(card.dataset.actorId);
+      const buttons = card.querySelectorAll('button');
+      for (const btn of buttons) {
+        if (actor && !actor.isOwner) btn.style.display = 'none';
+      }
+    });
+  }
+
+}
+
+/* ------------------------------------------- */
+/*  Roll Push                                  */
+/* ------------------------------------------- */
+
+/**
+ * Triggers a push from the chat.
+ * @param {Event} event
+ * @returns {Promise<import('../lib/yzur.js').YearZeroRoll|ChatMessage>}
+ */
+function _onRollPush(event) {
+  event.preventDefault();
+
+  // Disables the button to avoid any tricky double push.
+  const button = event.currentTarget;
+  button.disabled = true;
+
+  // Gets infos and requires a push.
+  const chatCard = event.currentTarget.closest('.chat-message');
+  const messageId = chatCard.dataset.messageId;
+  const message = game.messages.get(messageId);
+  const roll = message.rolls[0];
+  return rollPush(roll, { message });
+}
+
+/* ------------------------------------------- */
+/*  Roll Accept                                */
+/* ------------------------------------------- */
+
+/**
+ * Accepts a roll in the chat.
+ * @param {Event} event
+ * @returns {Promise<import('../lib/yzur.js').YearZeroRoll|ChatMessage>}
+ */
+function _onRollAccept(event) {
+  event.preventDefault();
+
+  // Disables the button to avoid any tricky double push.
+  const button = event.currentTarget;
+  button.disabled = true;
+
+  // Gets infos and requires a push.
+  const chatCard = event.currentTarget.closest('.chat-message');
+  const messageId = chatCard.dataset.messageId;
+  const message = game.messages.get(messageId);
+  /** @type {import('yzur').YearZeroRoll} */
+  const roll = message.rolls[0];
+  roll.maxPush = 0;
+  return message.update({ rolls: [JSON.stringify(roll)] });
+}
+
+/* ------------------------------------------- */
+/*  Utility Methods                            */
+/* ------------------------------------------- */
+
+/**
+ * Gets the Actor which is the source of a chat card.
+ * @param {HTMLElement} card The card being used
+ * @return {Actor}
+ */
+export function getChatCardActor(card) {
+  // Case 1 — A Synthetic Actor from a Token
+  const tokenKey = card.dataset.tokenId;
+  if (tokenKey) {
+    const [sceneId, tokenId] = tokenKey.split('.');
+    const scene = game.scenes.get(sceneId);
+    if (!scene) return null;
+    const token = scene.getEmbeddedDocument('Token', tokenId);
+    // if (!tokenData) return null;
+    // const token = new Token(tokenData);
+    return token.actor;
+  }
+
+  // Case 2 — Use Actor ID instead
+  const actorId = card.dataset.actorId;
+  return game.actors.get(actorId);
+}
+
+/* ------------------------------------------- */
+/*  Context Menu (right-clic)                  */
+/* ------------------------------------------- */
+
+/**
+ * Adds a context menu (right-clic) to Chat messages.
+ * @param {Object} html DOM
+ * @param {Object} options Options
+ * @link https://www.youtube.com/watch?v=uBC5DSci0NI
+ */
+export function addChatMessageContextOptions(options = []) {
+  // TODO: See Part 6, 6:55
+  // Allows only this menu option if we have selected some tokens
+  // & the message contains some damage.
+  const canDefend = li => {
+    const message = game.messages.get(li.dataset.messageId);
+    const targets = game.user.targets;
+    return targets.size > 0 && message.rolls.length > 0;
+  };
+  options.push({
+    name: game.i18n.localize('YZEGS.Chat.Actions.ApplyDamage'),
+    icon: YZEGS.Icons.buttons.attack,
+    condition: canDefend,
+    callback: li => _applyDamage(li),
+  });
+  return options;
+}
+
+/* ------------------------------------------- */
+
+async function _applyDamage(messageElem) {
+  const messageId = messageElem.dataset.messageId;
+  const message = game.messages.get(messageId);
+  /** @type {import('../lib/yzur.js').YearZeroRoll} */
+  const roll = message.rolls[0];
+
+  // Gets the weapon.
+  const actorId = roll.options.actorId;
+  const tokenKey = roll.options.tokenKey;
+  const actor = getRollingActor({ actorId, tokenKey });
+  const itemId = roll.options.itemId;
+  const item = actor ? actor.items.get(itemId) : game.items.get(itemId);
+  // Prepares the attack's data.
+  if (!item) return ui.notifications.warn(game.i18n.localize('YZEGS.Chat.Roll.NoItemNotif'));
+  let attackData = foundry.utils.deepClone(item.system);
+  if (actor && item.hasAmmo) {
+    const ammo = actor.items.get(item.system.mag.target);
+    if (ammo && ammo.system.override) {
+      const ammoData = foundry.utils.deepClone(ammo.system);
+      attackData = foundry.utils.mergeObject(attackData, ammoData);
+    }
+  }
+  const loc = roll.bestHitLocation;
+  if (loc > 0) attackData.location = YZEGS.hitLocs[loc - 1];
+
+  // Gets the selected tokens.
+  const defenders = game.user.targets;
+  for (const defender of defenders) {
+    const s = roll.baseSuccessQty;
+    let damage = s > 0 ? attackData.damage + 1 * (s - 1) : 0;
+    const isGM = game.user.isGM;
+    let hitCount = message.getFlag('fvtt-yze-generic-stepped', 'hitCountLeft') ?? roll.hitCount;
+    attackData.cover = defender.actor.cover;
+    let barrier = 0;
+    if (attackData.cover === 'fullCover') barrier = 2;
+    else if (attackData.cover === 'partialCover') barrier = 1;
+    if (isGM || hitCount) {
+      const opts = await YZEGSDialog.chooseDamage({
+        damage,
+        hitCount,
+        location: attackData.location,
+        target: defender.name,
+        barrier,
+        isGM,
+      });
+      if (opts.cancelled) {
+        return;
+      }
+      else {
+        damage = opts.damage + opts.hitCount;
+        if (opts.hitCount) {
+          hitCount = Math.max(0, hitCount - opts.hitCount);
+          await message.setFlag('fvtt-yze-generic-stepped', 'hitCountLeft', hitCount);
+        }
+      }
+      attackData.barriers = opts.barriers ? opts.barriers.split(',') : [];
+    }
+    if (defender.actor) await defender.actor.applyDamage(damage, attackData, damage !== 0);
+  }
+}
+
+/* ------------------------------------------- */
+/*  Auto-closing Roll Tooltip                  */
+/* ------------------------------------------- */
+
+/**
+ * Closes the Roll tooltip
+ * @param {ChatMessage} message The message
+ * @param {HTMLElement} html DOM
+ * @param {number} delay How many time to wait before closing the tooltips
+ */
+export function closeRollTooltip(message, html, delay = 60000) {
+  if (!message.isRoll) return;
+  const divs = html.find('.dice-result');
+  if (!divs?.length) return;
+
+  const div = divs[0];
+  if (!div) return;
+
+  setTimeout(() => {
+    // tooltip.style.display = 'none';
+    div.click();
+  }, delay);
+}

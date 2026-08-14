@@ -1,0 +1,168 @@
+{
+  "id": "fvtt-yze-generic-stepped",
+  "title": "Year Zero Engine - Generic Stepped Dice",
+  "description": "A generic Foundry VTT game system for Year Zero Engine games using stepped dice.",
+  "readme": "README.md",
+  "version": "14.0.1",
+  "compatibility": {
+    "minimum": "14.359",
+    "verified": "14.365"
+  },
+  "scripts": [],
+  "esmodules": [
+    "yzegs.js"
+  ],
+  "styles": [
+    "yzegs.css"
+  ],
+  "languages": [
+      {
+          "lang": "en",
+          "name": "English",
+          "path": "lang/en.json"
+      },
+      {
+          "lang": "fr",
+          "name": "French (Français)",
+          "path": "lang/fr.json"
+      },
+      {
+          "lang": "sv",
+          "name": "Swedish (Svenska)",
+          "path": "lang/sv.json"
+      },
+      {
+          "lang": "es",
+          "name": "Spanish (Española)",
+          "path": "lang/es.json"
+      },
+      {
+          "lang": "de",
+          "name": "German (Deutsch)",
+          "path": "lang/de.json"
+      },
+      {
+          "lang": "uk",
+          "name": "Ukrainian (українська)",
+          "path": "lang/uk.json"
+      },
+      {
+          "lang": "ru",
+          "name": "Russian (Русский)",
+          "path": "lang/ru.json"
+      }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": ["description", "bio.appearance"]
+      },
+      "npc": {
+        "htmlFields": ["description"]
+      },
+      "vehicle": {
+        "htmlFields": ["description"]
+      },
+      "unit": {
+        "htmlFields": ["description"]
+      },
+      "party": {
+        "htmlFields": ["description"]
+      }
+    },
+    "Item": {
+      "weapon": {
+        "htmlFields": ["description"]
+      },
+      "armor": {
+        "htmlFields": ["description"]
+      },
+      "ammunition": {
+        "htmlFields": ["description"]
+      },
+      "grenade": {
+        "htmlFields": ["description"]
+      },
+      "gear": {
+        "htmlFields": ["description"]
+      },
+      "skill": {
+        "htmlFields": ["description"]
+      },
+      "specialty": {
+        "htmlFields": ["description"]
+      },
+      "injury": {
+        "htmlFields": ["description"]
+      }
+    }
+  },
+  "packs": [
+    {
+      "name": "system-macros",
+      "label": "YZE Generic Stepped Dice Macros",
+      "path": "packs/system-macros",
+      "type": "Macro",
+      "system": "fvtt-yze-generic-stepped",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "initiative-cards",
+      "label": "YZE Generic Stepped Dice Initiative Cards",
+      "path": "packs/initiative-cards",
+      "type": "Cards",
+      "system": "fvtt-yze-generic-stepped",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "system-actors",
+      "label": "YZE Generic Stepped Dice Actors",
+      "path": "packs/system-actors",
+      "type": "Actor",
+      "system": "fvtt-yze-generic-stepped",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "system-items",
+      "label": "YZE Generic Stepped Dice Items",
+      "path": "packs/system-items",
+      "type": "Item",
+      "system": "fvtt-yze-generic-stepped",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "system-roll-tables",
+      "label": "YZE Generic Stepped Dice Rollable Tables",
+      "path": "packs/system-roll-tables",
+      "type": "RollTable",
+      "system": "fvtt-yze-generic-stepped",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "flags": {},
+  "socket": false,
+  "protected": false,
+  "grid": {
+    "distance": 2,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "sanity",
+  "initiative": "1d10",
+  "license": "GPL-3.0-or-later"
+}

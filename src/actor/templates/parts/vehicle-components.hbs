@@ -1,0 +1,165 @@
+<div class="components-list">
+
+  {{!-- Inner Components --}}
+  <section class="component-section inner-components">
+    <h3>{{localize "YZEGS.VehicleSheet.InnerComponents"}}</h3>
+
+    <div class="component-grid">
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.fuel.active" value=system.components.fuel.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.fuel"}}</span>
+        </label>
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.fuel.damage"
+          value="{{system.components.fuel.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.engine.active" value=system.components.engine.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.engine"}}</span>
+        </label>
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.engine.damage"
+          value="{{system.components.engine.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.suspension.active" value=system.components.suspension.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.suspension"}}</span>
+        </label>
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.suspension.damage"
+          value="{{system.components.suspension.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.ammunition.active" value=system.components.ammunition.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.ammunition"}}</span>
+        </label>
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.ammunition.damage"
+          value="{{system.components.ammunition.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.radio.active" value=system.components.radio.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.radio"}}</span>
+        </label>
+        <div class="radio-reliability">
+          <input
+            type="number"
+            class="boxed-value"
+            name="system.components.radio.reliability.value"
+            value="{{system.components.radio.reliability.value}}"
+            data-dtype="Number"
+          />
+          <span class="sep">/</span>
+          <input
+            type="number"
+            class="boxed-value"
+            name="system.components.radio.reliability.max"
+            value="{{system.components.radio.reliability.max}}"
+            data-dtype="Number"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{!-- Outer Components --}}
+  <section class="component-section outer-components">
+    <h3>{{localize "YZEGS.VehicleSheet.OuterComponents"}}</h3>
+
+    <div class="component-grid">
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.trackWheel.active" value=system.components.trackWheel.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.trackWheel"}}</span>
+        </label>
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.trackWheel.damage"
+          value="{{system.components.trackWheel.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row fcs-component">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.fcs.active" value=system.components.fcs.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.fcs"}}</span>
+        </label>
+        <input
+          type="text"
+          class="fcs-type"
+          name="system.components.fcs.type"
+          value="{{system.components.fcs.type}}"
+          placeholder="{{localize 'YZEGS.VehicleSheet.FcsType'}}"
+          title="{{localize 'YZEGS.VehicleSheet.FcsType'}}"
+        />
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.fcs.damage"
+          value="{{system.components.fcs.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.antenna.active" value=system.components.antenna.active editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.Components.antenna"}}</span>
+        </label>
+        <input
+          type="number"
+          class="boxed-value"
+          name="system.components.antenna.damage"
+          value="{{system.components.antenna.damage}}"
+          title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+          data-dtype="Number"
+        />
+      </div>
+
+      <div class="component-row component-toggle-group">
+        <label class="checkbox">
+          {{> checkboxControl name="system.smokeDischarger" value=system.smokeDischarger editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.HasSmokeDischarger"}}</span>
+        </label>
+        <label class="checkbox">
+          {{> checkboxControl name="system.trailer" value=system.trailer editable=@root.editable}}
+          <span>{{localize "YZEGS.VehicleSheet.HasTrailer"}}</span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+</div>

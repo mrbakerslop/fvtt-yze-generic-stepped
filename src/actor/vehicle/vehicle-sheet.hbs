@@ -1,0 +1,145 @@
+<div class="sheet-root flexcol">
+
+  {{!-- ================================================== --}}
+  {{!--  Actor Sheet Header                                --}}
+  {{!-- ================================================== --}}
+
+  <header class="sheet-header">
+
+    <div class="grid-vehicle-header">
+
+      {{!-- Header Info: IMG, NAME, TYPE --}}
+      <img class="vehicle-profile" src="{{actor.img}}" data-edit="img" data-action="editImage" title="{{actor.name}}"/>
+
+      <div class="info">
+        <h1 class="name">
+          <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'YZEGS.ItemSheet.Name'}}"/>
+        <h2 class="type">
+          <input type="text" name="system.vehicleType" value="{{system.vehicleType}}" placeholder="{{localize 'YZEGS.VehicleSheet.VehicleType'}}"/>
+        </h2>
+      </div>
+
+      {{!-- Header details: REL, MOVEMENT, FUEL, etc. --}}
+      <div class="header-details grid-vehicle-details">
+
+        {{!-- MOVEMENT --}}
+        <div class="movement-type flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.Movement"}}</label>
+          {{> optionMenu name="system.movement.type" selected=system.movement.type
+            options=config.vehicle.movementTypes localize=true editable=@root.editable
+            menuClass="vehicle-movement-menu"}}
+        </div>
+
+        <div class="combat-speed flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.CombatSpeed"}}</label>
+          <div class="flexrow">
+            <input type="number" name="system.movement.combat.onRoad" value={{system.movement.combat.onRoad}} data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="number" name="system.movement.combat.offRoad" value={{system.movement.combat.offRoad}} data-dtype="Number"/>
+          </div>
+        </div>
+
+        <div class="travel-speed flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.TravelSpeed"}}</label>
+          <div class="flexrow">
+            <input type="number" name="system.movement.travel.onRoad" value={{system.movement.travel.onRoad}} data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="number" name="system.movement.travel.offRoad" value={{system.movement.travel.offRoad}} data-dtype="Number"/>
+          </div>
+        </div>
+
+        {{!-- FUEL --}}
+        <div class="fuel-type flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.Fuel"}}</label>
+          <div class="flexrow">
+            {{> optionMenu name="system.fuel.type" selected=system.fuel.type
+              options=config.vehicle.fuelTypes localize=true editable=@root.editable
+              menuClass="vehicle-fuel-menu"}}
+            <progress class="fuel-gauge" value="{{system.fuel.value}}" max="{{system.fuel.max}}"></progress>
+          </div>
+        </div>
+
+        <div class="fuel-cap flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.FuelCapacity"}}</label>
+          <div class="flexrow">
+            <input type="number" name="system.fuel.value" value="{{system.fuel.value}}" data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="number" name="system.fuel.max" value="{{system.fuel.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+
+        <div class="fuel-consumption flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.FuelConsumption"}}</label>
+          <input type="number" name="system.fuel.cons" value={{system.fuel.cons}} data-dtype="Number"/>
+        </div>
+
+        {{!-- RELIABILITY --}}
+        <div class="reliability flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.Reliability"}}</label>
+          <div class="flexrow">
+            <input type="number" name="system.reliability.value" value="{{system.reliability.value}}" data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="number" name="system.reliability.max" value="{{system.reliability.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+
+        {{!-- PRICE --}}
+        <div class="price flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.Price"}}</label>
+          <input type="number" name="system.price" value={{system.price}} data-dtype="Number"/>
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  {{!-- ================================================== --}}
+  {{!--  Sheet Tab Navigation                              --}}
+  {{!-- ================================================== --}}
+
+  <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
+    {{!-- <a class="item" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a> --}}
+    <a class="item" data-action="tab" data-group="primary" data-tab="crew">{{localize "YZEGS.VehicleSheet.CrewTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="components">{{localize "YZEGS.VehicleSheet.ComponentsTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="combat">{{localize "YZEGS.VehicleSheet.CombatTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="cargo">{{localize "YZEGS.VehicleSheet.CargoTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ActorSheet.NoteTab"}}</a>
+  </nav>
+
+  {{!-- ================================================== --}}
+  {{!--  Sheet Body                                        --}}
+  {{!-- ================================================== --}}
+
+  <section class="sheet-body">
+
+    {{!-- Crew Tab --}}
+    <div class="tab tab-crew flexcol" data-group="primary" data-tab="crew">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/vehicle-crew.hbs"}}
+    </div>
+
+    {{!-- Components Tab --}}
+    <div class="tab tab-components" data-group="primary" data-tab="components">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/vehicle-components.hbs"}}
+    </div>
+
+    {{!-- Combat Tab --}}
+    <div class="tab tab-combat" data-group="primary" data-tab="combat">
+{{!-- DO NOT ADD INDENT: HandlebarJS+TextArea BUG --}}
+{{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/vehicle-combat.hbs"}}
+    </div>
+
+    {{!-- Cargo Tab --}}
+    <div class="tab tab-cargo flexcol" data-group="primary" data-tab="cargo">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/vehicle-cargo.hbs"}}
+    </div>
+
+    {{!-- Description Tab --}}
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
+    </div>
+
+  </section>
+
+</div>

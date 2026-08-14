@@ -1,0 +1,69 @@
+<div class="sheet-root flexcol">
+
+  {{!-- Item Sheet Header --}}
+  {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-header.hbs"}}
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs slanted-tabs flexrow flex-center" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="modifiers">{{localize "YZEGS.ItemSheet.ModifiersTab"}}</a>
+    {{!-- <a class="item" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a> --}}
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Features Tab --}}
+    <div class="tab tab-features" data-group="primary" data-tab="features">
+      <div class="grid grid-3col item-features">
+        <div class="flexcol">
+          <label>{{localize "YZEGS.InjurySheet.Category"}}</label>
+          {{> optionMenu name="system.category" selected=system.category options=config.injuryCategories
+            localize=true editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.InjurySheet.Location"}}</label>
+          {{> optionMenu name="system.location" selected=system.location options=config.hitLocations
+            localize=true editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.InjurySheet.HealTime"}}</label>
+          <input type="text" name="system.healTime" value="{{system.healTime}}"/>
+        </div>
+      </div>
+
+      {{!-- Other Parameters --}}
+      <div class="features-other flexcol">
+        <div class="flexrow">
+          {{!-- <textarea name="system.description" rows="2" placeholder="{{localize "YZEGS.InjurySheet.Effect"}}">{{system.description}}</textarea> --}}
+          <input type="text" name="system.description" value="{{system.description}}" placeholder="{{localize "YZEGS.InjurySheet.Effect"}}"/>
+        </div>
+      {{!-- </div> --}}
+      {{!-- <div class="features-other flexcol"> --}}
+        <div class="form-group-stacked item-properties">
+          <label class="checkbox">
+            {{> checkboxControl name="system.lethal" value=system.lethal editable=@root.editable}}
+            {{localize "YZEGS.InjurySheet.Lethal"}}
+          </label>
+        </div>
+        {{#if system.lethal}}
+        <div class="flexrow">
+          <input type="text" name="system.timeLimit" value="{{system.timeLimit}}" placeholder="{{localize "YZEGS.InjurySheet.TimeLimit"}}"/>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab tab-modifiers" data-group="primary" data-tab="modifiers">
+      {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-modifiers.hbs"}}
+    </div>
+
+    {{!-- Description Tab --}}
+    {{!-- <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-description.hbs"}}
+    </div> --}}
+
+  </section>
+
+</div>

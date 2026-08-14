@@ -1,0 +1,36 @@
+<div class="experience-dialog experience-skill-dialog">
+  <p class="hint">{{localize "YZEGS.Experience.SpendingTimingReminder"}}</p>
+  <div class="experience-dialog-summary">
+    <strong>{{data.skillName}}</strong>
+    <span>{{data.current}} &rarr; {{data.target}}</span>
+  </div>
+
+  <dl class="experience-dialog-details">
+    <dt>{{localize "YZEGS.Experience.Cost"}}</dt>
+    <dd>{{data.cost}} XP</dd>
+    <dt>{{localize "YZEGS.Experience.CurrentXp"}}</dt>
+    <dd>{{data.currentXp}} XP</dd>
+    <dt>{{localize "YZEGS.Experience.Eligibility"}}</dt>
+    <dd>
+      {{#if data.eligible}}
+        {{localize "YZEGS.Experience.Eligible"}}
+      {{else}}
+        {{localize "YZEGS.Experience.NotEligible"}}
+      {{/if}}
+    </dd>
+  </dl>
+
+  {{#unless data.eligible}}
+  {{#unless data.prerequisitesOff}}
+  <label class="experience-training-confirmation">
+    <input type="hidden" name="trained" value="false" />
+    {{> checkboxControl name="trained" value=false editable=true}}
+    <span>{{localize "YZEGS.Experience.SkillTrainingConfirmation"}}</span>
+  </label>
+  {{/unless}}
+  {{/unless}}
+
+  {{#if data.prerequisiteWarning}}
+  <p class="hint warning">{{localize "YZEGS.Experience.PrerequisiteWarning"}}</p>
+  {{/if}}
+</div>

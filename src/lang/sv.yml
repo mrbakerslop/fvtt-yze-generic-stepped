@@ -1,0 +1,488 @@
+YZEGS.SheetClassCharacter: Karaktärsblad
+YZEGS.SheetClassVehicle: Fordonsblad
+YZEGS.SheetClassUnit: Enhetsblad
+YZEGS.SheetClassParty: Gruppblad
+YZEGS.Attribute: Grundegenskap
+YZEGS.Attributes: Grundegenskaper
+YZEGS.AttributeNames.str: Styrka
+YZEGS.AttributeNames.agl: Smidighet
+YZEGS.AttributeNames.int: Intelligens
+YZEGS.AttributeNames.emp: Empati
+YZEGS.Skill: Färdighet
+YZEGS.Skills: Färdigheter
+YZEGS.SkillNames.none: '–'
+YZEGS.SkillNames.heavyWeapons: Tunga vapen
+YZEGS.SkillNames.closeCombat: Närstrid
+YZEGS.SkillNames.stamina: Tålighet
+YZEGS.SkillNames.driving: Fordon
+YZEGS.SkillNames.mobility: Rörlighet
+YZEGS.SkillNames.rangedCombat: Skytte
+YZEGS.SkillNames.recon: Spaning
+YZEGS.SkillNames.survival: Överlevnad
+YZEGS.SkillNames.tech: Teknik
+YZEGS.SkillNames.command: Befälskap
+YZEGS.SkillNames.persuasion: Övertalning
+YZEGS.SkillNames.medicalAid: Vård
+YZEGS.Action: Handling
+YZEGS.Actions: Handlingar
+YZEGS.ActionNames.unarmedAttack: Oväpnad attack
+YZEGS.ActionNames.meleeAttack: Attack med närstridsvapen
+YZEGS.ActionNames.grapple: Fasthållning
+YZEGS.ActionNames.breakFree: Bryt dig loss
+YZEGS.ActionNames.shootFirearm: Avfyra vapen
+YZEGS.ActionNames.clearJam: Rensa vapenstopp
+YZEGS.ActionNames.aimSniper: Prickskyttssiktande
+YZEGS.ActionNames.shootBow: Avfyra båge
+YZEGS.ActionNames.throwWeapon: Kasta vapnet
+YZEGS.ActionNames.aimMortar: Sikta mortel eller haubits
+YZEGS.ActionNames.shootHeavyWeapon: Avfyra tungt vapen
+YZEGS.ActionNames.firstAid: Första hjälpen
+YZEGS.ActionNames.rally: Återhämtning
+YZEGS.ActionNames.directFire: Indirekt eldgivning
+YZEGS.ActionNames.seekCover: Sök skydd
+YZEGS.ActionNames.run: Spring
+YZEGS.ActionNames.crawl: Kräla
+YZEGS.ActionNames.shove: Fäll
+YZEGS.ActionNames.disarm: Avväpna
+YZEGS.ActionNames.retreat: Reträtt
+YZEGS.ActionNames.aim: Sikta
+YZEGS.ActionNames.prepareBow: Förbered båge
+YZEGS.ActionNames.overwatch: Anta Övervakningsläge
+YZEGS.ActionNames.reload: Ladda om
+YZEGS.ActionNames.drive: Kör
+YZEGS.Constants: Konstanter
+YZEGS.ConstantNames.encumbrance: Belastning
+YZEGS.ConstantNames.awareness: Stridsmedvetenhet
+YZEGS.ConstantNames.cuf: Stridsvana
+YZEGS.TravelTasks: Reseuppdrag
+YZEGS.TravelTaskNames.marching: Marcherar
+YZEGS.TravelTaskNames.driving: Kör
+YZEGS.TravelTaskNames.gathering: Samlar
+YZEGS.TravelTaskNames.keepingWatch: Vaktar
+YZEGS.TravelTaskNames.scrounging: Plundrar
+YZEGS.TravelTaskNames.foraging: Söker föda
+YZEGS.TravelTaskNames.hunting: Jagar
+YZEGS.TravelTaskNames.fishing: Fiskar
+YZEGS.TravelTaskNames.makingCamp: Slår upp läger
+YZEGS.TravelTaskNames.cooking: Lagar mat
+YZEGS.TravelTaskNames.resting: Vilar
+YZEGS.TravelTaskNames.sleeping: Sover
+YZEGS.TravelTaskNames.exploring: Utforskar
+YZEGS.ArmorLocationNames.head: Huvud
+YZEGS.ArmorLocationNames.arms: Armar
+YZEGS.ArmorLocationNames.torso: Bål
+YZEGS.ArmorLocationNames.legs: Ben
+YZEGS.ConditionNames.starving: Utsvulten
+YZEGS.ConditionNames.dehydrated: Uttorkad
+YZEGS.ConditionNames.sleepless: Sömnlös
+YZEGS.ConditionNames.hypothermic: Nedkyld
+YZEGS.InjuryCategoryNames.physical: Fysisk
+YZEGS.InjuryCategoryNames.mental: Mental
+YZEGS.ActionTypes.fast: Snabb
+YZEGS.ActionTypes.slow: Långsam
+YZEGS.Ranges.close: I närstrid
+YZEGS.Ranges.short: Kort
+YZEGS.Ranges.medium: Medel
+YZEGS.Ranges.long: Lång
+YZEGS.Ranges.extreme: Extrem
+YZEGS.ItemTypes.ammunition: Ammunition
+YZEGS.ItemTypes.armor: Kroppsskydd
+YZEGS.ItemTypes.gear: Utrustning
+YZEGS.ItemTypes.grenade: Sprängämne
+YZEGS.ItemTypes.injury: Skada
+YZEGS.ItemTypes.specialty: Specialitet
+YZEGS.ItemTypes.weapon: Vapen
+YZEGS.ItemPropNames.twoHanded: Tvåhandad
+YZEGS.ItemPropNames.mounted: Monterad
+YZEGS.ItemPropNames.disposable: Engångs
+YZEGS.ItemPropNames.ammoBelt: Ammobälte
+YZEGS.ItemPropNames.magazine: Är Magasin
+YZEGS.ItemPropNames.armored: Bepansrad
+YZEGS.ItemPropNames.bipod: Tvåbensstativ
+YZEGS.ItemPropNames.tripod: Trebensstativ
+YZEGS.ItemPropNames.scope: Kikarsikte
+YZEGS.ItemPropNames.nightVision: Mörkerkikare
+YZEGS.ItemPropNames.bayonet: Bajonett
+YZEGS.ItemPropNames.suppressor: Ljuddämpare
+YZEGS.ActorTypes.character: Rollperson (RP)
+YZEGS.ActorTypes.npc: Spelarledarperson (SLP)
+YZEGS.ActorTypes.vehicle: Fordon
+YZEGS.ActorSheet.Name: Namn
+YZEGS.ActorSheet.MainTab: Grund
+YZEGS.ActorSheet.CombatTab: Strid
+YZEGS.ActorSheet.EquipmentTab: Prylar
+YZEGS.ActorSheet.BiographyTab: Biografi
+YZEGS.ActorSheet.NoteTab: Övrigt
+YZEGS.ActorSheet.Nationality: Nationalitet
+YZEGS.ActorSheet.Branch: Bransch
+YZEGS.ActorSheet.MilitaryRank: Militär grad
+YZEGS.ActorSheet.HitCapacity: Skadekapacitet
+YZEGS.ActorSheet.StressCapacity: Stress
+YZEGS.ActorSheet.CapacityModifier: 'Modifierare:'
+YZEGS.ActorSheet.Experience: Erfarenhet
+YZEGS.ActorSheet.ExperienceCurrent: Aktuell EP
+YZEGS.ActorSheet.ExperienceTotal: Total EP
+YZEGS.ActorSheet.Appearance: Utseende
+YZEGS.ActorSheet.MoralCode: Personlig moral
+YZEGS.ActorSheet.Buddy: Kamrat
+YZEGS.ActorSheet.BigDream: Min stora dröm
+YZEGS.ActorSheet.GroupMeeting: 'Hur jag mötte gruppen:'
+YZEGS.ActorSheet.AttributesAndSkills: Grundegenskaper & Färdigheter
+YZEGS.ActorSheet.Rating: Värde
+YZEGS.ActorSheet.BaseDie: Tärning
+YZEGS.ActorSheet.Specialties: Specialiteter
+YZEGS.ActorSheet.AddSpecialty: Lägg till en ny specialitet
+YZEGS.ActorSheet.NoSpecialty: Denna karaktär har ingen specialitet. Klicka på "+" för att lägga till en specialitet.
+YZEGS.ActorSheet.Combat: Strid
+YZEGS.ActorSheet.Actions: Handlingar
+YZEGS.ActorSheet.Current: Nu
+YZEGS.ActorSheet.Max: Max
+YZEGS.ActorSheet.CuF: Stridsvana
+YZEGS.ActorSheet.UnitMorale: Enhetens moral
+YZEGS.ActorSheet.NoArmor: Den här karaktären har inget utrustat kropssskydd.
+YZEGS.ActorSheet.Conditions: Tillstånd
+YZEGS.ActorSheet.CriticalInjuries: Kritisk skada
+YZEGS.ActorSheet.AddInjury: Lägg till ny sjukdom
+YZEGS.ActorSheet.InjuryTimeLeft: '{time} kvar'
+YZEGS.ActorSheet.Diseases: Sjukdomar
+YZEGS.ActorSheet.Radiation: Strålning
+YZEGS.ActorSheet.RadiationRoll: Strålningsslag
+YZEGS.ActorSheet.TemporaryRadiation: Tillfällig
+YZEGS.ActorSheet.PermanentRadiation: Permanent
+YZEGS.ActorSheet.EncumbranceFull: FULL
+YZEGS.ActorSheet.EncumbranceTooHeavy: FÖR TUNG
+YZEGS.ActorSheet.Weapons: Vapen
+YZEGS.ActorSheet.AddWeapon: Lägg till nytt vapen
+YZEGS.ActorSheet.Unarmed: Obeväpnad
+YZEGS.ActorSheet.Cover: Skydd
+YZEGS.ActorSheet.Add: Lägg till
+YZEGS.ActorSheet.AddArmor: Lägg till nytt kroppsskydd
+YZEGS.ActorSheet.AddGear: Lägg till ny utrustning
+YZEGS.ActorSheet.AddAmmo: Lägg till ny ammunition
+YZEGS.ActorSheet.Encumbrance: Belastning
+YZEGS.ActorSheet.CombatGearEncumbrance: Stridsutrustning (Belastning)
+YZEGS.ActorSheet.BackpackEncumbrance: Ryggsäck (Belastning)
+YZEGS.ActorSheet.Equip: Utrusta
+YZEGS.ActorSheet.Store: Lagra i ryggsäck
+YZEGS.ActorSheet.Edit: Ändra
+YZEGS.ActorSheet.Delete: Radera
+YZEGS.ActorSheet.NewItem.weapon: Nytt vapen
+YZEGS.ActorSheet.NewItem.armor: Nytt kroppsskydd
+YZEGS.ActorSheet.NewItem.gear: Ny utrustning
+YZEGS.ActorSheet.NewItem.ammunition: Ny ammunition
+YZEGS.ActorSheet.NewItem.specialty: Ny specialitet
+YZEGS.ActorSheet.NewItem.injury: Ny skada
+YZEGS.ActorSheet.NotifWrongItemType: '"{type}" föremål kan inte läggas till en {actor}!'
+YZEGS.VehicleSheet.CrewTab: Besättning
+YZEGS.VehicleSheet.ComponentsTab: Komponenter
+YZEGS.VehicleSheet.CombatTab: Stridande
+YZEGS.VehicleSheet.CargoTab: Last
+YZEGS.VehicleSheet.VehicleType: Fordonstyp
+YZEGS.VehicleSheet.Reliability: Pålitlighet
+YZEGS.VehicleSheet.Movement: Förflyttning
+YZEGS.VehicleSheet.CombatSpeed: Stridshastighet
+YZEGS.VehicleSheet.TravelSpeed: Reshastighet
+YZEGS.VehicleSheet.Wheels: Hjul
+YZEGS.VehicleSheet.Tracks: Band
+YZEGS.VehicleSheet.Hovercraft: Svävare
+YZEGS.VehicleSheet.Flying: Flygande
+YZEGS.VehicleSheet.Naval: Marin
+YZEGS.VehicleSheet.Fuel: Bränsle
+YZEGS.VehicleSheet.FuelCapacity: Bränsletank
+YZEGS.VehicleSheet.FuelConsumption: Bränsleförbrukning
+YZEGS.VehicleSheet.Gasoline: Bensin
+YZEGS.VehicleSheet.Diesel: Diesel
+YZEGS.VehicleSheet.Alcohol: Alkohol
+YZEGS.VehicleSheet.Nuclear: Kärnreaktor
+YZEGS.VehicleSheet.CrewQty: 'Besättning:'
+YZEGS.VehicleSheet.PassengerQty: 'Passagerare:'
+YZEGS.VehicleSheet.EmptyCrew: Dra och släpp en aktör för att göra dem till besättning.
+YZEGS.VehicleSheet.Armor: Pansar
+YZEGS.VehicleSheet.FrontArmor: Front
+YZEGS.VehicleSheet.SideLeftArmor: Vänster
+YZEGS.VehicleSheet.SideRightArmor: Höger
+YZEGS.VehicleSheet.RearArmor: Bak
+YZEGS.VehicleSheet.Damage: Skada
+YZEGS.VehicleSheet.MountedWeapons1: Primära vapen
+YZEGS.VehicleSheet.MountedWeapons2: Sekundära vapen
+YZEGS.VehicleSheet.MountedWeaponType: Typ
+YZEGS.VehicleSheet.CargoCapacity: 'Lastvikt:'
+YZEGS.VehicleSheet.CrewCargo: 'Besättningsvikt:'
+YZEGS.VehicleSheet.VehicleEncumbrance: Belastning (fordon)
+YZEGS.VehicleSheet.Mount: Montera vapen
+YZEGS.VehicleSheet.Unmount: Avmontera vapen
+YZEGS.VehicleSheet.MoveMount: Växla vapenfäste
+YZEGS.VehicleSheet.Price: Pris
+YZEGS.VehicleSheet.CrewPositions.Driver: FÖRARE
+YZEGS.VehicleSheet.CrewPositions.Gunner: SKYTT
+YZEGS.VehicleSheet.CrewPositions.Commander: BEFÄLHAVARE
+YZEGS.VehicleSheet.CrewPositions.Passenger: PASSAGERARE
+YZEGS.VehicleSheet.ExposedPassenger: Oskyddad
+YZEGS.VehicleSheet.InnerComponents: Inre komponent
+YZEGS.VehicleSheet.OuterComponents: Yttre komponent
+YZEGS.VehicleSheet.ComponentDamage: Antal skada orsakad till denna komponent
+YZEGS.VehicleSheet.FcsType: Typ
+YZEGS.VehicleSheet.Components.fuel: Bränsle
+YZEGS.VehicleSheet.Components.engine: Motor
+YZEGS.VehicleSheet.Components.suspension: Fjädring
+YZEGS.VehicleSheet.Components.ammunition: Ammunition
+YZEGS.VehicleSheet.Components.radio: Radio
+YZEGS.VehicleSheet.Components.trackWheel: Band / Hjul
+YZEGS.VehicleSheet.Components.fcs: Fire Control System
+YZEGS.VehicleSheet.Components.antenna: Antenn
+YZEGS.VehicleSheet.HasTrailer: Har ett släp
+YZEGS.VehicleSheet.HasSmokeDischarger: Rökkastare
+YZEGS.UnitSheet.Name: Fullständigt namn
+YZEGS.UnitSheet.Info: Ytterligare information
+YZEGS.UnitSheet.Faction: Fraktion
+YZEGS.UnitSheet.UnitAffiliation: Tillhörighet
+YZEGS.UnitSheet.UnitSize: Enhetsstorlek
+YZEGS.UnitSheet.UnitType: Enhetstyp
+YZEGS.UnitSheet.UnitModifiers: Enhetsmodifierare
+YZEGS.UnitSheet.Personnel: Personal
+YZEGS.UnitSheet.Vehicles: Stridsfordon
+YZEGS.UnitSheet.HQ: Högkvarter (HK)
+YZEGS.UnitAffiliationNames.friendly: Vänlig
+YZEGS.UnitAffiliationNames.hostile: Fientlig
+YZEGS.UnitAffiliationNames.neutral: Neutral
+YZEGS.UnitAffiliationNames.unknown: Okänd
+YZEGS.UnitModifierNames.airborne: Luftburen
+YZEGS.UnitModifierNames.parachute: Fallskärm
+YZEGS.UnitModifierNames.airmobile: Flygmobil
+YZEGS.UnitModifierNames.airmobileOrganicLift: Flygm. O. L.
+YZEGS.UnitModifierNames.amphibious: Ampfibisk
+YZEGS.UnitModifierNames.motorized: Motoriserad
+YZEGS.UnitModifierNames.moutain: Berg
+YZEGS.UnitModifierNames.cannon: Kanon
+YZEGS.UnitModifierNames.wheeled: Hjulförsedd
+YZEGS.UnitSizeNames.army: Armé XXXX
+YZEGS.UnitSizeNames.corps: Kår XXX
+YZEGS.UnitSizeNames.division: Division XX
+YZEGS.UnitSizeNames.Brigade: Brigad X
+YZEGS.UnitSizeNames.regiment: Regimente | | |
+YZEGS.UnitSizeNames.battalion: Bataljon | |
+YZEGS.UnitSizeNames.company: Kompani |
+YZEGS.UnitSizeNames.staffel: Staffel ••••
+YZEGS.UnitSizeNames.platoon: Pluton •••
+YZEGS.UnitSizeNames.section: Sektion ••
+YZEGS.UnitSizeNames.squad: Tropp •
+YZEGS.UnitSizeNames.fireteam: Eldgrupp
+YZEGS.ItemSheet.Name: Namn
+YZEGS.ItemSheet.FeaturesTab: Funktioner
+YZEGS.ItemSheet.ModifiersTab: Modifierare
+YZEGS.ItemSheet.RollModifiers: Slå modifierare
+YZEGS.ItemSheet.AddNewRollModifier: Lägg till en ny tärningsmodifierare till detta föremål
+YZEGS.ItemSheet.DeleteRollModifier: Ta bort denna tärningsmodifierare
+YZEGS.ItemSheet.NoRollModifier: Detta föremål har ingen tärningsmodifierare. För att lägga till en, klicka på "+" ikonen.
+YZEGS.ItemSheet.SelectRollModifier: Ange namn
+YZEGS.ItemSheet.DescriptionTab: Anteckningar
+YZEGS.ItemSheet.AttributeUsed: Grundegenskap använd
+YZEGS.ItemSheet.SkillUsed: Färdighet använd
+YZEGS.ItemSheet.WeaponMagazine: Magasin
+YZEGS.ItemSheet.Quantity: Antal
+YZEGS.ItemSheet.ItemType: Typ
+YZEGS.ItemSheet.Ammo: Ammo
+YZEGS.ItemSheet.AmmoType: Ammunitionsidentifierare
+YZEGS.ItemSheet.OverrideOption: Åsidosätt vapnets funktioner
+YZEGS.ItemSheet.Reliability: Pål.
+YZEGS.ItemSheet.RoF: Eldh.
+YZEGS.ItemSheet.Damage: Skada
+YZEGS.ItemSheet.Crit: Krit.
+YZEGS.ItemSheet.Blast: Spräng
+YZEGS.ItemSheet.Range: Räckv.
+YZEGS.ItemSheet.Mag: Mag.
+YZEGS.ItemSheet.Armor: Skydd
+YZEGS.ItemSheet.Weight: Vikt
+YZEGS.ItemSheet.Price: Pris
+YZEGS.ItemSheet.ArmorLocation: Skyddat område
+YZEGS.ItemSheet.Equipped: Utrustad
+YZEGS.ItemSheet.StoredInBackpack: Förvarad i ryggsäck
+YZEGS.ItemSheet.CreateAmmo: Generera ammunition
+YZEGS.ItemSheet.CreateAmmoNotif: Genererade 1x <b>{ammo}</b> för vapnet <b>{weapon}</b>
+YZEGS.ItemSheet.FeaturesForVehicle: Fordonsegenskaper
+YZEGS.InjurySheet.Category: Kategori
+YZEGS.InjurySheet.Location: Plats
+YZEGS.InjurySheet.TimeLimit: Tidsbegränsning
+YZEGS.InjurySheet.HealTime: Läketid
+YZEGS.InjurySheet.Effect: Effekt
+YZEGS.InjurySheet.Lethal: Dödlig
+YZEGS.InjurySheet.day: dag
+YZEGS.InjurySheet.days: dagar
+YZEGS.Chat.Actions.Attack: Attackera
+YZEGS.Chat.Actions.Reload: Ladda om
+YZEGS.Chat.Actions.Roll: Slå
+YZEGS.Chat.Actions.Push: Pressa
+YZEGS.Chat.Actions.ApplyDamage: Applicera skada
+YZEGS.Chat.Roll.Success: Lyckat
+YZEGS.Chat.Roll.Successes: Lyckade
+YZEGS.Chat.Roll.Pushed: '— Pressat'
+YZEGS.Chat.Roll.Suppression: Nedhållen
+YZEGS.Chat.Roll.ExtraHit: Extra träff
+YZEGS.Chat.Roll.ExtraHits: Extra träffar
+YZEGS.Chat.Roll.Mishap: Missöde
+YZEGS.Chat.Roll.AmmoSpent: Använd ammunition
+YZEGS.Chat.Roll.NoItemNotif: Detta föremål existerar inte längre.
+YZEGS.Chat.Roll.NoReliabilityNotif: Föremålets nuvarande tillförlitlighet gör föremålet obrukbart.
+YZEGS.Chat.Damage.Incapacited: OSKADLIGGJORD
+YZEGS.Chat.Damage.DamagedArmor: Skadad
+YZEGS.Chat.Damage.DamageDealt: '<b>{name}</b> har tillfogat <b>{amount}</b> skada.'
+YZEGS.Chat.Damage.NoDamageDealt: Ingen skada tillfogades <b>{name}</b>.
+YZEGS.Chat.Damage.InitialAmount: Attacken gjorde initialt <b>{damage}</b> skada, med en skyddsmodifikation av {mod}.
+YZEGS.Chat.Damage.DeflectedDamage: undvek {damage} skada
+YZEGS.Chat.Damage.DeflectedAllDamage: undvek all skada
+YZEGS.Chat.Damage.NoEffect: ingen effekt
+YZEGS.Combat.Attack: '{weapon} — Attack'
+YZEGS.Combat.Barrier: Barriär
+YZEGS.Combat.BodyArmor: Kroppsskydd
+YZEGS.Combat.NoQuantityLeft: Inga enheter kvar för vapnet {weapon}.
+YZEGS.Combat.NoAmmoLeft: Ingen ammunition kvar i magasinet för {weapon}.
+YZEGS.Combat.NoMag: Sätt i ett magasin i vapnet {weapon}.
+YZEGS.Dialog.Actions.Normal: Slå
+YZEGS.Dialog.Actions.Reload: Ladda om
+YZEGS.Dialog.Actions.Ok: OK
+YZEGS.Dialog.Actions.Cancel: Avbryt
+YZEGS.Dialog.Roll.Attribute: Egenskap
+YZEGS.Dialog.Roll.Skill: Färdighet
+YZEGS.Dialog.Roll.Formula: Formel
+YZEGS.Dialog.Roll.RoF: Eldhastighet
+YZEGS.Dialog.Roll.Modifier: Modifierare
+YZEGS.Dialog.Roll.Locate: Lägg till en träfftärning?
+YZEGS.Dialog.Roll.MaxPush: Antal pressanden
+YZEGS.Dialog.Roll.RollMode: Visning
+YZEGS.Dialog.CuF.CoolnessUnderFire: Stridsvana (CUF)
+YZEGS.Dialog.CuF.UnitMorale: Lägg till Enhetens moral?
+YZEGS.Dialog.Actor.ChooseActor: Välj en karaktär
+YZEGS.Dialog.Damage.ChooseDamage: Skadans omfattning
+YZEGS.Dialog.Damage.Description: Ange hur mycket skada du vill tillfoga <b>{target}</b>.
+YZEGS.Dialog.Damage.DamageQuantity: Grundantal
+YZEGS.Dialog.Damage.ExtraHits: Extraträffar
+YZEGS.Dialog.Damage.BarrierArmors: Barriärens skyddsnivå
+YZEGS.Dialog.Damage.BarrierArmorsHint: Multipla barriärer kommasepareras.
+YZEGS.Macro.MultipleItems: Din aktiva aktör {actor} har mer än ett föremål med namnet {item}. Det första matchade objektet kommer att väljas.
+YZEGS.Macro.NoItem: Din aktiva aktör {actor} har inte ett objekt som heter {item}.
+FLPS.TAB.MAIN: Grupp
+FLPS.TAB.TRAVEL: Resehandlingar
+FLPS.TAB.NOTE: Anteckningar
+FLPS.PARTY.NAME: Gruppnamn
+FLPS.PARTY.MEMBERS: Gruppmedlemmar
+FLPS.PARTY.HINT_ADD: Dra & släpp karaktärer hit för att lägga till dem till gruppen.
+FLPS.PARTY.HINT_ASSIGN: Dra & släpp karaktärer för att tilldela dem till önskade aktiviteter.
+FLPS.TRAVEL.MARCH: Marscherar
+FLPS.TRAVEL.DRIVE: Kör
+FLPS.TRAVEL.WATCH: Håller vakt
+FLPS.TRAVEL.REST: Vilar
+FLPS.TRAVEL.SLEEP: Sover
+FLPS.TRAVEL.SCROUNGE: Letar
+FLPS.TRAVEL.FORAGE: Söker föda
+FLPS.TRAVEL.HUNT: Jagar
+FLPS.TRAVEL.FISH: Fiskande
+FLPS.TRAVEL.CAMP: Slår läger
+FLPS.TRAVEL.COOK: Lagar mat
+FLPS.TRAVEL.OTHER: Annat
+FLPS.TRAVEL.RESET: NOLLSTÄLL
+FLPS.UI.WHO_ROLLS: Vem slår?
+FLPS.UI.WHO_PUSHES: Vem pressar?
+FLPS.UI.ATTENTION: OBS
+FLPS.UI.ERROR.OPEN_SHEET: Var god öppna karaktärsbladet minst en gång innan ni slår för resor.
+FLPS.TRAVEL_ROLL.FORCED_MARCH: Ilmarsch
+FLPS.TRAVEL_ROLL.MARCH_IN_DARKNESS: Marsch i mörker
+FLPS.TRAVEL_ROLL.DRIVE: Kör
+FLPS.TRAVEL_ROLL.KEEP_WATCH: Håll vakt
+FLPS.TRAVEL_ROLL.RECOVER: Återhämta
+FLPS.TRAVEL_ROLL.FIND_SCRAP: Leta
+FLPS.TRAVEL_ROLL.FIND_FOOD: Sök föda
+FLPS.TRAVEL_ROLL.FIND_PREY: Hitta villebråd
+FLPS.TRAVEL_ROLL.RECON_PREY: Närma villebråd
+FLPS.TRAVEL_ROLL.KILL_PREY: Döda villebråd
+FLPS.TRAVEL_ROLL.CATCH_FISH: Fiska
+FLPS.TRAVEL_ROLL.MAKE_CAMP: Slå läger
+FLPS.TRAVEL_ROLL.HIDE_CAMP: Dölj läger
+FLPS.TRAVEL_ROLL.COOK_FOOD: Laga mat
+FLPS.SETTINGS.ALLOW_PUSH: Tillåt oändligt antal pressade slag
+FLPS.SETTINGS.ALLOW_PUSH_HINT: Om din SL tillåter ett oändligt antal pressade slag. Eller om du är en SL som vill kunna pressa denna händelses slag; kryssa i detta val för att visa en pressa-knapp på nästan alla slag.
+SETTINGS.trackPcAmmo.name: Räkna av spelarnas ammunition
+SETTINGS.trackPcAmmo.label: Huruvida spelarnas ammunitionsförbrukning ska räknas av.
+SETTINGS.trackNpcAmmo.name: Räkna av SLP:ers ammunition
+SETTINGS.trackNpcAmmo.label: Huruvida SLP:ers ammunitionsförbrukning ska räknas av.
+SETTINGS.trackVehicleAmmo.name: Räkna av fordonsammunition
+SETTINGS.trackVehicleAmmo.label: Huruvida spelarnas ammunitionsförbrukning för fordon ska räknas av.
+SETTINGS.showTaskCheckOptions.name: Fråga om uppdragsval som standard
+SETTINGS.showTaskCheckOptions.label: Håll ned shift för att växla.
+SETTINGS.closeRollTooltipDelay.name: Fördröjning av verktygstips för tärningsslag
+SETTINGS.closeRollTooltipDelay.label: Hur många sekunder skall verktygstipset dröja kvar innan de automatiskt stängs ned? Max är 15 minuter. Sätt detta värde till -1 för att aldrig stängas.
+SETTINGS.defaultCharTokenSize.name: Standard prototypstorlek för SLP:er och rollpersoner
+SETTINGS.defaultCharTokenSize.label: Sätt en standard prototypstorlek [0.3, 2.0] för nyskapade SLP:er och rollpersonsaktörer.
+YZUR.CHAT.ROLL.Push: Pressa
+YZUR.CHAT.ROLL.HitLocation: 'Träffområde:'
+YZUR.CHAT.ROLL.HitLocations: 'Träffområden:'
+YZUR.CHAT.ROLL.Locations.1: Ben
+YZUR.CHAT.ROLL.Locations.2: Bål
+YZUR.CHAT.ROLL.Locations.3: Bål
+YZUR.CHAT.ROLL.Locations.4: Bål
+YZUR.CHAT.ROLL.Locations.5: Armar
+YZUR.CHAT.ROLL.Locations.6: Huvud
+YZUR.CHAT.ROLL.ExtraHit: 'Extra träff:'
+YZUR.CHAT.ROLL.ExtraHits: 'Extra träffar:'
+YZUR.CHAT.ROLL.Suppression: 'Nedhållande:'
+YZUR.CHAT.ROLL.AmmoSpent: 'Spenderad ammunition:'
+YZUR.CHAT.ROLL.DamageOrStress: 'Skada/Stress:'
+YZUR.CHAT.ROLL.JamCount: 'Pålitlighet:'
+YZUR.CHAT.ROLL.Jammed: VAPENSTOPP!!
+YZUR.DIETERMS.D6SteppedDie: Bas T6
+YZUR.DIETERMS.D8SteppedDie: Bas T8
+YZUR.DIETERMS.D10SteppedDie: Bas T10
+YZUR.DIETERMS.D12SteppedDie: Bas T12
+YZUR.DIETERMS.AmmoDie: Ammo
+YZUR.DIETERMS.LocationDie: Träfftärning
+TYPES.Actor.character: Rollperson
+TYPES.Actor.npc: Spelledarperson
+TYPES.Actor.vehicle: Fordon
+TYPES.Actor.unit: Militär enhet
+TYPES.Actor.party: Resegrupp
+TYPES.Item.weapon: Vapen
+TYPES.Item.armor: Kroppsskydd
+TYPES.Item.ammunition: Ammo
+TYPES.Item.grenade: Sprängämne
+TYPES.Item.gear: Utrustning
+TYPES.Item.injury: Kritisk skada
+TYPES.Item.specialty: Specialitet
+EFFECT.StatusFullCover: Heltäckande skydd
+EFFECT.StatusPartialCover: Partiellt skydd
+EFFECT.StatusOverwatch: Övervakning
+EFFECT.StatusSuppressed: Nedhållande
+EFFECT.StatusStop: Stopp
+EFFECT.StatusSmoke: Rök
+EFFECT.StatusFire: Eld
+EFFECT.StatusSlowAction: Långsam handling spenderad
+EFFECT.StatusFastAction: Snabb handling spenderad
+YZEGS.Dialog.ChooseValue.Value: Modifierare
+YZEGS.Dialog.ChooseValue.Ammo: Ange Ammunitionsmängd för {name}
+YZEGS.Dialog.ChooseValue.Armor: Ange Kroppskydd för {name}
+YZEGS.Dialog.ChooseValue.Qty: Ange Antal för {name}
+YZEGS.ActorSheet.Age: Ålder
+YZEGS.MACRO.GetActorTitle: Välj en karaktär
+YZEGS.MACRO.MultipleItems: Din kontrollerade karaktär {actor} har mer än ett föremål med namnet {item}. Det första föremålet kommer att väljas.
+SETTINGS.hideCapacitiesButtons.label: Om plus-minus-knapparna som används för att ändra maxkapaciteten för Skada & Stress på karaktärsbladet ska döljas för spelarna.
+YZEGS.MACRO.GetActorHint: Du har valt flera markörer. Välj bara en av dem.
+YZEGS.MACRO.NoActor: Den karaktär du kontrollerar, {actor} hittades inte.
+YZEGS.MACRO.NoItem: Din karaktär {actor} äger inget föremål vid namn {item}.
+YZEGS.MACRO.RollAction: Handling {action}
+YZEGS.MACRO.RollStat: Slå {stat}
+YZEGS.ActorSheet.ToChat: Skicka föremålet till chatten
+YZUR.CHAT.ROLL.Accept: Acceptera
+SETTINGS.hideCapacitiesButtons.name: Dölj kapacitetsmodifierare
+SETTINGS.hideWeaponProps.name: Dölj vapenegenskaper
+SETTINGS.hideWeaponProps.label: Om du vill dölja egenskapernas kryssrutor för spelarna i vapenformuläret.
+SETTINGS.characterFieldLabels.name: Character Field Labels
+SETTINGS.characterFieldLabels.label: Configure Character Field Labels
+SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes used by character and NPC sheets.
+SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
+SETTINGS.characterFieldLabels.save: Save Labels
+SETTINGS.characterFieldLabels.saved: Character field labels saved.
+YZEGS.ItemTypes.skill: Skill
+TYPES.Item.skill: Skill
+YZEGS.ItemSheet.ParentAttribute: Parent Attribute
+YZEGS.ItemSheet.SkillRating: Rating
+YZEGS.ActorSheet.NewItem.skill: New Skill
+YZEGS.ActorSheet.DropSkillsHere: Drop Skill Items here
+YZEGS.ActorSheet.SkillDropHint: Skill Items must have a parent attribute and be dropped in the Skills section.

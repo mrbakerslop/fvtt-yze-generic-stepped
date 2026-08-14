@@ -1,0 +1,29 @@
+<div class="experience-dialog experience-award-dialog">
+  <p>{{localize "YZEGS.Experience.AwardInstructions"}}</p>
+
+  <div class="experience-award-questions">
+    {{#each data.questions as |question|}}
+    <label class="experience-award-question" data-amount="{{question.amount}}">
+      <input type="hidden" name="questions.{{question.id}}" value="false" />
+      {{> checkboxControl name=(concat "questions." question.id) value=false editable=true}}
+      <span>{{question.label}}</span>
+      <strong>+{{question.amount}}</strong>
+    </label>
+    {{/each}}
+  </div>
+
+  <div class="form-group">
+    <label>{{localize "YZEGS.Experience.Adjustment"}}</label>
+    <input type="number" name="adjustment" value="0" step="1" />
+  </div>
+
+  <div class="form-group stacked">
+    <label>{{localize "YZEGS.Experience.Note"}}</label>
+    <input type="text" name="note" autocomplete="off" />
+  </div>
+
+  <div class="experience-dialog-summary">
+    <span>{{localize "YZEGS.Experience.AwardTotal"}}</span>
+    <strong class="experience-award-total">0</strong>
+  </div>
+</div>

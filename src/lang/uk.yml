@@ -1,0 +1,185 @@
+YZEGS.Attribute: Атрибут
+YZEGS.Attributes: Атрибути
+YZEGS.AttributeNames.str: Сила
+YZEGS.AttributeNames.agl: Спритність
+YZEGS.AttributeNames.int: Інтелект
+YZEGS.AttributeNames.emp: Емпатія
+YZEGS.SheetClassCharacter: Лист персонажа
+YZEGS.SheetClassVehicle: Лист транспортного засобу
+YZEGS.SkillNames.recon: Розвідка
+YZEGS.SkillNames.survival: Виживання
+YZEGS.SkillNames.tech: Механіка
+YZEGS.SkillNames.command: Командування
+YZEGS.SkillNames.persuasion: Переконання
+YZEGS.SkillNames.medicalAid: Медична допомога
+YZEGS.Action: Дія
+YZEGS.Actions: Дії
+YZEGS.ActionNames.meleeAttack: Атака ближнього бою
+YZEGS.ActionNames.grapple: Захоплення
+YZEGS.ActionNames.breakFree: Вивільнення
+YZEGS.ActionNames.throwWeapon: Метнути Зброю
+YZEGS.ItemTypes.weapon: Зброя
+YZEGS.ItemPropNames.twoHanded: Дворучний
+YZEGS.ItemPropNames.mounted: Встановлений
+YZEGS.ItemPropNames.disposable: Одноразовий
+YZEGS.ActorSheet.MainTab: Характеристики
+YZEGS.ActorSheet.CombatTab: Бій
+YZEGS.ActorSheet.EquipmentTab: Спорядження
+YZEGS.ActorSheet.BiographyTab: Біо
+YZEGS.ActorSheet.NoteTab: Нотатки
+YZEGS.ActorSheet.Branch: Відділення
+YZEGS.ActorSheet.MilitaryRank: Звання
+YZEGS.ActorSheet.ExperienceCurrent: ОД поточні
+YZEGS.ActorSheet.BigDream: Мрія
+YZEGS.ActorSheet.Current: Поточне
+YZEGS.ActorSheet.Max: Макс.
+YZEGS.ActorSheet.InjuryTimeLeft: '{time} залишилось'
+YZEGS.ActorSheet.Diseases: Хвороби
+YZEGS.ActorSheet.TemporaryRadiation: Тимчасове
+YZEGS.ActorSheet.Weapons: Зброя
+YZEGS.ActorSheet.AddWeapon: Додати зброю
+YZEGS.ActorSheet.Unarmed: Беззбройний
+YZEGS.ActorSheet.Delete: Видалити
+YZEGS.ActorSheet.NewItem.weapon: Нова зброя
+YZEGS.ActorSheet.NewItem.armor: Нова броня
+YZEGS.SkillNames.driving: Водіння
+YZEGS.ActorSheet.Nationality: Національність
+YZEGS.SkillNames.rangedCombat: Дальній бій
+YZEGS.ActorSheet.Name: Ім'я
+YZEGS.ActionNames.unarmedAttack: Беззбройна атака
+YZEGS.ActorSheet.Experience: Досвід
+YZEGS.ItemPropNames.ammoBelt: Патронташ
+YZEGS.ActorSheet.ExperienceTotal: ОД загальні
+YZEGS.ActionNames.run: Бігти
+YZEGS.ActorSheet.Appearance: Зовнішній вигляд
+YZEGS.ActorSheet.Actions: Дії
+YZEGS.ActorSheet.CriticalInjuries: Критичні травми
+YZEGS.ActorSheet.AddInjury: Додати нову травму
+YZEGS.ActorSheet.Radiation: Радіація
+YZEGS.ActorSheet.PermanentRadiation: Постійне
+YZEGS.ActorSheet.Edit: Редагувати
+YZEGS.ActorSheet.Equip: Спорядити
+YZEGS.ActorSheet.Store: Зберігати в рюкзаку
+YZEGS.SkillNames.stamina: Витривалість
+YZEGS.Skill: Навичка
+YZEGS.Skills: Навички
+YZEGS.SkillNames.heavyWeapons: Важка зброя
+YZEGS.SkillNames.closeCombat: Ближній бій
+YZEGS.SkillNames.mobility: Мобільність
+YZEGS.ActionNames.crawl: Повзти
+YZEGS.ActionNames.seekCover: Знайти укриття
+YZEGS.ActionNames.shove: Штовхати
+YZEGS.ActionNames.disarm: Роззброїти
+YZEGS.ActionNames.retreat: Відступити
+YZEGS.ActionNames.prepareBow: Приготувати лук
+YZEGS.ActionNames.firstAid: Перша допомога
+YZEGS.ActionNames.aim: Прицілитись
+YZEGS.TravelTaskNames.hunting: Полювання
+YZEGS.ArmorLocationNames.head: Голова
+YZEGS.ArmorLocationNames.arms: Руки
+YZEGS.ArmorLocationNames.torso: Торс
+YZEGS.ArmorLocationNames.legs: Ноги
+YZEGS.ActorSheet.CapacityModifier: 'Модифікатор:'
+YZEGS.ActorSheet.Add: Додати
+YZEGS.SheetClassUnit: Аркуш юніта
+YZEGS.SheetClassParty: Аркуш отряду
+YZEGS.SkillNames.none: '-'
+YZEGS.ActionNames.shootFirearm: Вогонь з вогнепальної зброї
+YZEGS.ActionNames.clearJam: Прочистити осічку
+YZEGS.ActionNames.aimSniper: Снайперське прицілювання
+YZEGS.ActionNames.shootBow: Стріляти з лука
+YZEGS.ActionNames.aimMortar: Наведення міномета чи гаубиці
+YZEGS.ActionNames.shootHeavyWeapon: Стрільба з тяжкого озброєння
+YZEGS.ActionNames.rally: Вихід
+YZEGS.ActionNames.directFire: Вогонь непрямою наводкою
+YZEGS.ActionNames.overwatch: Зайняти позицію спостерігача
+YZEGS.ActionNames.reload: Перезаряджання
+YZEGS.ActionNames.drive: Водити
+YZEGS.Constants: Константи
+YZEGS.ConstantNames.encumbrance: Вага
+YZEGS.ConstantNames.awareness: Бойова поінформованість
+YZEGS.ConstantNames.cuf: СПВ
+YZEGS.TravelTasks: Завдання дослідження
+YZEGS.TravelTaskNames.marching: Маршування
+YZEGS.TravelTaskNames.driving: Водіння
+YZEGS.TravelTaskNames.gathering: Збирання
+YZEGS.TravelTaskNames.keepingWatch: Спостереження
+YZEGS.TravelTaskNames.scrounging: Пошук ресурсів
+YZEGS.TravelTaskNames.foraging: Пошук їжі
+YZEGS.TravelTaskNames.fishing: Рибалка
+YZEGS.TravelTaskNames.makingCamp: Розбивка табору
+YZEGS.TravelTaskNames.cooking: Готування їжі
+YZEGS.TravelTaskNames.resting: Відпочинок
+YZEGS.TravelTaskNames.sleeping: Сон
+YZEGS.TravelTaskNames.exploring: Дослідження
+YZEGS.ConditionNames.starving: Голод
+YZEGS.ConditionNames.dehydrated: Дегідрація
+YZEGS.ConditionNames.sleepless: Позбавлений сну
+YZEGS.ConditionNames.hypothermic: Гіпотермія
+YZEGS.InjuryCategoryNames.physical: Фізичний
+YZEGS.InjuryCategoryNames.mental: Ментальний
+YZEGS.ActionTypes.fast: Швидкий
+YZEGS.ActionTypes.slow: Повільний
+YZEGS.Ranges.close: У ближньому бою
+YZEGS.Ranges.short: Короткий
+YZEGS.Ranges.medium: Середній
+YZEGS.Ranges.long: далекий
+YZEGS.Ranges.extreme: Надзвичайно Високий
+YZEGS.ItemTypes.ammunition: Боєприпаси
+YZEGS.ItemTypes.armor: Броня
+YZEGS.ItemTypes.gear: Спорядження
+YZEGS.ItemTypes.grenade: Вибухівка
+YZEGS.ItemTypes.injury: Травма
+YZEGS.ItemTypes.specialty: Спеціальне
+YZEGS.ItemPropNames.magazine: Це Магазин
+YZEGS.ItemPropNames.armored: Броньоване
+YZEGS.ItemPropNames.scope: Приціл
+YZEGS.ItemPropNames.bipod: Сошки
+YZEGS.ItemPropNames.tripod: Тринога
+YZEGS.ItemPropNames.nightVision: Нічне Бачення
+YZEGS.ItemPropNames.bayonet: Штик
+YZEGS.ItemPropNames.suppressor: Респіратор
+YZEGS.ActorTypes.npc: неігровий персонаж (НІП)
+YZEGS.ActorTypes.character: Персонаж Гравця (ПГ)
+YZEGS.ActorTypes.vehicle: Транспорт
+YZEGS.ActorSheet.HitCapacity: Очки Здоров'я
+YZEGS.ActorSheet.StressCapacity: Очки Стрессу
+YZEGS.ActorSheet.MoralCode: Моральний кодекс
+YZEGS.ActorSheet.Buddy: Друг
+YZEGS.ActorSheet.GroupMeeting: 'Як ви зустріли группу:'
+YZEGS.ActorSheet.AttributesAndSkills: Атрибути і Навички
+YZEGS.ActorSheet.Rating: Рейтинг
+YZEGS.ActorSheet.BaseDie: Базовий дайс
+YZEGS.ActorSheet.AddSpecialty: Додати нову спеціалізацію
+YZEGS.ActorSheet.Specialties: Спеціалізація
+YZEGS.ActorSheet.NoSpecialty: Цей персонаж немає спеціалізацію. Натисніть іконку "+" що би додати нову спеціалізацію.
+YZEGS.ActorSheet.Combat: Бій
+YZEGS.ActorSheet.CuF: Холоднокровність під вогнем
+YZEGS.ActorSheet.UnitMorale: Мораль бійця
+YZEGS.ActorSheet.NoArmor: Цей персонаж не носить броні.
+YZEGS.ActorSheet.Conditions: Стани
+YZEGS.ActorSheet.RadiationRoll: Радіаційна атака
+YZEGS.ActorSheet.EncumbranceTooHeavy: ЗАНАДТО ВАЖКИЙ
+YZEGS.ActorSheet.EncumbranceFull: ІНВЕНТАР Повний
+YZEGS.ActorSheet.Cover: Укриття
+YZEGS.ActorSheet.AddArmor: Додати нову броню
+YZEGS.ActorSheet.AddGear: Додати нове спорядження
+YZEGS.ActorSheet.AddAmmo: Додати нові боєприпаси
+YZEGS.ActorSheet.Encumbrance: Вага
+YZEGS.ActorSheet.CombatGearEncumbrance: Бойове спорядження (Вага)
+YZEGS.ActorSheet.BackpackEncumbrance: Рюкзак (Вага)
+YZEGS.ActorSheet.NewItem.gear: Нове спорядження
+YZEGS.ActorSheet.NewItem.ammunition: Нові Боєприпаси
+SETTINGS.characterFieldLabels.name: Character Field Labels
+SETTINGS.characterFieldLabels.label: Configure Character Field Labels
+SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes used by character and NPC sheets.
+SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
+SETTINGS.characterFieldLabels.save: Save Labels
+SETTINGS.characterFieldLabels.saved: Character field labels saved.
+YZEGS.ItemTypes.skill: Skill
+TYPES.Item.skill: Skill
+YZEGS.ItemSheet.ParentAttribute: Parent Attribute
+YZEGS.ItemSheet.SkillRating: Rating
+YZEGS.ActorSheet.NewItem.skill: New Skill
+YZEGS.ActorSheet.DropSkillsHere: Drop Skill Items here
+YZEGS.ActorSheet.SkillDropHint: Skill Items must have a parent attribute and be dropped in the Skills section.

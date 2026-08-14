@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 700" role="img" aria-label="Initiative card back">
+  <rect width="500" height="700" fill="#fff"/>
+  <rect x="12" y="12" width="476" height="676" rx="24" fill="#000"/>
+  <rect x="28" y="28" width="444" height="644" rx="16" fill="#fff"/>
+  <rect x="44" y="44" width="412" height="612" rx="10" fill="#000"/>
+  <path d="M72 72 428 628M428 72 72 628" stroke="#fff" stroke-width="6"/>
+  <rect x="100" y="200" width="300" height="300" transform="rotate(45 250 350)" fill="#000" stroke="#fff" stroke-width="8"/>
+  <circle cx="250" cy="350" r="112" fill="#fff" stroke="#000" stroke-width="8"/>
+  <circle cx="250" cy="350" r="92" fill="#000"/>
+  <text x="250" y="330" fill="#fff" font-family="system-ui, sans-serif" font-size="34" font-weight="700" text-anchor="middle">INITIATIVE</text>
+  <text x="250" y="382" fill="#fff" font-family="system-ui, sans-serif" font-size="26" font-weight="600" letter-spacing="8" text-anchor="middle">DECK</text>
+</svg>

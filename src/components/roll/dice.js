@@ -1,0 +1,572 @@
+import YZEGSDialog from '../dialog/dialog.js';
+import { YearZeroRoll } from '../../lib/yzur.js';
+import { YZEGS } from '../../system/config.js';
+import { range } from '@utils/utils.js';
+
+/* -------------------------------------------- */
+/*  Custom Dice Roller Interface                */
+/* -------------------------------------------- */
+
+/**
+ * Interface for performing tasks and rolling dice.
+ * @abstract
+ * @interface
+ */
+export class YZEGSRoller {
+  constructor() {
+    throw new SyntaxError(`${this.constructor.name} cannot be instanciated. Use static methods instead.`);
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Rolls dice for YZEGS.
+   * @param {string?}  title                The title of the roll
+   * @param {Actor?}   actor                The actor who rolled the dice, if any
+   * @param {Item?}    item                 The item used to roll the dice, if any
+   * @param {string?}  attributeName        The name of the attribute used (important for modifiers)
+   * @param {string?}  skillName            The Skill Item ID used (important for modifiers)
+   * @param {number}  [attribute=0]         The attribute's size
+   * @param {number}  [skill=0]             The skill's size
+   * @param {number}  [rof=0]               The RoF's value
+   * @param {number}  [modifier=0]          The task modifier
+   * @param {boolean} [locate=false]        Whether to roll a Location die
+   * @param {number}  [maxPush=1]           The maximum number of pushes (default is 1)
+   * @param {string?}  messageMode          Chat message visibility mode
+   * @param {boolean} [askForOptions=false] Whether to show a Dialog for roll options
+   * @param {boolean} [skipDialog=false]    Whether to force skip the Dialog for roll options
+   * @param {boolean} [sendMessage=true]    Whether the message should be sent
+   * @returns {Promise<YearZeroRoll|ChatMessage>} If sendMessage=true, returns the ChatMessage,
+   *      otherwise returns the YearZeroRoll.
+   * @static
+   * @async
+   */
+  static async taskCheck({
+    title = 'Year Zero Engine - Generic Stepped Dice – Task Check',
+    actor = null,
+    item = null,
+    attributeName = null,
+    skillName = null,
+    attribute = 0,
+    skill = 0,
+    rof = 0,
+    modifier = 0,
+    locate = false,
+    maxPush = 1,
+    messageMode = null,
+    askForOptions = false,
+    skipDialog = false,
+    sendMessage = true,
+  } = {}) {
+    // 1 — Prepares data.
+    messageMode = messageMode ?? game.settings.get('core', 'messageMode');
+
+    // 2 — Checks if we ask for options (roll dialog).
+    const showTaskCheckOptions = game.settings.get('fvtt-yze-generic-stepped', 'showTaskCheckOptions');
+    if (!skipDialog && askForOptions !== showTaskCheckOptions) {
+      // 2.1 — Prepares a formula.
+      const formula = YearZeroRoll.forge(
+        getDiceQuantities(attribute, skill),
+      ).formula;
+
+      // 2.2 — Handles roll modifiers.
+      let modifiers;
+      if (actor) {
+        modifiers = actor.getRollModifiers();
+        if (skillName || attributeName) {
+          modifiers = modifiers.filter(m => m.target === skillName || m.target === attributeName);
+        }
+        if (modifiers.length) {
+          modifier += modifiers.reduce((sum, m) => sum + (m.active ? m.value : 0), 0);
+        }
+      }
+
+      // 2.3 — Renders the dialog.
+      const opts = await YZEGSDialog.askRollOptions({
+        title, attribute, skill, rof, modifier, modifiers, locate,
+        maxPush, messageMode, formula,
+      });
+
+      // 2.3.5 — Exits early if the dialog was cancelled.
+      if (opts.cancelled) return null;
+
+      // 2.4 — Uses options from the roll dialog.
+      if (!attribute && !skill) {
+        attribute = opts.attribute;
+        skill = opts.skill;
+      }
+      rof = opts.rof;
+      modifier = opts.modifier;
+      locate = opts.locate;
+      maxPush = opts.maxPush;
+      messageMode = opts.messageMode;
+    }
+    // 3 — Clamps values.
+    attribute = Math.clamp(attribute, 0, 12);
+    skill = Math.clamp(skill, 0, 12);
+    modifier = Math.clamp(modifier, -100, 100);
+    maxPush = Math.clamp(maxPush, 0, 100);
+
+    // 4 — Creates the roll.
+    const dice = getDiceQuantities(attribute, skill, rof, locate);
+    let roll = YearZeroRoll.forge(dice, { maxPush });
+    roll.name = title;
+
+    // 5 — Modifies the roll.
+    if (modifier) {
+      roll = await roll.modify(modifier);
+    }
+
+    // 6 — Adds actor/token/item IDs.
+    // These are added to `roll.options` which is conserved.
+    if (actor) {
+      roll.options.actorId = actor.id;
+      const token = actor.token;
+      if (token) {
+        roll.options.sceneId = token.parent.id;
+        roll.options.tokenId = token.id;
+        roll.options.tokenKey = `${token.parent.id}.${token.id}`;
+      }
+    }
+    if (item) {
+      roll.options.itemId = item.id;
+    }
+
+    // 7 — Evaluates the roll.
+    await roll.roll();
+    console.log('yzegs | ROLL', roll.name, roll);
+
+    // 8 — Sends the message and returns.
+    if (sendMessage) {
+      return roll.toMessage({}, { messageMode });
+    }
+    return roll;
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Rolls dice for a Coolness Under Fire test.
+   * @returns {Promise<YearZeroRoll|ChatMessage>}
+   */
+  static async cufCheck({
+    title = game.i18n.localize('YZEGS.Dialog.CuF.CoolnessUnderFire'),
+    actor = null,
+    unitMorale = false,
+    modifier = 0,
+    maxPush = 1,
+    messageMode = null,
+    sendMessage = true,
+  } = {}) {
+    if (!actor) return;
+    messageMode = messageMode ?? game.settings.get('core', 'messageMode');
+    const modifiers = actor.getRollModifiers().filter(m => m.target === 'cuf');
+    const opts = await YZEGSDialog.askCuFOptions({ title, unitMorale, modifier, modifiers, maxPush, messageMode });
+
+    // Exits early if the dialog was cancelled.
+    if (opts.cancelled) return null;
+
+    // Uses options from the CuF dialog.
+    unitMorale = opts.unitMorale;
+    messageMode = opts.messageMode;
+    modifier = opts.modifier;
+    maxPush = opts.maxPush;
+
+    // Gets attributes' values.
+    const cuf = actor.system.cuf.value;
+    const um = actor.system.unitMorale.value;
+
+    return this.taskCheck({
+      title,
+      // actor,
+      // attributeName: 'cuf',
+      attribute: cuf,
+      skill: unitMorale ? um : 0,
+      modifier, maxPush, messageMode,
+      skipDialog: true,
+      sendMessage,
+    });
+  }
+}
+
+/* -------------------------------------------- */
+/*  Roll Push                                   */
+/* -------------------------------------------- */
+
+/**
+ * Pushes a roll.
+ * @param {YearZeroRoll} roll     The roll to push
+ * @param {ChatMessage} [message] The message holding the roll that will be deleted
+ * @returns {Promise<YearZeroRoll|ChatMessage>}
+ * @async
+ */
+export async function rollPush(roll, { message } = {}) {
+  if (!roll.pushable) return roll;
+
+  // Copies the roll.
+  roll = roll.duplicate();
+
+  // Pushes the roll.
+  await roll.push({ async: true });
+
+  // Returns the pushed roll if there is no message.
+  if (!message) return roll.toMessage();
+
+  // Gets all the message's flags.
+  const flags = message.getFlag('fvtt-yze-generic-stepped', 'data') ?? {};
+  const oldAmmoSpent = flags.ammoSpent || 0;
+  let newAmmoSpent = -Math.max(1, roll.ammoSpent); // why roll.ammoSpent + 1 here
+  const actorId = roll.options.actorId;
+  const tokenKey = roll.options.tokenKey;
+  const actor = getRollingActor({ actorId, tokenKey });
+  const itemId = roll.options.itemId;
+  const item = actor ? actor.items.get(itemId) : game.items.get(itemId);
+  const ammoId = flags.ammo ?? (item ? item.system.mag?.target : '');
+  const ammo = actor ? actor.items.get(ammoId) : game.items.get(ammoId);
+
+  // No need to await the deletion.
+  message.delete();
+
+  const m = await roll.toMessage();
+
+  const flagData = {};
+
+  // Updates the reliability.
+  if (item?.hasReliability && roll.jamCount) {
+    const oldJam = flags.reliabilityChange ?? 0;
+    const newJam = -roll.jamCount;
+
+    if (oldJam !== newJam) {
+      const relChange = await item.updateReliability(newJam - oldJam);
+      flagData.reliabilityChange = oldJam + relChange;
+    }
+  }
+
+  // Updates the ammunition.
+  if (ammo) {
+    const track = (actor.type === 'character' && game.settings.get('fvtt-yze-generic-stepped', 'trackPcAmmo'))
+      || (actor.type === 'npc' && game.settings.get('fvtt-yze-generic-stepped', 'trackNpcAmmo'))
+      || (actor.type === 'vehicle' && game.settings.get('fvtt-yze-generic-stepped', 'trackVehicleAmmo'));
+
+    if (track) {
+      flagData.ammoSpent = oldAmmoSpent;
+
+      if (oldAmmoSpent !== newAmmoSpent) {
+        newAmmoSpent = await ammo.updateAmmo(newAmmoSpent - oldAmmoSpent);
+        flagData.ammoSpent = oldAmmoSpent + newAmmoSpent;
+      }
+      flagData.ammo = ammo.id;
+    }
+  }
+
+  // Updates message's flags.
+  if (!foundry.utils.isEmpty(flagData)) {
+    await m.setFlag('fvtt-yze-generic-stepped', 'data', flagData);
+  }
+
+  return m;
+}
+
+/* -------------------------------------------- */
+/*  Dice Utility Functions                      */
+/* -------------------------------------------- */
+
+/**
+ * Gets the size of a die from its rating.
+ * @param {string} score A, B, C, D or F
+ */
+export function getDieSize(score) {
+  if (typeof score !== 'string') throw new TypeError(`Die Score Not a String: "${score}"`);
+  if (score.length !== 1) throw new SyntaxError(`Die Score Incorrect: "${score}"`);
+  const size = YZEGS.dieSizesMap.get(score);
+  if (size == undefined) throw new RangeError(`Die Size Not Found! Score: "${score}"`);
+  return size;
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Gets the Attribute and Skill values (+ the skill's name).
+ * @param {string|Item} skillReference The embedded Skill Item or its ID
+ * @param {Actor} actor The Actor making the roll
+ * @param {string} [attributeName] The code of the attribute if different from the linked skill
+ * @returns {{ title: string, attribute: number, skill: number }}
+ */
+export function getAttributeAndSkill(skillReference, actor, attributeName = null) {
+  const skillItem = actor.getSkill(skillReference);
+  if (!skillItem) throw new Error(`Skill Item not found: ${skillReference}`);
+  attributeName = attributeName ?? skillItem.system.attribute;
+  const attribute = actor.system.attributes[attributeName]?.value ?? 0;
+  return {
+    title: skillItem.name,
+    attribute,
+    skill: skillItem.system.value,
+    attributeName,
+    skillName: skillItem.id,
+  };
+}
+
+/* -------------------------------------------- */
+
+/**
+ * Gets a DiceQuantities object from given values.
+ * @param {number}   attribute     The attribute's size
+ * @param {number}  [skill=0]      The skill's size
+ * @param {number}  [rof=0]        The RoF's value
+ * @param {number}  [modifier=0]   The task modifier
+ * @param {boolean} [locate=false] Whether to roll a Location die
+ * @see {YearZeroRoll}
+ * @returns {Array.<import('../lib/yzur.js').TermBlok>}
+ */
+export function getDiceQuantities(attribute, skill = 0, rof = 0, locate = false) {
+  const dice = [];
+  if (attribute > 0) dice.push({ term: attribute, number: 1 });
+  if (skill > 0) dice.push({ term: skill, number: 1 });
+  if (rof > 0) dice.push({ term: 'm', number: rof });
+  if (locate) dice.push({ term: 'l', number: 1 });
+  return dice;
+}
+/* ------------------------------------------- */
+
+/**
+ * Gets the Actor which is the source of a roll.
+ * @param {string} [actorId]
+ * @param {string} [tokenKey]
+ * @return {Actor}
+ */
+export function getRollingActor({ actorId, tokenKey } = {}) {
+  // Case 1 — A Synthetic Actor from a Token
+  if (tokenKey) {
+    const [sceneId, tokenId] = tokenKey.split('.');
+    const scene = game.scenes.get(sceneId);
+    if (!scene) return null;
+    const token = scene.getEmbeddedDocument('Token', tokenId);
+    // if (!tokenData) return null;
+    // const token = new Token(tokenData);
+    return token.actor;
+  }
+
+  // Case 2 — Use Actor ID instead
+  return game.actors.get(actorId);
+}
+
+/* -------------------------------------------- */
+/*  Dice So Nice Registration                   */
+/* -------------------------------------------- */
+// https://gitlab.com/riccisi/foundryvtt-dice-so-nice/-/wikis/API/Customization
+
+export function registerDsN(dice3d) {
+  dice3d.addSystem({
+    id: 'fvtt-yze-generic-stepped',
+    name: 'Year Zero Engine - Generic Stepped Dice',
+  }, 'preferred');
+
+  dice3d.addColorset({
+    name: 'yzegs-base',
+    category: 'Year Zero Engine - Generic Stepped Dice',
+    description: 'YZEGS Base Die',
+    foreground: '#E2C45F', // '#cfa826', // '#E2C45F',
+    background: '#4E5B31', // '#262c23', // '#4C5847', // '#44544c',
+    outline: 'none',
+    // edge: '#000',
+    texture: 'none',
+    material: 'metal',
+    font: 'Nunito Sans',
+  }, 'default');
+
+  dice3d.addColorset({
+    name: 'yzegs-ammo',
+    category: 'Year Zero Engine - Generic Stepped Dice',
+    description: 'YZEGS Ammo Die',
+    foreground: '#000',
+    background: '#A3904D', // '#726435', // '#A3904D',
+    outline: 'none',
+    // edge: '#000',
+    texture: 'bronze01',
+    material: 'metal',
+    font: 'Nunito Sans',
+    fontScale: { dm: 0.75, d6: 0.75 },
+  }, 'default');
+
+  dice3d.addColorset({
+    name: 'yzegs-loc',
+    category: 'Year Zero Engine - Generic Stepped Dice',
+    description: 'YZEGS Hit Location Die',
+    foreground: '#000',
+    background: '#fff', // '#9b978e', // '#DED8CC',
+    outline: 'none',
+    // edge: '#000',
+    texture: 'none',
+    material: 'glass',
+    font: 'Nunito Sans',
+  }, 'default');
+
+  dice3d.addDicePreset({
+    type: 'd6',
+    labels: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d6/yzegs_d6_1_dsn.png',
+      '2',
+      '3',
+      '4',
+      '5',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d6/yzegs_d6_6_dsn.png',
+    ],
+    // eslint-disable-next-line no-sparse-arrays
+    bumpMaps: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d6/yzegs_d6_1_dsn_bump.png',,,,,
+      'systems/fvtt-yze-generic-stepped/assets/dice/d6/yzegs_d6_6_dsn_bump.png',
+    ],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd6');
+
+  dice3d.addDicePreset({
+    type: 'd8',
+    labels: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_1_dsn.png',
+      '2',
+      '3',
+      '4',
+      '5',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_6_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_7_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_8_dsn.png',
+    ],
+    // eslint-disable-next-line no-sparse-arrays
+    bumpMaps: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_1_dsn_bump.png',,,,,
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_6_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_7_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d8/yzegs_d8_8_dsn_bump.png',
+    ],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd8');
+
+  dice3d.addDicePreset({
+    type: 'd10',
+    labels: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_1_dsn.png',
+      '2',
+      '3',
+      '4',
+      '5',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_6_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_7_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_8_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_9_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_10_dsn.png',
+    ],
+    // eslint-disable-next-line no-sparse-arrays
+    bumpMaps: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_1_dsn_bump.png',,,,,
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_6_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_7_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_8_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_9_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d10/yzegs_d10_10_dsn_bump.png',
+    ],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd10');
+
+  dice3d.addDicePreset({
+    type: 'd12',
+    labels: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_1_dsn.png',
+      '2',
+      '3',
+      '4',
+      '5',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_6_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_7_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_8_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_9_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_10_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_11_dsn.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_12_dsn.png',
+    ],
+    // eslint-disable-next-line no-sparse-arrays
+    bumpMaps: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_1_dsn_bump.png',,,,,
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_6_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_7_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_8_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_9_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_10_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_11_dsn_bump.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/d12/yzegs_d12_12_dsn_bump.png',
+    ],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd12');
+
+  dice3d.addDicePreset({
+    type: 'dm',
+    labels: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/dm/yzegs_dm_1_dsn.png',
+      '2',
+      '3',
+      '4',
+      '5',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dm/yzegs_dm_6_dsn.png',
+    ],
+    // eslint-disable-next-line no-sparse-arrays
+    bumpMaps: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/dm/yzegs_dm_1_dsn.png',,,,,
+      'systems/fvtt-yze-generic-stepped/assets/dice/dm/yzegs_dm_6_dsn.png',
+    ],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-ammo',
+  }, 'd6');
+
+  dice3d.addDicePreset({
+    type: 'dl',
+    labels: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_L.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_T.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_T.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_T.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_A.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_H.png',
+    ],
+    bumpMaps: [
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_L.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_T.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_T.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_T.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_A.png',
+      'systems/fvtt-yze-generic-stepped/assets/dice/dl/hit_H.png',
+    ],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-loc',
+  }, 'd6');
+
+  dice3d.addDicePreset({
+    type: 'd2',
+    labels: range(2),
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-ammo',
+  }, 'd2');
+
+  dice3d.addDicePreset({
+    type: 'd4',
+    labels: range(4),
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd4');
+
+  dice3d.addDicePreset({
+    type: 'd100',
+    labels: ['10', '20', '30', '40', '50', '60', '70', '80', '90', '00'],
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd100');
+
+  dice3d.addDicePreset({
+    type: 'd20',
+    labels: range(20),
+    system: 'fvtt-yze-generic-stepped',
+    colorset: 'yzegs-base',
+  }, 'd20');
+}

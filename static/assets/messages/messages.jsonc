@@ -1,0 +1,11 @@
+[
+  {
+    "min-core-version": "14.359",
+    "min-sys-version": "14.0.1",
+    "max-sys-version": "14.1.0",
+    "type": "chat",
+    "display": "once",
+    "title": "Year Zero Engine - Generic Stepped Dice",
+    "content": "<p class=\"nue\">Welcome, {name}.</p><p class=\"nue\">The generic stepped-dice Year Zero Engine system is ready to use.</p>"
+  }
+]

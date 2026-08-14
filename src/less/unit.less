@@ -1,0 +1,36 @@
+.yzegs.sheet.unit {
+  .window-content .sheet-root {
+    border: none;
+    border-radius: 0;
+  }
+
+  .tab-features .item-properties {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px 8px;
+    margin-top: @gap * 2;
+    padding: @gap * 2 @gap;
+    border-top: @borderSheet;
+
+    label.unit-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      min-height: 24px;
+      margin: 0;
+      line-height: 1.1;
+
+      .checkbox-control {
+        flex: none;
+        margin: 0;
+      }
+    }
+  }
+
+  .tab-features .option-menu-field > label {
+    align-self: center;
+    width: 140px;
+    max-width: 100%;
+  }
+}

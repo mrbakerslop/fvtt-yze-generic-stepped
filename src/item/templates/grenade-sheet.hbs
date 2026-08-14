@@ -1,0 +1,130 @@
+<div class="sheet-root flexcol">
+
+  {{!-- Item Sheet Header --}}
+  {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-header.hbs"}}
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    {{!-- Features Tab --}}
+    <div class="tab tab-features" data-group="primary" data-tab="features">
+      <div class="grid grid-4col item-features">
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.ItemType"}}</label>
+          <input type="text" name="system.itemType" value="{{system.itemType}}"/>
+        </div>
+        {{!-- <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Ammo"}}</label>
+          <input type="text" name="system.ammo" value="{{system.ammo}}"/>
+        </div> --}}
+        {{!-- <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Reliability"}}</label>
+          <div class="flexrow">
+            {{> scoreSelector name="system.reliability.score" selected=system.reliability.score editable=@root.editable}}
+            <span class="sep">/</span>
+            {{> scoreSelector name="system.reliability.max" selected=system.reliability.max editable=@root.editable}}
+          </div>
+        </div> --}}
+        {{!-- <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.RoF"}}</label>
+          <input type="text" name="system.rof" value="{{system.rof}}" data-dtype="Number"/>
+        </div> --}}
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Damage"}}</label>
+          <input type="text" name="system.damage" value="{{system.damage}}" data-dtype="Number"/>
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Crit"}}</label>
+          <input type="text" name="system.crit" value="{{system.crit}}" data-dtype="Number"/>
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Blast"}}</label>
+          {{> scoreSelector name="system.blast" selected=system.blast editable=@root.editable}}
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Range"}}</label>
+          <input type="text" name="system.range" value="{{system.range}}" data-dtype="Number"/>
+        </div>
+        {{!-- <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Mag"}}</label>
+          <div class="flexrow">
+            <input type="text" name="system.mag.value" value="{{system.mag.value}}" data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="text" name="system.mag.max" value="{{system.mag.max}}" data-dtype="Number"/>
+          </div>
+        </div> --}}
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Armor"}}</label>
+          <input type="text" name="system.armorModifier" value="{{numberFormat system.armorModifier sign=true}}" data-dtype="Number"/>
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Weight"}}</label>
+          <input type="text" name="system.weight" value="{{numberFormat system.weight decimals=2}}" data-dtype="Number"/>
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.Price"}}</label>
+          <input type="text" name="system.price" value="{{system.price}}" data-dtype="Number"/>
+        </div>
+      </div>
+
+      {{!-- Other Parameters --}}
+      <div class="features-other flexcol">
+
+        {{!-- Used Attribute --}}
+        <div class="form-group">
+          <label>{{localize "YZEGS.ItemSheet.AttributeUsed"}}</label>
+          {{> optionMenu name="system.attribute" selected=system.attribute options=attributeChoices
+            editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
+
+        {{!-- Used Skill --}}
+        <div class="form-group">
+          <label>{{localize "YZEGS.ItemSheet.SkillUsed"}}</label>
+          {{> optionMenu name="system.skill" selected=system.skill options=skillOptions
+            editable=@root.editable menuClass="item-field-menu"}}
+        </div>
+
+        {{!-- Properties --}}
+        <div class="form-group-stacked item-properties">
+          <label class="checkbox">
+            {{> checkboxControl value=true editable=false}}
+            {{localize "YZEGS.ItemPropNames.disposable"}}
+          </label>
+        </div>
+
+      </div>
+
+      {{!-- Inventory Options --}}
+      {{#if inActor}}
+      <div class="features-other flexcol">
+        <div class="form-group">
+          <label class="checkbox">
+            {{> checkboxControl name="system.equipped" value=system.equipped editable=@root.editable}}
+            {{localize "YZEGS.ItemSheet.Equipped"}}
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="checkbox">
+            {{> checkboxControl name="system.backpack" value=system.backpack editable=@root.editable}}
+            {{localize "YZEGS.ItemSheet.StoredInBackpack"}}
+          </label>
+        </div>
+      </div>
+      {{/if}}
+
+    </div>
+
+    {{!-- Description Tab --}}
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-description.hbs"}}
+    </div>
+
+  </section>
+
+</div>

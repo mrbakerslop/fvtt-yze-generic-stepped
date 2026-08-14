@@ -1,0 +1,59 @@
+<div class="crew-qty">
+  <div>
+    <label>{{localize "YZEGS.VehicleSheet.CrewQty"}}</label>
+    <input type="number" class="boxed-value" name="system.crew.qty" value={{system.crew.qty}} data-dtype="Number"/>
+  </div>
+  <div>
+    <label>{{localize "YZEGS.VehicleSheet.PassengerQty"}}</label>
+    <input type="number" class="boxed-value" name="system.crew.passengerQty" value={{system.crew.passengerQty}} data-dtype="Number"/>
+  </div>
+</div>
+
+{{!-- ================================================== --}}
+
+{{!-- CREW OCCUPANTS --}}
+<div class="crew-occupants">
+  {{#each crew}}
+  <div class="occupant{{#if (eq position "PASSENGER")}} passenger{{/if}}{{#if exposed}} exposed{{/if}}{{#if (lte actor.system.health.value 0)}} dead{{/if}}" data-crew-id="{{id}}" >
+
+    {{!-- Position --}}
+    <div class="occupant-position">
+      {{> optionMenu selected=position options=@root.config.vehicle.crewPositionFlagsLocalized
+        localize=true editable=@root.editable noBlank=true
+        inputClass="crew-position" menuClass="crew-position-menu"}}
+    </div>
+
+    {{!-- Image --}}
+    <img class="occupant-image" src="{{actor.img}}"/>
+
+    {{!-- Health Bar --}}
+    <progress class="occupant-health-gauge" value="{{actor.system.health.value}}" max="{{actor.system.health.max}}" title="{{localize "YZEGS.ActorSheet.HitCapacity"}}"></progress>
+
+    {{!-- Name --}}
+    <div class="occupant-name" title="{{actor.name}}">{{actor.name}}</div>
+
+    {{!-- Exposed checkbox --}}
+    <div class="occupant-exposed">
+      <label class="checkbox vehicle-checkbox">
+        {{> checkboxControl value=exposed editable=@root.editable inputClass="crew-expose"}}
+        <span>{{localize "YZEGS.VehicleSheet.ExposedPassenger"}}</span>
+      </label>
+    </div>
+
+    {{!-- Buttons --}}
+    <div class="occupant-buttons">
+      {{#unless actor.isCrewDeleted}}
+      <a class="button crew-edit" title="{{localize "YZEGS.ActorSheet.Edit"}}">
+        {{{@root.config.Icons.buttons.edit}}}
+      </a>
+      {{/unless}}
+      <a class="button crew-remove" title="{{localize "YZEGS.ActorSheet.Delete"}}">
+        {{{@root.config.Icons.buttons.remove}}}
+      </a>
+    </div>
+
+  </div>
+  {{else}}
+  <div class="crew-empty">{{localize "YZEGS.VehicleSheet.EmptyCrew"}}</div>
+  {{/each}}
+</div>

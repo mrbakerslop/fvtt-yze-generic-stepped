@@ -1,0 +1,185 @@
+/* ------------------------------------------- */
+/*  V2 Sheet Monochrome Theme                  */
+/* ------------------------------------------- */
+
+// Foundry V2 document sheets expose their visual theme through custom
+// properties. Pin those properties here so both the light and dark Foundry
+// themes produce the same deliberately black-and-white system sheets.
+.application.sheet.yzegs {
+  --background: #fff;
+  --color-header-background: #000;
+  --color-border: #000;
+  --color-tabs-border: #000;
+  --color-fieldset-border: #000;
+  --color-form-label: #000;
+  --color-form-label-hover: #000;
+  --color-form-hint: #000;
+  --color-form-hint-hover: #000;
+  --color-select-option-bg: #fff;
+  --color-data-border: #000;
+  --color-data-background: #fff;
+  --color-scrollbar: #000;
+  --color-scrollbar-track: #fff;
+  --color-text-emphatic: #000;
+  --color-text-primary: #000;
+  --color-text-secondary: #000;
+  --color-text-subtle: #000;
+  --color-text-accent: @colorRed;
+  --color-text-selection: #fff;
+  --color-text-selection-bg: #000;
+  --content-link-background: #fff;
+  --content-link-border-color: #000;
+  --content-link-icon-color: #000;
+  --content-link-text-color: #000;
+  --input-background-color: #fff;
+  --input-border-color: #000;
+  --input-box-shadow: none;
+  --input-text-color: #000;
+  --input-placeholder-color: #000;
+  --input-focus-outline-color: @colorRed;
+  --input-focus-text-color: #000;
+  --checkbox-background-color: #fff;
+  --checkbox-checked-color: #fff;
+  --checkbox-checkmark-color: #000;
+  --checkbox-disabled-color: #fff;
+  --button-background-color: #fff;
+  --button-border-color: #000;
+  --button-text-color: #000;
+  --button-focus-outline-color: #000;
+  --button-hover-background-color: #fff;
+  --button-hover-border-color: #000;
+  --button-hover-text-color: #000;
+  --table-background-color: #fff;
+  --table-header-bg-color: #fff;
+  --table-header-border-color: #000;
+  --table-header-text-color: #000;
+  --table-row-color-even: #fff;
+  --table-row-color-odd: #fff;
+  --table-row-color-highlight: #fff;
+  --hr-border: 1px solid #000;
+  --hr-gradient: none;
+  color-scheme: light;
+  background: #fff;
+  color: #000;
+  font-family: var(--yzegs-font-body);
+
+  // Let Foundry collapse document windows to their title bar. Individual
+  // sheet layouts set useful minimum dimensions while open, which must not
+  // constrain the framework's minimized state.
+  &.minimizing,
+  &.minimized,
+  &.maximizing {
+    min-width: unset;
+    min-height: unset;
+  }
+
+  // The sheet's heading rules must not style the V2 application frame title.
+  > .window-header {
+    background: #000;
+    border-color: #000;
+    color: #fff;
+    font-family: var(--yzegs-font-body);
+    font-size: var(--font-size-13);
+    font-weight: normal;
+
+    .window-title {
+      color: #fff;
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: inherit;
+      line-height: var(--header-height);
+      text-transform: none;
+    }
+
+    button.header-control {
+      --button-background-color: transparent;
+      --button-border-color: transparent;
+      --button-text-color: #fff;
+      --button-hover-background-color: #fff;
+      --button-hover-border-color: #fff;
+      --button-hover-text-color: #000;
+      background: transparent;
+      border: none;
+      color: #fff;
+    }
+  }
+
+  .window-content {
+    background: #fff;
+    color: #000;
+    font-family: var(--yzegs-font-body);
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    label,
+    legend,
+    p,
+    li,
+    th,
+    td,
+    dt,
+    dd,
+    a,
+    span {
+      color: #000;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: var(--yzegs-font-heading);
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea,
+    option {
+      background-color: #fff;
+      border-color: #000;
+      color: #000;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #000;
+      opacity: 1;
+    }
+
+    input:disabled,
+    select:disabled,
+    textarea:disabled {
+      background-color: #fff;
+      border-color: #000;
+      color: #000;
+      opacity: 1;
+    }
+
+    button,
+    a.button {
+      background-color: #fff;
+      border-color: #000;
+      color: #000;
+
+      &:hover,
+      &:focus {
+        background-color: #fff;
+        border-color: #000;
+        color: #000;
+        box-shadow: @hoverShadow;
+      }
+    }
+
+    .sheet-tabs a.item.active,
+    .sheet-tabs a.item.active * {
+      color: #fff;
+    }
+  }
+}

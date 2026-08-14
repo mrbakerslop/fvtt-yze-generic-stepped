@@ -1,0 +1,490 @@
+.yzegs.sheet.actor.vehicle {
+  min-width: 650px;
+  min-height: 400px;
+
+  .window-content {
+    .item-sheet-background();
+  }
+
+  progress {
+    appearance: none;
+    -webkit-appearance: none;
+    height: 12px;
+    overflow: hidden;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background: #fff;
+    color: #000;
+    accent-color: #000;
+
+    &::-webkit-progress-bar {
+      background: #fff;
+    }
+
+    &::-webkit-progress-value {
+      background: #000;
+    }
+
+    &::-moz-progress-bar {
+      background: #000;
+    }
+  }
+
+  /* ------------------------------------------- */
+  /*  Sheet Header                               */
+  /* ------------------------------------------- */
+
+  .sheet-header {
+    img.vehicle-profile {
+      height: 200px;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      &:hover {
+        border: 2px solid @colorBrown;
+        box-shadow: @hoverShadow;
+      }
+    }
+
+    h1 > input {
+      text-align: center;
+      color: @colorBrown;
+    }
+
+    h2 > input {
+      text-align: center;
+      .font-monospace();
+    }
+
+    .vehicle-movement-menu {
+      --option-menu-width: 120px;
+    }
+
+    .vehicle-fuel-menu {
+      --option-menu-width: 90px;
+    }
+
+    progress.fuel-gauge {
+      height: 11px;
+      margin-left: 4px;
+    }
+
+    /* ------------------------------------------- */
+
+    .header-details {
+      flex: 0 0 auto;
+      // align-self: flex-start;
+      text-align: center;
+
+      &> div.flexcol {
+        text-align: center;
+        align-items: center;
+      }
+
+      .type {
+        color: @colorTan;
+        .font-monospace();
+      }
+
+      input {
+        min-height: 22px;
+        height: 22px;
+        max-height: 22px;
+      }
+
+      label {
+        width: 100%;
+        background: @colorItemLabel;
+        border-bottom: 1px solid @colorBrown;
+        .font-text-bold();
+        color: @colorBrown;
+      }
+    }
+  }
+
+  /* ------------------------------------------- */
+  /*  Sheet Navigation                           */
+  /* ------------------------------------------- */
+
+  .sheet-tabs {
+    .font-monospace();
+    text-transform: uppercase;
+    font-size: 11pt;
+    color: @colorBrown;
+
+    a.item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+  }
+
+  /* ------------------------------------------- */
+  /*  Sheet Body                                 */
+  /* ------------------------------------------- */
+
+  .sheet-body {
+    color: @colorDark;
+    background: @colorLightKhaki;
+
+    h3 {
+      padding: 2px 4px;
+      margin-bottom: @gap;
+      color: @colorBrown;
+      text-transform: uppercase;
+      font-weight: bold;
+      background-color: @colorItemLabel;
+      border-bottom: 1px solid @colorBrown;
+    }
+
+    .tab-crew,
+    .tab-combat,
+    .tab-cargo {
+      overflow-y: hidden;
+    }
+
+    /* ------------------------------------------- */
+
+    @borderVehicle: 1px solid @colorBrown;
+
+    .inventory {
+      .items-header {
+        color: @colorBrown;
+        background: @colorItemLabel;
+        border-top: none;
+        border-bottom: @borderVehicle;
+
+        > div h2 {
+          text-transform: uppercase;
+          font-size: 1rem;
+          font-weight: bold;
+        }
+
+        > div h5 {
+          text-transform: uppercase;
+          font-size: .6rem;
+          font-weight: normal;
+          border-left: @borderVehicle;
+        }
+      }
+
+      .item-list {
+        .item {
+          &:not(:first-child) {
+            border-top: @borderVehicle;
+          }
+        }
+      }
+
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-combat {
+      .vehicle-combat-overview {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+
+        > div {
+          box-sizing: border-box;
+          min-width: 0;
+        }
+      }
+
+      div.armor,
+      div.damage {
+        margin-bottom: @gap;
+      }
+
+      div.armor {
+        .grid {
+          grid-template-columns: 80px 96px minmax(0, 1fr);
+          align-items: center;
+        }
+
+        .armor-location {
+          text-transform: uppercase;
+        }
+
+        .armor-values {
+          display: grid;
+          grid-template-columns: 42px auto 42px;
+          align-items: center;
+          justify-content: start;
+
+          input.boxed-value {
+            width: 42px;
+            height: 22px;
+          }
+        }
+
+        .armor-gauge {
+          width: calc(100% - (@gap * 2));
+          min-width: 0;
+          max-width: calc(100% - (@gap * 2));
+          margin: 0 @gap;
+        }
+      }
+
+      div.damage {
+        border-left: @borderVehicle;
+
+        textarea {
+          display: block;
+          width: calc(100% - (@gap * 2));
+          margin: 0 @gap;
+        }
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-crew {
+      .crew-qty {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        flex: 0 0 auto;
+        margin-bottom: @gap;
+
+        > div {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 100px;
+
+          label,
+          input {
+            margin: 0;
+            text-align: center;
+          }
+        }
+      }
+
+      .crew-occupants {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        @avatarWidth: 100px;
+
+        .occupant {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: @avatarWidth + 4 * @gap;
+          height: @avatarWidth * 2.5;
+          margin: 0 @gap @gap 0;
+          padding: @gap;
+          background-color: @colorVeryLightBrown;
+          border: 1px solid @colorKhaki;
+          border-radius: @gap;
+
+          &.passenger,
+          &.dead {
+            background-color: @colorBeige;
+          }
+
+          &.exposed {
+            border-style: double;
+            border-width: 3px;
+          }
+
+          &:hover {
+            box-shadow: @hoverShadow;
+          }
+
+          &.dead {
+            .occupant-image {
+              filter: grayscale(100%) blur(4px);
+            }
+            .occupant-name, .occupant-exposed {
+              color: @colorTan;
+            }
+          }
+
+          .occupant-image {
+            width: @avatarWidth;
+            height: @avatarWidth;
+            margin: 2px 0;
+            border: none;
+          }
+
+          .occupant-health-gauge {
+            width: @avatarWidth;
+          }
+
+          .crew-position-menu {
+            --option-menu-width: 120px;
+          }
+
+          .vehicle-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            line-height: 14px;
+          }
+
+          .occupant-name {
+            font-size: 110%;
+            font-weight: bold;
+            text-align: center;
+            width: @avatarWidth;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-height: 20px;
+            line-height: 20px;
+          }
+
+          .occupant-exposed {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 20px;
+          }
+
+          .occupant-buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            width: 100%;
+            margin: auto 0 0;
+
+            a + a {
+              margin-left: 0;
+            }
+
+          }
+        }
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-components {
+      overflow-y: auto;
+
+      .components-list {
+        padding: 0 @gap;
+      }
+
+      .component-section {
+        margin: 0;
+
+        h3 {
+          margin: 0 0 @gap;
+        }
+      }
+
+      .outer-components {
+        padding-top: @gap;
+        margin-top: @gap;
+        border-top: @borderSheetBold;
+      }
+
+      .component-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: @gap * 4;
+      }
+
+      .component-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        min-width: 0;
+        min-height: 38px;
+        padding: 4px;
+        border-bottom: @borderVehicle;
+
+        label.checkbox {
+          display: flex;
+          align-items: center;
+          min-width: 0;
+          gap: 6px;
+
+          .checkbox-control {
+            flex: none;
+            margin: 0;
+          }
+        }
+
+        > input.boxed-value {
+          width: 42px;
+          height: 22px;
+          margin-left: @gap;
+        }
+      }
+
+      .radio-reliability {
+        display: grid;
+        grid-template-columns: 42px auto 42px;
+        align-items: center;
+
+        input.boxed-value {
+          width: 42px;
+          height: 22px;
+        }
+      }
+
+      .fcs-component {
+        grid-template-columns: minmax(0, 1fr) minmax(70px, 110px) 42px;
+        gap: @gap;
+
+        .fcs-type {
+          width: 100%;
+          min-width: 0;
+          margin: 0;
+        }
+
+        > input.boxed-value {
+          margin-left: 0;
+        }
+      }
+
+      .component-toggle-group {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: @gap * 2;
+      }
+    }
+
+    /* ------------------------------------------- */
+
+    .tab-cargo {
+      .caargoo {
+        flex: 0 0 auto;
+      }
+
+      .inventory .item-controls {
+        flex-basis: 84px;
+      }
+
+      .cargo-capacity {
+        text-align: right;
+
+        label {
+          margin-right: @gap;
+        }
+
+        div.boxed-value {
+          border: none;
+        }
+      }
+
+      .encumbrance {
+        .font-monospace();
+      }
+    }
+
+    /* ------------------------------------------- */
+  }
+}

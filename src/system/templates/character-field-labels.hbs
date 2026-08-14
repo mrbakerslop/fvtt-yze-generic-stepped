@@ -1,0 +1,32 @@
+<div class="character-field-labels-form">
+  <p class="hint">{{localize "SETTINGS.characterFieldLabels.hint"}}</p>
+
+  {{#each fieldGroups as |group|}}
+  <fieldset class="character-field-label-group">
+    <legend>{{localize group.label}}</legend>
+    {{#each group.fields as |field|}}
+    <div class="form-group">
+      <label for="yzegs-character-label-{{field.key}}">{{field.defaultLabel}}</label>
+      <div class="form-fields">
+        <input
+          id="yzegs-character-label-{{field.key}}"
+          type="text"
+          name="{{field.key}}"
+          value="{{field.value}}"
+          placeholder="{{field.defaultLabel}}"
+          autocomplete="off"
+        />
+      </div>
+      <p class="hint">{{field.hint}}</p>
+    </div>
+    {{/each}}
+  </fieldset>
+  {{/each}}
+
+  <footer class="form-footer">
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "SETTINGS.characterFieldLabels.save"}}</span>
+    </button>
+  </footer>
+</div>

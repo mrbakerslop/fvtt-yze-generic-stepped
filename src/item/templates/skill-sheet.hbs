@@ -1,0 +1,32 @@
+<div class="sheet-root flexcol">
+
+  {{!-- Item Sheet Header --}}
+  {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-header.hbs"}}
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab tab-features" data-group="primary" data-tab="features">
+      <div class="grid grid-2col item-features">
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.ParentAttribute"}}</label>
+          {{> optionMenu name="system.attribute" selected=system.attribute options=attributeChoices
+            editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.SkillRating"}}</label>
+          {{> scoreSelector name="system.score" selected=system.score editable=@root.editable}}
+        </div>
+      </div>
+    </div>
+
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-description.hbs"}}
+    </div>
+  </section>
+
+</div>

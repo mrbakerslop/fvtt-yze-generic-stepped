@@ -1,0 +1,109 @@
+<div class="sheet-root flexcol{{#if system.unitAffiliation}} unit-affiliation-{{system.unitAffiliation}}{{/if}}">
+
+  {{!-- ================================================== --}}
+  {{!--  Actor Sheet Header                                --}}
+  {{!-- ================================================== --}}
+
+  <header class="sheet-header flexrow">
+    <img class="profile" src="{{actor.img}}" data-edit="img" data-action="editImage" title="{{actor.name}}" height="64" width="64"/>
+
+    <div class="header-details flexcol">
+        <div class="item-subtitle flexrow">
+          {{#if system.hq}}
+          <h4 class="item-type">{{localize "YZEGS.UnitSheet.HQ"}}</h4>
+          {{else}}
+          <h4 class="item-type">{{localize "TYPES.Actor.unit"}}</h4>
+          {{/if}}
+        </div>
+        <h4>
+          <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'YZEGS.UnitSheet.Name'}}"/>
+          <input type="text" name="system.info" value="{{system.info}}" placeholder="{{localize 'YZEGS.UnitSheet.Info'}}"/>
+        </h4>
+    </div>
+  </header>
+
+  {{!-- ================================================== --}}
+  {{!--  Sheet Tab Navigation                              --}}
+  {{!-- ================================================== --}}
+
+  <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a>
+  </nav>
+
+  {{!-- ================================================== --}}
+  {{!--  Sheet Body                                        --}}
+  {{!-- ================================================== --}}
+
+  <section class="sheet-body">
+
+    <div class="tab tab-features" data-group="primary" data-tab="features">
+
+      <div class="grid grid-2col item-features">
+
+        {{!-- Faction --}}
+        <div class="flexcol">
+          <label>{{localize "YZEGS.UnitSheet.Faction"}}</label>
+          <input type="text" name="system.faction" value="{{system.faction}}"/>
+        </div>
+        {{!-- Affiliation --}}
+        <div class="flexcol option-menu-field">
+          <label>{{localize "YZEGS.UnitSheet.UnitAffiliation"}}</label>
+          {{> optionMenu name="system.unitAffiliation" selected=system.unitAffiliation
+            options=config.unit.unitAffiliations localize=true editable=@root.editable}}
+        </div>
+        {{!-- Type --}}
+        <div class="flexcol">
+          <label>{{localize "YZEGS.UnitSheet.UnitType"}}</label>
+          <input type="text" name="system.unitType" value="{{system.unitType}}"/>
+        </div>
+        {{!-- Size --}}
+        <div class="flexcol option-menu-field">
+          <label>{{localize "YZEGS.UnitSheet.UnitSize"}}</label>
+          {{> optionMenu name="system.unitSize" selected=system.unitSize
+            options=config.unit.unitSizes localize=true editable=@root.editable}}
+        </div>
+        {{!-- Counts --}}
+        <div class="flexcol">
+          <label>{{localize "YZEGS.UnitSheet.Personnel"}}</label>
+          <div class="flexrow flex-center">
+            <input type="number" name="system.personnel.value" value="{{system.personnel.value}}" data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="number" name="system.personnel.max" value="{{system.personnel.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.UnitSheet.Vehicles"}}</label>
+          <div class="flexrow flex-center">
+            <input type="number" name="system.vehicles.value" value="{{system.vehicles.value}}" data-dtype="Number"/>
+            <span class="sep">/</span>
+            <input type="number" name="system.vehicles.max" value="{{system.vehicles.max}}" data-dtype="Number"/>
+          </div>
+        </div>
+
+      </div>
+
+      {{!-- Modifiers --}}
+      <div class="form-group-stacked item-properties">
+        {{#each system.unitModifiers as | mod name |}}
+        <label class="checkbox unit-checkbox">
+          {{> checkboxControl name=(concat "system.unitModifiers." name) value=mod editable=@root.editable}}
+          <span>{{localize (concat "YZEGS.UnitModifierNames." name)}}</span>
+        </label>
+        {{/each}}
+        <label class="checkbox unit-checkbox unit-hq">
+          {{> checkboxControl name="system.hq" value=system.hq editable=@root.editable}}
+          <span>{{localize "YZEGS.UnitSheet.HQ"}}</span>
+        </label>
+      </div>
+
+    </div>
+
+    {{!-- Description Tab --}}
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
+    </div>
+
+  </section>
+
+</div>

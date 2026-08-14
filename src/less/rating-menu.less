@@ -1,0 +1,198 @@
+/* ------------------------------------------- */
+/*  Shared stepped-die rating menu             */
+/* ------------------------------------------- */
+
+.application.yzegs .window-content .rating-menu {
+  position: relative;
+  width: 52px;
+  height: 24px;
+
+  &.is-open {
+    z-index: 20;
+
+    .rating-menu-options {
+      display: flex;
+    }
+  }
+
+  button {
+    min-width: 0;
+    margin: 0;
+    border-radius: 3px;
+    box-shadow: none;
+    font: inherit;
+    line-height: 1;
+  }
+
+  .rating-menu-trigger {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    padding: 0 14px;
+    border: 1px solid @colorTan;
+    background: #fff;
+    color: @colorDark;
+    cursor: pointer;
+
+    &::after {
+      position: absolute;
+      top: 50%;
+      right: 6px;
+      width: 0;
+      height: 0;
+      border-top: 4px solid @colorDark;
+      border-right: 3px solid transparent;
+      border-left: 3px solid transparent;
+      content: '';
+      transform: translateY(-25%);
+    }
+
+    &:hover,
+    &:focus {
+      border-color: @colorDark;
+      background: #fff;
+      color: @colorDark;
+      box-shadow: none;
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 1px solid @colorRed;
+      outline-offset: 1px;
+    }
+
+    &:disabled {
+      color: @colorDark;
+      cursor: default;
+      opacity: 1;
+    }
+  }
+
+  .rating-menu-options {
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 0;
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    border: 1px solid @colorTan;
+    border-radius: 0;
+    background: #fff;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
+
+    &[popover] {
+      position: fixed;
+      inset: auto;
+      margin: 0;
+    }
+
+    &:hover .rating-menu-option.is-selected:not(:hover) {
+      background: #fff;
+      color: @colorDark;
+    }
+  }
+
+  .rating-menu-option {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 28px;
+    min-height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    color: @colorDark;
+    text-align: center;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      border: 0;
+      background: @colorDark;
+      color: #fff;
+      box-shadow: none;
+      outline: none;
+    }
+
+    &.is-selected {
+      background: @colorDark;
+      color: #fff;
+    }
+  }
+}
+
+.yzegs.sheet.item .rating-menu {
+  align-self: center;
+}
+
+.application.yzegs .window-content .rating-menu.option-menu {
+  align-self: center;
+  flex: 0 0 auto;
+  width: var(--option-menu-width, 140px);
+  max-width: 100%;
+
+  .rating-menu-options {
+    max-height: 196px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .rating-menu-trigger,
+  .rating-menu-option {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rating-menu-option {
+    box-sizing: border-box;
+    padding: 0 8px;
+  }
+
+  .rating-menu-group-label {
+    flex: 0 0 22px;
+    box-sizing: border-box;
+    height: 22px;
+    padding: 3px 8px 0;
+    border-top: 1px solid @colorTan;
+    background: #e5e5e5;
+    color: @colorDark;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: left;
+    text-transform: uppercase;
+
+    &:first-child {
+      border-top: 0;
+    }
+  }
+}
+
+.application.yzegs .window-content .rating-menu.combo-menu {
+  .combo-menu-input {
+    display: block;
+    box-sizing: border-box;
+    padding: 0 24px 0 8px;
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-position: right 7px center;
+    background-repeat: no-repeat;
+    background-size: 9px 6px;
+    text-align: left;
+  }
+
+  .combo-menu-input::after {
+    content: none;
+  }
+}
+
+.yzegs.sheet.item .tab.rating-menu-scroll-locked {
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
+}

@@ -1,0 +1,86 @@
+{{!-- Attributes & Skills --}}
+<div>
+  <h2>{{localize "YZEGS.ActorSheet.AttributesAndSkills"}}</h2>
+
+  <div class="stats-list skills-drop-zone flexrow">
+    {{#each system.attributes as | attribute attr |}}
+    <div class="stat-block stat-block-{{attr}}">
+      <div class="stat-header flexrow">
+        <div class="col-6"></div>
+        <div class="col-3 header-rating">
+          <h5>{{localize "YZEGS.ActorSheet.Rating"}}</h5>
+        </div>
+        <div class="col-3 header-die header-die-{{@index}}">
+          <h5>{{localize "YZEGS.ActorSheet.BaseDie"}}</h5>
+        </div>
+      </div>
+      <div class="stat stat-attribute attribute-{{attr}} flexrow">
+        <div class="col-6 stat-name">
+          <h3 class="attribute-name"><a class="attribute-roll" data-attribute="{{attr}}">{{lookup @root.characterFieldLabels attr}}</a></h3>
+        </div>
+        <div class="col-3 stat-score">
+          {{> scoreSelector name=(concat "system.attributes." attr ".score") selected=attribute.score editable=@root.editable}}
+        </div>
+        <div class="col-3 stat-value">
+          {{#if (lte attribute.value 0)}}–
+          {{else}}
+          <div class="boxed-value attribute-roll rollable" data-attribute="{{attr}}"><span>D{{attribute.value}}</span></div>
+          {{/if}}
+        </div>
+      </div>
+      {{!-- Skill Items tied to this attribute --}}
+      {{#each (lookup @root.skillsByAttribute attr) as |skill|}}
+        <div class="item stat stat-skill flexrow" data-item-id="{{skill.id}}">
+          <div class="col-6 stat-name skill-name">
+            <h4><a class="skill-roll" data-item-id="{{skill.id}}">{{skill.name}}</a></h4>
+          </div>
+          <div class="col-3 stat-score">
+            {{> scoreSelector selected=skill.score editable=@root.editable
+              inputClass="skill-score-selector" itemId=skill.id}}
+          </div>
+          <div class="col-3 stat-value">
+            {{#if (lte skill.value 0)}}–
+            {{else}}
+            <div class="boxed-value skill-roll rollable" data-item-id="{{skill.id}}"><span>D{{skill.value}}</span></div>
+            {{/if}}
+          </div>
+        </div>
+      {{else}}
+        <div class="empty-skills">{{localize "YZEGS.ActorSheet.DropSkillsHere"}}</div>
+      {{/each}}
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+{{!-- Specialties --}}
+<div class="specialty-title flexrow">
+  <h2>{{localize "YZEGS.ActorSheet.Specialties"}}</h2>
+  <a class="button item-create" data-type="specialty" title="{{localize "YZEGS.ActorSheet.AddSpecialty"}}">
+    <i class="fas fa-plus"></i>
+  </a>
+</div>
+
+<div class="specialties-slots">
+  {{#each actor.itemTypes.specialty as | specialty |}}
+  <div class="item item-slot slot-specialty flexrow" data-item-id={{specialty.id}}>
+    {{#with specialty}}
+    <div class="specialty-content">
+      <strong class="specialty-name">{{name}}</strong>
+      {{#if system.description}}
+      <span class="specialty-separator">:</span>
+      <div class="specialty-description">{{{system.description}}}</div>
+      {{else}}
+        {{#if hasModifier}}
+        <span class="specialty-separator">:</span>
+        <div class="specialty-description">{{modifiersDescription}}</div>
+        {{/if}}
+      {{/if}}
+    </div>
+    {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/slot-buttons.hbs"}}
+    {{/with}}
+  </div>
+  {{else}}
+  <p class="no-specialty">{{localize "YZEGS.ActorSheet.NoSpecialty"}}</p>
+  {{/each}}
+</div>

@@ -1,0 +1,51 @@
+<div class='roll-modifiers flexcol'>
+
+  <div class='roll-modifiers-title flexrow'>
+    <h4>{{localize 'YZEGS.ItemSheet.RollModifiers'}}</h4>
+    <a class='button add-modifier flex0' title='{{localize "YZEGS.ItemSheet.AddRollModifier"}}'>
+      {{{@root.config.Icons.buttons.plus}}}
+    </a>
+  </div>
+
+  {{#each system.rollModifiers as |modifier|}}
+  <div class='roll-modifier'>
+    <div class='roll-modifier-name'>
+      {{> groupedOptionMenu name=(concat "system.rollModifiers." @key ".name") selected=modifier.name
+        selectedLabel=(lookup @root.rollModifierLabels modifier.name) groups=@root.rollModifierGroups
+        placeholder="YZEGS.ItemSheet.SelectRollModifier" editable=@root.editable menuClass="roll-modifier-menu"}}
+    </div>
+    <div class='roll-modifier-value flexrow'>
+      <input type='text' name='system.rollModifiers.{{@key}}.value' value='{{modifier.value}}' />
+      <div class='item-controls'>
+        <a class='btn btn-small delete-modifier' data-modifier-id='{{@key}}'>
+          {{{@root.config.Icons.buttons.delete}}}
+        </a>
+      </div>
+    </div>
+  </div>
+  {{else}}
+  <div class='no-modifier'>{{localize 'YZEGS.ItemSheet.NoRollModifier'}}</div>
+  {{/each}}
+
+  {{! TODO clean this code }}
+  {{!-- <h4>{{localize "YZEGS.Attributes"}}</h4>
+  <div class="modifiers-list flexrow">
+    {{#each system.modifiers.attributes as |value name|}}
+    <div class="form-group col-6 {{#if value}}modified{{/if}}">
+      <label>{{localize (concat "YZEGS.AttributeNames." name)}}</label>
+      <input type="text" name="system.modifiers.attributes.{{name}}" value="{{numberFormat value sign=value}}"
+        data-dtype="Number" />
+    </div>
+    {{/each}}
+  </div>
+  <h4>{{localize "YZEGS.Skills"}}</h4>
+  <div class="modifiers-list flexrow">
+    {{#each system.modifiers.skills as |value name|}}
+    <div class="form-group col-6 {{#if value}}modified{{/if}}">
+      <label>{{localize (concat "YZEGS.SkillNames." name)}}</label>
+      <input type="text" name="system.modifiers.skills.{{name}}" value="{{numberFormat value sign=value}}"
+        data-dtype="Number" />
+    </div>
+    {{/each}}
+  </div> --}}
+</div>

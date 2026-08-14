@@ -1,0 +1,52 @@
+@encumbranceBarHeight: 18px;
+
+.yzegs.sheet.actor .encumbrance {
+	flex: 0 0 @encumbranceBarHeight;
+	background: #fff;
+	margin: 4px 6px 0 4px;
+	border: 1px solid @colorDark;
+	border-radius: 3px;
+	position: relative;
+	overflow: hidden;
+
+	.encumbrance-bar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #000;
+		height: 100%;
+		border: 0;
+		border-radius: 0;
+	}
+
+	.encumbrance-label {
+		z-index: 1;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		height: 100%;
+		padding: 0 6px;
+		position: absolute;
+		font-size: 11px;
+		font-weight: 700;
+		line-height: 1;
+		text-align: center;
+		color: #fff !important;
+		mix-blend-mode: difference;
+		text-shadow: none;
+	}
+
+	&.encumbered {
+		.encumbrance-bar {
+			background: @colorRed;
+			border-color: #000;
+			background-image: repeating-linear-gradient(
+				45deg,
+				#000 0,
+				#000 2px,
+				#fff 2px,
+				#fff 4px
+			);
+		}
+	}
+}
