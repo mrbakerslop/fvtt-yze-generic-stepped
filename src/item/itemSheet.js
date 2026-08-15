@@ -5,13 +5,13 @@ import { activateCheckboxControls } from '../components/checkbox-control.js';
 import { getAdvancementSourceItems } from '../system/experience.js';
 
 const ITEM_SHEET_HEIGHTS = {
-  ammunition: 360,
+  ammunition: 480,
   armor: 390,
   gear: 370,
   grenade: 430,
   injury: 360,
   skill: 320,
-  weapon: 600,
+  weapon: 625,
 };
 
 /**

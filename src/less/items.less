@@ -67,6 +67,7 @@
     background: @colorLightKhaki;
 
     .item-features {
+      row-gap: 4px;
       text-align: center;
 
       .item-field-menu {
@@ -105,6 +106,41 @@
       margin-top: 5px;
       padding-top: 10px;
       border-top: @borderGroove;
+    }
+
+    .weapon-magazine-menu {
+      --option-menu-width: 300px;
+    }
+
+    .weapon-roll-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+
+      .form-group {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2px;
+        margin: 0;
+      }
+
+      .item-field-menu {
+        --option-menu-width: 100%;
+      }
+    }
+
+    .item-inventory-flags {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+
+      .form-group {
+        margin: 0;
+      }
+    }
+
+    .weapon-inventory-options .create-ammo {
+      margin-top: 6px;
     }
 
     .item-properties {

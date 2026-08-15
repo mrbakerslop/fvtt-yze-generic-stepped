@@ -13,7 +13,7 @@ import {
   DEFAULT_EXPERIENCE_CONFIG,
   EXPERIENCE_CONFIG_SETTING,
   ExperienceConfig,
-  getAdvancementItemSourceChoices,
+  createAdvancementItemSourceInput,
   refreshExperienceSheets,
   WORLD_ADVANCEMENT_ITEM_SOURCE,
 } from './experience-config.js';
@@ -79,8 +79,8 @@ export function registerSystemSettings() {
     scope: 'world',
     name: 'SETTINGS.advancementItemSource.name',
     hint: 'SETTINGS.advancementItemSource.hint',
-    type: String,
-    choices: getAdvancementItemSourceChoices(),
+    type: new foundry.data.fields.StringField({ required: true, nullable: false }),
+    input: createAdvancementItemSourceInput,
     default: WORLD_ADVANCEMENT_ITEM_SOURCE,
     onChange: refreshExperienceSheets,
   });

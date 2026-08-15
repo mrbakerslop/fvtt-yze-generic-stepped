@@ -1,5 +1,21 @@
 # Changelog
 
+## 14.0.5 - 2026-08-15 — Item Sheet Polish
+
+### Changed
+
+- Widened the Weapon Magazine selector and reorganized the Weapon sheet into a
+  more compact layout with additional field spacing.
+- Increased the default Weapon and Ammunition sheet heights so their complete
+  controls remain visible, including expanded ammunition override options.
+- Placed Equipped and Stored in the Backpack controls on one row on the Weapon
+  and Armor sheets.
+
+### Fixed
+
+- Item compendiums are now discovered when Game Settings renders, ensuring the
+  Skill and Specialty Item Source selector lists packs initialized by Foundry.
+
 ## 14.0.4 - 2026-08-15 — Item Source World Setting
 
 ### Changed

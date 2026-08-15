@@ -63,17 +63,19 @@
             {{!-- Inventory Options --}}
             {{#if inActor}}
             <div class="features-other flexcol">
-                <div class="form-group">
-                    <label class="checkbox">
-                        {{> checkboxControl name="system.equipped" value=system.equipped editable=@root.editable}}
-                        {{localize "YZEGS.ItemSheet.Equipped"}}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label class="checkbox">
-                        {{> checkboxControl name="system.backpack" value=system.backpack editable=@root.editable}}
-                        {{localize "YZEGS.ItemSheet.StoredInBackpack"}}
-                    </label>
+                <div class="item-inventory-flags">
+                    <div class="form-group">
+                        <label class="checkbox">
+                            {{> checkboxControl name="system.equipped" value=system.equipped editable=@root.editable}}
+                            {{localize "YZEGS.ItemSheet.Equipped"}}
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox">
+                            {{> checkboxControl name="system.backpack" value=system.backpack editable=@root.editable}}
+                            {{localize "YZEGS.ItemSheet.StoredInBackpack"}}
+                        </label>
+                    </div>
                 </div>
             </div>
             {{/if}}

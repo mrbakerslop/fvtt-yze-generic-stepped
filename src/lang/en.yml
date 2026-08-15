@@ -589,6 +589,7 @@ SETTINGS.experienceConfig.prerequisiteModes.off: Disabled
 SETTINGS.experienceConfig.gmOnlyAdvancement: Only GMs Can Spend XP
 SETTINGS.advancementItemSource.name: Skill and Specialty Item Source
 SETTINGS.advancementItemSource.hint: Choose the world Items or Item compendium used for Skill and Specialty choices, including experience advancement and Roll Modifiers on standalone Items.
+SETTINGS.advancementItemSource.unavailable: "Unavailable source: {source}"
 SETTINGS.experienceConfig.awardQuestions: Session Award Questions
 SETTINGS.experienceConfig.awardQuestionsHint: Each enabled question awards 1 XP when selected.
 SETTINGS.experienceConfig.customQuestions: Additional Award Questions

@@ -54,6 +54,39 @@ export function getAdvancementItemSourceChoices() {
   return choices;
 }
 
+/** Render the source selector after Foundry has initialized its compendium packs. */
+export function createAdvancementItemSourceInput(_field, config) {
+  const choices = getAdvancementItemSourceChoices();
+  const selectedSource = String(config.value ?? WORLD_ADVANCEMENT_ITEM_SOURCE);
+  if (!Object.hasOwn(choices, selectedSource)) {
+    choices[selectedSource] = game.i18n.format(
+      'SETTINGS.advancementItemSource.unavailable',
+      { source: selectedSource },
+    );
+  }
+
+  const select = document.createElement('select');
+  select.name = config.name;
+  if (config.id) select.id = config.id;
+  if (config.classes) select.className = config.classes;
+  select.disabled = Boolean(config.disabled || config.readonly);
+  select.required = Boolean(config.required);
+  select.autofocus = Boolean(config.autofocus);
+
+  for (const [dataName, value] of Object.entries(config.dataset ?? {})) select.dataset[dataName] = value;
+  for (const [ariaName, value] of Object.entries(config.aria ?? {})) {
+    select.setAttribute(`aria-${ariaName}`, value);
+  }
+  for (const [source, label] of Object.entries(choices)) {
+    const option = document.createElement('option');
+    option.value = source;
+    option.textContent = label;
+    option.selected = source === selectedSource;
+    select.append(option);
+  }
+  return select;
+}
+
 /** Move the legacy Experience configuration source into its dedicated world setting. */
 export async function migrateAdvancementItemSource() {
   if (!game.user.isGM) return;
