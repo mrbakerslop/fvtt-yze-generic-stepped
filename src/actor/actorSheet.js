@@ -4,6 +4,11 @@ import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
 import { enrichTextFields } from '@utils/utils.js';
 import { activateRatingMenus } from '../components/rating-menu.js';
 import { activateCheckboxControls } from '../components/checkbox-control.js';
+import {
+  getRadiationLabel,
+  isRadiationEnabled,
+  NOTES_TAB_SETTING,
+} from '../system/settings.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor Sheet.
@@ -65,6 +70,11 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
   async _prepareContext(options) {
     const sheetData = await super._prepareContext(options);
     const descriptionValue = this.actor.system.description ?? '';
+    const notesTabEnabled = game.settings.get('fvtt-yze-generic-stepped', NOTES_TAB_SETTING);
+    const notesTabId = this.actor.type === 'party' ? 'note' : 'description';
+    if (!notesTabEnabled && this.tabGroups.primary === notesTabId) {
+      this.tabGroups.primary = this.constructor.TABS.primary.initial;
+    }
     Object.assign(sheetData, {
       owner: this.actor.isOwner,
       editable: this.isEditable,
@@ -73,6 +83,11 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
       descriptionValue,
       documentUuid: this.actor.uuid,
       config: YZEGS,
+      notesTabEnabled,
+      radiation: {
+        enabled: isRadiationEnabled(),
+        name: getRadiationLabel(),
+      },
       hideCapacitiesButtons: !game.user.isGM && game.settings.get('fvtt-yze-generic-stepped', 'hideCapacitiesButtons'),
     });
     await enrichTextFields(sheetData, ['system.description']);

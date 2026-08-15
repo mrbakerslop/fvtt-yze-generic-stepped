@@ -14,8 +14,37 @@ import {
   ExperienceConfig,
   refreshExperienceSheets,
 } from './experience-config.js';
+import { MACRO_FOLDER_CLEANUP_SETTING } from './macros.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
+
+export const NOTES_TAB_SETTING = 'enableNotesTab';
+export const RADIATION_ENABLED_SETTING = 'enableRadiation';
+export const RADIATION_NAME_SETTING = 'radiationName';
+
+/** Whether the world's Radiation rules are enabled. */
+export function isRadiationEnabled() {
+  return game.settings.get(SYSTEM_ID, RADIATION_ENABLED_SETTING);
+}
+
+/** Return the configured Radiation label or its localized default. */
+export function getRadiationLabel({ roll = false } = {}) {
+  const customName = String(game.settings.get(SYSTEM_ID, RADIATION_NAME_SETTING) ?? '').trim();
+  if (customName) return customName;
+  const localizationKey = roll ? 'YZEGS.ActorSheet.RadiationRoll' : 'YZEGS.ActorSheet.Radiation';
+  return game.i18n.localize(localizationKey);
+}
+
+/** Refresh all open Actor sheets after a display setting changes. */
+function refreshActorSheets() {
+  for (const actor of game.actors) {
+    for (const app of Object.values(actor.apps)) {
+      if (!app.rendered) continue;
+      if (app instanceof foundry.applications.api.ApplicationV2) app.render({ force: true });
+      else app.render(false);
+    }
+  }
+}
 
 // config: true (visible)
 // scope: world (gm), client (player)
@@ -54,6 +83,14 @@ export function registerSystemSettings() {
     config: false,
     scope: 'world',
     name: 'World Skill Item Cleanup Complete',
+    type: Boolean,
+    default: false,
+  });
+
+  game.settings.register(SYSTEM_ID, MACRO_FOLDER_CLEANUP_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'Macro Folder Cleanup Complete',
     type: Boolean,
     default: false,
   });
@@ -109,6 +146,36 @@ export function registerSystemSettings() {
     hint: 'SETTINGS.hideWeaponProps.label',
     type: Boolean,
     default: false,
+  });
+
+  game.settings.register(SYSTEM_ID, NOTES_TAB_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.enableNotesTab.name',
+    hint: 'SETTINGS.enableNotesTab.hint',
+    type: Boolean,
+    default: true,
+    onChange: refreshActorSheets,
+  });
+
+  game.settings.register(SYSTEM_ID, RADIATION_ENABLED_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.enableRadiation.name',
+    hint: 'SETTINGS.enableRadiation.hint',
+    type: Boolean,
+    default: true,
+    onChange: refreshActorSheets,
+  });
+
+  game.settings.register(SYSTEM_ID, RADIATION_NAME_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.radiationName.name',
+    hint: 'SETTINGS.radiationName.hint',
+    type: String,
+    default: '',
+    onChange: refreshActorSheets,
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'trackPcAmmo', {

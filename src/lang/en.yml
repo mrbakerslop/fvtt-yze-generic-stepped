@@ -493,6 +493,12 @@ SETTINGS.characterFieldLabels.attributeFields: Attribute Fields
 SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
 SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.
+SETTINGS.enableNotesTab.name: Enable Notes Tab
+SETTINGS.enableNotesTab.hint: Show the Notes tab on Actor sheets.
+SETTINGS.enableRadiation.name: Enable Radiation
+SETTINGS.enableRadiation.hint: Show Radiation tracking and rolls on character sheets.
+SETTINGS.radiationName.name: Radiation Name
+SETTINGS.radiationName.hint: Rename Radiation throughout the system. Leave blank to use the translated default.
 YZEGS.ItemTypes.skill: Skill
 TYPES.Item.skill: Skill
 YZEGS.ItemSheet.ParentAttribute: Parent Attribute

@@ -496,6 +496,12 @@ SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes u
 SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
 SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.
+SETTINGS.enableNotesTab.name: Activer l'onglet Notes
+SETTINGS.enableNotesTab.hint: Affiche l'onglet Notes sur les fiches d'acteur.
+SETTINGS.enableRadiation.name: Activer l'irradiation
+SETTINGS.enableRadiation.hint: Affiche le suivi et les jets d'irradiation sur les fiches de personnage.
+SETTINGS.radiationName.name: Nom de l'irradiation
+SETTINGS.radiationName.hint: Renomme l'irradiation dans le système. Laisser vide pour utiliser le nom traduit par défaut.
 YZEGS.ItemTypes.skill: Skill
 TYPES.Item.skill: Skill
 YZEGS.ItemSheet.ParentAttribute: Parent Attribute

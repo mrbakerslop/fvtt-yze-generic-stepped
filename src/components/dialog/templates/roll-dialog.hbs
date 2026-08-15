@@ -63,7 +63,8 @@
   <div class='form-group-stacked'>
     {{#each data.modifiers}}
       <label class='checkbox' title='{{description}}'>
-        <input type='checkbox' class='item-modifier' data-value='{{value}}' {{checked active}} />
+        {{> checkboxControl value=active editable=true inputClass='item-modifier'
+          dataValue=value ariaLabel=label}}
         {{label}}
       </label>
     {{/each}}
@@ -83,8 +84,10 @@
 
   {{! Location Die }}
   <div class='form-group'>
-    <label>{{localize 'YZEGS.Dialog.Roll.Locate'}}</label>
-    <input type='checkbox' name='locate' {{checked data.locate}} />
+    <label for='yzegs-roll-locate'>{{localize 'YZEGS.Dialog.Roll.Locate'}}</label>
+    <input type='hidden' name='locate' value='{{data.locate}}' />
+    {{> checkboxControl id='yzegs-roll-locate' name='locate' value=data.locate editable=true
+      ariaLabel=(localize 'YZEGS.Dialog.Roll.Locate')}}
   </div>
 
   {{! ================================================== }}

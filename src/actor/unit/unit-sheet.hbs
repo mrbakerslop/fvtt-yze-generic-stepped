@@ -28,7 +28,9 @@
 
   <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
     <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    {{#if notesTabEnabled}}
     <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a>
+    {{/if}}
   </nav>
 
   {{!-- ================================================== --}}
@@ -100,9 +102,11 @@
     </div>
 
     {{!-- Description Tab --}}
+    {{#if notesTabEnabled}}
     <div class="tab tab-description" data-group="primary" data-tab="description">
       {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
     </div>
+    {{/if}}
 
   </section>
 

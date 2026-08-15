@@ -5,6 +5,7 @@ import { YZEGS } from '../system/config.js';
 import Modifier from '../components/modifier.js';
 import { YearZeroRoll } from '../lib/yzur.js';
 import Armor from '../components/armor.js';
+import { getRadiationLabel, isRadiationEnabled } from '../system/settings.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor.
@@ -548,7 +549,7 @@ export default class ActorYZEGS extends Actor {
    * @returns {Promise<import('../../lib/yzur.js').YearZeroRoll|ChatMessage>}
    */
   async rollRadiationAttack(options) {
-    if (this.type !== 'character') return;
+    if (this.type !== 'character' || !isRadiationEnabled()) return;
 
     const system = this.system;
     const rads = system.rads || {};
@@ -558,7 +559,7 @@ export default class ActorYZEGS extends Actor {
 
     const rollConfig = foundry.utils.mergeObject(
       {
-        title: game.i18n.localize('YZEGS.ActorSheet.RadiationRoll'),
+        title: getRadiationLabel({ roll: true }),
         attribute: system.attributes.str.value,
         skill: this.getSkill('stamina')?.system.value ?? 0,
         modifier: YZEGS.radiationVirulence - sievert,

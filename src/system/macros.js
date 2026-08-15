@@ -2,6 +2,10 @@ import { YZEGS } from './config';
 import { getActiveActor } from '@utils/get-actor';
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
 
+const SYSTEM_ID = 'fvtt-yze-generic-stepped';
+const LEGACY_SYSTEM_MACRO_FOLDER = 'YZE Stepped Dice Roll Macros';
+export const MACRO_FOLDER_CLEANUP_SETTING = 'macroFolderCleanupComplete';
+
 /**
  * Creates a Macro from an Item or stat (attribute/skill) drop.
  * Gets an existing item macro if one exists, otherwise create a new one.
@@ -35,19 +39,19 @@ export function createYZEGSMacro(data, slot) {
   }
 }
 
-export async function setupMacroFolder() {
-  if (!game.user.isGM) return;
-  const folderName = YZEGS.systemMacroFolder;
-  const folder = game.folders
-    .filter(f => f.type === 'Macro')
-    .find(f => f.name === folderName);
+/** Remove the obsolete system Macro folder once, but only when it is empty. */
+export async function removeEmptySystemMacroFolder() {
+  if (!game.user.isGM || game.settings.get(SYSTEM_ID, MACRO_FOLDER_CLEANUP_SETTING)) return;
 
-  if (!folder) {
-    await Folder.create({
-      name: folderName,
-      type: 'Macro',
-      parent: null,
-    });
+  try {
+    const folder = game.folders.find(candidate => (
+      candidate.type === 'Macro' && candidate.name === LEGACY_SYSTEM_MACRO_FOLDER
+    ));
+    if (folder && !folder.contents?.length && !folder.children?.length) await folder.delete();
+    await game.settings.set(SYSTEM_ID, MACRO_FOLDER_CLEANUP_SETTING, true);
+  }
+  catch (error) {
+    console.error('YZEGS | Empty Macro folder cleanup failed.', error);
   }
 }
 
@@ -56,7 +60,6 @@ export async function setupMacroFolder() {
 /* ------------------------------------------ */
 
 async function _createYZEGSStatMacro(data, slot) {
-  const folder = game.folders.find(f => f.type === 'Macro' && f.name === YZEGS.systemMacroFolder);
   const command = `game.yzegs.macros.rollStat("${data.attribute}"`
     + (data.skill ? `, "${data.skill}"` : '')
     + ');';
@@ -76,41 +79,13 @@ async function _createYZEGSStatMacro(data, slot) {
       img: 'icons/svg/dice-target.svg',
       command: command,
       flags: { 'fvtt-yze-generic-stepped': { statMacro: true } },
-      folder: folder?.id ?? null,
       'ownership.default': CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
     });
   }
   game.user.assignHotbarMacro(macro, slot);
 }
 
-// TODO
-// async function _createYZEGSActionMacro(data, slot) {
-//   const folder = game.folders.find(f => f.type === 'Macro' && f.name === YZEGS.systemMacroFolder);
-//   const command = `game.yzegs.macros.rollAction("${data.action}");`;
-//   const actor = await fromUuid(data.uuid);
-//   if (!actor) return;
-
-//   const commandName = game.i18n.format('YZEGS.MACRO.RollAction', {
-//     action: game.i18n.localize(YZEGS.actionSkillMap[data.action].label),
-//   });
-
-//   let macro = findMacro(commandName, command);
-//   if (!macro) {
-//     macro = await Macro.create({
-//       name: commandName,
-//       type: 'script',
-//       img: 'icons/svg/dice-target.svg',
-//       command: command,
-//       flags: { 'yzegs.actionMacro': true },
-//       folder: folder.id,
-//       'ownership.default': CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
-//     });
-//   }
-//   game.user.assignHotbarMacro(macro, slot);
-// }
-
 async function _createYZEGSItemMacro(item, slot) {
-  const folder = game.folders.find(f => f.type === 'Macro' && f.name === YZEGS.systemMacroFolder);
   const command = `game.yzegs.macros.rollItem("${item.name}");`;
   let macro = findMacro(item.name, command);
   if (!macro) {
@@ -120,7 +95,6 @@ async function _createYZEGSItemMacro(item, slot) {
       img: item.img,
       command: command,
       flags: { 'fvtt-yze-generic-stepped': { itemMacro: true } },
-      folder: folder?.id ?? null,
       'ownership.default': CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
     });
   }

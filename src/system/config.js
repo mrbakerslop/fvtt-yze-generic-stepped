@@ -8,8 +8,6 @@ YZEGS.ASCII = `================================================
   YEAR ZERO ENGINE - GENERIC STEPPED DICE
 ================================================`;
 
-YZEGS.systemMacroFolder = 'YZE Stepped Dice Roll Macros';
-
 YZEGS.attributes = {
   str: 'YZEGS.AttributeNames.str',
   agl: 'YZEGS.AttributeNames.agl',

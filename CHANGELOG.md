@@ -1,5 +1,23 @@
 # Changelog
 
+## 14.0.3 - 2026-08-15 — World Settings and Interface Polish
+
+### Added
+
+- Added a world setting to show or hide the Notes tab on Actor sheets.
+- Added world settings to enable or disable Radiation and customize its name.
+
+### Changed
+
+- Roll dialogs now use the system's custom checkbox controls.
+- New character and NPC actors now start with no Unit Morale rating.
+- New hotbar macros are created without an unnecessary system Macro folder.
+
+### Fixed
+
+- Stopped creating the empty `YZE Stepped Dice Roll Macros` folder on every GM
+  login and added a one-time cleanup that removes it only when it is empty.
+
 ## 14.0.2 - 2026-08-14 — Skill Compendium Cleanup
 
 ### Changed

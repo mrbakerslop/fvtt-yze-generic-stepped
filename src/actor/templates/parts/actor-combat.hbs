@@ -164,8 +164,9 @@
 
 {{!-- RADIATION --}}
 {{#if (eq actor.type 'character')}}
+{{#if radiation.enabled}}
 <div class="radiation">
-  <h2><a class="radiation-roll">{{localize "YZEGS.ActorSheet.Radiation"}}</a></h2>
+  <h2><a class="radiation-roll">{{radiation.name}}</a></h2>
   <div class="flexrow">
     <div>
       <h3>{{localize "YZEGS.ActorSheet.TemporaryRadiation"}}</h3>
@@ -177,4 +178,5 @@
     </div>
   </div>
 </div>
+{{/if}}
 {{/if}}

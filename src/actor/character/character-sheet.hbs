@@ -96,7 +96,9 @@
     <a class="item" data-action="tab" data-group="primary" data-tab="biography">{{localize "YZEGS.ActorSheet.BiographyTab"}}</a>
     <a class="item" data-action="tab" data-group="primary" data-tab="experience">{{localize "YZEGS.ActorSheet.ExperienceTab"}}</a>
     {{/if}}
+    {{#if notesTabEnabled}}
     <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ActorSheet.NoteTab"}}</a>
+    {{/if}}
   </nav>
 
   {{!-- Sheet Body --}}
@@ -152,9 +154,11 @@
     {{/if}}
 
     {{!-- Description Tab --}}
+    {{#if notesTabEnabled}}
     <div class="tab tab-description" data-group="primary" data-tab="description">
       {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
     </div>
+    {{/if}}
 
   </section>
 

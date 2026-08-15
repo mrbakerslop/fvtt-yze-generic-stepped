@@ -4,8 +4,10 @@
 
   {{! Unit Morale }}
   <div class='form-group'>
-    <label>{{localize 'YZEGS.Dialog.CuF.UnitMorale'}}</label>
-    <input type='checkbox' name='unitMorale' {{checked data.unitMorale}} />
+    <label for='yzegs-cuf-unit-morale'>{{localize 'YZEGS.Dialog.CuF.UnitMorale'}}</label>
+    <input type='hidden' name='unitMorale' value='{{data.unitMorale}}' />
+    {{> checkboxControl id='yzegs-cuf-unit-morale' name='unitMorale' value=data.unitMorale editable=true
+      ariaLabel=(localize 'YZEGS.Dialog.CuF.UnitMorale')}}
   </div>
 
   <hr />
@@ -37,7 +39,8 @@
   <div class='form-group-stacked'>
     {{#each data.modifiers}}
       <label class='checkbox' title='{{description}}'>
-        <input type='checkbox' class='item-modifier' data-value='{{value}}' {{checked active}} />
+        {{> checkboxControl value=active editable=true inputClass='item-modifier'
+          dataValue=value ariaLabel=label}}
         {{label}}
       </label>
     {{/each}}

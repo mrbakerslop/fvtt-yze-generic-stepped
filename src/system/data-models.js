@@ -59,7 +59,7 @@ const attributesAndSkillsSchema = () => ({
   }),
 });
 
-const combatSchema = (unitMorale = 'D') => ({
+const combatSchema = (unitMorale = '–') => ({
   health: capacityField(),
   sanity: capacityField(),
   cuf: scoreField('D'),

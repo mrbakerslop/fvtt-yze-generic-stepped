@@ -38,7 +38,7 @@ export default class YZEGSDialog {
       target.value = value >= 0 ? `+${value}` : value;
     });
 
-    html.find('input[type=checkbox].item-modifier').on('change', function () {
+    html.find('.checkbox-control-toggle.item-modifier').on('change', function () {
       const modifierInput = html.find('input[name=modifier]')[0];
       let value = +modifierInput.value;
       value += this.checked ? +this.dataset.value : -this.dataset.value;
@@ -115,7 +115,7 @@ export default class YZEGSDialog {
       skill: parseInt(form.skill?.value) || 0,
       rof: parseInt(form.rof?.value) || 0,
       modifier: parseInt(form.modifier.value) || 0,
-      locate: form.locate.checked,
+      locate: form.elements.namedItem('locate')?.value === 'true',
       maxPush: parseInt(form.maxPush.value) || 1,
       messageMode: form.messageMode.value,
     };
@@ -137,7 +137,7 @@ export default class YZEGSDialog {
 
   static _processCuFOptions(form) {
     return {
-      unitMorale: form.unitMorale.checked,
+      unitMorale: form.elements.namedItem('unitMorale')?.value === 'true',
       modifier: parseInt(form.modifier.value) || 0,
       maxPush: parseInt(form.maxPush.value) || 1,
       messageMode: form.messageMode.value,

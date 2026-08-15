@@ -28,7 +28,7 @@ import {
   rollItem,
   rollOnTable,
   rollStat,
-  setupMacroFolder,
+  removeEmptySystemMacroFolder,
 } from './system/macros.js';
 import displayMessages from './components/message-system.js';
 // import * as Chat from './components/chat/chat.js';
@@ -159,13 +159,13 @@ Hooks.once('init', function () {
 
 Hooks.once('ready', async function () {
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to.
-  setupMacroFolder();
   Hooks.on('hotbarDrop', (_bar, data, slot) => createYZEGSMacro(data, slot));
 
   // Determines whether a system migration is required and feasible.
   await checkMigration();
   await migrateLegacySkills();
   await removeMigratedWorldSkills();
+  await removeEmptySystemMacroFolder();
 
   // Displays starting messages.
   displayMessages();

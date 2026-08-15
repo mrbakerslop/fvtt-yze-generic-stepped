@@ -479,6 +479,12 @@ SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes u
 SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
 SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.
+SETTINGS.enableNotesTab.name: Aktivera fliken Anteckningar
+SETTINGS.enableNotesTab.hint: Visa fliken Anteckningar på aktörsformulär.
+SETTINGS.enableRadiation.name: Aktivera strålning
+SETTINGS.enableRadiation.hint: Visa strålningsspårning och slag på rollformulär.
+SETTINGS.radiationName.name: Namn på strålning
+SETTINGS.radiationName.hint: Byt namn på strålning i systemet. Lämna tomt för att använda den översatta standardbenämningen.
 YZEGS.ItemTypes.skill: Skill
 TYPES.Item.skill: Skill
 YZEGS.ItemSheet.ParentAttribute: Parent Attribute

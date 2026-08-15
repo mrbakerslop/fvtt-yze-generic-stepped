@@ -29,7 +29,7 @@ body:
         Please provide a bullet list of your system information.
           - OS: [e.g. macOS]
           - Client [e.g. Foundry Desktop app, Chrome, Firefox]
-          - Foundry Version [e.g. 14.365]
+          - Foundry Version [e.g. 14.366]
           - System Version [e.g. 14.0.1]
       render: sh
       placeholder: System, OS, version, etc.

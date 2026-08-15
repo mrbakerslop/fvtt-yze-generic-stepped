@@ -3,7 +3,9 @@
     <nav class="sheet-tabs tabs slanted-tabs flexrow flex-center" data-group="primary">
       <a class="item" data-action="tab" data-group="primary" data-tab="main">{{localize "FLPS.TAB.MAIN"}}</a>
       <a class="item" data-action="tab" data-group="primary" data-tab="travel">{{localize "FLPS.TAB.TRAVEL"}}</a>
+      {{#if notesTabEnabled}}
       <a class="item" data-action="tab" data-group="primary" data-tab="note">{{localize "FLPS.TAB.NOTE"}}</a>
+      {{/if}}
     </nav>
 
     <div class="sheet-body">
@@ -13,9 +15,11 @@
       <div class="tab" data-group="primary" data-tab="travel">
 {{> systems/fvtt-yze-generic-stepped/templates/actor/party/sheet-tabs/travel-tab.hbs}}
       </div>
+      {{#if notesTabEnabled}}
       <div class="tab note" data-group="primary" data-tab="note">
 {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
       </div>
+      {{/if}}
     </div>
   </div>
 </div>

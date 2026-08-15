@@ -477,6 +477,12 @@ SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes u
 SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
 SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.
+SETTINGS.enableNotesTab.name: Activar la pestaña de notas
+SETTINGS.enableNotesTab.hint: Muestra la pestaña de notas en las hojas de actor.
+SETTINGS.enableRadiation.name: Activar la radiación
+SETTINGS.enableRadiation.hint: Muestra el seguimiento y las tiradas de radiación en las hojas de personaje.
+SETTINGS.radiationName.name: Nombre de la radiación
+SETTINGS.radiationName.hint: Cambia el nombre de la radiación en el sistema. Déjalo en blanco para usar el nombre traducido predeterminado.
 YZEGS.ItemTypes.skill: Skill
 TYPES.Item.skill: Skill
 YZEGS.ItemSheet.ParentAttribute: Parent Attribute

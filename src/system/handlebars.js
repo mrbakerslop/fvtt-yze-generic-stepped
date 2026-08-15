@@ -227,6 +227,7 @@ export function registerHandlebars() {
         class="checkbox-control-toggle {{inputClass}}{{#if value}} is-checked{{/if}}"
         aria-checked="{{#if value}}true{{else}}false{{/if}}"
         {{#if ariaLabel}}aria-label="{{ariaLabel}}"{{/if}}
+        {{#if dataValue}}data-value="{{dataValue}}"{{/if}}
         {{#unless editable}}disabled{{/unless}}></button>
     </span>`,
   );
