@@ -21,6 +21,11 @@
           <label>{{localize "YZEGS.ItemSheet.SkillRating"}}</label>
           {{> scoreSelector name="system.score" selected=system.score editable=@root.editable}}
         </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.ItemSheet.CombatType"}}</label>
+          {{> optionMenu name="system.combatType" selected=system.combatType options=combatTypeChoices
+            editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
       </div>
     </div>
 

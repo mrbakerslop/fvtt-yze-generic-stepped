@@ -172,7 +172,7 @@ YZEGS.ActorSheet.NewItem.gear: Нове спорядження
 YZEGS.ActorSheet.NewItem.ammunition: Нові Боєприпаси
 SETTINGS.characterFieldLabels.name: Character Field Labels
 SETTINGS.characterFieldLabels.label: Configure Character Field Labels
-SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes used by character and NPC sheets.
+SETTINGS.characterFieldLabels.hint: Rename identity fields, main attributes, and encumbrance labels used by character and NPC sheets.
 SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
 SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.

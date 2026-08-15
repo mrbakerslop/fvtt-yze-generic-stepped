@@ -1,5 +1,34 @@
 # Changelog
 
+## 14.0.6 - 2026-08-15 — Combat Actions and Modifiers
+
+### Added
+
+- Added a world-level Combat Actions and Modifiers configuration for enabling,
+  renaming, and adjusting Close Combat, Ranged Combat, and Environmental
+  entries.
+- Added a Combat Category field to Skill Items so custom skills can opt into
+  Close or Ranged Combat roll options without relying on their displayed name.
+- Added a single Action Used selector to combat rolls, grouped into Fast and
+  Slow Actions, with the chosen action recorded in the resulting chat card.
+- Added configurable Close Combat, Ranged Combat, and Environmental
+  situational modifiers to combat roll dialogs and chat results.
+- Added the Combat Gear Encumbrance label to the world-level Character Field
+  Labels configuration.
+
+### Changed
+
+- Arranged combat modifier checkboxes into two columns and increased the
+  Ranged Combat modifier area so Environmental Modifiers remain visible.
+- Updated combat chat-card details to wrap long action and modifier names.
+- Zero-value actions are enabled by default, while zero-value situational
+  modifiers remain hidden unless enabled by the GM.
+
+### Fixed
+
+- Prevented zero-value situational modifiers such as Short Range from changing
+  the roll modifier total to `NaN`.
+
 ## 14.0.5 - 2026-08-15 — Item Sheet Polish
 
 ### Changed

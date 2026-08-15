@@ -37,6 +37,52 @@
 
   <hr />
 
+  {{! Combat Action and Situational Modifiers }}
+  {{#if (or data.combatActionGroups.length data.combatModifierGroups.length)}}
+    <div class="combat-modifier-groups combat-modifier-groups-{{data.combatType}}">
+      <h3>{{localize (concat 'YZEGS.CombatModifiers.CombatTypes.' data.combatType)}}</h3>
+
+      {{#if data.combatActionGroups.length}}
+        <div class="form-group combat-action-selector">
+          <label for="yzegs-combat-action">{{localize 'YZEGS.CombatModifiers.Action'}}</label>
+          <select id="yzegs-combat-action" name="combatAction">
+            <option value="" data-value="0">{{localize 'YZEGS.CombatModifiers.NoAction'}}</option>
+            {{#each data.combatActionGroups as |group|}}
+              <optgroup label="{{group.name}}">
+                {{#each group.actions as |action|}}
+                  <option value="{{action.id}}" data-value="{{action.value}}" data-label="{{action.name}}"
+                    data-action-speed="{{action.group}}" data-action-speed-label="{{action.speedName}}">
+                    {{action.name}}{{#if action.value}} ({{action.displayValue}}){{/if}}
+                  </option>
+                {{/each}}
+              </optgroup>
+            {{/each}}
+          </select>
+        </div>
+      {{/if}}
+
+      {{#each data.combatModifierGroups as |group|}}
+        <fieldset class="combat-modifier-group combat-modifier-group-{{group.id}}">
+          <legend>{{group.name}}</legend>
+          <div class="combat-modifier-options">
+            {{#each group.modifiers as |modifier|}}
+              <label class="checkbox combat-modifier-option" title="{{modifier.name}}">
+                {{> checkboxControl value=false editable=true inputClass='item-modifier situational-modifier'
+                  dataValue=modifier.value dataModifierId=modifier.id dataLabel=modifier.name
+                  dataExclusiveGroup=modifier.exclusiveGroup
+                  ariaLabel=modifier.name}}
+                <span class="combat-modifier-name">{{modifier.name}}</span>
+                <span class="combat-modifier-value">{{modifier.displayValue}}</span>
+              </label>
+            {{/each}}
+          </div>
+        </fieldset>
+      {{/each}}
+    </div>
+
+    <hr />
+  {{/if}}
+
   {{! Modifier }}
   <div class='form-group'>
     <label>{{localize 'YZEGS.Dialog.Roll.Modifier'}}</label>
@@ -60,7 +106,7 @@
   </div>
 
   {{! Modifiers }}
-  <div class='form-group-stacked'>
+  <div class='form-group-stacked actor-roll-modifiers'>
     {{#each data.modifiers}}
       <label class='checkbox' title='{{description}}'>
         {{> checkboxControl value=active editable=true inputClass='item-modifier'

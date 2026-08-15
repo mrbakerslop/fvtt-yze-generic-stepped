@@ -177,6 +177,22 @@
           font-weight: bold;
         }
 
+        &.roll-combat-action,
+        &.roll-situational-modifiers {
+          align-items: flex-start;
+
+          .label {
+            flex-basis: 115px;
+          }
+
+          .result {
+            flex: 1 1 0;
+            min-width: 0;
+            white-space: normal;
+            overflow-wrap: anywhere;
+          }
+        }
+
         &.roll-jammed {
           .label {
             font-weight: bold;

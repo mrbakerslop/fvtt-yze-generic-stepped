@@ -2,6 +2,11 @@ import YZEGSDialog from '../dialog/dialog.js';
 import { YearZeroRoll } from '../../lib/yzur.js';
 import { YZEGS } from '../../system/config.js';
 import { range } from '@utils/utils.js';
+import {
+  getCombatActionGroups,
+  getCombatModifierGroups,
+  getSkillCombatType,
+} from '../../system/combat-modifiers.js';
 
 /* -------------------------------------------- */
 /*  Custom Dice Roller Interface                */
@@ -26,6 +31,7 @@ export class YZEGSRoller {
    * @param {Item?}    item                 The item used to roll the dice, if any
    * @param {string?}  attributeName        The name of the attribute used (important for modifiers)
    * @param {string?}  skillName            The Skill Item ID used (important for modifiers)
+   * @param {string?}  combatType           Whether this is a Close or Ranged Combat roll
    * @param {number}  [attribute=0]         The attribute's size
    * @param {number}  [skill=0]             The skill's size
    * @param {number}  [rof=0]               The RoF's value
@@ -47,6 +53,7 @@ export class YZEGSRoller {
     item = null,
     attributeName = null,
     skillName = null,
+    combatType = null,
     attribute = 0,
     skill = 0,
     rof = 0,
@@ -63,6 +70,8 @@ export class YZEGSRoller {
 
     // 2 — Checks if we ask for options (roll dialog).
     const showTaskCheckOptions = game.settings.get('fvtt-yze-generic-stepped', 'showTaskCheckOptions');
+    let combatAction = null;
+    let situationalModifiers = [];
     if (!skipDialog && askForOptions !== showTaskCheckOptions) {
       // 2.1 — Prepares a formula.
       const formula = YearZeroRoll.forge(
@@ -82,9 +91,11 @@ export class YZEGSRoller {
       }
 
       // 2.3 — Renders the dialog.
+      const combatActionGroups = getCombatActionGroups(combatType);
+      const combatModifierGroups = getCombatModifierGroups(combatType);
       const opts = await YZEGSDialog.askRollOptions({
         title, attribute, skill, rof, modifier, modifiers, locate,
-        maxPush, messageMode, formula,
+        maxPush, messageMode, formula, combatType, combatActionGroups, combatModifierGroups,
       });
 
       // 2.3.5 — Exits early if the dialog was cancelled.
@@ -97,6 +108,8 @@ export class YZEGSRoller {
       }
       rof = opts.rof;
       modifier = opts.modifier;
+      combatAction = opts.combatAction;
+      situationalModifiers = opts.situationalModifiers;
       locate = opts.locate;
       maxPush = opts.maxPush;
       messageMode = opts.messageMode;
@@ -111,6 +124,11 @@ export class YZEGSRoller {
     const dice = getDiceQuantities(attribute, skill, rof, locate);
     let roll = YearZeroRoll.forge(dice, { maxPush });
     roll.name = title;
+    roll.options.combatType = combatType;
+    roll.options.combatAction = combatAction;
+    roll.options.situationalModifiers = situationalModifiers;
+    roll.options.modifier = modifier;
+    roll.options.signedModifier = modifier >= 0 ? `+${modifier}` : `−${Math.abs(modifier)}`;
 
     // 5 — Modifies the roll.
     if (modifier) {
@@ -303,6 +321,7 @@ export function getAttributeAndSkill(skillReference, actor, attributeName = null
     skill: skillItem.system.value,
     attributeName,
     skillName: skillItem.id,
+    combatType: getSkillCombatType(skillItem),
   };
 }
 

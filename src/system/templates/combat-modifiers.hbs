@@ -1,0 +1,64 @@
+<div class="combat-modifier-config-form">
+  <p class="hint">{{localize "SETTINGS.combatModifiers.hint"}}</p>
+
+  {{#each combatSections as |section|}}
+  <fieldset class="combat-modifier-section">
+    <legend>{{section.name}}</legend>
+    {{#each section.actionGroups as |group|}}
+    <h3>{{group.name}}</h3>
+    <div class="combat-modifier-config-list">
+      {{#each group.entries as |modifier|}}
+      <div class="combat-modifier-config-row">
+        <input type="hidden" name="enabled-{{modifier.id}}" value="{{modifier.enabled}}" />
+        {{> checkboxControl name=(concat "enabled-" modifier.id) value=modifier.enabled editable=true
+          ariaLabel=modifier.name}}
+        <input type="text" name="label-{{modifier.id}}" value="{{modifier.customLabel}}"
+          placeholder="{{modifier.name}}" aria-label="{{localize 'SETTINGS.combatModifiers.customLabel'}}" />
+        <input type="number" name="value-{{modifier.id}}" value="{{modifier.value}}" step="1"
+          aria-label="{{localize 'SETTINGS.combatModifiers.value'}}" />
+      </div>
+      {{/each}}
+    </div>
+    {{/each}}
+
+    <h3>{{section.modifiersName}}</h3>
+    <div class="combat-modifier-config-list">
+      {{#each section.modifiers as |modifier|}}
+      <div class="combat-modifier-config-row">
+        <input type="hidden" name="enabled-{{modifier.id}}" value="{{modifier.enabled}}" />
+        {{> checkboxControl name=(concat "enabled-" modifier.id) value=modifier.enabled editable=true
+          ariaLabel=modifier.name}}
+        <input type="text" name="label-{{modifier.id}}" value="{{modifier.customLabel}}"
+          placeholder="{{modifier.name}}" aria-label="{{localize 'SETTINGS.combatModifiers.customLabel'}}" />
+        <input type="number" name="value-{{modifier.id}}" value="{{modifier.value}}" step="1"
+          aria-label="{{localize 'SETTINGS.combatModifiers.value'}}" />
+      </div>
+      {{/each}}
+    </div>
+  </fieldset>
+  {{/each}}
+
+  <fieldset class="combat-modifier-section">
+    <legend>{{environmental.name}}</legend>
+    <div class="combat-modifier-config-list">
+      {{#each environmental.modifiers as |modifier|}}
+      <div class="combat-modifier-config-row">
+        <input type="hidden" name="enabled-{{modifier.id}}" value="{{modifier.enabled}}" />
+        {{> checkboxControl name=(concat "enabled-" modifier.id) value=modifier.enabled editable=true
+          ariaLabel=modifier.name}}
+        <input type="text" name="label-{{modifier.id}}" value="{{modifier.customLabel}}"
+          placeholder="{{modifier.name}}" aria-label="{{localize 'SETTINGS.combatModifiers.customLabel'}}" />
+        <input type="number" name="value-{{modifier.id}}" value="{{modifier.value}}" step="1"
+          aria-label="{{localize 'SETTINGS.combatModifiers.value'}}" />
+      </div>
+      {{/each}}
+    </div>
+  </fieldset>
+
+  <footer class="form-footer">
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "SETTINGS.combatModifiers.save"}}</span>
+    </button>
+  </footer>
+</div>

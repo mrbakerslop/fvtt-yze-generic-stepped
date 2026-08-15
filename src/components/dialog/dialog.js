@@ -32,16 +32,44 @@ export default class YZEGSDialog {
       event.preventDefault();
       const elem = event.currentTarget;
       const target = html.find(`input[name="${elem.dataset.target}"]`)[0];
-      let value = parseInt(target.value);
+      let value = parseInt(target.value) || 0;
       if (elem.dataset.change === 'plus') value++;
       else if (elem.dataset.change === 'minus') value--;
       target.value = value >= 0 ? `+${value}` : value;
     });
 
+    html.find('select[name=combatAction]').on('change', function () {
+      const modifierInput = html.find('input[name=modifier]')[0];
+      const previousValue = Number(this.dataset.currentValue) || 0;
+      const selectedValue = Number(this.selectedOptions[0]?.dataset.value) || 0;
+      const value = (Number(modifierInput.value) || 0) - previousValue + selectedValue;
+      modifierInput.value = value >= 0 ? `+${value}` : value;
+      this.dataset.currentValue = String(selectedValue);
+    });
+
     html.find('.checkbox-control-toggle.item-modifier').on('change', function () {
       const modifierInput = html.find('input[name=modifier]')[0];
-      let value = +modifierInput.value;
-      value += this.checked ? +this.dataset.value : -this.dataset.value;
+      let value = Number(modifierInput.value) || 0;
+      const modifierValue = Number(this.dataset.value) || 0;
+      value += this.checked ? modifierValue : -modifierValue;
+      modifierInput.value = value >= 0 ? `+${value}` : value;
+    });
+
+    html.find('.checkbox-control-toggle.situational-modifier').on('change', function () {
+      const exclusiveGroup = this.dataset.exclusiveGroup;
+      if (!this.checked || !exclusiveGroup) return;
+      const modifierInput = html.find('input[name=modifier]')[0];
+      let value = Number(modifierInput.value) || 0;
+      const controls = dialog.element.querySelectorAll(
+        `.situational-modifier[data-exclusive-group="${exclusiveGroup}"]`,
+      );
+      for (const control of controls) {
+        if (control === this || !control.checked) continue;
+        control.checked = false;
+        control.classList.remove('is-checked');
+        control.setAttribute('aria-checked', 'false');
+        value -= Number(control.dataset.value) || 0;
+      }
       modifierInput.value = value >= 0 ? `+${value}` : value;
     });
 
@@ -110,11 +138,36 @@ export default class YZEGSDialog {
   }
 
   static _processRollOptions(form) {
+    const selectedAction = form.elements.namedItem('combatAction')?.selectedOptions[0];
+    const actionValue = Number(selectedAction?.dataset.value) || 0;
+    let actionDisplayValue = '–';
+    if (actionValue) actionDisplayValue = actionValue >= 0 ? `+${actionValue}` : `−${Math.abs(actionValue)}`;
+    const combatAction = selectedAction?.value ? {
+      id: selectedAction.value,
+      label: selectedAction.dataset.label,
+      value: actionValue,
+      displayValue: actionDisplayValue,
+      speed: selectedAction.dataset.actionSpeed,
+      speedLabel: selectedAction.dataset.actionSpeedLabel,
+    } : null;
+    const situationalModifiers = [...form.querySelectorAll('.situational-modifier.is-checked')].map(control => {
+      const value = Number(control.dataset.value) || 0;
+      let displayValue = '–';
+      if (value) displayValue = value >= 0 ? `+${value}` : `−${Math.abs(value)}`;
+      return {
+        id: control.dataset.modifierId,
+        label: control.dataset.label,
+        value,
+        displayValue,
+      };
+    });
     return {
       attribute: parseInt(form.attribute?.value) || 0,
       skill: parseInt(form.skill?.value) || 0,
       rof: parseInt(form.rof?.value) || 0,
       modifier: parseInt(form.modifier.value) || 0,
+      combatAction,
+      situationalModifiers,
       locate: form.elements.namedItem('locate')?.value === 'true',
       maxPush: parseInt(form.maxPush.value) || 1,
       messageMode: form.messageMode.value,

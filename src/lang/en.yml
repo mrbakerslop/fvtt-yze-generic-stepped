@@ -487,9 +487,10 @@ YZEGS.Dialog.ChooseValue.Qty: Modify Quantity for {name}
 YZEGS.ActorSheet.Age: Age
 SETTINGS.characterFieldLabels.name: Character Field Labels
 SETTINGS.characterFieldLabels.label: Configure Character Field Labels
-SETTINGS.characterFieldLabels.hint: Rename identity fields and main attributes used by character and NPC sheets.
+SETTINGS.characterFieldLabels.hint: Rename identity fields, main attributes, and encumbrance labels used by character and NPC sheets.
 SETTINGS.characterFieldLabels.headerFields: Header Fields
 SETTINGS.characterFieldLabels.attributeFields: Attribute Fields
+SETTINGS.characterFieldLabels.encumbranceFields: Encumbrance Labels
 SETTINGS.characterFieldLabels.inputHint: Leave blank to use "{default}".
 SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.
@@ -503,6 +504,69 @@ YZEGS.ItemTypes.skill: Skill
 TYPES.Item.skill: Skill
 YZEGS.ItemSheet.ParentAttribute: Parent Attribute
 YZEGS.ItemSheet.SkillRating: Rating
+YZEGS.ItemSheet.CombatType: Combat Category
+YZEGS.CombatModifiers.CombatTypes.auto: Automatic (Legacy Skill)
+YZEGS.CombatModifiers.CombatTypes.none: None
+YZEGS.CombatModifiers.CombatTypes.close: Close Combat
+YZEGS.CombatModifiers.CombatTypes.ranged: Ranged Combat
+YZEGS.CombatModifiers.Groups.fast: Fast Actions
+YZEGS.CombatModifiers.Groups.slow: Slow Actions
+YZEGS.CombatModifiers.Groups.situational: Situational Modifiers
+YZEGS.CombatModifiers.Groups.environmental: Environmental Modifiers
+YZEGS.CombatModifiers.Action: Action Used
+YZEGS.CombatModifiers.NoAction: No Action Selected
+YZEGS.CombatModifiers.SelectedAction: Combat Action
+YZEGS.CombatModifiers.Selected: Situational Modifiers
+YZEGS.CombatModifiers.FinalModifier: Final Modifier
+YZEGS.CombatModifiers.Entries.closeBlock: Blocking
+YZEGS.CombatModifiers.Entries.closeShove: Shoving
+YZEGS.CombatModifiers.Entries.closeDisarm: Disarming
+YZEGS.CombatModifiers.Entries.closeGrappleAttack: Grapple Attack
+YZEGS.CombatModifiers.Entries.closeRetreat: Retreat
+YZEGS.CombatModifiers.Entries.closeUnarmedAttack: Unarmed Attack
+YZEGS.CombatModifiers.Entries.closeMeleeAttack: Melee Attack
+YZEGS.CombatModifiers.Entries.closeGrapple: Grappling
+YZEGS.CombatModifiers.Entries.closeBreakFree: Break Free
+YZEGS.CombatModifiers.Entries.closeAttackerProne: Attacker Prone
+YZEGS.CombatModifiers.Entries.closeTargetProne: Target Prone
+YZEGS.CombatModifiers.Entries.closeDefenselessTarget: Defenseless Target
+YZEGS.CombatModifiers.Entries.closeAimedBlow: Aimed Blow
+YZEGS.CombatModifiers.Entries.closeDivingBlow: Diving Blow
+YZEGS.CombatModifiers.Entries.rangedFastAim: Fast Aim
+YZEGS.CombatModifiers.Entries.rangedOverwatch: Assume Overwatch
+YZEGS.CombatModifiers.Entries.rangedAttack: Ranged Attack
+YZEGS.CombatModifiers.Entries.rangedQuickShotHandy: Quick Shot — Pistol, Carbine, or SMG
+YZEGS.CombatModifiers.Entries.rangedQuickShotOther: Quick Shot — Other Weapon
+YZEGS.CombatModifiers.Entries.rangedSlowAim: Telescopic Sight — Slow Aim
+YZEGS.CombatModifiers.Entries.rangedSlowAimStable: Telescopic Sight — Slow Aim from Stable Platform
+YZEGS.CombatModifiers.Entries.rangedShortRange: Short Range
+YZEGS.CombatModifiers.Entries.rangedMediumRange: Medium Range
+YZEGS.CombatModifiers.Entries.rangedLongRange: Long Range
+YZEGS.CombatModifiers.Entries.rangedExtremeRange: Extreme Range
+YZEGS.CombatModifiers.Entries.rangedActiveSameHexHandy: Active Target in Same Hex — Pistol, Carbine, or SMG
+YZEGS.CombatModifiers.Entries.rangedActiveSameHexOther: Active Target in Same Hex — Other Weapon
+YZEGS.CombatModifiers.Entries.rangedDefenselessSameHex: Defenseless Target in Same Hex
+YZEGS.CombatModifiers.Entries.rangedTargetProne: Target Prone
+YZEGS.CombatModifiers.Entries.rangedFullCover: Target in Full Cover
+YZEGS.CombatModifiers.Entries.rangedCalledShot: Called Shot
+YZEGS.CombatModifiers.Entries.rangedMovingTarget: Moving Target
+YZEGS.CombatModifiers.Entries.rangedMovingVehicle: Firing from Moving Vehicle
+YZEGS.CombatModifiers.Entries.rangedLargeTarget: Large Target
+YZEGS.CombatModifiers.Entries.rangedSmallTarget: Small Target
+YZEGS.CombatModifiers.Entries.rangedElevatedPosition: Elevated Firing Position
+YZEGS.CombatModifiers.Entries.rangedTargetTerrain: Target Hex Terrain
+YZEGS.CombatModifiers.Entries.rangedDenseTargetTerrain: Dense Target Hex Terrain
+YZEGS.CombatModifiers.Entries.environmentDimLight: Dim Light
+YZEGS.CombatModifiers.Entries.environmentDarkness: Darkness
+YZEGS.CombatModifiers.Entries.environmentHeavyWeather: Heavy Rain or Wind
+YZEGS.CombatModifiers.Entries.environmentDenseSmoke: Dense Smoke
+SETTINGS.combatModifiers.name: Combat Roll Modifiers
+SETTINGS.combatModifiers.label: Configure Combat Roll Modifiers
+SETTINGS.combatModifiers.hint: Configure the Fast and Slow Actions and the situational and environmental modifiers offered for Close and Ranged Combat rolls.
+SETTINGS.combatModifiers.customLabel: Custom Label
+SETTINGS.combatModifiers.value: Modifier Value
+SETTINGS.combatModifiers.save: Save Modifiers
+SETTINGS.combatModifiers.saved: Combat roll modifiers saved.
 YZEGS.ActorSheet.NewItem.skill: New Skill
 YZEGS.ActorSheet.DropSkillsHere: Drop Skill Items here
 YZEGS.ActorSheet.SkillDropHint: Skill Items must have a parent attribute and be dropped in the Skills section.

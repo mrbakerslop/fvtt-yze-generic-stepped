@@ -18,6 +18,10 @@ import {
   WORLD_ADVANCEMENT_ITEM_SOURCE,
 } from './experience-config.js';
 import { MACRO_FOLDER_CLEANUP_SETTING } from './macros.js';
+import {
+  COMBAT_MODIFIERS_SETTING,
+  CombatModifierConfig,
+} from './combat-modifiers.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -124,6 +128,23 @@ export function registerSystemSettings() {
     hint: 'SETTINGS.characterFieldLabels.hint',
     icon: 'fa-solid fa-tags',
     type: CharacterFieldLabelsConfig,
+    restricted: true,
+  });
+
+  game.settings.register(SYSTEM_ID, COMBAT_MODIFIERS_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.combatModifiers.name',
+    type: Object,
+    default: {},
+  });
+
+  game.settings.registerMenu(SYSTEM_ID, COMBAT_MODIFIERS_SETTING, {
+    name: 'SETTINGS.combatModifiers.name',
+    label: 'SETTINGS.combatModifiers.label',
+    hint: 'SETTINGS.combatModifiers.hint',
+    icon: 'fa-solid fa-crosshairs',
+    type: CombatModifierConfig,
     restricted: true,
   });
 

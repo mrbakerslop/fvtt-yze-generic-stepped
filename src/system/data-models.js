@@ -365,6 +365,7 @@ class SkillData extends foundry.abstract.TypeDataModel {
     return {
       attribute: stringField('str'),
       score: stringField('–'),
+      combatType: stringField('auto'),
       advancement: schemaField({
         eligible: booleanField(),
       }),

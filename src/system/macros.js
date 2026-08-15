@@ -1,6 +1,7 @@
 import { YZEGS } from './config';
 import { getActiveActor } from '@utils/get-actor';
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
+import { getSkillCombatType } from './combat-modifiers.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 const LEGACY_SYSTEM_MACRO_FOLDER = 'YZE Stepped Dice Roll Macros';
@@ -123,6 +124,7 @@ export async function rollStat(attributeKey, skillKey = null, options = {}) {
     title,
     attributeName: attributeKey,
     skillName: skillItem?.id ?? null,
+    combatType: getSkillCombatType(skillItem),
     attribute,
     skill,
   });

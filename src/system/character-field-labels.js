@@ -11,6 +11,7 @@ export const CHARACTER_FIELD_LABEL_KEYS = Object.freeze({
   agl: 'YZEGS.AttributeNames.agl',
   int: 'YZEGS.AttributeNames.int',
   emp: 'YZEGS.AttributeNames.emp',
+  combatGearEncumbrance: 'YZEGS.ActorSheet.CombatGearEncumbrance',
 });
 
 export const DEFAULT_CHARACTER_FIELD_LABELS = Object.freeze({
@@ -22,6 +23,7 @@ export const DEFAULT_CHARACTER_FIELD_LABELS = Object.freeze({
   agl: '',
   int: '',
   emp: '',
+  combatGearEncumbrance: '',
 });
 
 /**
@@ -102,7 +104,11 @@ export class CharacterFieldLabelsConfig extends foundry.applications.api.Handleb
       },
       {
         label: 'SETTINGS.characterFieldLabels.attributeFields',
-        fields: fields.slice(4),
+        fields: fields.slice(4, 8),
+      },
+      {
+        label: 'SETTINGS.characterFieldLabels.encumbranceFields',
+        fields: fields.slice(8),
       },
     ];
     return context;

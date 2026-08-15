@@ -1,6 +1,6 @@
 {
   "name": "fvtt-yze-generic-stepped",
-  "version": "14.0.5",
+  "version": "14.0.6",
   "private": true,
   "description": "A generic Foundry VTT system for Year Zero Engine games using stepped dice",
   "author": {

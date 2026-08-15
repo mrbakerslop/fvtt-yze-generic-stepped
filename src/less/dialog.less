@@ -1,6 +1,7 @@
 .application.dialog.yzegs,
 .application.yzegs.experience-config,
-.application.yzegs.character-field-label-settings {
+.application.yzegs.character-field-label-settings,
+.application.yzegs.combat-modifier-config {
   --background: #fff;
   --color-header-background: #000;
   --color-border: #000;
@@ -132,6 +133,109 @@
       border-color: #000;
       color: #000;
       box-shadow: @hoverShadow;
+    }
+  }
+}
+
+.application.dialog.yzegs .combat-modifier-groups {
+  max-height: 320px;
+  padding-right: 4px;
+  overflow-y: auto;
+
+  &.combat-modifier-groups-ranged {
+    max-height: 390px;
+  }
+
+  > h3 {
+    margin: 0 0 8px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .combat-action-selector {
+    margin-bottom: 10px;
+
+    select {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .combat-modifier-group {
+    margin: 0 0 8px;
+    padding: 6px 8px;
+    border: 1px solid #000;
+
+    legend {
+      padding: 0 5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+  }
+
+  .combat-modifier-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 14px;
+    row-gap: 3px;
+  }
+
+  .combat-modifier-option {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    margin: 0;
+
+    .combat-modifier-name {
+      min-width: 0;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+
+    .combat-modifier-value {
+      min-width: 22px;
+      text-align: right;
+      font-weight: 700;
+    }
+  }
+}
+
+.application.yzegs.combat-modifier-config {
+  .window-content {
+    overflow-y: auto;
+  }
+
+  .combat-modifier-config-form {
+    color: #000;
+  }
+
+  .combat-modifier-section {
+    margin-bottom: 12px;
+    padding: 8px 10px 10px;
+    border: 1px solid #000;
+
+    > legend {
+      padding: 0 5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    > h3 {
+      margin: 8px 0 4px;
+    }
+  }
+
+  .combat-modifier-config-row {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 76px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+
+    input[type='number'] {
+      text-align: center;
     }
   }
 }

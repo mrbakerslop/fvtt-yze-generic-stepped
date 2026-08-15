@@ -139,10 +139,10 @@
 
 {{!-- ENCUMBRANCE --}}
 {{#with system.encumbrance}}
-<div class="encumbrance{{#if encumbered}} encumbered{{/if}}" title="{{localize 'YZEGS.ActorSheet.CombatGearEncumbrance'}}">
+<div class="encumbrance{{#if encumbered}} encumbered{{/if}}" title="{{@root.characterFieldLabels.combatGearEncumbrance}}">
   <span class="encumbrance-bar" style="width: {{pct}}%;"></span>
   <span class="encumbrance-label">
-    {{localize "YZEGS.ActorSheet.CombatGearEncumbrance"}}:&nbsp;
+    {{@root.characterFieldLabels.combatGearEncumbrance}}:&nbsp;
     {{value}}&nbsp;/&nbsp;{{max}}
   </span>
 </div>

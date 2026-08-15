@@ -3,6 +3,7 @@ import { getCharacterFieldLabels } from '../system/character-field-labels.js';
 import { activateRatingMenus } from '../components/rating-menu.js';
 import { activateCheckboxControls } from '../components/checkbox-control.js';
 import { getAdvancementSourceItems } from '../system/experience.js';
+import { COMBAT_TYPES } from '../system/combat-modifiers.js';
 
 const ITEM_SHEET_HEIGHTS = {
   ammunition: 480,
@@ -110,6 +111,10 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
       documentUuid: this.item.uuid,
       config: CONFIG.YZEGS,
       attributeChoices,
+      combatTypeChoices: Object.fromEntries(Object.entries(COMBAT_TYPES).map(([value, label]) => [
+        value,
+        game.i18n.localize(label),
+      ])),
       attributeOptions,
       skillOptions: Object.fromEntries(availableSkills.map(skill => [skill.id, skill.name])),
       skillModifierOptions,

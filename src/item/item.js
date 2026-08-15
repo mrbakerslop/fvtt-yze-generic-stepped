@@ -4,6 +4,7 @@ import { YZEGS } from '../system/config.js';
 import { getCharacterFieldLabels } from '../system/character-field-labels.js';
 import { getDieSize, YZEGSRoller } from '../components/roll/dice.js';
 import YZEGSDialog from '../components/dialog/dialog.js';
+import { getSkillCombatType } from '../system/combat-modifiers.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Item.
@@ -278,6 +279,7 @@ export default class ItemYZEGS extends Item {
         actor,
         attributeName,
         skillName: this.id,
+        combatType: getSkillCombatType(this),
         attribute: actor.system.attributes?.[attributeName]?.value ?? 0,
         skill: this.system.value,
         askForOptions,
@@ -391,6 +393,7 @@ export default class ItemYZEGS extends Item {
         skillName,
         attribute,
         skill,
+        combatType: getSkillCombatType(skillItem),
         rof,
         locate: true,
       },

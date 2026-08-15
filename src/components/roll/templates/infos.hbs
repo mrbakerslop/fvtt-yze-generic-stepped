@@ -20,6 +20,33 @@
 
   {{! YEAR ZERO ENGINE - GENERIC STEPPED DICE }}
   {{#if (eq roll.game 'yzegs')}}
+    {{! YZEGS: Selected combat action }}
+    {{#if roll.options.combatAction}}
+      <div class="dice-info roll-combat-action">
+        <span class="label">{{localize 'YZEGS.CombatModifiers.SelectedAction'}}</span>
+        <span class="result">
+          {{roll.options.combatAction.label}} ({{roll.options.combatAction.speedLabel}})
+          {{#if roll.options.combatAction.value}}{{roll.options.combatAction.displayValue}}{{/if}}
+          {{#unless roll.options.situationalModifiers.length}}
+            <br />{{localize 'YZEGS.CombatModifiers.FinalModifier'}} {{roll.options.signedModifier}}
+          {{/unless}}
+        </span>
+      </div>
+    {{/if}}
+
+    {{! YZEGS: Selected situational combat modifiers }}
+    {{#if roll.options.situationalModifiers.length}}
+      <div class="dice-info roll-situational-modifiers">
+        <span class="label">{{localize 'YZEGS.CombatModifiers.Selected'}}</span>
+        <span class="result">
+          {{#each roll.options.situationalModifiers as |modifier|}}
+            {{modifier.label}} {{modifier.displayValue}}{{#unless @last}}<br />{{/unless}}
+          {{/each}}
+          <br />{{localize 'YZEGS.CombatModifiers.FinalModifier'}} {{roll.options.signedModifier}}
+        </span>
+      </div>
+    {{/if}}
+
     {{! YZEGS: Hit Location }}
     {{#if roll.bestHitLocation}}
       <div class='dice-info roll-hit-location'>
