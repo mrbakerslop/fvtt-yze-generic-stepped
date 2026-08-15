@@ -14,7 +14,7 @@ setting.
 
 ## Compatibility
 
-- System version: 14.0.3
+- System version: 14.0.4
 - Minimum Foundry version: 14.359
 - Verified Foundry version: 14.366
 

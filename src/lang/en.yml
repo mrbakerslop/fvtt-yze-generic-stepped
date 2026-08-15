@@ -587,9 +587,8 @@ SETTINGS.experienceConfig.prerequisiteModes.require: Required
 SETTINGS.experienceConfig.prerequisiteModes.warn: Warning Only
 SETTINGS.experienceConfig.prerequisiteModes.off: Disabled
 SETTINGS.experienceConfig.gmOnlyAdvancement: Only GMs Can Spend XP
-SETTINGS.experienceConfig.advancementItemSource: Advancement Item Source
-SETTINGS.experienceConfig.advancementItemSourceHint: Choose the sole source used by Learn Skill and Learn Specialty. This prevents duplicate entries from world Items and compendium packs.
-SETTINGS.experienceConfig.unavailableItemSource: "Unavailable source: {source}"
+SETTINGS.advancementItemSource.name: Skill and Specialty Item Source
+SETTINGS.advancementItemSource.hint: Choose the world Items or Item compendium used for Skill and Specialty choices, including experience advancement and Roll Modifiers on standalone Items.
 SETTINGS.experienceConfig.awardQuestions: Session Award Questions
 SETTINGS.experienceConfig.awardQuestionsHint: Each enabled question awards 1 XP when selected.
 SETTINGS.experienceConfig.customQuestions: Additional Award Questions

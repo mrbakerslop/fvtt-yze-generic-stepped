@@ -50,6 +50,7 @@ import { checkMigration } from './system/migration.js';
 import { migrateLegacySkills, removeMigratedWorldSkills } from './system/skill-migration.js';
 import * as YZUR from './lib/yzur.js';
 import * as Experience from './system/experience.js';
+import { migrateAdvancementItemSource } from './system/experience-config.js';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -163,6 +164,7 @@ Hooks.once('ready', async function () {
 
   // Determines whether a system migration is required and feasible.
   await checkMigration();
+  await migrateAdvancementItemSource();
   await migrateLegacySkills();
   await removeMigratedWorldSkills();
   await removeEmptySystemMacroFolder();

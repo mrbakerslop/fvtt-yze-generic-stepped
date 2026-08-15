@@ -9,10 +9,13 @@ import {
   WORLD_SKILL_CLEANUP_SETTING,
 } from './skill-migration.js';
 import {
+  ADVANCEMENT_ITEM_SOURCE_SETTING,
   DEFAULT_EXPERIENCE_CONFIG,
   EXPERIENCE_CONFIG_SETTING,
   ExperienceConfig,
+  getAdvancementItemSourceChoices,
   refreshExperienceSheets,
+  WORLD_ADVANCEMENT_ITEM_SOURCE,
 } from './experience-config.js';
 import { MACRO_FOLDER_CLEANUP_SETTING } from './macros.js';
 
@@ -69,6 +72,17 @@ export function registerSystemSettings() {
     icon: 'fa-solid fa-arrow-trend-up',
     type: ExperienceConfig,
     restricted: true,
+  });
+
+  game.settings.register(SYSTEM_ID, ADVANCEMENT_ITEM_SOURCE_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.advancementItemSource.name',
+    hint: 'SETTINGS.advancementItemSource.hint',
+    type: String,
+    choices: getAdvancementItemSourceChoices(),
+    default: WORLD_ADVANCEMENT_ITEM_SOURCE,
+    onChange: refreshExperienceSheets,
   });
 
   game.settings.register(SYSTEM_ID, SKILL_ITEMS_MIGRATION_SETTING, {

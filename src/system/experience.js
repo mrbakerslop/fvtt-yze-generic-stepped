@@ -1,4 +1,5 @@
 import {
+  getAdvancementItemSource,
   getExperienceConfig,
   EXPERIENCE_QUESTION_KEYS,
   WORLD_ADVANCEMENT_ITEM_SOURCE,
@@ -146,7 +147,7 @@ export async function advanceSkill(actor, skillId, { trained = false } = {}) {
 
 /** Return Items of one type from the world-configured advancement source. */
 export async function getAdvancementSourceItems(itemType) {
-  const source = getExperienceConfig().advancementItemSource;
+  const source = getAdvancementItemSource();
 
   if (source === WORLD_ADVANCEMENT_ITEM_SOURCE) {
     return game.items.filter(candidate => candidate.type === itemType);

@@ -1,5 +1,16 @@
 # Changelog
 
+## 14.0.4 - 2026-08-15 — Item Source World Setting
+
+### Changed
+
+- Moved the Skill and Specialty Item Source selector from the Experience Rules
+  dialog to the main world settings page to reflect its wider use.
+- Clarified that the selected source supplies Skill and Specialty choices for
+  experience advancement and Roll Modifiers on standalone Items.
+- New worlds now use World Items as their default Skill and Specialty source.
+- Existing worlds automatically retain their previously configured source.
+
 ## 14.0.3 - 2026-08-15 — World Settings and Interface Polish
 
 ### Added

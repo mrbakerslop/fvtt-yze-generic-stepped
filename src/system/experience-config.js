@@ -4,6 +4,7 @@ import { activateRatingMenus } from '../components/rating-menu.js';
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
 export const EXPERIENCE_CONFIG_SETTING = 'experienceConfig';
+export const ADVANCEMENT_ITEM_SOURCE_SETTING = 'advancementItemSource';
 export const WORLD_ADVANCEMENT_ITEM_SOURCE = 'world';
 export const SYSTEM_ADVANCEMENT_ITEM_SOURCE = `compendium:${SYSTEM_ID}.system-items`;
 
@@ -21,15 +22,58 @@ export const DEFAULT_EXPERIENCE_CONFIG = Object.freeze({
   specialtyCost: 10,
   prerequisiteMode: 'require',
   gmOnlyAdvancement: false,
-  advancementItemSource: SYSTEM_ADVANCEMENT_ITEM_SOURCE,
   questions: Object.fromEntries(Object.keys(EXPERIENCE_QUESTION_KEYS).map(key => [key, true])),
   customQuestions: [],
 });
 
 /** Return the validated world experience configuration with SRD defaults. */
 export function getExperienceConfig() {
-  const stored = game.settings.get(SYSTEM_ID, EXPERIENCE_CONFIG_SETTING) ?? {};
+  const stored = foundry.utils.deepClone(game.settings.get(SYSTEM_ID, EXPERIENCE_CONFIG_SETTING) ?? {});
+  delete stored.advancementItemSource;
   return foundry.utils.mergeObject(DEFAULT_EXPERIENCE_CONFIG, stored, { inplace: false });
+}
+
+/** Return the world source used to populate Skill and Specialty Item choices. */
+export function getAdvancementItemSource() {
+  return game.settings.get(SYSTEM_ID, ADVANCEMENT_ITEM_SOURCE_SETTING);
+}
+
+/** Return the Item sources available to the world-level setting. */
+export function getAdvancementItemSourceChoices() {
+  const choices = {
+    [WORLD_ADVANCEMENT_ITEM_SOURCE]: game.i18n.localize('YZEGS.Experience.WorldItems'),
+  };
+  const itemPacks = game.packs
+    .filter(pack => pack.documentName === 'Item')
+    .sort((a, b) => a.metadata.label.localeCompare(
+      b.metadata.label,
+      game.i18n.lang,
+      { sensitivity: 'base' },
+    ));
+  for (const pack of itemPacks) choices[`compendium:${pack.collection}`] = pack.metadata.label;
+  return choices;
+}
+
+/** Move the legacy Experience configuration source into its dedicated world setting. */
+export async function migrateAdvancementItemSource() {
+  if (!game.user.isGM) return;
+
+  const settingKey = `${SYSTEM_ID}.${ADVANCEMENT_ITEM_SOURCE_SETTING}`;
+  const stored = game.settings.get(SYSTEM_ID, EXPERIENCE_CONFIG_SETTING) ?? {};
+  const legacySource = stored.advancementItemSource;
+  if (!legacySource) return;
+
+  if (!game.settings.storage.get('world').has(settingKey)) {
+    const availableSources = getAdvancementItemSourceChoices();
+    const source = Object.hasOwn(availableSources, legacySource)
+      ? legacySource
+      : WORLD_ADVANCEMENT_ITEM_SOURCE;
+    await game.settings.set(SYSTEM_ID, ADVANCEMENT_ITEM_SOURCE_SETTING, source);
+  }
+
+  const experienceConfig = foundry.utils.deepClone(stored);
+  delete experienceConfig.advancementItemSource;
+  await game.settings.set(SYSTEM_ID, EXPERIENCE_CONFIG_SETTING, experienceConfig);
 }
 
 /** Refresh open Character sheets after the experience rules change. */
@@ -84,25 +128,6 @@ export class ExperienceConfig extends foundry.applications.api.HandlebarsApplica
       warn: 'SETTINGS.experienceConfig.prerequisiteModes.warn',
       off: 'SETTINGS.experienceConfig.prerequisiteModes.off',
     };
-    context.itemSources = {
-      [WORLD_ADVANCEMENT_ITEM_SOURCE]: game.i18n.localize('YZEGS.Experience.WorldItems'),
-    };
-    const itemPacks = game.packs
-      .filter(pack => pack.documentName === 'Item')
-      .sort((a, b) => a.metadata.label.localeCompare(
-        b.metadata.label,
-        game.i18n.lang,
-        { sensitivity: 'base' },
-      ));
-    for (const pack of itemPacks) {
-      context.itemSources[`compendium:${pack.collection}`] = pack.metadata.label;
-    }
-    if (!Object.hasOwn(context.itemSources, config.advancementItemSource)) {
-      context.itemSources[config.advancementItemSource] = game.i18n.format(
-        'SETTINGS.experienceConfig.unavailableItemSource',
-        { source: config.advancementItemSource },
-      );
-    }
     context.customQuestions = config.customQuestions.join('\n');
     return context;
   }
@@ -122,12 +147,6 @@ export class ExperienceConfig extends foundry.applications.api.HandlebarsApplica
     const submitted = formData.object;
     const nonNegativeInteger = value => Math.max(0, Math.trunc(Number(value) || 0));
     const asBoolean = value => value === true || value === 'true' || value === 'on';
-    const availableItemSources = new Set([
-      WORLD_ADVANCEMENT_ITEM_SOURCE,
-      ...game.packs
-        .filter(pack => pack.documentName === 'Item')
-        .map(pack => `compendium:${pack.collection}`),
-    ]);
     const config = {
       skillCosts: {
         D: nonNegativeInteger(submitted.skillD),
@@ -140,9 +159,6 @@ export class ExperienceConfig extends foundry.applications.api.HandlebarsApplica
         ? submitted.prerequisiteMode
         : 'require',
       gmOnlyAdvancement: asBoolean(submitted.gmOnlyAdvancement),
-      advancementItemSource: availableItemSources.has(submitted.advancementItemSource)
-        ? submitted.advancementItemSource
-        : SYSTEM_ADVANCEMENT_ITEM_SOURCE,
       questions: Object.fromEntries(
         Object.keys(EXPERIENCE_QUESTION_KEYS).map(key => [key, asBoolean(submitted[`question-${key}`])]),
       ),
