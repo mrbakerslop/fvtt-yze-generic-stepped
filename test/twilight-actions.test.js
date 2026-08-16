@@ -49,6 +49,14 @@ test('manual edge cases use the correct speed and skill', () => {
   assert.equal(getTwilightAction('seekPartialCover').target, 'optional');
 });
 
+test('social actions use the staged social-conflict workflow', () => {
+  for (const id of ['persuade', 'interrogate', 'barter']) {
+    assert.equal(getTwilightAction(id).speed, 'slow');
+    assert.equal(getTwilightAction(id).workflow, 'socialConflict');
+    assert.equal(getTwilightAction(id).target, 'other');
+  }
+});
+
 test('action item prerequisites distinguish backpack, ready, and weapon items', () => {
   const backpackGear = { type: 'gear', system: { backpack: true, equipped: false } };
   const readyGear = { type: 'gear', system: { backpack: false, equipped: true } };

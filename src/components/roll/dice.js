@@ -67,6 +67,8 @@ export class YZEGSRoller {
    * @param {object[]?} [combatActionChoices=null] Constrained action choices for an Item attack
    * @param {boolean} [hideCombatActions=false] Hide action choices while retaining modifiers
    * @param {number}  [maxPush=1]           The maximum number of pushes (default is 1)
+   * @param {boolean} [lockMaxPush=false]   Prevent the options dialog from changing maxPush
+   * @param {boolean} [lockMessageMode=false] Prevent the options dialog from changing visibility
    * @param {string?}  messageMode          Chat message visibility mode
    * @param {boolean} [askForOptions=false] Whether to show a Dialog for roll options
    * @param {boolean} [skipDialog=false]    Whether to force skip the Dialog for roll options
@@ -98,6 +100,8 @@ export class YZEGSRoller {
     combatActionChoices = null,
     hideCombatActions = false,
     maxPush = 1,
+    lockMaxPush = false,
+    lockMessageMode = false,
     messageMode = null,
     askForOptions = false,
     skipDialog = false,
@@ -220,7 +224,8 @@ export class YZEGSRoller {
       const combatModifierGroups = getCombatModifierGroups(combatType);
       const opts = await YZEGSDialog.askRollOptions({
         title, attribute, skill, rof, modifier, modifiers, locate,
-        maxPush, messageMode, formula, combatType, combatActionGroups, combatModifierGroups,
+        maxPush, lockMaxPush, messageMode, lockMessageMode, formula, combatType,
+        combatActionGroups, combatModifierGroups,
         tracksCombatActions, trackedActions,
         actionHeading: skillActionDialog
           ? game.i18n.localize('YZEGS.CombatActions.DialogTitle')
@@ -278,8 +283,8 @@ export class YZEGSRoller {
       }
       situationalModifiers = opts.situationalModifiers;
       locate = opts.locate;
-      maxPush = opts.maxPush;
-      messageMode = opts.messageMode;
+      if (!lockMaxPush) maxPush = opts.maxPush;
+      if (!lockMessageMode) messageMode = opts.messageMode;
     }
 
     // Spend the selected action only after the dialog is confirmed. Re-read the
@@ -311,6 +316,20 @@ export class YZEGSRoller {
           remaining: actionSpend.remaining,
         };
       }
+    }
+    if (actionData?.workflow === 'socialConflict' && actionData.socialSetup) {
+      const { createSocialConflict } = await import('../../system/social-conflict-workflows.js');
+      const action = getTwilightAction(actionData.actionId);
+      return createSocialConflict({
+        actor,
+        action,
+        setup: {
+          ...actionData.socialSetup,
+          modifier: (Number(actionData.socialSetup.modifier) || 0) + (Number(modifier) || 0),
+          activeOptionsPrepared: true,
+        },
+        combatAction,
+      });
     }
     // 3 — Clamps values.
     attribute = Math.clamp(attribute, 0, 12);

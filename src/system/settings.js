@@ -42,6 +42,11 @@ import {
 import { TokenSizeDefaultsConfig } from './token-size-defaults-config.js';
 import { ACTION_SKILLS_SETTING } from './action-skills.js';
 import { ActionSkillsConfig } from './action-skills-config.js';
+import {
+  DEFAULT_SOCIAL_CONFLICT_CONFIG,
+  SOCIAL_CONFLICT_SETTING,
+} from './social-conflict.js';
+import { SocialConflictConfig } from './social-conflict-config.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -100,6 +105,23 @@ export function registerSystemSettings() {
     hint: 'SETTINGS.actionSkills.hint',
     icon: 'fa-solid fa-person-running',
     type: ActionSkillsConfig,
+    restricted: true,
+  });
+
+  game.settings.register(SYSTEM_ID, SOCIAL_CONFLICT_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.socialConflict.name',
+    type: Object,
+    default: foundry.utils.deepClone(DEFAULT_SOCIAL_CONFLICT_CONFIG),
+  });
+
+  game.settings.registerMenu(SYSTEM_ID, SOCIAL_CONFLICT_SETTING, {
+    name: 'SETTINGS.socialConflict.name',
+    label: 'SETTINGS.socialConflict.label',
+    hint: 'SETTINGS.socialConflict.hint',
+    icon: 'fa-solid fa-comments',
+    type: SocialConflictConfig,
     restricted: true,
   });
 

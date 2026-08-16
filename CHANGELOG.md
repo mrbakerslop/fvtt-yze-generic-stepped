@@ -1,5 +1,31 @@
 # Changelog
 
+## 14.0.9 — 2026-08-17
+
+### Added
+
+- Added staged Social Conflict workflows for Persuade, Interrogate, and Barter,
+  including declared goals, offers, negotiating-position modifiers, passive
+  resistance, active pushes, and strict opposed-roll resolution.
+- Added rules-as-written player choice for ordinary influence against player
+  Characters, with an optional world setting for opposed rolls. Interrogation
+  remains opposed.
+- Added spokesperson and individual group resolution, public or GM-only
+  resistance rolls, narrative outcome recording, requested returns, and
+  accept, decline, and counteroffer responses.
+- Added configurable Barter price adjustments based on net successes.
+- Added world-level Social Conflict defaults and independent Action Skill
+  mappings for Persuasion, Interrogation, Barter, and their resistance checks.
+- Added cross-client ownership validation and chat-card controls so each roll
+  or response is performed by the relevant Actor owner or GM.
+
+### Changed
+
+- Social Conflict passive rolls cannot be pushed, while the active roll is
+  limited to one push and is made only after all resistance rolls are complete.
+- Social Conflict outcomes remain narrative and never modify Actor or Item
+  data automatically.
+
 ## 14.0.8 — 2026-08-16
 
 ### Added

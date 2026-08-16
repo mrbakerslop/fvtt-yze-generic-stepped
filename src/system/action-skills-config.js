@@ -45,6 +45,7 @@ export class ActionSkillsConfig extends foundry.applications.api.HandlebarsAppli
       .sort((left, right) => left.name.localeCompare(right.name, game.i18n.lang, { sensitivity: 'base' }));
     const groupLabels = {
       actions: 'YZEGS.ActionSkillConfig.Groups.Actions',
+      social: 'YZEGS.ActionSkillConfig.Groups.SocialResistance',
       travel: 'YZEGS.ActionSkillConfig.Groups.Travel',
       supporting: 'YZEGS.ActionSkillConfig.Groups.Supporting',
     };

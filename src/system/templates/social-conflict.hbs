@@ -1,0 +1,21 @@
+<div class="social-conflict-config-form standard-form">
+  <p class="hint">{{localize "SETTINGS.socialConflict.hint"}}</p>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Social.Config.PCTargets"}}</label>
+    {{> optionMenu name="pcInfluenceMode" selected=config.pcInfluenceMode options=pcModes
+        editable=true noBlank=true menuClass="social-config-menu"}}
+  </div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Social.Config.ResistanceVisibility"}}</label>
+    {{> optionMenu name="resistanceVisibility" selected=config.resistanceVisibility options=visibilityModes
+        editable=true noBlank=true menuClass="social-config-menu"}}
+  </div>
+  <div class="form-group">
+    <label for="yzegs-barter-percent">{{localize "YZEGS.Social.Config.BarterPercent"}}</label>
+    <input id="yzegs-barter-percent" type="number" name="barterPercentPerSuccess"
+      value="{{config.barterPercentPerSuccess}}" min="1" max="100" step="1" />
+  </div>
+  <footer class="form-footer">
+    <button type="submit"><i class="fa-solid fa-floppy-disk"></i> {{localize "SETTINGS.socialConflict.save"}}</button>
+  </footer>
+</div>

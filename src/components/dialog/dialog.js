@@ -98,6 +98,22 @@ export default class YZEGSDialog {
       modifierInput.value = value >= 0 ? `+${value}` : value;
     });
 
+    html.find('.checkbox-control-toggle.social-factor-toggle').on('change', function () {
+      const exclusiveGroup = this.dataset.exclusiveGroup;
+      if (!this.checked || !exclusiveGroup) return;
+      for (const control of dialog.element.querySelectorAll(
+        `.social-factor-toggle[data-exclusive-group="${exclusiveGroup}"]`,
+      )) {
+        if (control === this || !control.checked) continue;
+        control.checked = false;
+        control.classList.remove('is-checked');
+        control.setAttribute('aria-checked', 'false');
+        const hidden = [...dialog.element.querySelectorAll('input[type="hidden"]')]
+          .find(input => input.name === control.closest('.checkbox-control')?.dataset.path);
+        if (hidden) hidden.value = 'false';
+      }
+    });
+
     const updateExperienceAwardTotal = () => {
       const output = dialog.element.querySelector('.experience-award-total');
       if (!output) return;
@@ -257,6 +273,45 @@ export default class YZEGSDialog {
         targetUuid: form.elements.namedItem('targetUuid')?.value ?? '',
         itemId: form.elements.namedItem('itemId')?.value ?? '',
       }),
+      options,
+    });
+  }
+
+  static async configureSocialConflict(data, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/social-conflict-dialog.hbs',
+      { data },
+    );
+    return this._wait({
+      title: game.i18n.localize('YZEGS.Social.SetupTitle'),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.Social.Declare'),
+      processForm: form => ({
+        stakes: String(form.elements.namedItem('stakes')?.value ?? '').trim(),
+        offer: String(form.elements.namedItem('offer')?.value ?? '').trim(),
+        selectedFactors: [...form.querySelectorAll('.social-factor-toggle.is-checked')]
+          .map(control => control.closest('.checkbox-control')?.dataset.path?.replace('factor.', ''))
+          .filter(Boolean),
+        customModifier: Number(form.elements.namedItem('customModifier')?.value) || 0,
+        groupMode: form.elements.namedItem('groupMode')?.value ?? 'spokesperson',
+        resistanceVisibility: form.elements.namedItem('resistanceVisibility')?.value ?? 'public',
+        startingPrice: Number(form.elements.namedItem('startingPrice')?.value) || 0,
+        direction: form.elements.namedItem('direction')?.value ?? 'buy',
+      }),
+      options,
+    });
+  }
+
+  static async socialResponse(data, actionLabel, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/social-response-dialog.hbs',
+      { data },
+    );
+    return this._wait({
+      title: data.title,
+      content,
+      actionLabel,
+      processForm: form => ({ details: String(form.elements.namedItem('details')?.value ?? '').trim() }),
       options,
     });
   }

@@ -56,3 +56,10 @@ test('configured actions match copied Skills by source UUID or name', () => {
   assert.equal(skillMatchesAction(skill({ displayName: 'parkour' }), 'run'), true);
   assert.equal(skillMatchesAction(skill({ displayName: 'Mobility', legacyKey: 'mobility' }), 'run'), false);
 });
+
+test('social resistance checks have independent world mappings', () => {
+  mappings = {};
+  assert.equal(getActionSkillReference('resistPersuasion').legacyKey, 'persuasion');
+  assert.equal(getActionSkillReference('resistInterrogation').legacyKey, 'stamina');
+  assert.equal(getActionSkillReference('resistBarter').legacyKey, 'persuasion');
+});

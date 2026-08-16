@@ -63,6 +63,8 @@ YZEGS.ActionNames.reload: Reload
 YZEGS.ActionNames.drive: Drive
 YZEGS.ActionNames.getItemFromBackpack: Get item from backpack
 YZEGS.ActionNames.persuade: Persuade
+YZEGS.ActionNames.interrogate: Interrogate
+YZEGS.ActionNames.barter: Barter
 YZEGS.ActionNames.enterExitVehicle: Enter or exit vehicle
 YZEGS.ActionNames.dropBackpack: Drop backpack
 YZEGS.ActionNames.seekPartialCover: Seek partial cover
@@ -784,6 +786,7 @@ SETTINGS.actionSkills.saved: Action Skill mappings saved.
 YZEGS.ActionSkillConfig.Groups.Actions: Character Actions
 YZEGS.ActionSkillConfig.Groups.Travel: Travel Actions
 YZEGS.ActionSkillConfig.Groups.Supporting: Other Automated Checks
+YZEGS.ActionSkillConfig.Groups.SocialResistance: Social Conflict Resistance
 YZEGS.ActionSkillConfig.DefaultSkill: 'System default — {skill}'
 YZEGS.ActionSkillConfig.UnavailableSkill: 'Unavailable — {skill}'
 YZEGS.ActionSkillConfig.WaterTravelDriving: Water travel driving
@@ -1002,12 +1005,88 @@ YZEGS.CombatActions.Categories.general: General
 YZEGS.CombatActions.Categories.movement: Movement
 YZEGS.CombatActions.Categories.inventory: Inventory
 YZEGS.CombatActions.Categories.support: Support
+YZEGS.CombatActions.Categories.social: Social
 YZEGS.CombatActions.Categories.close: Close Combat
 YZEGS.CombatActions.Categories.ranged: Ranged Combat
 YZEGS.CombatActions.Categories.heavy: Heavy Weapons
 YZEGS.CombatActions.Categories.vehicle: Vehicle
 YZEGS.CombatActions.Categories.urban: Urban Operations
 YZEGS.CombatActions.Categories.hazards: Hazards
+
+SETTINGS.socialConflict.name: Social Conflict
+SETTINGS.socialConflict.label: Configure Social Conflict
+SETTINGS.socialConflict.hint: Configure player-character influence, resistance visibility, and barter calculations for this world.
+SETTINGS.socialConflict.save: Save Social Conflict Settings
+SETTINGS.socialConflict.saved: Social conflict settings saved.
+YZEGS.Social.Config.PCTargets: Ordinary influence against player characters
+YZEGS.Social.Config.PlayerChoice: Player decides (rules as written)
+YZEGS.Social.Config.Opposed: Use an opposed roll
+YZEGS.Social.Config.ResistanceVisibility: Default resistance visibility
+YZEGS.Social.Config.Public: Public
+YZEGS.Social.Config.GMOnly: GM only
+YZEGS.Social.Config.BarterPercent: Price change per net success (%)
+YZEGS.Social.ResistPersuasion: Resist persuasion
+YZEGS.Social.ResistInterrogation: Resist interrogation
+YZEGS.Social.ResistBarter: Resist barter
+YZEGS.Social.SetupTitle: Set Up Social Conflict
+YZEGS.Social.Declare: Declare Conflict
+YZEGS.Social.Stakes: Stated goal
+YZEGS.Social.StakesHint: State what the active character wants before any dice are rolled.
+YZEGS.Social.StakesRequired: Enter the active character's stated goal.
+YZEGS.Social.Offer: Offer or concession
+YZEGS.Social.NegotiatingPosition: Negotiating Position
+YZEGS.Social.CustomModifier: Additional modifier
+YZEGS.Social.NegotiatingModifier: Active roll modifier
+YZEGS.Social.ActionSpent: 'Spent {action} — remaining: Fast {fast}, Slow {slow}'
+YZEGS.Social.GroupMode: Multiple targets
+YZEGS.Social.Spokesperson: Use selected spokesperson
+YZEGS.Social.IndividualTargets: Each target resists individually
+YZEGS.Social.ResistanceVisibility: Resistance roll visibility
+YZEGS.Social.BarterDetails: Barter
+YZEGS.Social.StartingPrice: Starting price
+YZEGS.Social.Direction: Active character is
+YZEGS.Social.Buying: Buying
+YZEGS.Social.Selling: Selling
+YZEGS.Social.PlayerDecides: This is a roleplaying decision. The targeted player chooses the response without a compelled roll.
+YZEGS.Social.Accept: Accept
+YZEGS.Social.Decline: Decline
+YZEGS.Social.Counteroffer: Counteroffer
+YZEGS.Social.CounterofferDetails: Counteroffer terms
+YZEGS.Social.CounterofferRequired: Enter the counteroffer terms.
+YZEGS.Social.Submit: Submit
+YZEGS.Social.Save: Save
+YZEGS.Social.RollResistance: Roll Resistance
+YZEGS.Social.ResistanceRecorded: Resistance recorded privately
+YZEGS.Social.ResistanceSuccesses: 'Resistance successes: {successes}'
+YZEGS.Social.ResistanceRollTitle: 'Social Resistance: {actor}'
+YZEGS.Social.RollActive: Roll Active Test
+YZEGS.Social.ActiveMayPush: The active roll may now be pushed or accepted on its roll card.
+YZEGS.Social.ActiveSuccesses: 'Active successes: {successes}'
+YZEGS.Social.ProvisionalResult: Provisional result — the active roll may still be pushed
+YZEGS.Social.Success: 'Success — {net} net successes'
+YZEGS.Social.Failure: Failure — ties favor the resisting side
+YZEGS.Social.BarterResult: Calculated price
+YZEGS.Social.RecordOutcome: Record Outcome
+YZEGS.Social.RecordedOutcome: Outcome
+YZEGS.Social.OutcomeDetails: Narrative result and any extra benefit
+YZEGS.Social.RequestReturnTitle: Request Something in Return
+YZEGS.Social.RequestedReturn: Requested return or condition (optional)
+YZEGS.Social.Failed: The social conflict could not be updated.
+YZEGS.Social.Factors.ActiveMorePeople: Active side has more people
+YZEGS.Social.Factors.TargetMorePeople: Target side has more people
+YZEGS.Social.Factors.CostsNothing: Request costs the target nothing
+YZEGS.Social.Factors.ValuableOrDangerous: Request is valuable or dangerous
+YZEGS.Social.Factors.TargetGainsNothing: Target gains nothing
+YZEGS.Social.Factors.TargetDamagedOrStressed: Target is damaged or stressed
+YZEGS.Social.Factors.TargetSick: Target is sick
+YZEGS.Social.Factors.TargetCaptive: Target is captive
+YZEGS.Social.Factors.ActiveCaptive: Active character is captive
+YZEGS.Social.Factors.HelpedPreviously: Active character helped the target previously
+YZEGS.Social.Factors.WellPresented: Case is presented well
+YZEGS.Social.Factors.ActiveOutranks: Active character outranks the target
+YZEGS.Social.Factors.TargetOutranks: Target outranks the active character
+YZEGS.Social.Factors.LanguageTrouble: Language difficulties
+YZEGS.Social.Factors.NotNearby: Parties are not nearby
 YZEGS.CombatActions.Hints.spotShooter: Opposed Recon test. Spotting a shooter takes no action and ignores darkness; a silent or suppressed weapon does not grant the usual bonus.
 YZEGS.CombatActions.Hints.spotSilentShooter: Opposed Recon test without the loud-shot bonus. Spotting takes no action and darkness is ignored.
 YZEGS.CombatActions.Hints.blindFire: Fire into an adjacent indoor sector without exposing yourself. Only ammunition dice are rolled; ordinary shots can suppress but cannot inflict direct damage.

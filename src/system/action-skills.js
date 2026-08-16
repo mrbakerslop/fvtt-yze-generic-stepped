@@ -18,6 +18,9 @@ const registryActions = TWILIGHT_ACTIONS
 
 /** Checks launched outside the ordinary action selector, including Travel Party rolls. */
 const supportingActions = [
+  actionDefinition('resistPersuasion', 'YZEGS.Social.ResistPersuasion', 'persuasion', 'social'),
+  actionDefinition('resistInterrogation', 'YZEGS.Social.ResistInterrogation', 'stamina', 'social'),
+  actionDefinition('resistBarter', 'YZEGS.Social.ResistBarter', 'persuasion', 'social'),
   actionDefinition('travel-forced-march', 'FLPS.TRAVEL_ROLL.FORCED_MARCH', 'stamina', 'travel'),
   actionDefinition('travel-march-in-darkness', 'FLPS.TRAVEL_ROLL.MARCH_IN_DARKNESS', 'survival', 'travel'),
   actionDefinition('travel-drive', 'FLPS.TRAVEL_ROLL.DRIVE', 'driving', 'travel'),

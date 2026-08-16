@@ -202,10 +202,18 @@ export async function prepareTwilightRollAction(actor, selection = {}) {
   );
   if (valid !== true) return null;
   const { target, item } = documents;
+  let socialSetup = null;
+  if (action.workflow === 'socialConflict') {
+    const { prepareSocialConflictSetup } = await import('./social-conflict-workflows.js');
+    socialSetup = await prepareSocialConflictSetup(actor, action, target);
+    if (!socialSetup) return null;
+  }
   await preparePersistentActionStates(actor, action, target, item);
+  const preparedData = actionData(action, actor, target, item);
+  if (socialSetup) preparedData.socialSetup = socialSetup;
   return {
     combatAction: actionDisplay(action),
-    actionData: actionData(action, actor, target, item),
+    actionData: preparedData,
   };
 }
 
@@ -266,7 +274,8 @@ async function validateAction(actor, action, target, item, missingTarget, missin
     return notifyActionError('YZEGS.CombatActions.Errors.VehicleRequired');
   }
   const personTargetActions = new Set([
-    'persuade', 'grapple', 'firstAid', 'rally', 'shove', 'disarm', 'grappleAttack', 'helpFast', 'helpSlow',
+    'persuade', 'interrogate', 'barter', 'grapple', 'firstAid', 'rally', 'shove', 'disarm', 'grappleAttack',
+    'helpFast', 'helpSlow',
     'rescueDrowning',
   ]);
   if (target && personTargetActions.has(action.id) && !['character', 'npc'].includes(target.type)) {
@@ -524,6 +533,19 @@ export async function executeTwilightAction(actor, selection = {}) {
 
   const display = actionDisplay(action);
   const workflowData = actionData(action, actor, target, item);
+  if (action.workflow === 'socialConflict') {
+    const { createSocialConflict, prepareSocialConflictSetup } = await import('./social-conflict-workflows.js');
+    const setup = await prepareSocialConflictSetup(actor, action, target);
+    if (!setup) return null;
+    const socialSpend = await spendImmediateAction(actor, action);
+    if (!socialSpend) return null;
+    return createSocialConflict({
+      actor,
+      action,
+      setup,
+      combatAction: { ...display, ...socialSpend },
+    });
+  }
   if (action.workflow === 'attack') {
     const result = await item.rollAttack({
       combatAction: display,

@@ -1,0 +1,56 @@
+.application.yzegs.social-conflict-config > .window-header {
+  background: #000;
+  color: #fff;
+
+  .window-title,
+  .window-icon { color: #fff; }
+
+  button.header-control {
+    background: transparent;
+    border: 0;
+    color: #fff;
+
+    &:hover,
+    &:focus-visible {
+      background: #fff;
+      color: #000;
+    }
+  }
+}
+
+.application.yzegs.social-conflict-config .window-content {
+  color: #000;
+
+  .form-group { align-items: center; }
+  .rating-menu { min-width: 18rem; }
+  label, .hint, input, button { color: #000; }
+}
+
+.application.dialog.yzegs .social-conflict-dialog {
+  min-width: 540px;
+
+  textarea { resize: vertical; }
+  fieldset { margin-block: .6rem; }
+  .social-factor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .25rem .8rem;
+  }
+  .social-factor { display: flex; gap: .35rem; align-items: center; }
+}
+
+.chat-message .social-conflict-card {
+  .card-header h3 { margin: 0 0 .35rem; }
+  .social-stakes {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .15rem .45rem;
+    margin: .35rem 0;
+    dt { font-weight: 700; }
+    dd { margin: 0; }
+  }
+  .social-resistance-list { padding-left: 1.25rem; }
+  .social-resistance-list li { margin-bottom: .3rem; }
+  .social-success { color: #214d25; }
+  .social-failure { color: #702020; }
+}

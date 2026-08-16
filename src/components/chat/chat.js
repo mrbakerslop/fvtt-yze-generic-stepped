@@ -46,6 +46,13 @@ import {
   resolveMinefieldCollapse,
 } from '../../system/minefield-workflows.js';
 import { evadeGuidedImpact, scheduleGuidedImpact } from '../../system/guided-weapons.js';
+import {
+  recordSocialOutcome,
+  respondToSocialConflict,
+  rollSocialActive,
+  rollSocialResistance,
+  syncSocialConflictRoll,
+} from '../../system/social-conflict-workflows.js';
 
 export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
   prepareData() {
@@ -130,6 +137,21 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
     }
     for (const button of html.querySelectorAll('.dice-button.evade-guided-impact')) {
       button.addEventListener('click', _onEvadeGuidedImpact);
+    }
+    for (const button of html.querySelectorAll('.dice-button.roll-social-resistance')) {
+      button.addEventListener('click', _onRollSocialResistance);
+    }
+    for (const button of html.querySelectorAll('.dice-button.roll-social-active')) {
+      button.addEventListener('click', _onRollSocialActive);
+    }
+    for (const button of html.querySelectorAll('.dice-button.social-player-response')) {
+      button.addEventListener('click', _onSocialPlayerResponse);
+    }
+    for (const button of html.querySelectorAll('.dice-button.record-social-outcome')) {
+      button.addEventListener('click', _onRecordSocialOutcome);
+    }
+    for (const button of html.querySelectorAll('.dice-button.social-agreement-response')) {
+      button.addEventListener('click', _onSocialAgreementResponse);
     }
   }
 
@@ -554,7 +576,7 @@ async function _onApplyDamage(event) {
  * @param {Event} event
  * @returns {Promise<import('../lib/yzur.js').YearZeroRoll|ChatMessage>}
  */
-function _onRollPush(event) {
+async function _onRollPush(event) {
   event.preventDefault();
 
   // Disables the button to avoid any tricky double push.
@@ -566,7 +588,11 @@ function _onRollPush(event) {
   const messageId = chatCard.dataset.messageId;
   const message = game.messages.get(messageId);
   const roll = message.rolls[0];
-  return rollPush(roll, { message });
+  const result = await rollPush(roll, { message });
+  if (result?.rolls?.[0]?.options?.actionData?.workflow === 'socialConflict') {
+    await syncSocialConflictRoll(result);
+  }
+  return result;
 }
 
 /* ------------------------------------------- */
@@ -578,7 +604,7 @@ function _onRollPush(event) {
  * @param {Event} event
  * @returns {Promise<import('../lib/yzur.js').YearZeroRoll|ChatMessage>}
  */
-function _onRollAccept(event) {
+async function _onRollAccept(event) {
   event.preventDefault();
 
   // Disables the button to avoid any tricky double push.
@@ -592,7 +618,53 @@ function _onRollAccept(event) {
   /** @type {import('yzur').YearZeroRoll} */
   const roll = message.rolls[0];
   roll.maxPush = 0;
-  return roll.render().then(content => message.update({ content, rolls: [JSON.stringify(roll)] }));
+  const content = await roll.render();
+  const result = await message.update({ content, rolls: [JSON.stringify(roll)] });
+  if (roll.options?.actionData?.workflow === 'socialConflict') {
+    await syncSocialConflictRoll(message, { final: true });
+  }
+  return result;
+}
+
+function getSocialMessage(event) {
+  return game.messages.get(event.currentTarget.closest('.chat-message')?.dataset.messageId);
+}
+
+async function runSocialButton(event, callback) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try { return await callback(getSocialMessage(event), button); }
+  catch (error) {
+    console.error('yzegs | Social conflict action failed.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.Social.Failed'));
+    return false;
+  }
+  finally { if (button.isConnected) button.disabled = false; }
+}
+
+function _onRollSocialResistance(event) {
+  return runSocialButton(event, (message, button) => rollSocialResistance(message, button.dataset.targetUuid));
+}
+
+function _onRollSocialActive(event) {
+  return runSocialButton(event, message => rollSocialActive(message));
+}
+
+function _onSocialPlayerResponse(event) {
+  return runSocialButton(event, (message, button) => respondToSocialConflict(message, button.dataset.response, {
+    targetUuid: button.dataset.targetUuid,
+  }));
+}
+
+function _onRecordSocialOutcome(event) {
+  return runSocialButton(event, message => recordSocialOutcome(message));
+}
+
+function _onSocialAgreementResponse(event) {
+  return runSocialButton(event, (message, button) => (
+    respondToSocialConflict(message, button.dataset.response, { agreement: true })
+  ));
 }
 
 /* ------------------------------------------- */

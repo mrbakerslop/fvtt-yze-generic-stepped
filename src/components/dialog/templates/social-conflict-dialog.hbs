@@ -1,0 +1,55 @@
+<div class="social-conflict-dialog">
+  <p class="social-conflict-parties"><strong>{{data.actorName}}</strong> → <strong>{{data.targetName}}</strong></p>
+  <div class="form-group stacked">
+    <label>{{localize "YZEGS.Social.Stakes"}}</label>
+    <textarea name="stakes" rows="3" required>{{data.stakes}}</textarea>
+    <p class="hint">{{localize "YZEGS.Social.StakesHint"}}</p>
+  </div>
+  <div class="form-group stacked">
+    <label>{{localize "YZEGS.Social.Offer"}}</label>
+    <textarea name="offer" rows="2">{{data.offer}}</textarea>
+  </div>
+
+  <fieldset>
+    <legend>{{localize "YZEGS.Social.NegotiatingPosition"}}</legend>
+    <div class="social-factor-grid">
+      {{#each data.factors as |factor|}}
+      <label class="checkbox social-factor">
+        <input type="hidden" name="factor.{{factor.id}}" value="false" />
+        {{> checkboxControl name=(concat "factor." factor.id) value=false editable=true
+            inputClass="social-factor-toggle" dataValue=factor.value
+            dataExclusiveGroup=factor.exclusiveGroup ariaLabel=factor.name}}
+        <span>{{factor.name}} ({{factor.displayValue}})</span>
+      </label>
+      {{/each}}
+    </div>
+    <div class="form-group">
+      <label>{{localize "YZEGS.Social.CustomModifier"}}</label>
+      <input type="number" name="customModifier" value="0" step="1" />
+    </div>
+  </fieldset>
+
+  {{#if data.showGroupMode}}
+  <div class="form-group">
+    <label>{{localize "YZEGS.Social.GroupMode"}}</label>
+    {{> optionMenu name="groupMode" selected="spokesperson" options=data.groupModes
+        editable=true noBlank=true menuClass="dialog-option-menu"}}
+  </div>
+  {{/if}}
+  <div class="form-group">
+    <label>{{localize "YZEGS.Social.ResistanceVisibility"}}</label>
+    {{> optionMenu name="resistanceVisibility" selected=data.resistanceVisibility options=data.visibilityModes
+        editable=true noBlank=true menuClass="dialog-option-menu"}}
+  </div>
+
+  {{#if data.isBarter}}
+  <fieldset>
+    <legend>{{localize "YZEGS.Social.BarterDetails"}}</legend>
+    <div class="form-group"><label>{{localize "YZEGS.Social.StartingPrice"}}</label>
+      <input type="number" name="startingPrice" value="0" min="0" step="0.01" /></div>
+    <div class="form-group"><label>{{localize "YZEGS.Social.Direction"}}</label>
+      {{> optionMenu name="direction" selected="buy" options=data.directions
+          editable=true noBlank=true menuClass="dialog-option-menu"}}</div>
+  </fieldset>
+  {{/if}}
+</div>

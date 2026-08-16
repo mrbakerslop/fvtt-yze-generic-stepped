@@ -1,0 +1,157 @@
+<div class='yzegs chat-card social-conflict-card' data-actor-id='{{data.actorId}}'>
+  <header class='card-header'><h3><i class='fa-solid fa-comments'></i> {{data.actionName}}</h3></header>
+  <div class='card-content'>
+    <p class='social-parties'><strong>{{data.actorName}}</strong> → <strong>{{data.targetNames}}</strong></p>
+    <p class='social-action-spend'>{{data.actionSpend}}</p>
+    <dl class='social-stakes'>
+      <dt>{{localize 'YZEGS.Social.Stakes'}}</dt><dd>{{data.stakes}}</dd>
+      {{#if data.offer}}<dt>{{localize 'YZEGS.Social.Offer'}}</dt><dd>{{data.offer}}</dd>{{/if}}
+    </dl>
+    {{#if data.modifier}}
+      <p>{{localize 'YZEGS.Social.NegotiatingModifier'}}: <strong>{{data.displayModifier}}</strong></p>
+    {{/if}}
+
+    {{#if data.playerChoice}}
+      <p>{{localize 'YZEGS.Social.PlayerDecides'}}</p>
+      {{#each data.targets as |target|}}
+        <div class='social-player-choice'>
+          <strong>{{target.name}}</strong>
+          {{#if (eq target.status 'pending')}}
+            <div class='dice-buttons'>
+              <button
+                class='dice-button social-player-response'
+                data-response='accept'
+                data-target-uuid='{{target.uuid}}'
+                data-owner-uuid='{{target.uuid}}'
+              ><i class='fa-solid fa-check'></i> {{localize 'YZEGS.Social.Accept'}}</button>
+              <button
+                class='dice-button social-player-response'
+                data-response='decline'
+                data-target-uuid='{{target.uuid}}'
+                data-owner-uuid='{{target.uuid}}'
+              ><i class='fa-solid fa-xmark'></i> {{localize 'YZEGS.Social.Decline'}}</button>
+              <button
+                class='dice-button social-player-response'
+                data-response='counter'
+                data-target-uuid='{{target.uuid}}'
+                data-owner-uuid='{{target.uuid}}'
+              ><i class='fa-solid fa-reply'></i> {{localize 'YZEGS.Social.Counteroffer'}}</button>
+            </div>
+          {{else}}
+            <p class='social-resolution'><strong>{{target.responseLabel}}</strong>{{#if target.responseDetails}}
+                —
+                {{target.responseDetails}}{{/if}}</p>
+          {{/if}}
+        </div>
+      {{/each}}
+      {{#if (eq data.status 'agreementPending')}}
+        <p><strong>{{localize 'YZEGS.Social.RequestedReturn'}}:</strong> {{data.requestedReturn}}</p>
+        <div class='dice-buttons'>
+          <button
+            class='dice-button social-agreement-response'
+            data-response='accept'
+            data-owner-uuid='{{data.actorUuid}}'
+          >{{localize 'YZEGS.Social.Accept'}}</button>
+          <button
+            class='dice-button social-agreement-response'
+            data-response='decline'
+            data-owner-uuid='{{data.actorUuid}}'
+          >{{localize 'YZEGS.Social.Decline'}}</button>
+          <button
+            class='dice-button social-agreement-response'
+            data-response='counter'
+            data-owner-uuid='{{data.actorUuid}}'
+          >{{localize 'YZEGS.Social.Counteroffer'}}</button>
+        </div>
+      {{/if}}
+      {{#if data.agreementLabel}}
+        <p><strong>{{data.agreementLabel}}</strong>{{#if data.agreementDetails}} — {{data.agreementDetails}}{{/if}}</p>
+      {{/if}}
+    {{else}}
+      <ol class='social-resistance-list'>
+        {{#each data.targets as |target|}}
+          <li>
+            <span>{{target.name}}</span>
+            {{#if (eq target.status 'pending')}}
+              <button
+                class='dice-button roll-social-resistance'
+                data-target-uuid='{{target.uuid}}'
+                data-owner-uuid='{{target.uuid}}'
+              ><i class='fa-solid fa-dice'></i> {{localize 'YZEGS.Social.RollResistance'}}</button>
+            {{else if @root.data.hideResistance}}
+              <span><i class='fa-solid fa-user-secret'></i> {{localize 'YZEGS.Social.ResistanceRecorded'}}</span>
+            {{else}}
+              <span>{{localize 'YZEGS.Social.ResistanceSuccesses' successes=target.successes}}</span>
+            {{/if}}
+          </li>
+        {{/each}}
+      </ol>
+
+      {{#if (eq data.status 'awaitingActive')}}
+        <div class='dice-buttons'>
+          <button class='dice-button roll-social-active' data-owner-uuid='{{data.actorUuid}}'>
+            <i class='fa-solid fa-dice'></i>
+            {{localize 'YZEGS.Social.RollActive'}}</button>
+        </div>
+      {{else if (eq data.status 'activeRolled')}}
+        <p><i class='fa-solid fa-hourglass-half'></i> {{localize 'YZEGS.Social.ActiveMayPush'}}</p>
+      {{/if}}
+
+      {{#if data.showResolution}}
+        <div class='social-opposed-results'>
+          {{#if data.provisionalResolution}}<p><em>{{localize 'YZEGS.Social.ProvisionalResult'}}</em></p>{{/if}}
+          <p>{{localize 'YZEGS.Social.ActiveSuccesses' successes=data.activeSuccesses}}</p>
+          {{#each data.targets as |target|}}
+            <p><strong>{{target.name}}:</strong>
+              {{#if target.won}}
+                <span class='social-success'><i class='fa-solid fa-check'></i>
+                  {{localize 'YZEGS.Social.Success' net=target.netSuccesses}}</span>
+              {{else}}
+                <span class='social-failure'><i class='fa-solid fa-xmark'></i>
+                  {{localize 'YZEGS.Social.Failure'}}</span>
+              {{/if}}
+            </p>
+          {{/each}}
+          {{#if data.barterResult}}
+            <p><strong>{{localize 'YZEGS.Social.BarterResult'}}:</strong> {{data.barterResult}}</p>
+          {{/if}}
+        </div>
+        {{#if data.canRecordOutcome}}
+          <button class='dice-button record-social-outcome' data-gm-only='true'>
+            <i class='fa-solid fa-pen'></i>
+            {{localize 'YZEGS.Social.RecordOutcome'}}</button>
+        {{/if}}
+      {{/if}}
+
+      {{#if data.recordedOutcome}}
+        <p class='social-recorded-outcome'><strong>{{localize 'YZEGS.Social.RecordedOutcome'}}:</strong>
+          {{data.recordedOutcome}}</p>
+      {{/if}}
+      {{#if data.requestedReturn}}
+        <p><strong>{{localize 'YZEGS.Social.RequestedReturn'}}:</strong> {{data.requestedReturn}}</p>
+      {{/if}}
+      {{#if (eq data.status 'agreementPending')}}
+        <div class='dice-buttons'>
+          <button
+            class='dice-button social-agreement-response'
+            data-response='accept'
+            data-owner-uuid='{{data.actorUuid}}'
+          >{{localize 'YZEGS.Social.Accept'}}</button>
+          <button
+            class='dice-button social-agreement-response'
+            data-response='decline'
+            data-owner-uuid='{{data.actorUuid}}'
+          >{{localize 'YZEGS.Social.Decline'}}</button>
+          <button
+            class='dice-button social-agreement-response'
+            data-response='counter'
+            data-owner-uuid='{{data.actorUuid}}'
+          >{{localize 'YZEGS.Social.Counteroffer'}}</button>
+        </div>
+      {{/if}}
+      {{#if data.agreementLabel}}
+        <p><strong>{{data.agreementLabel}}</strong>{{#if data.agreementDetails}} — {{data.agreementDetails}}{{/if}}</p>
+      {{/if}}
+    {{/if}}
+  </div>
+</div>

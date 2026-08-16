@@ -75,6 +75,7 @@ import {
   advanceWorldTimeWatercraft,
 } from './system/watercraft-workflows.js';
 import { advanceGuidedImpacts } from './system/guided-weapons.js';
+import { registerSocialConflictSocket } from './system/social-conflict-workflows.js';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -196,6 +197,7 @@ Hooks.once('ready', async function () {
   registerDefenseSocket();
   registerSuppressionSocket();
   registerUrbanSocket();
+  registerSocialConflictSocket();
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to.
   Hooks.on('hotbarDrop', (_bar, data, slot) => createYZEGSMacro(data, slot));
 

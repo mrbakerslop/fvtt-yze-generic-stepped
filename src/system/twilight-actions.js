@@ -33,7 +33,15 @@ export const TWILIGHT_ACTIONS = Object.freeze([
   defineAction('getItemFromBackpack', 'slow', 'mobility', {
     category: 'inventory', item: 'backpack', workflow: 'retrieveItem',
   }),
-  defineAction('persuade', 'slow', 'persuasion', { category: 'support', target: 'other' }),
+  defineAction('persuade', 'slow', 'persuasion', {
+    category: 'social', target: 'other', workflow: 'socialConflict',
+  }),
+  defineAction('interrogate', 'slow', 'persuasion', {
+    category: 'social', target: 'other', workflow: 'socialConflict',
+  }),
+  defineAction('barter', 'slow', 'persuasion', {
+    category: 'social', target: 'other', workflow: 'socialConflict',
+  }),
   defineAction('unarmedAttack', 'slow', 'closeCombat', { category: 'close', target: 'other' }),
   defineAction('meleeAttack', 'slow', 'closeCombat', {
     category: 'close', target: 'other', item: 'meleeWeapon', workflow: 'attack',

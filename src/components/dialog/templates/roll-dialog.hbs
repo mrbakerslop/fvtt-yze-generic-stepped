@@ -143,7 +143,8 @@
   {{! Max Pushes }}
   <div class='form-group'>
     <label>{{localize 'YZEGS.Dialog.Roll.MaxPush'}}</label>
-    <input type='number' name='maxPush' value='{{data.maxPush}}' min='0' data-dtype='Number' />
+    <input type='number' name='maxPush' value='{{data.maxPush}}' min='0' data-dtype='Number'
+      {{#if data.lockMaxPush}}disabled{{/if}} />
   </div>
 
   {{! ================================================== }}
@@ -164,7 +165,7 @@
   <div class='form-group'>
     <label>{{localize 'YZEGS.Dialog.Roll.RollMode'}}</label>
     {{> optionMenu name="messageMode" selected=data.messageMode options=config.messageModes
-      editable=true noBlank=true localize=true menuClass="dialog-option-menu"}}
+      editable=(not data.lockMessageMode) noBlank=true localize=true menuClass="dialog-option-menu"}}
   </div>
 
 </div>

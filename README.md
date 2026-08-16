@@ -221,6 +221,22 @@ and action-specific Specialty modifiers follow the chosen action. Weapon
 attacks, Reload, and Clear Jam retain their dedicated controls because those
 workflows also need the Weapon's current ammunition and jam state.
 
+Persuade, Interrogate, and Barter use a staged **Social Conflict** workflow.
+The active character declares their goal and any offer before rolling, records
+the applicable negotiating-position factors, and spends the slow action. The
+target then makes an unpushable resistance roll before the active character
+rolls and decides whether to push. Ties favor the resisting side. Ordinary
+influence against a player Character is a player decision by default, while
+Interrogation remains opposed; this can be changed in the world-level Social
+Conflict settings. The final card records narrative outcomes and return terms
+without changing Actor or Item data automatically, and Barter displays the
+configured price change per net success.
+
+The **Action Skills** world menu independently configures the Skills used for
+each active social action and for resisting Persuasion, Interrogation, and
+Barter. Resistance rolls can be public or GM-only, either by world default or
+per conflict.
+
 Blockable close-combat attacks now begin with an attack-declaration card. The
 target's owner or the GM must choose **Block** or **Do Not Block** before the
 attack is rolled. A Block spends a Fast action immediately. After the attacker
