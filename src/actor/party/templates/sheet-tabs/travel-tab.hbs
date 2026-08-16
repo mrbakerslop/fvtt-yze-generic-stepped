@@ -1,8 +1,100 @@
 <div class="tab-travel-container" style="overflow-y: scroll; height: 100%;">
+  <label class="checkbox city-travel-mode">
+    {{> checkboxControl value=cityTravel editable=true inputClass="city-travel-toggle"
+      ariaLabel=(localize "YZEGS.Urban.CityTravel.Mode")}}
+    <span>{{localize "YZEGS.Urban.CityTravel.Mode"}}</span>
+  </label>
+  <label class="checkbox water-travel-mode">
+    {{> checkboxControl value=waterTravel editable=true inputClass="water-travel-toggle"
+      ariaLabel=(localize "YZEGS.WaterTravel.Mode")}}
+    <span>{{localize "YZEGS.WaterTravel.Mode"}}</span>
+  </label>
+  {{#if waterTravel}}
+    <fieldset class="water-travel-controls">
+      <legend>{{localize "YZEGS.WaterTravel.Title"}}</legend>
+      <label>{{localize "YZEGS.WaterTravel.Vessel"}}
+        {{> optionMenu selected=waterVesselUuid options=waterVesselChoices editable=true
+          inputClass="water-travel-vessel" menuClass="party-option-menu"}}
+      </label>
+      <label>{{localize "YZEGS.WaterTravel.Terrain.Label"}}
+        {{> optionMenu selected=waterTerrain options=waterTerrainChoices editable=true noBlank=true
+          inputClass="water-travel-terrain" menuClass="party-option-menu"}}
+      </label>
+      <label class="checkbox">
+        {{> checkboxControl value=waterNight editable=true inputClass="water-travel-night"}}
+        {{localize "YZEGS.WaterTravel.Night"}}
+      </label>
+      <label class="checkbox">
+        {{> checkboxControl value=waterRouteBranch editable=true inputClass="water-travel-route-branch"}}
+        {{localize "YZEGS.WaterTravel.RouteBranch"}}
+      </label>
+      {{#if waterRouteBranch}}
+      <label>{{localize "YZEGS.WaterTravel.Navigator"}}
+        {{> optionMenu selected=waterNavigatorUuid options=waterNavigatorChoices editable=true
+          inputClass="water-travel-navigator" menuClass="party-option-menu"}}
+      </label>
+      {{/if}}
+      <p>{{localize "YZEGS.WaterTravel.Profile" speed=waterProfile.speed driving=waterProfile.drivingModifier fishing=waterProfile.fishingModifier distance=waterProfile.encounterMultiplier}}</p>
+      {{#if isGM}}
+      <button type="button" class="water-shift-advance">
+        <i class="fas fa-forward-step"></i> {{localize "YZEGS.WaterTravel.AdvanceShift" shift=waterStretch}}
+      </button>
+      {{/if}}
+    </fieldset>
+  {{/if}}
+  {{#if waterTravel}}
+  <table class="travel-actions water-travel-actions">
+    <tr>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.drive action=travelActions.drive }}</td>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.watch action=travelActions.watch }}</td>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.fish action=travelActions.fish }}
+        <button type="button" class="water-fishing-roll">{{localize "YZEGS.WaterTravel.FishingCheck"}}</button>
+      </td>
+    </tr>
+    <tr>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.rest action=travelActions.rest }}</td>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.sleep action=travelActions.sleep }}</td>
+      <td class="border">{{#if waterCanCamp}}{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.camp action=travelActions.camp }}{{else}}{{localize "YZEGS.WaterTravel.NoCamp"}}{{/if}}</td>
+    </tr>
+    <tr><td class="border" colspan="3">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.other action=travelActions.other }}</td></tr>
+  </table>
+  {{else if cityTravel}}
+    <div class="city-travel-rules">
+      <p>{{localize "YZEGS.Urban.CityTravel.Summary"}}</p>
+      <p>{{localize "YZEGS.Urban.CityTravel.BackOff"}}</p>
+      {{#if isGM}}
+        <button type="button" class="city-stretch-advance">
+          <i class="fas fa-forward-step"></i>
+          {{localize "YZEGS.Urban.CityTravel.AdvanceStretch" stretch=cityStretch}}
+        </button>
+      {{/if}}
+    </div>
+  {{/if}}
   <div class="tab-hint">{{localize "FLPS.PARTY.HINT_ASSIGN"}}</div>
   <form>
     <button class="reset">{{localize "FLPS.TRAVEL.RESET"}}</button>
   </form>
+  {{#unless waterTravel}}
+  {{#if cityTravel}}
+  <table class="travel-actions city-travel-actions">
+    <tr>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.march action=travelActions.march }}</td>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.drive action=travelActions.drive }}</td>
+      <td class="border">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.watch action=travelActions.watch }}</td>
+    </tr>
+    <tr>
+      <td class="border" colspan="3">{{> systems/fvtt-yze-generic-stepped/templates/actor/party/components/action-component.hbs assignedCharacters=travel.other action=travelActions.other }}</td>
+    </tr>
+  </table>
+  <fieldset class="city-fuel-calculator">
+    <legend>{{localize "YZEGS.Urban.CityTravel.FuelCalculator"}}</legend>
+    <label>{{localize "YZEGS.Urban.CityTravel.VehicleConsumption"}} <input type="number" name="cityFuelConsumption" value="0" min="0"></label>
+    <label>{{localize "YZEGS.Urban.CityTravel.RoadHexes"}} <input type="number" name="cityRoadHexes" value="0" min="0"></label>
+    <label>{{localize "YZEGS.Urban.CityTravel.OffRoadHexes"}} <input type="number" name="cityOffRoadHexes" value="0" min="0"></label>
+    <label>{{localize "YZEGS.Urban.CityTravel.FuelMultiplier"}} <input type="number" name="cityFuelMultiplier" value="1" min="0" step="0.1"></label>
+    <strong>{{localize "YZEGS.Urban.CityTravel.LitresUsed"}} <output class="city-fuel-result">0</output></strong>
+  </fieldset>
+  {{else}}
   <table class="travel-actions">
     <tr>
       <td class="border">
@@ -51,4 +143,6 @@
       </td>
     </tr>
   </table>
+  {{/if}}
+  {{/unless}}
 </div>

@@ -1,4 +1,5 @@
 import { YZEGS } from '../system/config.js';
+import { getActorActionSkill } from '../system/action-skills.js';
 import YZEGSDialog from '../components/dialog/dialog.js';
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
 import { enrichTextFields } from '@utils/utils.js';
@@ -11,6 +12,15 @@ import {
   NOTES_TAB_SETTING,
 } from '../system/settings.js';
 import { openArchetypeBuilder } from '../system/archetypes.js';
+import {
+  canContainerStoreItemType,
+  isContainerTransfer,
+  transferContainerItem,
+} from '../system/container-transfer.js';
+import {
+  executeTwilightAction,
+  prepareTwilightActionDialog,
+} from '../system/twilight-action-workflows.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor Sheet.
@@ -25,11 +35,23 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
 
   /** @override */
   static DEFAULT_OPTIONS = {
+    actions: {
+      takeAction: this.#onTakeAction,
+    },
     classes: ['yzegs', 'actor'],
     position: { width: 570, height: 715 },
     window: { resizable: true, contentClasses: ['flexcol'] },
     form: { submitOnChange: true, closeOnSubmit: false },
   };
+
+  static async #onTakeAction() {
+    if (!['character', 'npc'].includes(this.actor.type)) return null;
+    const selection = await YZEGSDialog.chooseTwilightAction(prepareTwilightActionDialog(this.actor), {
+      position: { width: 520 },
+    });
+    if (selection.cancelled) return null;
+    return executeTwilightAction(this.actor, selection);
+  }
 
   static PARTS = {
     sheet: { template: '' },
@@ -103,7 +125,7 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
 
   /** @override */
   async _onDropItem(event, data) {
-    const item = await Item.implementation.fromDropData(data);
+    const item = data instanceof Item ? data : await Item.implementation.fromDropData(data);
     if (!item) return false;
     const type = item.type;
     if (type === 'archetype') {
@@ -154,7 +176,24 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
       ui.notifications.warn(msg);
       return null;
     }
-    return super._onDropItem(event, data);
+    if (this.actor.type === 'container' && !canContainerStoreItemType(this.actor, type)) {
+      ui.notifications.warn(game.i18n.format('YZEGS.ContainerSheet.Errors.ItemTypeNotAllowed', {
+        type: game.i18n.localize(`YZEGS.ItemTypes.${type}`),
+        container: this.actor.name,
+      }));
+      return null;
+    }
+    if (isContainerTransfer(item.parent, this.actor)) {
+      try {
+        return await transferContainerItem(item, this.actor);
+      }
+      catch (error) {
+        console.error('yzegs | Container item transfer failed.', error);
+        ui.notifications.error(game.i18n.localize('YZEGS.ContainerSheet.Errors.TransferFailed'));
+        return null;
+      }
+    }
+    return super._onDropItem(event, item);
   }
 
   /* -------------------------------------------- */
@@ -163,11 +202,14 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
 
   rollAction(actionName, _itemId) {
     const skillReference = YZEGS.actionSkillsMap[actionName];
-    const skill = this.actor.getSkill(skillReference);
+    const skill = getActorActionSkill(this.actor, actionName, skillReference);
     if (!skill) return null;
     const statData = getAttributeAndSkill(skill, this.actor);
     statData.title += ` (${this.actor.name})`;
-    const isRangedSkill = ['rangedCombat', 'heavyWeapons'].includes(skillReference);
+    const isRangedSkill = skill.system.combatType === 'ranged'
+      || ['rangedCombat', 'heavyWeapons'].includes(
+        skill.getFlag('fvtt-yze-generic-stepped', 'legacySkillKey'),
+      );
     return YZEGSRoller.taskCheck({
       ...statData,
       actor: this.actor,
@@ -205,6 +247,8 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
     html.find('.item-delete').click(this._onItemDelete.bind(this));
     html.find('.item-equip').click(this._onItemEquip.bind(this));
     html.find('.item-backpack').click(this._onItemStore.bind(this));
+    html.find('.item-reload').click(this._onItemReload.bind(this));
+    html.find('.item-clear-jam').click(this._onItemClearJam.bind(this));
     // html.find('.item-mag .weapon-edit-ammo').change(this._onWeaponAmmoChange.bind(this));
 
     // Owner-only listeners.
@@ -314,6 +358,18 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
     const updateData = { 'system.backpack': !stored };
     if (!stored && item.system.equipped) updateData['system.equipped'] = false;
     return item.update(updateData);
+  }
+
+  _onItemReload(event) {
+    event.preventDefault();
+    const itemId = event.currentTarget.closest('.item').dataset.itemId;
+    return this.actor.items.get(itemId)?.reload();
+  }
+
+  _onItemClearJam(event) {
+    event.preventDefault();
+    const itemId = event.currentTarget.closest('.item').dataset.itemId;
+    return this.actor.items.get(itemId)?.clearJam();
   }
 
   /* ------------------------------------------- */

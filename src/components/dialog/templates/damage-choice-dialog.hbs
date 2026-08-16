@@ -1,64 +1,70 @@
 <div class="yzegs dialog damage-choice-dialog">
-
-  {{!-- INPUT VARIABLES (IN DATA):
-        damage: number
-        hitCount: number
-        barrier: number
-        location: string
-        target: string
-        isGM: boolean
-
-        OUTPUT VARIABLES:
-        damage: number
-        hitCount: number
-        barriers: string<number>[]
-  --}}
-
   {{#with data}}
+    <p>
+      {{#if primary}}
+        {{{localize "YZEGS.Dialog.Damage.PrimaryDescription" target=target}}}
+      {{else}}
+        {{{localize "YZEGS.Dialog.Damage.AdditionalDescription" target=target}}}
+      {{/if}}
+      {{#if location}}
+        <br />{{localize "YZUR.CHAT.ROLL.HitLocation"}}&nbsp;
+        <b>{{localize (concat "YZEGS.ArmorLocationNames." location)}}</b>
+      {{else}}
+        <br />{{localize "YZEGS.Dialog.Damage.RandomLocation"}}
+      {{/if}}
+    </p>
 
-  {{!-- ================================================== --}}
+    <div class="form-group">
+      <label>{{localize "YZEGS.Dialog.Damage.CalculatedDamage"}}</label>
+      <input type="number" value="{{calculatedDamage}}" readonly />
+    </div>
 
-  <p>
-    {{{localize "YZEGS.Dialog.Damage.Description" target=target}}}
-    {{#if location}}
-    <br/>{{localize "YZUR.CHAT.ROLL.HitLocation"}}&nbsp;<b>{{localize (concat "YZEGS.ArmorLocationNames." location)}}</b>
+    {{#if ammoSuccesses}}
+      <div class="damage-ammo-allocation">
+        <p class="hint">
+          {{localize "YZEGS.Dialog.Damage.AmmoSuccessesAvailable" count=ammoSuccesses}}
+        </p>
+        <div class="form-group">
+          <label>
+            {{#if primary}}
+              {{localize "YZEGS.Dialog.Damage.AmmoSpendPrimary"}}
+            {{else}}
+              {{localize "YZEGS.Dialog.Damage.AmmoSpendAdditional"}}
+            {{/if}}
+          </label>
+          <input type="number" name="ammoSpend" value="{{defaultAmmoSpend}}"
+            min="{{minimumAmmoSpend}}" max="{{ammoSuccesses}}" step="1" />
+        </div>
+        <p class="hint">
+          {{#if primary}}
+            {{localize "YZEGS.Dialog.Damage.AmmoPrimaryHint"}}
+          {{else}}
+            {{localize "YZEGS.Dialog.Damage.AmmoAdditionalHint"}}
+            <br />{{localize "YZEGS.Dialog.Damage.AdditionalTargetHint"}}
+          {{/if}}
+        </p>
+      </div>
     {{/if}}
-  </p>
 
+    {{#if isGM}}
+      <fieldset class="damage-gm-adjustment">
+        <legend>{{localize "YZEGS.Dialog.Damage.GMOverride"}}</legend>
+        <div class="form-group">
+          <label>{{localize "YZEGS.Dialog.Damage.NarrativeAdjustment"}}</label>
+          <input type="number" name="adjustment" value="0" step="1" />
+        </div>
+        <p class="hint">{{localize "YZEGS.Dialog.Damage.NarrativeAdjustmentHint"}}</p>
+      </fieldset>
+    {{/if}}
 
-  {{!-- BASE DAMAGE --}}
-  <div class="form-group">
-    <label>{{localize "YZEGS.Dialog.Damage.DamageQuantity"}}</label>
-    <input type="number" name="damage" value="{{damage}}"{{#unless isGM}} disabled{{/unless}}/>
-  </div>
-
-  {{!-- ================================================== --}}
-
-  {{!-- EXTRA HITS --}}
-  {{#if hitCount}}
-  <div class="form-group">
-    <label>{{localize "YZEGS.Dialog.Damage.ExtraHits"}}&nbsp;
-      {{#times hitCount}}
-      <img src="systems/fvtt-yze-generic-stepped/assets/icons/bullet2.svg" height="24px"/>
-      {{/times}}
-    </label>
-    <div class="flexrow"><range-picker name="hits" value="0" min="0" max="{{hitCount}}" step="1"/></div>
-  </div>
-  {{/if}}
-
-  {{!-- ================================================== --}}
-
-  {{!-- BARRIER --}}
-  {{#if barrier}}
-  <div class="form-group">
-    <label style="line-height: 1;">
-      {{localize "YZEGS.Dialog.Damage.BarrierArmors"}}
-      <br/><small>{{localize "YZEGS.Dialog.Damage.BarrierArmorsHint"}}</small>
-    </label>
-    <input type="text" name="barriers" value="{{barrier}}"/>
-  </div>
-  {{/if}}
-
+    {{#if barrier}}
+      <div class="form-group">
+        <label style="line-height: 1;">
+          {{localize "YZEGS.Dialog.Damage.BarrierArmors"}}
+          <br /><small>{{localize "YZEGS.Dialog.Damage.BarrierArmorsHint"}}</small>
+        </label>
+        <input type="text" name="barriers" value="{{barrier}}" {{#unless isGM}}readonly{{/unless}} />
+      </div>
+    {{/if}}
   {{/with}}
-
 </div>

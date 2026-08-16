@@ -1,0 +1,43 @@
+<div class="token-size-defaults-form">
+  <p class="hint">{{localize "SETTINGS.tokenSizeDefaults.hint"}}</p>
+
+  <div class="token-size-defaults-grid" role="table">
+    <strong role="columnheader">{{localize "SETTINGS.tokenSizeDefaults.actorType"}}</strong>
+    <strong role="columnheader">{{localize "SETTINGS.tokenSizeDefaults.width"}}</strong>
+    <strong role="columnheader">{{localize "SETTINGS.tokenSizeDefaults.height"}}</strong>
+
+    {{#each actorTypes as |actorType|}}
+    <label for="yzegs-token-width-{{actorType.type}}">{{actorType.label}}</label>
+    <input
+      id="yzegs-token-width-{{actorType.type}}"
+      type="number"
+      name="{{actorType.type}}Width"
+      value="{{actorType.width}}"
+      min="{{../minimum}}"
+      max="{{../maximum}}"
+      step="0.25"
+      required
+    />
+    <input
+      id="yzegs-token-height-{{actorType.type}}"
+      type="number"
+      name="{{actorType.type}}Height"
+      value="{{actorType.height}}"
+      min="{{../minimum}}"
+      max="{{../maximum}}"
+      step="0.25"
+      required
+      aria-label="{{actorType.label}} — {{localize 'SETTINGS.tokenSizeDefaults.height'}}"
+    />
+    {{/each}}
+  </div>
+
+  <p class="hint">{{localize "SETTINGS.tokenSizeDefaults.rangeHint" minimum=minimum maximum=maximum}}</p>
+
+  <footer class="form-footer">
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "SETTINGS.tokenSizeDefaults.save"}}</span>
+    </button>
+  </footer>
+</div>

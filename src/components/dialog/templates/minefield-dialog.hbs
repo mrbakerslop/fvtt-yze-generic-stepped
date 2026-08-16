@@ -1,0 +1,21 @@
+<div class="yzegs dialog minefield-dialog">
+  <p>{{localize "YZEGS.Minefield.Dialog.Instructions" actor=data.actorName region=data.regionName}}</p>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Minefield.Dialog.Movement"}}</label>
+    {{> optionMenu name="mode" selected=data.mode options=data.modeChoices
+      editable=true noBlank=true menuClass="dialog-option-menu"}}
+  </div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Minefield.Dialog.Scout"}}</label>
+    {{> optionMenu name="scoutUuid" selected=data.scoutUuid options=data.scoutChoices
+      editable=true noBlank=true menuClass="dialog-option-menu"}}
+  </div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Minefield.Dialog.Hexes"}}</label>
+    <div class="form-fields"><input type="number" name="hexes" min="1" step="1" value="1"></div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Minefield.Dialog.Entrants"}}</label>
+    <div class="form-fields"><input type="number" name="entrants" min="1" step="1" value="1"></div>
+  </div>
+</div>

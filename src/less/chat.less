@@ -224,6 +224,132 @@
       .push-cost-buttons {
         margin-top: @gap;
       }
+
+      .apply-damage-buttons {
+        margin-top: @gap;
+      }
+
+      .action-outcome-unsuccessful {
+        margin: @gap 0 0;
+        padding: 4px 6px;
+        color: @colorRed;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid currentColor;
+      }
+
+      .damage-application-complete,
+      .damage-application-missed {
+        margin: @gap 0 0;
+        padding: 4px 6px;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid currentColor;
+      }
+
+      .damage-application-complete {
+        color: @colorGreen;
+      }
+
+      .damage-application-missed {
+        color: @colorRed;
+      }
+
+      .damage-ammo-remaining {
+        margin: 2px 0 0;
+        font-size: .8rem;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .defense-pending,
+      .defense-response,
+      .defense-completed,
+      .defense-roll-status,
+      .defense-resolution {
+        margin: @gap 0 0;
+        padding: 4px 6px;
+        text-align: center;
+        border: 1px solid currentColor;
+      }
+
+      .defense-pending,
+      .defense-roll-status {
+        color: @colorTan;
+        font-weight: bold;
+      }
+
+      .defense-resolution.fully-blocked {
+        color: @colorGreen;
+        font-weight: bold;
+      }
+
+      .defense-response-buttons,
+      .defense-continue-buttons,
+      .defense-roll-buttons,
+      .defense-apply-buttons {
+        margin-top: @gap;
+      }
+    }
+
+    .suppression-resolution {
+      margin-top: @gap;
+      padding: 4px 6px;
+      border: 1px solid @colorTan;
+
+      .suppression-heading,
+      .suppression-complete {
+        margin: 0;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .suppression-no-target {
+        margin: 4px 0;
+        text-align: center;
+      }
+
+      .assign-suppression {
+        width: 100%;
+      }
+
+      .suppression-target {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 4px;
+        margin-top: 4px;
+        padding-top: 4px;
+        border-top: 1px solid fade(@colorTan, 45%);
+      }
+
+      .suppression-target-name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .roll-suppression {
+        width: auto;
+        white-space: nowrap;
+      }
+
+      .suppression-success,
+      .suppression-complete {
+        color: @colorGreen;
+      }
+
+      .suppression-failure {
+        color: @colorRed;
+        font-weight: bold;
+      }
+
+      .suppression-immune {
+        color: @colorTan;
+      }
+
+      .suppression-complete {
+        margin-top: 4px;
+      }
     }
 
     // .card-description {

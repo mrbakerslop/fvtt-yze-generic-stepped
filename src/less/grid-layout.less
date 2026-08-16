@@ -111,12 +111,13 @@
 
 .grid-vehicle-details {
 	display: grid;
-	grid-template-columns: auto repeat(3, 140px);
+	grid-template-columns: repeat(5, minmax(0, 1fr));
 	grid-template-rows: 1fr 1fr;
 	grid-template-areas:
-		"mt cs ts rel"
-		"fuel cap cons price";
+		"domain mt cs ts rel"
+		"fuel cap cons price price";
 
+	.vehicle-domain { grid-area: domain; }
 	.combat-speed { grid-area: cs; }
 	.travel-speed { grid-area: ts; }
 	.movement-type { grid-area: mt; }

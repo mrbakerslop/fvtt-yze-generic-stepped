@@ -1,3 +1,5 @@
+import { causesWeaponJam } from './weapon-jams.js';
+
 export const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 export const PUSH_COST_MODE_SETTING = 'pushCostMode';
 
@@ -154,10 +156,17 @@ export function prepareRollPushCosts(roll, { flags = {}, actor = null, item = nu
   roll.options.hasPushCosts = roll.options.pushCosts.length > 0;
   roll.options.canApplyPushCosts = mode === PUSH_COST_MODES.BUTTON
     && roll.options.pushCosts.some(cost => cost.canApply);
-  roll.options.weaponJammed = Boolean(
-    item?.type === 'weapon' && roll.pushed && roll.jamCount >= 2,
-  );
+  roll.options.weaponJammed = causesWeaponJam(roll, item);
   return roll.options.pushCosts;
+}
+
+/** Persist a qualifying pushed attack's jam state independently of push-cost handling mode. */
+export async function applyWeaponJam(roll, item) {
+  if (!causesWeaponJam(roll, item)) return false;
+  roll.options.weaponJammed = true;
+  if (item.system.jammed || !isOwner(item)) return false;
+  await item.update({ 'system.jammed': true });
+  return true;
 }
 
 function getCostTarget(cost, actor, item) {

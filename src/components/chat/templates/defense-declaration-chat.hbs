@@ -1,0 +1,45 @@
+<div class="yzegs chat-card defense-declaration-card" data-actor-id="{{data.attackerUuid}}">
+  <div class="card-content">
+    <h3>{{localize "YZEGS.Defense.IncomingAttack"}}</h3>
+    <p>{{localize "YZEGS.Defense.DeclarationDescription"
+      attacker=data.attackerName defender=data.defenderName action=(localize (concat "YZEGS.ActionNames." data.actionId))}}</p>
+    {{#if data.itemName}}<p><b>{{localize "YZEGS.CombatActions.Item"}}:</b> {{data.itemName}}</p>{{/if}}
+
+    {{#if (eq data.status "pending")}}
+      <p class="defense-pending">{{localize "YZEGS.Defense.AwaitingDeclaration"}}</p>
+      <div class="dice-buttons defense-response-buttons">
+        <button type="button" class="dice-button declare-block" data-owner-uuid="{{data.defenderUuid}}">
+          <i class="fas fa-shield-halved"></i> {{localize "YZEGS.Defense.Block"}}
+        </button>
+        <button type="button" class="dice-button decline-block" data-owner-uuid="{{data.defenderUuid}}">
+          {{localize "YZEGS.Defense.DoNotBlock"}}
+        </button>
+      </div>
+    {{else}}
+      <p class="defense-response">
+        {{#if (eq data.response "block")}}
+          {{localize "YZEGS.Defense.BlockDeclared" defender=data.defenderName}}
+          {{#if data.blockItemName}} — {{data.blockItemName}}{{/if}}
+          {{#if data.spentFrom}}
+            <br />{{localize "YZEGS.CombatActions.Spent"
+              action=(localize (concat "YZEGS.ActionTypes." data.spentFrom))
+              fast=data.remaining.fast slow=data.remaining.slow}}
+          {{/if}}
+        {{else}}
+          {{localize "YZEGS.Defense.BlockDeclined" defender=data.defenderName}}
+        {{/if}}
+      </p>
+      {{#if (eq data.status "responded")}}
+        <div class="dice-buttons defense-continue-buttons">
+          <button type="button" class="dice-button continue-declared-attack"
+            data-owner-uuid="{{data.attackerUuid}}">
+            <i class="fas fa-dice"></i> {{localize "YZEGS.Defense.RollAttack"}}
+          </button>
+        </div>
+      {{/if}}
+      {{#if (eq data.status "completed")}}
+        <p class="defense-completed">{{localize "YZEGS.Defense.AttackContinued"}}</p>
+      {{/if}}
+    {{/if}}
+  </div>
+</div>

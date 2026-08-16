@@ -1,0 +1,14 @@
+<div class="yzegs dialog cover-dialog">
+  <p>{{localize "YZEGS.Cover.ArmorHint"}}</p>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Cover.ArmorLevel"}}</label>
+    <input type="number" name="armor" value="{{data.armor}}" min="0" step="1" />
+  </div>
+  <p class="hint">
+    {{#if data.againstName}}
+      {{localize "YZEGS.Cover.DirectionTarget" target=data.againstName}}
+    {{else}}
+      {{localize "YZEGS.Cover.DirectionGeneral"}}
+    {{/if}}
+  </p>
+</div>

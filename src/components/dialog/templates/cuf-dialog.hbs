@@ -55,9 +55,8 @@
   {{! Roll Mode }}
   <div class='form-group'>
     <label>{{localize 'YZEGS.Dialog.Roll.RollMode'}}</label>
-    <select name='messageMode'>
-      {{selectOptions config.messageModes selected=data.messageMode localize=true}}
-    </select>
+    {{> optionMenu name="messageMode" selected=data.messageMode options=config.messageModes
+      editable=true noBlank=true localize=true menuClass="dialog-option-menu"}}
   </div>
 
 </div>

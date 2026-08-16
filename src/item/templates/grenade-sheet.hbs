@@ -76,6 +76,12 @@
       {{!-- Other Parameters --}}
       <div class="features-other flexcol">
 
+        <div class="form-group">
+          <label>{{localize "YZEGS.ItemSheet.ExplosiveType"}}</label>
+          {{> optionMenu name="system.explosiveType" selected=system.explosiveType options=explosiveTypeChoices
+            editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
+
         {{!-- Used Attribute --}}
         <div class="form-group">
           <label>{{localize "YZEGS.ItemSheet.AttributeUsed"}}</label>
@@ -95,6 +101,14 @@
           <label class="checkbox">
             {{> checkboxControl value=true editable=false}}
             {{localize "YZEGS.ItemPropNames.disposable"}}
+          </label>
+          <label class="checkbox">
+            {{> checkboxControl name="system.props.airburst" value=system.props.airburst editable=@root.editable}}
+            {{localize "YZEGS.ItemPropNames.airburst"}}
+          </label>
+          <label class="checkbox">
+            {{> checkboxControl name="system.props.directional" value=system.props.directional editable=@root.editable}}
+            {{localize "YZEGS.ItemPropNames.directional"}}
           </label>
         </div>
 

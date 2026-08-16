@@ -9,12 +9,24 @@ import {
 } from '../../system/combat-modifiers.js';
 import {
   applyRollPushCosts,
+  applyWeaponJam,
   getPushCostMode,
   prepareRollPushCosts,
   PUSH_COST_MODES,
   resolvePushCostDocuments,
 } from '../../system/push-costs.js';
 import { isUnitMoraleEnabled } from '../../system/settings.js';
+import { isActorInActiveCombat } from '../../system/reloading.js';
+import { resolveCombatActionSpend } from '../../system/combat-actions.js';
+import { getTwilightAction } from '../../system/twilight-actions.js';
+import { getConfiguredSkillRollActions } from '../../system/action-skills.js';
+import { getBlindFireRoll } from '../../system/urban-operations.js';
+
+function displayActionModifier(value) {
+  value = Number(value) || 0;
+  if (!value) return '–';
+  return value > 0 ? `+${value}` : `−${Math.abs(value)}`;
+}
 
 /* -------------------------------------------- */
 /*  Custom Dice Roller Interface                */
@@ -46,6 +58,14 @@ export class YZEGSRoller {
    * @param {number}  [rof=0]               The RoF's value
    * @param {number}  [modifier=0]          The task modifier
    * @param {boolean} [locate=false]        Whether to roll a Location die
+   * @param {object?} [attackData=null]     Effective attack profile to preserve on the roll
+   * @param {object?} [actionData=null]     Action workflow data to preserve on the roll
+   * @param {object?} [defense=null]        Linked close-combat defense declaration
+   * @param {object?} [defenseFor=null]     Attack message linked to a Block roll
+   * @param {object?} [suppression=null]    Suppression targets or originating attack context
+   * @param {object?} [combatAction=null]   Preselected action to spend and display
+   * @param {object[]?} [combatActionChoices=null] Constrained action choices for an Item attack
+   * @param {boolean} [hideCombatActions=false] Hide action choices while retaining modifiers
    * @param {number}  [maxPush=1]           The maximum number of pushes (default is 1)
    * @param {string?}  messageMode          Chat message visibility mode
    * @param {boolean} [askForOptions=false] Whether to show a Dialog for roll options
@@ -69,6 +89,14 @@ export class YZEGSRoller {
     rof = 0,
     modifier = 0,
     locate = false,
+    attackData = null,
+    actionData = null,
+    defense = null,
+    defenseFor = null,
+    suppression = null,
+    combatAction = null,
+    combatActionChoices = null,
+    hideCombatActions = false,
     maxPush = 1,
     messageMode = null,
     askForOptions = false,
@@ -80,7 +108,6 @@ export class YZEGSRoller {
 
     // 2 — Checks if we ask for options (roll dialog).
     const showTaskCheckOptions = game.settings.get('fvtt-yze-generic-stepped', 'showTaskCheckOptions');
-    let combatAction = null;
     let situationalModifiers = [];
     if (!skipDialog && askForOptions !== showTaskCheckOptions) {
       // 2.1 — Prepares a formula.
@@ -88,12 +115,47 @@ export class YZEGSRoller {
         getDiceQuantities(attribute, skill),
       ).formula;
 
+      // Resolve contextual actions before the dialog so an ordinary Skill test
+      // offers only the actions which actually use that Skill.
+      const skillItem = actor?.getSkill?.(skillName);
+      const skillActions = hideCombatActions || combatActionChoices?.length
+        ? []
+        : getConfiguredSkillRollActions(skillItem);
+      let skillActionDialog = null;
+      if (skillActions.length) {
+        const { prepareTwilightActionDialog } = await import('../../system/twilight-action-workflows.js');
+        skillActionDialog = prepareTwilightActionDialog(actor, skillActions);
+      }
+
       // 2.2 — Handles roll modifiers.
       let modifiers;
       if (actor) {
         modifiers = actor.getRollModifiers();
-        if (skillName || attributeName) {
-          modifiers = modifiers.filter(m => m.target === skillName || m.target === attributeName);
+        const contextualActions = skillActions.length
+          ? skillActions
+          : (combatActionChoices ?? []).map(choice => getTwilightAction(choice.id) ?? {
+            id: choice.id,
+            modifierTargets: [choice.id],
+          });
+        const skillActionModifierTargets = contextualActions.flatMap(action => action.modifierTargets);
+        const actionModifierTargets = actionData?.modifierTargets
+          ?? [combatAction?.id, ...skillActionModifierTargets].filter(Boolean);
+        if (skillName || attributeName || actionModifierTargets.length) {
+          modifiers = modifiers.filter(entry => (
+            entry.target === skillName
+            || entry.target === attributeName
+            || (entry.category === 'action' && actionModifierTargets.includes(entry.target))
+          ));
+        }
+        if (contextualActions.length > 1 || skillActions.length) {
+          for (const entry of modifiers.filter(modifierEntry => modifierEntry.category === 'action')) {
+            entry.contextualActionIds = contextualActions.filter(action => (
+              action.modifierTargets.includes(entry.target)
+            )).map(action => action.id).join(' ');
+            entry.contextualDefaultActive = entry.active;
+            entry.contextualActionModifier = true;
+            entry.active = false;
+          }
         }
         if (modifiers.length) {
           modifier += modifiers.reduce((sum, m) => sum + (m.active ? m.value : 0), 0);
@@ -101,11 +163,74 @@ export class YZEGSRoller {
       }
 
       // 2.3 — Renders the dialog.
-      const combatActionGroups = getCombatActionGroups(combatType);
+      const tracksCombatActions = ['character', 'npc'].includes(actor?.type)
+        && isActorInActiveCombat(actor, game.combat);
+      const trackedActions = {
+        fast: actor?.system.actions?.fast?.value ?? 0,
+        slow: actor?.system.actions?.slow?.value ?? 0,
+      };
+      let baseActionGroups = [];
+      if (!hideCombatActions && combatActionChoices?.length) {
+        baseActionGroups = ['slow', 'fast', 'free'].map(speed => ({
+          id: speed,
+          name: game.i18n.localize(`YZEGS.ActionTypes.${speed}`),
+          actions: combatActionChoices.filter(action => action.speed === speed).map(action => ({
+            ...action,
+            name: action.label,
+            group: action.speed,
+            speedName: action.speedLabel,
+            value: Number(action.value) || 0,
+            displayValue: action.displayValue ?? '–',
+            registry: false,
+          })),
+        })).filter(group => group.actions.length);
+      }
+      else if (skillActionDialog) {
+        baseActionGroups = skillActionDialog.actionGroups.map(group => ({
+          ...group,
+          name: group.label,
+          actions: group.actions.map(action => ({
+            ...action,
+            name: game.i18n.localize(action.label),
+            group: action.speed,
+            speedName: group.label,
+            value: Number(action.modifier) || 0,
+            displayValue: displayActionModifier(action.modifier),
+            registry: true,
+          })),
+        })).filter(group => group.actions.length);
+      }
+      else if (!hideCombatActions) baseActionGroups = getCombatActionGroups(combatType);
+      const combatActionGroups = baseActionGroups.map(group => ({
+        ...group,
+        actions: group.actions.map(action => {
+          if (!tracksCombatActions) return action;
+          const actionSpend = resolveCombatActionSpend({
+            inCombat: true,
+            speed: action.group,
+            ...trackedActions,
+          });
+          return {
+            ...action,
+            disabled: Boolean(action.disabled) || !actionSpend.available,
+            usesSlowForFast: action.group === 'fast' && actionSpend.spentFrom === 'slow',
+          };
+        }),
+      }));
       const combatModifierGroups = getCombatModifierGroups(combatType);
       const opts = await YZEGSDialog.askRollOptions({
         title, attribute, skill, rof, modifier, modifiers, locate,
         maxPush, messageMode, formula, combatType, combatActionGroups, combatModifierGroups,
+        tracksCombatActions, trackedActions,
+        actionHeading: skillActionDialog
+          ? game.i18n.localize('YZEGS.CombatActions.DialogTitle')
+          : game.i18n.localize(`YZEGS.CombatModifiers.CombatTypes.${combatType}`),
+        actionTargets: skillActionDialog?.targetChoices ?? [],
+        actionItems: skillActionDialog?.itemChoices ?? [],
+        selectedCombatActionId: combatActionChoices?.some(action => action.id === combatAction?.id)
+          ? combatAction.id
+          : '',
+        selectedCombatActionLabel: combatActionChoices?.find(action => action.id === combatAction?.id)?.label ?? '',
       });
 
       // 2.3.5 — Exits early if the dialog was cancelled.
@@ -118,11 +243,74 @@ export class YZEGSRoller {
       }
       rof = opts.rof;
       modifier = opts.modifier;
-      combatAction = opts.combatAction;
+      if (opts.combatAction?.registry) {
+        const { prepareTwilightRollAction } = await import('../../system/twilight-action-workflows.js');
+        const preparedAction = await prepareTwilightRollAction(actor, {
+          actionId: opts.combatAction.id,
+          targetUuid: opts.targetUuid,
+          itemId: opts.itemId,
+        });
+        if (!preparedAction) return null;
+        combatAction = preparedAction.combatAction;
+        actionData = preparedAction.actionData;
+        title = `${combatAction.label}: ${actor.name}`;
+      }
+      else if (opts.combatAction) combatAction = opts.combatAction;
+      if (combatAction?.rollMode === 'blindFire') {
+        const blindFire = getBlindFireRoll({
+          rof: opts.rof,
+          explosive: attackData?.blast && attackData.blast !== '–',
+        });
+        attribute = blindFire.attribute;
+        skill = blindFire.skill;
+        rof = blindFire.rof;
+        locate = blindFire.locate;
+        attackData = {
+          ...(attackData ?? {}),
+          blindFire: true,
+          canDirectHit: blindFire.canDirectHit,
+          automaticHexHit: blindFire.automaticHexHit,
+        };
+      }
+      if (tracksCombatActions && combatActionGroups.length && !combatAction) {
+        ui.notifications.warn(game.i18n.localize('YZEGS.CombatActions.Errors.ActionRequired'));
+        return null;
+      }
       situationalModifiers = opts.situationalModifiers;
       locate = opts.locate;
       maxPush = opts.maxPush;
       messageMode = opts.messageMode;
+    }
+
+    // Spend the selected action only after the dialog is confirmed. Re-read the
+    // Actor here in case another roll or sheet update changed the pools while it was open.
+    if (combatAction && ['character', 'npc'].includes(actor?.type)) {
+      const inActiveCombat = isActorInActiveCombat(actor, game.combat);
+      const actionSpend = resolveCombatActionSpend({
+        inCombat: inActiveCombat,
+        speed: combatAction.speed,
+        fast: actor.system.actions?.fast?.value,
+        slow: actor.system.actions?.slow?.value,
+      });
+      if (!actionSpend.available) {
+        const key = combatAction.speed === 'slow'
+          ? 'YZEGS.CombatActions.NoSlowAction'
+          : 'YZEGS.CombatActions.NoFastAction';
+        ui.notifications.warn(game.i18n.localize(key));
+        return null;
+      }
+      if (actionSpend.tracked) {
+        await actor.update({
+          [`system.actions.${actionSpend.spentFrom}.value`]: actionSpend.remaining[actionSpend.spentFrom],
+        });
+        combatAction = {
+          ...combatAction,
+          tracked: true,
+          spentFrom: actionSpend.spentFrom,
+          spentFromLabel: game.i18n.localize(`YZEGS.ActionTypes.${actionSpend.spentFrom}`),
+          remaining: actionSpend.remaining,
+        };
+      }
     }
     // 3 — Clamps values.
     attribute = Math.clamp(attribute, 0, 12);
@@ -137,10 +325,15 @@ export class YZEGSRoller {
     roll.options.combatType = combatType;
     roll.options.checkType = checkType;
     roll.options.combatAction = combatAction;
+    if (actionData) roll.options.actionData = foundry.utils.deepClone(actionData);
+    if (defense) roll.options.defense = foundry.utils.deepClone(defense);
+    if (defenseFor) roll.options.defenseFor = foundry.utils.deepClone(defenseFor);
+    if (suppression) roll.options.suppression = foundry.utils.deepClone(suppression);
     roll.options.situationalModifiers = situationalModifiers;
     roll.options.modifier = modifier;
     roll.options.signedModifier = modifier >= 0 ? `+${modifier}` : `−${Math.abs(modifier)}`;
     roll.options.attributeName = attributeName;
+    if (attackData) roll.options.attackData = foundry.utils.deepClone(attackData);
 
     // 5 — Modifies the roll.
     if (modifier) {
@@ -169,10 +362,12 @@ export class YZEGSRoller {
     console.log('yzegs | ROLL', roll.name, roll);
 
     // 8 — Sends the message and returns.
-    if (sendMessage) {
-      return roll.toMessage({}, { messageMode });
+    const result = sendMessage ? await roll.toMessage({}, { messageMode }) : roll;
+    if (actionData) {
+      const { recordTwilightActionAttempt } = await import('../../system/twilight-action-workflows.js');
+      await recordTwilightActionAttempt(actionData);
     }
-    return roll;
+    return result;
   }
 
   /* -------------------------------------------- */
@@ -188,6 +383,7 @@ export class YZEGSRoller {
     modifier = 0,
     messageMode = null,
     sendMessage = true,
+    suppression = null,
   } = {}) {
     if (!actor) return;
     messageMode = messageMode ?? game.settings.get('core', 'messageMode');
@@ -213,13 +409,14 @@ export class YZEGSRoller {
     return this.taskCheck({
       title,
       checkType: 'cuf',
-      // actor,
-      // attributeName: 'cuf',
+      actor,
+      attributeName: 'cuf',
       attribute: cuf,
       skill: unitMorale ? um : 0,
       modifier, maxPush: 0, messageMode,
       skipDialog: true,
       sendMessage,
+      suppression,
     });
   }
 }
@@ -248,6 +445,7 @@ export async function rollPush(roll, { message } = {}) {
   if (!message) {
     const { actor: rollActor, item: rollItem } = resolvePushCostDocuments(roll);
     prepareRollPushCosts(roll, { actor: rollActor, item: rollItem });
+    await applyWeaponJam(roll, rollItem);
     if (getPushCostMode() === PUSH_COST_MODES.AUTOMATIC) {
       await applyRollPushCosts(roll, { actor: rollActor, item: rollItem });
     }
@@ -265,6 +463,7 @@ export async function rollPush(roll, { message } = {}) {
   let flagData = { ...flags };
 
   prepareRollPushCosts(roll, { flags, actor, item });
+  await applyWeaponJam(roll, item);
   if (getPushCostMode() === PUSH_COST_MODES.AUTOMATIC) {
     const result = await applyRollPushCosts(roll, { flags, actor, item });
     flagData = result.flags;

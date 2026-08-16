@@ -14,6 +14,28 @@
   <section class="sheet-body">
     {{!-- Features Tab --}}
     <div class="tab tab-features" data-group="primary" data-tab="features">
+      {{#if system.jammed}}
+      <div class="weapon-jammed-status">
+        <strong>{{{config.Icons.buttons.clearJam}}} {{localize "YZEGS.Jam.Status"}}</strong>
+        {{#if canClearJam}}
+        <button type="button" class="weapon-clear-jam-action">
+          {{{config.Icons.buttons.clearJam}}} {{localize "YZEGS.ActionNames.clearJam"}}
+        </button>
+        {{/if}}
+      </div>
+      {{/if}}
+      {{#if system.effectiveAttack.overridden}}
+      <div class="weapon-effective-profile" title="{{localize 'YZEGS.ItemSheet.EffectiveProfileHint'}}">
+        <strong>{{localize "YZEGS.ItemSheet.EffectiveProfile"}} — {{system.effectiveAttack.ammunitionName}}</strong>
+        <span>{{localize "YZEGS.ItemSheet.Damage"}} {{system.effectiveAttack.damage}}</span>
+        <span>{{localize "YZEGS.ItemSheet.Crit"}} {{system.effectiveAttack.crit}}</span>
+        <span>{{localize "YZEGS.ItemSheet.Blast"}} {{system.effectiveAttack.blast}}</span>
+        <span>{{localize "YZEGS.ItemSheet.Range"}} {{system.effectiveAttack.range}}</span>
+        <span>{{localize "YZEGS.ItemSheet.Armor"}}
+          {{#if (gte system.effectiveAttack.armorModifier 1)}}+{{/if}}{{system.effectiveAttack.armorModifier}}
+        </span>
+      </div>
+      {{/if}}
       <div class="grid grid-4col item-features">
         <div class="flexcol">
           <label>{{localize "YZEGS.ItemSheet.ItemType"}}</label>
@@ -53,12 +75,18 @@
           <input type="text" name="system.range" value="{{system.range}}" data-dtype="Number"/>
         </div>
         <div class="flexcol">
-          <label>{{localize "YZEGS.ItemSheet.Mag"}}</label>
-          {{!-- <div class="flexrow flex-center"> --}}
-            {{!-- <input type="text" name="system.mag.value" value="{{system.mag.value}}" data-dtype="Number"/> --}}
-            {{!-- <span class="sep">/</span> --}}
+          <label>
+            {{#if internalMagazine}}{{localize "YZEGS.ItemSheet.LoadedCapacity"}}{{else}}{{localize "YZEGS.ItemSheet.Mag"}}{{/if}}
+          </label>
+          {{#if internalMagazine}}
+          <div class="flexrow flex-center">
+            <input type="text" name="system.mag.value" value="{{system.mag.value}}" data-dtype="Number"/>
+            <span class="sep">/</span>
             <input type="text" name="system.mag.max" value="{{system.mag.max}}" data-dtype="Number"/>
-          {{!-- </div> --}}
+          </div>
+          {{else}}
+          <input type="text" name="system.mag.max" value="{{system.mag.max}}" data-dtype="Number"/>
+          {{/if}}
         </div>
         <div class="flexcol">
           <label>{{localize "YZEGS.ItemSheet.Armor"}}</label>
@@ -94,11 +122,22 @@
         </div>
 
         {{!-- Used Ammo --}}
-        {{#if system.mag.max}}
+        {{#if item.hasAmmo}}
         <div class="form-group">
-          <label>{{localize "YZEGS.ItemSheet.WeaponMagazine"}}</label>
-          {{> optionMenu name="system.mag.target" selected=system.mag.target options=ammunitionTargets
-            editable=@root.editable menuClass="item-field-menu weapon-magazine-menu"}}
+          <label>
+            {{#if internalMagazine}}{{localize "YZEGS.ItemSheet.AmmunitionSource"}}{{else}}{{localize "YZEGS.ItemSheet.WeaponMagazine"}}{{/if}}
+          </label>
+          <div class="form-fields weapon-ammunition-controls">
+            <div class="weapon-loaded-ammunition" title="{{loadedAmmunitionLabel}}">
+              {{#if loadedAmmunitionLabel}}{{loadedAmmunitionLabel}}{{else}}–{{/if}}
+            </div>
+            {{#if (and inActor editable)}}
+            <button type="button" class="weapon-reload-action" title="{{localize 'YZEGS.Chat.Actions.Reload'}}"
+              aria-label="{{localize 'YZEGS.Chat.Actions.Reload'}}">
+              {{{config.Icons.buttons.reload}}}
+            </button>
+            {{/if}}
+          </div>
         </div>
         {{/if}}
 
@@ -108,7 +147,11 @@
           {{#each system.props as | prop name |}}
           <label class="checkbox">
             {{> checkboxControl name=(concat "system.props." name) value=prop editable=@root.editable}}
+            {{#if (eq name "ammoBelt")}}
+            {{localize "YZEGS.ItemPropNames.beltFed"}}
+            {{else}}
             {{localize (concat "YZEGS.ItemPropNames." name)}}
+            {{/if}}
           </label>
           {{/each}}
         </div>
@@ -129,6 +172,37 @@
       </div>
       {{/if}}
 
+      <div class="features-other flexcol">
+        <fieldset class="weapon-guidance-settings">
+          <legend>{{localize "YZEGS.Guidance.Label"}}</legend>
+          <div class="form-group">
+            <label>{{localize "YZEGS.Guidance.Mode"}}</label>
+            {{> optionMenu name="system.guidance.mode" selected=system.guidance.mode options=guidanceModeChoices
+              editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+          </div>
+          {{#unless (eq system.guidance.mode "none")}}
+          <div class="form-group">
+            <label>{{localize "YZEGS.Guidance.TargetClass"}}</label>
+            {{> optionMenu name="system.guidance.targetClass" selected=system.guidance.targetClass options=guidanceTargetChoices
+              editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+          </div>
+          <div class="form-group">
+            <label>{{localize "YZEGS.Guidance.DelayRounds"}}</label>
+            <input type="number" name="system.guidance.delayRounds" min="1" step="1" value="{{system.guidance.delayRounds}}">
+          </div>
+          <div class="form-group">
+            <label>{{localize "YZEGS.Guidance.EvasionModifier"}}</label>
+            <input type="number" name="system.guidance.evasionModifier" value="{{system.guidance.evasionModifier}}">
+          </div>
+          <div class="form-group">
+            <label>{{localize "YZEGS.Guidance.FiringArc"}}</label>
+            {{> optionMenu name="system.guidance.firingArc" selected=system.guidance.firingArc options=firingArcChoices
+              editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+          </div>
+          {{/unless}}
+        </fieldset>
+      </div>
+
       {{!-- Inventory Options --}}
       {{#if inActor}}
       <div class="features-other flexcol weapon-inventory-options">
@@ -146,7 +220,7 @@
             </label>
           </div>
         </div>
-        {{#if item.hasAmmo}}
+        {{#if system.mag.max}}
         <button class="btn btn-small create-ammo">{{localize "YZEGS.ItemSheet.CreateAmmo"}}</button>
         {{/if}}
       </div>

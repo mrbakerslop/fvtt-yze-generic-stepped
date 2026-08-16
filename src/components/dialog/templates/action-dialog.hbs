@@ -1,0 +1,24 @@
+<div class="twilight-action-dialog">
+  <p class="action-dialog-summary">{{data.summary}}</p>
+
+  <div class="form-group">
+    <label for="yzegs-twilight-action">{{localize "YZEGS.CombatActions.Action"}}</label>
+    {{> dialogActionMenu name="actionId" selected=data.selectedActionId selectedLabel=data.selectedActionName
+      groups=data.actionGroups placeholder=(localize "YZEGS.CombatModifiers.NoAction")
+      editable=true noBlank=true inputClass="twilight-action-input"}}
+  </div>
+
+  <div class="form-group action-dialog-target" hidden>
+    <label for="yzegs-action-target">{{localize "YZEGS.CombatActions.Target"}}</label>
+    {{> dialogChoiceMenu name="targetUuid" selected="" choices=data.targetChoices
+      placeholder=(localize "YZEGS.CombatActions.NoTarget") editable=true}}
+  </div>
+
+  <div class="form-group action-dialog-item" hidden>
+    <label for="yzegs-action-item">{{localize "YZEGS.CombatActions.Item"}}</label>
+    {{> dialogChoiceMenu name="itemId" selected="" choices=data.itemChoices
+      placeholder=(localize "YZEGS.CombatActions.NoItem") editable=true}}
+  </div>
+
+  <p class="hint action-dialog-hint"></p>
+</div>

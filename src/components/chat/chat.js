@@ -2,8 +2,9 @@
 import ActorYZEGS from '../../actor/actor.js';
 import ItemYZEGS from '../../item/item.js';
 import YZEGSDialog from '../dialog/dialog.js';
-import { getRollingActor, rollPush } from '../roll/dice.js';
+import { getAttributeAndSkill, getRollingActor, rollPush, YZEGSRoller } from '../roll/dice.js';
 import { YZEGS } from '../../system/config.js';
+import { getEffectiveWeaponProfile } from '../../system/weapon-profile.js';
 import {
   applyRollPushCosts,
   getPushCostMode,
@@ -11,6 +12,40 @@ import {
   resolvePushCostDocuments,
   SYSTEM_ID,
 } from '../../system/push-costs.js';
+import { applyTwilightActionOutcome } from '../../system/twilight-action-workflows.js';
+import { resolveDamageAllocation } from '../../system/damage-allocation.js';
+import {
+  coverAppliesAgainst,
+  coverProtectsLocation,
+  getEffectiveAttackSuccesses,
+} from '../../system/defense.js';
+import { resolveCombatActionSpend } from '../../system/combat-actions.js';
+import { getSkillCombatType } from '../../system/combat-modifiers.js';
+import { getActionSkillName, getActorActionSkill } from '../../system/action-skills.js';
+import { isActorInActiveCombat } from '../../system/reloading.js';
+import {
+  completeDefenseDeclaration,
+  submitBlockResolution,
+  submitDefenseDeclaration,
+} from '../../system/defense-workflows.js';
+import {
+  addSuppressionTarget,
+  assignSuppressionTarget,
+  rollSuppressionCheck,
+} from '../../system/suppression-workflows.js';
+import { resolveBlastTargets } from '../../system/blast-workflows.js';
+import {
+  applyCollapse,
+  applyRicochetHit,
+  resolveCollapse,
+  resolveRicochet,
+} from '../../system/confined-space-workflows.js';
+import {
+  applyMinefieldDirectDamage,
+  resolveMinefieldBlast,
+  resolveMinefieldCollapse,
+} from '../../system/minefield-workflows.js';
+import { evadeGuidedImpact, scheduleGuidedImpact } from '../../system/guided-weapons.js';
 
 export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
   prepareData() {
@@ -37,6 +72,65 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
     for (let i = 0; i < buttonsPushCosts.length; i++) {
       buttonsPushCosts[i].addEventListener('click', _onApplyPushCosts);
     }
+    const buttonsApplyDamage = html.querySelectorAll('.dice-button.apply-damage');
+    for (let i = 0; i < buttonsApplyDamage.length; i++) {
+      buttonsApplyDamage[i].addEventListener('click', _onApplyDamage);
+    }
+    const buttonsApplyAction = html.querySelectorAll('.dice-button.apply-action-outcome');
+    for (let i = 0; i < buttonsApplyAction.length; i++) {
+      buttonsApplyAction[i].addEventListener('click', _onApplyActionOutcome);
+    }
+    for (const button of html.querySelectorAll('.dice-button.declare-block')) {
+      button.addEventListener('click', _onDeclareBlock);
+    }
+    for (const button of html.querySelectorAll('.dice-button.decline-block')) {
+      button.addEventListener('click', _onDeclineBlock);
+    }
+    for (const button of html.querySelectorAll('.dice-button.continue-declared-attack')) {
+      button.addEventListener('click', _onContinueDeclaredAttack);
+    }
+    for (const button of html.querySelectorAll('.dice-button.roll-block')) {
+      button.addEventListener('click', _onRollBlock);
+    }
+    for (const button of html.querySelectorAll('.dice-button.apply-block')) {
+      button.addEventListener('click', _onApplyBlock);
+    }
+    for (const button of html.querySelectorAll('.dice-button.roll-suppression')) {
+      button.addEventListener('click', _onRollSuppression);
+    }
+    for (const button of html.querySelectorAll('.dice-button.assign-suppression')) {
+      button.addEventListener('click', _onAssignSuppression);
+    }
+    for (const button of html.querySelectorAll('.dice-button.resolve-blast')) {
+      button.addEventListener('click', _onResolveBlast);
+    }
+    for (const button of html.querySelectorAll('.dice-button.resolve-ricochet')) {
+      button.addEventListener('click', _onResolveRicochet);
+    }
+    for (const button of html.querySelectorAll('.dice-button.apply-ricochet-hit')) {
+      button.addEventListener('click', _onApplyRicochetHit);
+    }
+    for (const button of html.querySelectorAll('.dice-button.resolve-collapse')) {
+      button.addEventListener('click', _onResolveCollapse);
+    }
+    for (const button of html.querySelectorAll('.dice-button.apply-collapse')) {
+      button.addEventListener('click', _onApplyCollapse);
+    }
+    for (const button of html.querySelectorAll('.dice-button.apply-minefield-direct')) {
+      button.addEventListener('click', _onApplyMinefieldDirectDamage);
+    }
+    for (const button of html.querySelectorAll('.dice-button.resolve-minefield-blast')) {
+      button.addEventListener('click', _onResolveMinefieldBlast);
+    }
+    for (const button of html.querySelectorAll('.dice-button.resolve-minefield-collapse')) {
+      button.addEventListener('click', _onResolveMinefieldCollapse);
+    }
+    for (const button of html.querySelectorAll('.dice-button.schedule-guided-impact')) {
+      button.addEventListener('click', _onScheduleGuidedImpact);
+    }
+    for (const button of html.querySelectorAll('.dice-button.evade-guided-impact')) {
+      button.addEventListener('click', _onEvadeGuidedImpact);
+    }
   }
 
   /* ------------------------------------------- */
@@ -58,11 +152,397 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
       const actor = game.actors.get(card.dataset.actorId);
       const buttons = card.querySelectorAll('button');
       for (const btn of buttons) {
-        if (actor && !actor.isOwner) btn.style.display = 'none';
+        if (btn.dataset.gmOnly && !game.user.isGM) {
+          btn.style.display = 'none';
+          continue;
+        }
+        const ownerUuid = btn.dataset.ownerUuid;
+        if (ownerUuid) {
+          let owner = null;
+          try {
+            // eslint-disable-next-line no-undef
+            owner = fromUuidSync(ownerUuid);
+          }
+          catch (_error) { /* A stale defense card simply has no available action. */ }
+          if (!game.user.isGM && !owner?.isOwner) btn.style.display = 'none';
+        }
+        else if (actor && !actor.isOwner) btn.style.display = 'none';
       }
     });
   }
 
+}
+
+async function _onScheduleGuidedImpact(event) {
+  event.preventDefault();
+  const message = game.messages.get(event.currentTarget.closest('.chat-message')?.dataset.messageId);
+  await scheduleGuidedImpact(message);
+}
+
+async function _onEvadeGuidedImpact(event) {
+  event.preventDefault();
+  const message = game.messages.get(event.currentTarget.closest('.chat-message')?.dataset.messageId);
+  await evadeGuidedImpact(message);
+}
+
+async function runConfinedButton(button, callback) {
+  button.disabled = true;
+  try {
+    return await callback(getMessageFromButton(button));
+  }
+  catch (error) {
+    console.error('yzegs | Confined-space resolution failed.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.ConfinedSpace.Failed'));
+    return false;
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+function _onResolveRicochet(event) {
+  event.preventDefault();
+  return runConfinedButton(event.currentTarget, resolveRicochet);
+}
+
+function _onApplyRicochetHit(event) {
+  event.preventDefault();
+  const index = Number(event.currentTarget.dataset.hitIndex);
+  return runConfinedButton(event.currentTarget, message => applyRicochetHit(message, index));
+}
+
+function _onResolveCollapse(event) {
+  event.preventDefault();
+  return runConfinedButton(event.currentTarget, resolveCollapse);
+}
+
+function _onApplyCollapse(event) {
+  event.preventDefault();
+  return runConfinedButton(event.currentTarget, message => applyCollapse(message, game.user.targets));
+}
+
+function _onApplyMinefieldDirectDamage(event) {
+  event.preventDefault();
+  return runConfinedButton(event.currentTarget, applyMinefieldDirectDamage);
+}
+
+function _onResolveMinefieldBlast(event) {
+  event.preventDefault();
+  if (!game.user.targets.size) {
+    ui.notifications.warn(game.i18n.localize('YZEGS.Urban.Blast.SelectTargets'));
+    return false;
+  }
+  return runConfinedButton(event.currentTarget, message => resolveMinefieldBlast(message, game.user.targets));
+}
+
+function _onResolveMinefieldCollapse(event) {
+  event.preventDefault();
+  return runConfinedButton(event.currentTarget, resolveMinefieldCollapse);
+}
+
+async function _onResolveBlast(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    if (!game.user.targets.size) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Urban.Blast.SelectTargets'));
+      return;
+    }
+    const message = getMessageFromButton(button);
+    await resolveBlastTargets(message?.rolls?.[0], game.user.targets);
+  }
+  catch (error) {
+    console.error('yzegs | Failed to resolve blast.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.Urban.Blast.Failed'));
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onRollSuppression(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const message = getMessageFromButton(button);
+    const completed = await rollSuppressionCheck(message, button.dataset.targetUuid);
+    if (completed === false && button.isConnected) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Suppression.RollFailed'));
+    }
+  }
+  catch (error) {
+    console.error('yzegs | Failed to resolve suppression.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.Suppression.RollFailed'));
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onAssignSuppression(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    if (game.user.targets.size !== 1) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Suppression.SelectSingleTarget'));
+      return;
+    }
+    const message = getMessageFromButton(button);
+    const assigned = await assignSuppressionTarget(message, [...game.user.targets][0]);
+    if (!assigned) ui.notifications.warn(game.i18n.localize('YZEGS.Suppression.AssignFailed'));
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function resolveUuid(uuid) {
+  if (!uuid) return null;
+  try {
+    // eslint-disable-next-line no-undef
+    return await fromUuid(uuid);
+  }
+  catch (_error) {
+    return null;
+  }
+}
+
+function getMessageFromButton(button) {
+  const element = button.closest('.chat-message');
+  return game.messages.get(element?.dataset.messageId);
+}
+
+async function _onDeclareBlock(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  let submitted = false;
+  try {
+    const message = getMessageFromButton(button);
+    const declaration = message?.getFlag(SYSTEM_ID, 'defenseDeclaration');
+    const defender = await resolveUuid(declaration?.defenderUuid);
+    if (!message || !declaration || !defender || (!game.user.isGM && !defender.isOwner)) return;
+
+    const choices = [...defender.items].filter(item => (
+      item.type === 'weapon' && item.system.equipped
+    )).map(item => ({ value: item.uuid, label: item.name }));
+    const method = await YZEGSDialog.chooseBlockMethod({ choices });
+    if (method.cancelled) return;
+    const blockItem = method.itemUuid ? await resolveUuid(method.itemUuid) : null;
+    if (method.itemUuid && (
+      blockItem?.type !== 'weapon'
+      || blockItem.actor?.uuid !== defender.uuid
+      || !blockItem.system.equipped
+    )) return;
+
+    const spend = resolveCombatActionSpend({
+      inCombat: isActorInActiveCombat(defender, game.combat),
+      speed: 'fast',
+      fast: defender.system.actions?.fast?.value,
+      slow: defender.system.actions?.slow?.value,
+    });
+    if (!spend.available) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.CombatActions.NoFastAction'));
+      return;
+    }
+    if (spend.tracked) {
+      await defender.update({
+        [`system.actions.${spend.spentFrom}.value`]: spend.remaining[spend.spentFrom],
+      });
+    }
+    await submitDefenseDeclaration(message, {
+      response: 'block',
+      blockItemUuid: blockItem?.uuid ?? '',
+      blockItemName: blockItem?.name ?? game.i18n.localize('YZEGS.Defense.Unarmed'),
+      spentFrom: spend.spentFrom ?? '',
+      remaining: spend.remaining,
+    });
+    submitted = true;
+  }
+  finally {
+    if (!submitted && button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onDeclineBlock(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  let submitted = false;
+  try {
+    const message = getMessageFromButton(button);
+    const declaration = message?.getFlag(SYSTEM_ID, 'defenseDeclaration');
+    const defender = await resolveUuid(declaration?.defenderUuid);
+    if (!message || !defender || (!game.user.isGM && !defender.isOwner)) return;
+    await submitDefenseDeclaration(message, { response: 'decline' });
+    submitted = true;
+  }
+  finally {
+    if (!submitted && button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onContinueDeclaredAttack(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const message = getMessageFromButton(button);
+    const declaration = message?.getFlag(SYSTEM_ID, 'defenseDeclaration');
+    const attacker = await resolveUuid(declaration?.attackerUuid);
+    const item = await resolveUuid(declaration?.itemUuid);
+    if (!message || declaration?.status !== 'responded' || !attacker) return;
+    if (!game.user.isGM && !attacker.isOwner) return;
+    const defense = {
+      status: declaration.response === 'block' ? 'awaitingBlockRoll' : 'declined',
+      declared: declaration.response === 'block',
+      defenderUuid: declaration.defenderUuid,
+      defenderName: declaration.defenderName,
+      blockItemUuid: declaration.blockItemUuid ?? '',
+      blockItemName: declaration.blockItemName ?? '',
+      declarationMessageId: message.id,
+    };
+    let attackMessage;
+    if (item) {
+      attackMessage = await item.rollAttack({
+        skipDefenseDeclaration: true,
+        defense,
+        messageMode: 'public',
+      }, attacker);
+    }
+    else {
+      const { executeTwilightAction } = await import('../../system/twilight-action-workflows.js');
+      attackMessage = await executeTwilightAction(attacker, {
+        ...declaration.selection,
+        skipDefenseDeclaration: true,
+        defense,
+        messageMode: 'public',
+      });
+    }
+    if (attackMessage) await completeDefenseDeclaration(message, attackMessage);
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onRollBlock(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const attackMessage = getMessageFromButton(button);
+    const attackRoll = attackMessage?.rolls?.[0];
+    const defense = attackRoll?.options?.defense;
+    const defender = await resolveUuid(defense?.defenderUuid);
+    const blockItem = await resolveUuid(defense?.blockItemUuid);
+    if (!attackMessage || defense?.status !== 'awaitingBlockRoll' || !defender) return;
+    if (!game.user.isGM && !defender.isOwner) return;
+    const skill = getActorActionSkill(defender, 'block', 'closeCombat');
+    if (!skill) {
+      ui.notifications.warn(game.i18n.format('YZEGS.CombatActions.Errors.SkillMissing', {
+        skill: getActionSkillName('block', 'closeCombat'),
+      }));
+      return;
+    }
+    const stats = getAttributeAndSkill(skill, defender);
+    await YZEGSRoller.taskCheck({
+      ...stats,
+      title: game.i18n.format('YZEGS.Defense.BlockRollTitle', { defender: defender.name }),
+      actor: defender,
+      item: blockItem,
+      combatType: getSkillCombatType(skill),
+      hideCombatActions: true,
+      messageMode: 'public',
+      actionData: {
+        actionId: 'block',
+        modifierTargets: ['block', 'close-block'],
+        label: game.i18n.localize('YZEGS.ActionNames.block'),
+        actorUuid: defender.uuid,
+        targetUuid: attackRoll.options.actorUuid ?? '',
+        canApplyOutcome: false,
+        applied: false,
+      },
+      defenseFor: { attackMessageId: attackMessage.id },
+    });
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onApplyBlock(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const blockMessage = getMessageFromButton(button);
+    const blockRoll = blockMessage?.rolls?.[0];
+    const attackMessage = game.messages.get(blockRoll?.options?.defenseFor?.attackMessageId);
+    if (!blockMessage || !attackMessage || blockRoll.pushable) return;
+    await submitBlockResolution(attackMessage, blockMessage);
+    blockRoll.options.defenseFor.applied = true;
+    const content = await blockRoll.render();
+    await blockMessage.update({ content, rolls: [JSON.stringify(blockRoll)] });
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onApplyActionOutcome(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const chatCard = button.closest('.chat-message');
+    const message = game.messages.get(chatCard?.dataset.messageId);
+    const roll = message?.rolls[0];
+    if (!message || !roll) return;
+    const applied = await applyTwilightActionOutcome(roll);
+    if (!applied) return;
+    const content = await roll.render();
+    await message.update({ content, rolls: [JSON.stringify(roll)] });
+    ui.notifications.info(game.i18n.localize('YZEGS.CombatActions.OutcomeApplied'));
+  }
+  catch (error) {
+    console.error('yzegs | Failed to apply action outcome.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.CombatActions.Errors.ApplyFailed'));
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+/* ------------------------------------------- */
+/*  Apply Damage Button                        */
+/* ------------------------------------------- */
+
+async function _onApplyDamage(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+
+  try {
+    const message = getMessageFromButton(button);
+    const roll = message?.rolls?.[0];
+    const hasLinkedPrimaryTarget = Boolean(
+      roll?.options?.defense?.defenderUuid
+      && !roll.options.damageApplication?.primaryApplied,
+    );
+    if (!game.user.targets.size && !hasLinkedPrimaryTarget) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Combat.SelectDamageTarget'));
+      return;
+    }
+    const messageElem = button.closest('.chat-message');
+    if (messageElem) await _applyDamage(messageElem);
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
 }
 
 /* ------------------------------------------- */
@@ -112,7 +592,7 @@ function _onRollAccept(event) {
   /** @type {import('yzur').YearZeroRoll} */
   const roll = message.rolls[0];
   roll.maxPush = 0;
-  return message.update({ rolls: [JSON.stringify(roll)] });
+  return roll.render().then(content => message.update({ content, rolls: [JSON.stringify(roll)] }));
 }
 
 /* ------------------------------------------- */
@@ -180,36 +660,6 @@ export function getChatCardActor(card) {
   return game.actors.get(actorId);
 }
 
-/* ------------------------------------------- */
-/*  Context Menu (right-clic)                  */
-/* ------------------------------------------- */
-
-/**
- * Adds a context menu (right-clic) to Chat messages.
- * @param {Object} html DOM
- * @param {Object} options Options
- * @link https://www.youtube.com/watch?v=uBC5DSci0NI
- */
-export function addChatMessageContextOptions(options = []) {
-  // TODO: See Part 6, 6:55
-  // Allows only this menu option if we have selected some tokens
-  // & the message contains some damage.
-  const canDefend = li => {
-    const message = game.messages.get(li.dataset.messageId);
-    const targets = game.user.targets;
-    return targets.size > 0 && message.rolls.length > 0;
-  };
-  options.push({
-    name: game.i18n.localize('YZEGS.Chat.Actions.ApplyDamage'),
-    icon: YZEGS.Icons.buttons.attack,
-    visible: canDefend,
-    callback: li => _applyDamage(li),
-  });
-  return options;
-}
-
-/* ------------------------------------------- */
-
 async function _applyDamage(messageElem) {
   const messageId = messageElem.dataset.messageId;
   const message = game.messages.get(messageId);
@@ -222,53 +672,127 @@ async function _applyDamage(messageElem) {
   const actor = getRollingActor({ actorId, tokenKey });
   const itemId = roll.options.itemId;
   const item = actor ? actor.items.get(itemId) : game.items.get(itemId);
-  // Prepares the attack's data.
-  if (!item) return ui.notifications.warn(game.i18n.localize('YZEGS.Chat.Roll.NoItemNotif'));
-  let attackData = foundry.utils.deepClone(item.system);
-  if (actor && item.hasAmmo) {
-    const ammo = actor.items.get(item.system.mag.target);
-    if (ammo && ammo.system.override) {
-      const ammoData = foundry.utils.deepClone(ammo.system);
-      attackData = foundry.utils.mergeObject(attackData, ammoData);
-    }
+  // Use the profile captured when the attack was rolled. The fallback keeps old chat
+  // messages usable, but only those legacy rolls need to inspect the currently loaded ammo.
+  const attackSnapshot = roll.options.attackData;
+  if (!attackSnapshot && !item) {
+    return ui.notifications.warn(game.i18n.localize('YZEGS.Chat.Roll.NoItemNotif'));
   }
+  const loadedAmmunition = actor && item?.hasAmmo
+    ? actor.items.get(item.system.mag.target)
+    : null;
+  const attackData = foundry.utils.deepClone(
+    attackSnapshot ?? getEffectiveWeaponProfile(item, loadedAmmunition),
+  );
   const loc = roll.bestHitLocation;
   if (loc > 0) attackData.location = YZEGS.hitLocs[loc - 1];
 
-  // Gets the selected tokens.
-  const defenders = game.user.targets;
-  for (const defender of defenders) {
-    const s = roll.baseSuccessQty;
-    let damage = s > 0 ? attackData.damage + 1 * (s - 1) : 0;
-    const isGM = game.user.isGM;
-    let hitCount = message.getFlag('fvtt-yze-generic-stepped', 'hitCountLeft') ?? roll.hitCount;
-    attackData.cover = defender.actor.cover;
-    let barrier = 0;
-    if (attackData.cover === 'fullCover') barrier = 2;
-    else if (attackData.cover === 'partialCover') barrier = 1;
-    if (isGM || hitCount) {
-      const opts = await YZEGSDialog.chooseDamage({
-        damage,
-        hitCount,
-        location: attackData.location,
-        target: defender.name,
-        barrier,
-        isGM,
-      });
-      if (opts.cancelled) {
-        return;
-      }
-      else {
-        damage = opts.damage + opts.hitCount;
-        if (opts.hitCount) {
-          hitCount = Math.max(0, hitCount - opts.hitCount);
-          await message.setFlag('fvtt-yze-generic-stepped', 'hitCountLeft', hitCount);
-        }
-      }
-      attackData.barriers = opts.barriers ? opts.barriers.split(',') : [];
-    }
-    if (defender.actor) await defender.actor.applyDamage(damage, attackData, damage !== 0);
+  const state = roll.options.damageApplication ?? {
+    primaryApplied: false,
+    ammoSuccessesRemaining: roll.hitCount,
+    complete: false,
+  };
+  if (state.complete) return;
+
+  // Every hit resolves against one target and one hit location. Additional
+  // ammo-die hits can be assigned to a different currently targeted token by
+  // retargeting before pressing the chat-card button again.
+  let defenders = [...game.user.targets];
+  if (!state.primaryApplied && attackData.primaryTargetUuid) {
+    const linkedTarget = await resolveUuid(attackData.primaryTargetUuid);
+    const linkedActor = linkedTarget?.actor ?? linkedTarget;
+    if (linkedActor) defenders = [{ actor: linkedActor, name: linkedActor.name }];
   }
+  if (!state.primaryApplied && roll.options.defense?.defenderUuid) {
+    const linkedDefender = await resolveUuid(roll.options.defense.defenderUuid);
+    if (linkedDefender) {
+      const defenderActor = linkedDefender.actor ?? linkedDefender;
+      defenders = [{ actor: defenderActor, name: defenderActor.name }];
+    }
+  }
+  if (defenders.length !== 1) {
+    return ui.notifications.warn(game.i18n.localize('YZEGS.Combat.SelectSingleDamageTarget'));
+  }
+  const defender = defenders[0];
+  addSuppressionTarget(roll, defender.actor, defender.document ?? defender, {
+    cause: 'fire',
+    sourceName: actor?.name ?? '',
+  });
+
+  const primary = !state.primaryApplied;
+  const ammoSuccesses = Math.max(0, Number(state.ammoSuccessesRemaining) || 0);
+  const defaultAmmoSpend = primary ? ammoSuccesses : Math.min(1, ammoSuccesses);
+  const effectiveSuccesses = getEffectiveAttackSuccesses(roll);
+  const preview = resolveDamageAllocation({
+    baseDamage: attackData.damage,
+    baseSuccesses: effectiveSuccesses,
+    ammoSuccesses,
+    primaryApplied: state.primaryApplied,
+    ammoSpend: defaultAmmoSpend,
+  });
+  if (!preview.available) return;
+
+  const storedCover = defender.actor.coverDetails;
+  const attackSourceUuid = attackData.sourceActorUuid || actor?.uuid || '';
+  const cover = coverAppliesAgainst(storedCover, attackSourceUuid) ? storedCover : null;
+  attackData.cover = cover?.type ?? null;
+  const barrier = (!primary || coverProtectsLocation(cover?.type, attackData.location))
+    ? cover?.armor ?? 0
+    : 0;
+  let choice = { ammoSpend: defaultAmmoSpend, adjustment: 0, barriers: String(barrier || '') };
+  if (game.user.isGM || ammoSuccesses > 0) {
+    choice = await YZEGSDialog.chooseDamage({
+      primary,
+      calculatedDamage: preview.calculatedDamage,
+      ammoSuccesses,
+      defaultAmmoSpend,
+      minimumAmmoSpend: primary ? 0 : 1,
+      location: primary ? attackData.location : '',
+      target: defender.name,
+      barrier,
+      isGM: game.user.isGM,
+    });
+    if (choice.cancelled) return;
+  }
+
+  const allocation = resolveDamageAllocation({
+    baseDamage: attackData.damage,
+    baseSuccesses: effectiveSuccesses,
+    ammoSuccesses,
+    primaryApplied: state.primaryApplied,
+    ammoSpend: choice.ammoSpend,
+    adjustment: game.user.isGM ? choice.adjustment : 0,
+  });
+  const hitData = foundry.utils.deepClone(attackData);
+  if (!primary) delete hitData.location;
+  hitData.coverType = cover?.type ?? null;
+  hitData.coverBarriers = choice.barriers
+    ? choice.barriers.split(',').map(value => value.trim()).filter(Boolean)
+    : [];
+  const vehicleCoverUuid = primary && coverProtectsLocation(cover?.type, attackData.location)
+    ? cover?.vehicleUuid
+    : '';
+  const vehicleCover = vehicleCoverUuid ? await resolveUuid(vehicleCoverUuid) : null;
+  const damageTarget = vehicleCover?.actor ?? vehicleCover ?? defender.actor;
+  if (damageTarget !== defender.actor) {
+    ui.notifications.info(game.i18n.format('YZEGS.Urban.VehicleCover.Redirected', {
+      target: damageTarget.name,
+    }));
+    hitData.coverType = null;
+    hitData.coverBarriers = [];
+  }
+  if (damageTarget !== defender.actor && damageTarget.type === 'vehicle') {
+    await damageTarget.applyDamage(allocation.damage, hitData, allocation.damage !== 0);
+  }
+  else await damageTarget.applyDamage(allocation.damage, hitData, allocation.damage !== 0);
+
+  roll.options.damageApplication = {
+    primaryApplied: true,
+    ammoSuccessesRemaining: allocation.remainingAmmoSuccesses,
+    complete: allocation.complete,
+  };
+  const content = await roll.render();
+  await message.update({ content, rolls: [JSON.stringify(roll)] });
 }
 
 /* ------------------------------------------- */

@@ -22,6 +22,12 @@
       {{!-- Header details: REL, MOVEMENT, FUEL, etc. --}}
       <div class="header-details grid-vehicle-details">
 
+        <div class="vehicle-domain flexcol">
+          <label>{{localize "YZEGS.VehicleSheet.Domain"}}</label>
+          {{> optionMenu name="system.domain" selected=system.domain options=config.vehicle.domains
+            localize=true editable=@root.editable noBlank=true menuClass="vehicle-domain-menu"}}
+        </div>
+
         {{!-- MOVEMENT --}}
         <div class="movement-type flexcol">
           <label>{{localize "YZEGS.VehicleSheet.Movement"}}</label>

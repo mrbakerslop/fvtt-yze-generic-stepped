@@ -1,4 +1,5 @@
 import { activateCheckboxControls } from '../components/checkbox-control.js';
+import { urbanCombatEnabled } from './urban-operations.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -47,7 +48,6 @@ export const DEFAULT_COMBAT_MODIFIERS = Object.freeze([
   action('close-shove', 'close', 'fast', 0, 'YZEGS.CombatModifiers.Entries.closeShove'),
   action('close-disarm', 'close', 'fast', 0, 'YZEGS.CombatModifiers.Entries.closeDisarm'),
   action('close-grapple-attack', 'close', 'fast', 0, 'YZEGS.CombatModifiers.Entries.closeGrappleAttack'),
-  action('close-retreat', 'close', 'fast', 0, 'YZEGS.CombatModifiers.Entries.closeRetreat'),
 
   // Close Combat — Slow Actions.
   action('close-unarmed-attack', 'close', 'slow', 0, 'YZEGS.CombatModifiers.Entries.closeUnarmedAttack'),
@@ -72,29 +72,10 @@ export const DEFAULT_COMBAT_MODIFIERS = Object.freeze([
   modifier('close-diving-blow', 'close', 'situational', 2, 'YZEGS.CombatModifiers.Entries.closeDivingBlow'),
 
   // Ranged Combat — Fast Actions.
-  action('ranged-fast-aim', 'ranged', 'fast', 0, 'YZEGS.CombatModifiers.Entries.rangedFastAim'),
-  action('ranged-overwatch', 'ranged', 'fast', 0, 'YZEGS.CombatModifiers.Entries.rangedOverwatch'),
-
   // Ranged Combat — Slow Actions.
   action('ranged-attack', 'ranged', 'slow', 0, 'YZEGS.CombatModifiers.Entries.rangedAttack'),
 
   // Ranged Combat — Situational modifiers.
-  modifier(
-    'ranged-quick-shot-handy', 'ranged', 'situational', -1,
-    'YZEGS.CombatModifiers.Entries.rangedQuickShotHandy', 'ranged-aim-mode',
-  ),
-  modifier(
-    'ranged-quick-shot-other', 'ranged', 'situational', -2,
-    'YZEGS.CombatModifiers.Entries.rangedQuickShotOther', 'ranged-aim-mode',
-  ),
-  modifier(
-    'ranged-slow-aim', 'ranged', 'situational', 1,
-    'YZEGS.CombatModifiers.Entries.rangedSlowAim', 'ranged-aim-mode',
-  ),
-  modifier(
-    'ranged-slow-aim-stable', 'ranged', 'situational', 2,
-    'YZEGS.CombatModifiers.Entries.rangedSlowAimStable', 'ranged-aim-mode',
-  ),
   modifier(
     'ranged-short-range', 'ranged', 'situational', 0,
     'YZEGS.CombatModifiers.Entries.rangedShortRange', 'ranged-range',
@@ -244,7 +225,7 @@ export function getSkillCombatType(skill) {
 export function getCombatModifierGroups(combatType) {
   if (!['close', 'ranged'].includes(combatType)) return [];
   const definitions = getCombatModifierDefinitions();
-  return MODIFIER_GROUPS.map(group => ({
+  const groups = MODIFIER_GROUPS.map(group => ({
     ...group,
     name: game.i18n.localize(group.label),
     modifiers: definitions.filter(definition => (
@@ -254,6 +235,30 @@ export function getCombatModifierGroups(combatType) {
       && [combatType, 'both'].includes(definition.combatType)
     )),
   })).filter(group => group.modifiers.length);
+  if (urbanCombatEnabled()) {
+    const situational = groups.find(group => group.id === 'situational');
+    const urbanModifiers = [
+      {
+        id: 'urban-cluttered-sector', value: -1, displayValue: '−1', exclusiveGroup: '',
+        name: game.i18n.localize('YZEGS.CombatModifiers.Entries.urbanClutteredSector'),
+      },
+    ];
+    if (combatType === 'ranged') {
+      urbanModifiers.push({
+        id: 'urban-indoor-target', value: -1, displayValue: '−1', exclusiveGroup: '',
+        name: game.i18n.localize('YZEGS.CombatModifiers.Entries.urbanIndoorTarget'),
+      });
+    }
+    if (situational) situational.modifiers.push(...urbanModifiers);
+    else {
+      groups.unshift({
+        id: 'situational',
+        name: game.i18n.localize('YZEGS.CombatModifiers.Groups.situational'),
+        modifiers: urbanModifiers,
+      });
+    }
+  }
+  return groups;
 }
 
 /** GM-facing world configuration for combat actions and situational modifiers. */

@@ -2,9 +2,44 @@ import { YearZeroRoll } from '../lib/yzur.js';
 import { getChatCardActor } from '../components/chat/chat.js';
 import { YZEGS } from '../system/config.js';
 import { getCharacterFieldLabels } from '../system/character-field-labels.js';
-import { getDieSize, YZEGSRoller } from '../components/roll/dice.js';
+import { getAttributeAndSkill, getDieSize, YZEGSRoller } from '../components/roll/dice.js';
 import YZEGSDialog from '../components/dialog/dialog.js';
 import { getSkillCombatType } from '../system/combat-modifiers.js';
+import { usesItemQuantity } from '../system/item-quantity.js';
+import {
+  isCompatibleWeaponAmmunition,
+  weaponUsesInternalMagazine,
+} from '../system/ammunition-compatibility.js';
+import {
+  getInternalReloadAmount,
+  getReloadModifier,
+  getReloadSkill,
+  getReloadSources,
+  INTERNAL_RELOAD_MODES,
+  INTERNAL_RELOAD_MODE_SETTING,
+  isActorInActiveCombat,
+  isHeavyWeapon,
+  resolveReloadAction,
+} from '../system/reloading.js';
+import { getEffectiveWeaponProfile } from '../system/weapon-profile.js';
+import { getClearJamModifier, resolveClearJamAction } from '../system/weapon-jams.js';
+import { getRangedPreparation } from '../system/ranged-actions.js';
+import { getTwilightAction } from '../system/twilight-actions.js';
+import { coverAppliesAgainst, isBlockableAction } from '../system/defense.js';
+import { createCloseAttackDeclaration } from '../system/defense-workflows.js';
+import { getEnclosingVehicle } from '../system/suppression.js';
+import {
+  CQ_ENGAGEMENT_FLAG,
+  urbanCombatEnabled,
+  URBAN_SYSTEM_ID,
+} from '../system/urban-operations.js';
+import {
+  beginCloseQuartersEngagement,
+  exposeAttackerForHuggingWall,
+  resolveEngagementFireTarget,
+} from '../system/urban-workflows.js';
+import { isConfinedSpaceScene, isRicochetEligibleWeapon } from '../system/confined-space.js';
+import { isValidGuidedWeaponTarget, targetInFiringArc } from '../system/water-rules.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Item.
@@ -50,7 +85,12 @@ export default class ItemYZEGS extends Item {
   }
 
   get hasAmmo() {
-    return this.system.ammo && !!this.system.mag?.max;
+    return !!this.system.ammo && (
+      !!this.system.mag?.max
+      || !!this.system.props?.ammoBelt
+      || !!this.system.props?.magazineFed
+      || !!this.system.props?.internalMagazine
+    );
   }
 
   get hasReliability() {
@@ -114,15 +154,129 @@ export default class ItemYZEGS extends Item {
     const actorData = this.actor ?? {};
     const system = this.system;
 
+    if (this.type === 'ammunition') {
+      if (system.props?.ammoBox) {
+        system.props.magazine = false;
+        system.props.ammoBelt = false;
+      }
+      else if (system.props?.ammoBelt) system.props.magazine = false;
+      else if (system.props?.magazine) system.props.ammoBelt = false;
+    }
+    else if (this.type === 'weapon') {
+      if (system.props?.internalMagazine) {
+        system.props.magazineFed = false;
+        system.props.ammoBelt = false;
+      }
+      else if (system.props?.ammoBelt) system.props.magazineFed = false;
+      else if (system.props?.magazineFed) system.props.ammoBelt = false;
+    }
+
+    // Magazine and belt Items each represent one physical ammunition carrier.
+    // Their rounds are tracked by ammo.value, so a generic stack is ambiguous.
+    if (!usesItemQuantity(this.type, system)) system.qty = 1;
+
     this._prepareEncumbrance(this.type, system);
 
     switch (this.type) {
       case 'weapon':
         this._prepareWeapon(system, actorData);
         break;
+      case 'grenade':
+        system.effectiveAttack = getEffectiveWeaponProfile(system);
+        break;
       case 'skill':
         system.value = getDieSize(system.score);
         break;
+    }
+  }
+
+  /** @override */
+  async _preCreate(data, options, user) {
+    await super._preCreate(data, options, user);
+    if (this.type === 'ammunition') {
+      if (this.system.props?.ammoBox) {
+        this.updateSource({
+          'system.props.magazine': false,
+          'system.props.ammoBelt': false,
+        });
+      }
+      else if (this.system.props?.ammoBelt) {
+        this.updateSource({
+          'system.props.magazine': false,
+          'system.props.ammoBox': false,
+        });
+      }
+    }
+    else if (this.type === 'weapon') {
+      if (this.system.props?.internalMagazine) {
+        this.updateSource({
+          'system.props.magazineFed': false,
+          'system.props.ammoBelt': false,
+        });
+      }
+      else if (this.system.props?.ammoBelt) {
+        this.updateSource({ 'system.props.magazineFed': false });
+      }
+    }
+    if (!usesItemQuantity(this.type, this.system)) this.updateSource({ 'system.qty': 1 });
+  }
+
+  /** @override */
+  async _preUpdate(changed, options, user) {
+    await super._preUpdate(changed, options, user);
+    const magazineChange = foundry.utils.getProperty(changed, 'system.props.magazine')
+      ?? changed['system.props.magazine'];
+    const ammoBeltChange = foundry.utils.getProperty(changed, 'system.props.ammoBelt')
+      ?? changed['system.props.ammoBelt'];
+    const ammoBoxChange = foundry.utils.getProperty(changed, 'system.props.ammoBox')
+      ?? changed['system.props.ammoBox'];
+    const magazineFedChange = foundry.utils.getProperty(changed, 'system.props.magazineFed')
+      ?? changed['system.props.magazineFed'];
+    const internalMagazineChange = foundry.utils.getProperty(changed, 'system.props.internalMagazine')
+      ?? changed['system.props.internalMagazine'];
+    if (this.type === 'ammunition') {
+      let isMagazine = magazineChange ?? this.system.props?.magazine;
+      let isAmmoBelt = ammoBeltChange ?? this.system.props?.ammoBelt;
+      let isAmmoBox = ammoBoxChange ?? this.system.props?.ammoBox;
+      if (ammoBoxChange === true) {
+        isMagazine = false;
+        isAmmoBelt = false;
+      }
+      else if (ammoBeltChange === true) {
+        isMagazine = false;
+        isAmmoBox = false;
+      }
+      else if (magazineChange === true) {
+        isAmmoBelt = false;
+        isAmmoBox = false;
+      }
+      foundry.utils.setProperty(changed, 'system.props.magazine', isMagazine);
+      foundry.utils.setProperty(changed, 'system.props.ammoBelt', isAmmoBelt);
+      foundry.utils.setProperty(changed, 'system.props.ammoBox', isAmmoBox);
+      if (isMagazine || isAmmoBelt) foundry.utils.setProperty(changed, 'system.qty', 1);
+    }
+    else if (this.type === 'weapon') {
+      let isAmmoBelt = ammoBeltChange ?? this.system.props?.ammoBelt;
+      let isMagazineFed = magazineFedChange ?? this.system.props?.magazineFed;
+      let isInternalMagazine = internalMagazineChange ?? this.system.props?.internalMagazine;
+      if (internalMagazineChange === true) {
+        isAmmoBelt = false;
+        isMagazineFed = false;
+      }
+      else if (ammoBeltChange === true) {
+        isMagazineFed = false;
+        isInternalMagazine = false;
+      }
+      else if (magazineFedChange === true) {
+        isAmmoBelt = false;
+        isInternalMagazine = false;
+      }
+      foundry.utils.setProperty(changed, 'system.props.ammoBelt', isAmmoBelt);
+      foundry.utils.setProperty(changed, 'system.props.magazineFed', isMagazineFed);
+      foundry.utils.setProperty(changed, 'system.props.internalMagazine', isInternalMagazine);
+      if (ammoBeltChange !== undefined || magazineFedChange !== undefined || internalMagazineChange !== undefined) {
+        foundry.utils.setProperty(changed, 'system.mag.target', '');
+      }
     }
   }
 
@@ -144,6 +298,24 @@ export default class ItemYZEGS extends Item {
         system.isMounted = false;
       }
     }
+
+    if (this.hasAmmo) {
+      const internal = weaponUsesInternalMagazine(this);
+      const ammunition = this.actor?.items.get(system.mag.target);
+      system.reload = {
+        value: internal
+          ? Math.max(0, Number(system.mag.value) || 0)
+          : Math.max(0, Number(ammunition?.system.ammo?.value) || 0),
+        max: internal
+          ? Math.max(0, Number(system.mag.max) || 0)
+          : Math.max(0, Number(ammunition?.system.ammo?.max ?? system.mag.max) || 0),
+        sourceName: internal ? '' : ammunition?.name ?? '',
+      };
+      system.effectiveAttack = getEffectiveWeaponProfile(system, ammunition);
+    }
+    else {
+      system.effectiveAttack = getEffectiveWeaponProfile(system);
+    }
   }
 
   /* ------------------------------------------- */
@@ -156,7 +328,7 @@ export default class ItemYZEGS extends Item {
    */
   _prepareEncumbrance(type, system) {
     let weight = 0;
-    if (type === 'ammunition' && !system.props.magazine) {
+    if (type === 'ammunition' && usesItemQuantity(type, system)) {
       weight = system.qty * system.weight * system.ammo.value;
     }
     else {
@@ -337,9 +509,34 @@ export default class ItemYZEGS extends Item {
     if (this.hasReliability && this.system.reliability.value <= 0) {
       return ui.notifications.warn(game.i18n.localize('YZEGS.Chat.Roll.NoReliabilityNotif'));
     }
+    if (this.type === 'weapon' && this.system.jammed) {
+      return ui.notifications.warn(game.i18n.format('YZEGS.Jam.CannotFire', { weapon: this.name }));
+    }
+    const bearer = actor ?? this.actor;
+    const bearerInWater = bearer.statuses?.has?.('swimming') || bearer.statuses?.has?.('submerged');
+    if (bearerInWater && this.type === 'weapon' && Boolean(this.system.ammo)) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Water.Errors.NoRangedWhileSwimming'));
+    }
+    const itemType = String(this.system.itemType ?? '').toLocaleLowerCase();
+    const isBow = this.type === 'weapon' && /bow/.test(itemType) && !/crossbow/.test(itemType);
+    if (isBow && !this.getFlag('fvtt-yze-generic-stepped', 'prepared')) {
+      return ui.notifications.warn(game.i18n.format('YZEGS.CombatActions.Errors.BowNotPrepared', {
+        weapon: this.name,
+      }));
+    }
+    if (this.type === 'grenade' && !this.getFlag('fvtt-yze-generic-stepped', 'prepared')) {
+      return ui.notifications.warn(game.i18n.format('YZEGS.CombatActions.Errors.GrenadeNotPrepared', {
+        weapon: this.name,
+      }));
+    }
 
     // Prepares data.
     const itemData = this.system;
+    let defaultActionId = 'meleeAttack';
+    if (this.type === 'grenade') defaultActionId = 'throwWeapon';
+    else if (/bow|crossbow/.test(itemType)) defaultActionId = 'shootBow';
+    else if (itemData.props?.heavyWeapon) defaultActionId = 'shootHeavyWeapon';
+    else if (itemData.ammo) defaultActionId = 'shootFirearm';
     let title = game.i18n.format('YZEGS.Combat.Attack', { weapon: this.name });
     let qty = itemData.qty;
     const skillItem = actor?.getSkill(itemData.skill) ?? this.actor.getSkill(itemData.skill);
@@ -349,10 +546,92 @@ export default class ItemYZEGS extends Item {
 
     // Prepares values.
     if (!actor) actor = this.actor;
+    if (
+      actor.getFlag(URBAN_SYSTEM_ID, CQ_ENGAGEMENT_FLAG)
+      && defaultActionId !== 'meleeAttack'
+    ) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Urban.Engagement.RestrictedAction'));
+    }
+    const inActiveCombat = isActorInActiveCombat(actor, game.combat);
+    const currentActor = game.combat?.combatant?.actor;
+    const actingOutOfTurn = inActiveCombat
+      && currentActor
+      && currentActor.uuid !== actor.uuid
+      && currentActor.id !== actor.id;
+    const reactiveAttack = options?.combatAction?.id === 'retreatFreeAttack';
+    if (actingOutOfTurn && !actor.statuses?.has?.('overwatch') && !reactiveAttack) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.CombatActions.Errors.NotYourTurn'));
+    }
     const actorData = actor.system;
     const attribute = actorData.attributes?.[attributeName]?.value ?? 0;
     const skill = skillItem?.system.value ?? 0;
     let rof = itemData.rof;
+    let targetTokens = [...(game.user.targets ?? [])];
+    let targetActors = targetTokens.map(token => token.actor).filter(Boolean);
+    if (options?.defense?.defenderUuid) {
+      try {
+        // A declared attack remains tied to the defender who answered it even if
+        // the attacker changes token targets while the staged workflow is open.
+        // eslint-disable-next-line no-undef
+        const declaredDefender = fromUuidSync(options.defense.defenderUuid);
+        if (declaredDefender) {
+          const defenderActor = declaredDefender.actor ?? declaredDefender;
+          targetActors = [defenderActor];
+          targetTokens = defenderActor.getActiveTokens?.(true, true) ?? [];
+        }
+      }
+      catch (_error) { /* Stale targets are handled by the linked chat workflow. */ }
+    }
+    if (targetActors.length === 1 && ['shootFirearm', 'shootBow', 'shootHeavyWeapon'].includes(defaultActionId)) {
+      const resolvedTarget = await resolveEngagementFireTarget(actor, targetActors[0]);
+      if (resolvedTarget?.uuid !== targetActors[0].uuid) {
+        targetActors = [resolvedTarget];
+        targetTokens = resolvedTarget.getActiveTokens?.(true, true) ?? [];
+      }
+    }
+    if (this.system.guidance?.mode !== 'none') {
+      if (targetActors.length !== 1) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.Guidance.Errors.SingleTarget'));
+      }
+      if (!isValidGuidedWeaponTarget(this.system.guidance.targetClass, targetActors[0])) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.Guidance.Errors.InvalidTarget'));
+      }
+      const sourceToken = actor.getActiveTokens?.(true, true)?.[0];
+      const targetToken = targetTokens[0];
+      if (!targetInFiringArc(sourceToken, targetToken, this.system.guidance.firingArc)) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.Guidance.Errors.FiringArc'));
+      }
+    }
+    const targetUuids = targetActors.map(target => target.uuid);
+    if (targetActors.length === 1 && ['shootFirearm', 'shootBow', 'shootHeavyWeapon'].includes(defaultActionId)) {
+      await exposeAttackerForHuggingWall(actor, targetActors[0]);
+    }
+    if (
+      isBlockableAction(defaultActionId)
+      && !options?.skipDefenseDeclaration
+    ) {
+      if (targetActors.length !== 1) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.Defense.SelectSingleTarget'));
+      }
+      return createCloseAttackDeclaration({
+        attacker: actor,
+        defender: targetActors[0],
+        item: this,
+        actionId: defaultActionId,
+        selection: { actionId: defaultActionId, targetUuid: targetActors[0].uuid, itemId: this.id },
+      });
+    }
+    const usesRangedPreparation = this.type === 'weapon' && (Boolean(itemData.ammo) || /bow/.test(itemType));
+    const rangedPreparation = usesRangedPreparation
+      ? getRangedPreparation(actor, this, targetUuids)
+      : { blocked: false, modifier: 0, noAmmoDice: false };
+    const breaksAim = usesRangedPreparation && actor.statuses?.has?.('aiming') && !rangedPreparation.aimed;
+    if (rangedPreparation.blocked) {
+      return ui.notifications.warn(game.i18n.format('YZEGS.CombatActions.Errors.HeavyWeaponNotAimed', {
+        weapon: this.name,
+      }));
+    }
+    if (rangedPreparation.noAmmoDice) rof = 0;
 
     // Gets the magazine.
     const track =
@@ -362,19 +641,37 @@ export default class ItemYZEGS extends Item {
 
     let ammo = null;
     if (track && this.hasAmmo) {
-      ammo = this.actor.items.get(this.system.mag.target);
-      if (ammo?.system) {
-        const ammoLeft = ammo.system.ammo.value ?? ammo.system.qty;
+      if (weaponUsesInternalMagazine(this)) {
+        const ammoLeft = this.system.mag.value;
         if (ammoLeft <= 0) {
           ui.notifications.warn(game.i18n.format('YZEGS.Combat.NoAmmoLeft', { weapon: this.name }));
           return;
         }
-        title += ` [${ammo.name}]`;
+        ammo = this;
         rof = Math.min(rof, ammoLeft - 1);
       }
       else {
-        ui.notifications.warn(game.i18n.format('YZEGS.Combat.NoMag', { weapon: this.name }));
-        return;
+        ammo = this.actor.items.get(this.system.mag.target);
+        if (ammo?.system) {
+          if (!isCompatibleWeaponAmmunition(this, ammo)) {
+            ui.notifications.warn(game.i18n.format('YZEGS.Combat.IncompatibleAmmo', {
+              ammo: ammo.name,
+              weapon: this.name,
+            }));
+            return;
+          }
+          const ammoLeft = ammo.system.ammo.value ?? ammo.system.qty;
+          if (ammoLeft <= 0) {
+            ui.notifications.warn(game.i18n.format('YZEGS.Combat.NoAmmoLeft', { weapon: this.name }));
+            return;
+          }
+          title += ` [${ammo.name}]`;
+          rof = Math.min(rof, ammoLeft - 1);
+        }
+        else {
+          ui.notifications.warn(game.i18n.format('YZEGS.Combat.NoMag', { weapon: this.name }));
+          return;
+        }
       }
     }
 
@@ -386,6 +683,7 @@ export default class ItemYZEGS extends Item {
 
     // Composes the options for the task check.
     const safeOptions = foundry.utils.getType(options) === 'Object' ? options : {};
+    const defaultAction = getTwilightAction(defaultActionId);
     const rollConfig = foundry.utils.mergeObject(
       {
         title,
@@ -396,12 +694,94 @@ export default class ItemYZEGS extends Item {
         combatType: getSkillCombatType(skillItem),
         rof,
         locate: true,
+        hideCombatActions: false,
+        combatAction: {
+          id: defaultAction.id,
+          label: game.i18n.localize(defaultAction.label),
+          speed: defaultAction.speed,
+          speedLabel: game.i18n.localize(`YZEGS.ActionTypes.${defaultAction.speed}`),
+          value: 0,
+          displayValue: '–',
+        },
       },
       safeOptions,
     );
+    const actionChoices = [rollConfig.combatAction];
+    const canBlindFire = urbanCombatEnabled()
+      && this.type === 'weapon'
+      && Boolean(itemData.ammo)
+      && defaultActionId !== 'meleeAttack';
+    if (canBlindFire) {
+      const blindFire = getTwilightAction('blindFire');
+      actionChoices.push({
+        id: blindFire.id,
+        label: game.i18n.localize(blindFire.label),
+        speed: blindFire.speed,
+        speedLabel: game.i18n.localize(`YZEGS.ActionTypes.${blindFire.speed}`),
+        value: 0,
+        displayValue: '–',
+        rollMode: 'blindFire',
+        hint: game.i18n.localize('YZEGS.CombatActions.Hints.blindFire'),
+      });
+    }
+    rollConfig.combatActionChoices = rollConfig.hideCombatActions ? [] : actionChoices;
+    rollConfig.modifier = (Number(rollConfig.modifier) || 0) + rangedPreparation.modifier;
+    if (bearerInWater && this.type === 'weapon' && this.system.props?.swinging) rollConfig.modifier -= 2;
+    if (targetActors.length === 1
+      && (targetActors[0].statuses?.has?.('swimming') || targetActors[0].statuses?.has?.('submerged'))
+      && defaultActionId !== 'meleeAttack') rollConfig.modifier -= 1;
+    const targetCover = targetActors.length === 1 ? targetActors[0].coverDetails : null;
+    if (
+      defaultActionId !== 'meleeAttack'
+      && targetCover?.type === 'fullCover'
+      && coverAppliesAgainst(targetCover, actor.uuid)
+    ) rollConfig.modifier -= 3;
     // Better to not put them in a mergeObject:
     rollConfig.actor = actor;
     rollConfig.item = this;
+    rollConfig.attackData = getEffectiveWeaponProfile(
+      this,
+      this.actor.items.get(this.system.mag.target),
+    );
+    rollConfig.attackData.confinedSpace = isConfinedSpaceScene();
+    rollConfig.attackData.ricochetEligible = rollConfig.attackData.confinedSpace
+      && this.type === 'weapon'
+      && isRicochetEligibleWeapon(this);
+    rollConfig.attackData.airburst = Boolean(this.system.props?.airburst);
+    rollConfig.attackData.directional = Boolean(this.system.props?.directional);
+    rollConfig.attackData.sourceActorUuid = actor.uuid;
+    rollConfig.attackData.guidance = foundry.utils.deepClone(this.system.guidance);
+    if (targetActors.length === 1) rollConfig.attackData.primaryTargetUuid = targetActors[0].uuid;
+    const isSuppressiveFire = this.type === 'weapon' && !isBow && Boolean(itemData.ammo);
+    if (isSuppressiveFire) {
+      const seenTargets = new Set();
+      const suppressionTargets = targetActors.filter(target => {
+        if (
+          !target?.uuid
+          || !['character', 'npc', 'vehicle'].includes(target.type)
+          || seenTargets.has(target.uuid)
+        ) return false;
+        seenTargets.add(target.uuid);
+        return true;
+      }).map(target => {
+        const token = targetTokens.find(entry => entry.actor?.uuid === target.uuid);
+        const enclosing = getEnclosingVehicle(target, game.actors);
+        return {
+          actorUuid: target.uuid,
+          tokenUuid: token?.document?.uuid ?? token?.uuid ?? target.token?.uuid ?? '',
+          name: target.name,
+          cause: 'fire',
+          sourceName: actor.name,
+          status: target.type === 'vehicle' || enclosing ? 'immune' : 'pending',
+          vehicleName: target.type === 'vehicle' ? target.name : enclosing?.vehicle?.name ?? '',
+        };
+      });
+      rollConfig.suppression = {
+        complete: suppressionTargets.length > 0
+          && suppressionTargets.every(target => target.status !== 'pending'),
+        targets: suppressionTargets,
+      };
+    }
 
     // Performs the task check.
     const message = await YZEGSRoller.taskCheck(rollConfig);
@@ -409,6 +789,32 @@ export default class ItemYZEGS extends Item {
     if (message instanceof YearZeroRoll) return message;
 
     const roll = message.rolls[0];
+
+    if (defaultActionId === 'meleeAttack' && targetActors.length === 1) {
+      await beginCloseQuartersEngagement(actor, targetActors[0]);
+    }
+
+    if (breaksAim) {
+      await actor.toggleStatusEffect('aiming', { active: false });
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionAim');
+    }
+    else if (rangedPreparation.aimed && targetUuids.length === 1) {
+      const aim = actor.getFlag('fvtt-yze-generic-stepped', 'actionAim') ?? {};
+      if (aim.targetUuid === '*') {
+        await actor.setFlag('fvtt-yze-generic-stepped', 'actionAim', {
+          ...aim,
+          targetUuid: targetUuids[0],
+        });
+      }
+    }
+    if (actor.statuses?.has?.('overwatch')) {
+      await actor.toggleStatusEffect('overwatch', { active: false });
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionOverwatch');
+    }
+
+    if (isBow || this.type === 'grenade') {
+      await this.unsetFlag('fvtt-yze-generic-stepped', 'prepared');
+    }
 
     const flagData = {};
 
@@ -491,8 +897,370 @@ export default class ItemYZEGS extends Item {
    */
   async consumeAmmo(qty, ammo) {
     if (!this.hasAmmo) return 0;
-    ammo = ammo ?? this.actor.items.get(this.system.mag.target);
+    ammo = ammo ?? (weaponUsesInternalMagazine(this) ? this : this.actor.items.get(this.system.mag.target));
+    if (!ammo) return 0;
     return ammo.updateAmmo(-qty);
+  }
+
+  /** Reload this weapon using the Twilight: 2000 action and skill procedure. */
+  async reload() {
+    if (this.type !== 'weapon' || !this.hasAmmo || !this.actor || !this.isOwner) return null;
+
+    const internal = weaponUsesInternalMagazine(this);
+    const loaded = internal
+      ? Math.max(0, Math.trunc(Number(this.system.mag.value) || 0))
+      : Math.max(0, Math.trunc(Number(this.actor.items.get(this.system.mag.target)?.system.ammo?.value) || 0));
+    const capacity = internal
+      ? Math.max(0, Math.trunc(Number(this.system.mag.max) || 0))
+      : Math.max(0, Math.trunc(Number(this.actor.items.get(this.system.mag.target)?.system.ammo?.max
+        ?? this.system.mag.max) || 0));
+    const currentAmmunition = this.actor.items.get(this.system.mag.target);
+
+    const sources = getReloadSources(this);
+    if (!sources.length) {
+      const key = internal && capacity > 0 && loaded >= capacity
+        ? 'YZEGS.Reload.AlreadyFull'
+        : 'YZEGS.Reload.NoCompatibleSource';
+      ui.notifications.warn(game.i18n.format(key, { weapon: this.name }));
+      return null;
+    }
+
+    const weaponSkill = this.actor.getSkill(this.system.skill);
+    const heavyWeapon = isHeavyWeapon(this, weaponSkill);
+    const reloaders = this._getReloadActors(heavyWeapon);
+    if (!reloaders.length) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Reload.NoReloadingCharacter'));
+      return null;
+    }
+    const selectedReloader = reloaders[0];
+    const selectedReloaderInCombat = isActorInActiveCombat(selectedReloader, game.combat);
+    const sourceOptions = Object.fromEntries(sources.map(ammunition => {
+      const count = internal
+        ? game.i18n.format('YZEGS.Reload.LooseRoundsAvailable', { count: ammunition.system.qty })
+        : `${ammunition.system.ammo.value}/${ammunition.system.ammo.max}`;
+      return [ammunition.id, `${ammunition.name} — ${count}`];
+    }));
+    const reloaderOptions = Object.fromEntries(reloaders.map(actor => {
+      const fast = Math.max(0, Number(actor.system.actions?.fast?.value) || 0);
+      const slow = Math.max(0, Number(actor.system.actions?.slow?.value) || 0);
+      return [actor.id, `${actor.name} — ${game.i18n.format('YZEGS.Reload.ActionCounts', { fast, slow })}`];
+    }));
+    const options = await YZEGSDialog.chooseReload({
+      weaponName: this.name,
+      loaded,
+      capacity,
+      currentLoadName: currentAmmunition?.name ?? game.i18n.localize('YZEGS.Reload.NothingLoaded'),
+      sourceOptions,
+      selectedSource: sources[0].id,
+      reloaderOptions,
+      selectedReloader: selectedReloader.id,
+      showReloader: reloaders.length > 1 || !['character', 'npc'].includes(this.actor.type),
+      heavyWeapon,
+      inActiveCombat: selectedReloaderInCombat,
+      automaticModifier: getReloadModifier(selectedReloader),
+      hasBackpackSource: selectedReloaderInCombat
+        && sources.some(ammunition => ammunition.system.backpack),
+      actionSummary: game.i18n.format('YZEGS.Reload.ActionCounts', {
+        fast: selectedReloader.system.actions?.fast?.value ?? 0,
+        slow: selectedReloader.system.actions?.slow?.value ?? 0,
+      }),
+    });
+    if (options.cancelled) return null;
+
+    const source = this.actor.items.get(options.sourceId);
+    const reloader = reloaders.find(actor => actor.id === options.reloaderId) ?? selectedReloader;
+    if (!source || !getReloadSources(this).some(candidate => candidate.id === source.id)) {
+      ui.notifications.warn(game.i18n.format('YZEGS.Reload.SourceUnavailable', { weapon: this.name }));
+      return null;
+    }
+
+    const inActiveCombat = isActorInActiveCombat(reloader, game.combat);
+    if (
+      reloader.getFlag(URBAN_SYSTEM_ID, CQ_ENGAGEMENT_FLAG)
+      && (heavyWeapon || (source.system.backpack && inActiveCombat))
+    ) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Urban.Engagement.RestrictedAction'));
+      return null;
+    }
+
+    const rangedCombat = inActiveCombat && !heavyWeapon
+      ? getReloadSkill(reloader, 'rangedCombat', 'Ranged Combat')
+      : null;
+    if (inActiveCombat && !heavyWeapon && !rangedCombat) {
+      ui.notifications.warn(game.i18n.format('YZEGS.Reload.SkillMissing', { skill: 'Ranged Combat' }));
+      return null;
+    }
+
+    if (source.system.backpack && inActiveCombat) {
+      const retrieved = await this._retrieveReloadSource(source, reloader);
+      if (!retrieved) return null;
+    }
+    else if (source.system.backpack) {
+      await source.update({ 'system.backpack': false });
+    }
+
+    const fastAvailable = Math.max(0, Number(reloader.system.actions?.fast?.value) || 0);
+    const slowAvailable = Math.max(0, Number(reloader.system.actions?.slow?.value) || 0);
+    const missingRequiredAction = inActiveCombat && (
+      (heavyWeapon && slowAvailable <= 0)
+      || (!heavyWeapon && fastAvailable <= 0 && slowAvailable <= 0)
+    );
+    if (missingRequiredAction) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Reload.NoActionAvailable'));
+      const unavailableResult = resolveReloadAction({
+        inCombat: true,
+        heavyWeapon,
+        success: true,
+        fast: fastAvailable,
+        slow: slowAvailable,
+      });
+      await this._postReloadResult({
+        reloader,
+        source,
+        actionResult: unavailableResult,
+        heavyWeapon,
+        loaded: 0,
+      });
+      return unavailableResult;
+    }
+
+    let succeeded = true;
+    if (inActiveCombat && !heavyWeapon) {
+      const statData = getAttributeAndSkill(rangedCombat, reloader);
+      const rollMessage = await YZEGSRoller.taskCheck({
+        ...statData,
+        title: game.i18n.format('YZEGS.Reload.RollTitle', { weapon: this.name }),
+        actor: reloader,
+        modifier: getReloadModifier(reloader) + options.modifier,
+        maxPush: 0,
+        skipDialog: true,
+      });
+      if (!rollMessage) return null;
+      succeeded = rollMessage.rolls[0].baseSuccessQty > 0;
+    }
+
+    const actionResult = resolveReloadAction({
+      inCombat: inActiveCombat,
+      heavyWeapon,
+      success: succeeded,
+      fast: reloader.system.actions?.fast?.value,
+      slow: reloader.system.actions?.slow?.value,
+    });
+    if (actionResult.spentFrom) await this._spendAction(reloader, actionResult.spentFrom);
+    if (!actionResult.complete) {
+      const key = actionResult.forfeited ? 'YZEGS.Reload.FastActionForfeited' : 'YZEGS.Reload.NoActionAvailable';
+      ui.notifications.warn(game.i18n.localize(key));
+      await this._postReloadResult({ reloader, source, actionResult, heavyWeapon, loaded: 0 });
+      return actionResult;
+    }
+
+    const roundsLoaded = await this._applyReloadSource(source, {
+      useGranularRule: inActiveCombat,
+    });
+    await this._refreshOpenSheets();
+    await this._postReloadResult({ reloader, source, actionResult, heavyWeapon, loaded: roundsLoaded });
+    return { ...actionResult, roundsLoaded };
+  }
+
+  /** Backward-compatible entry point for existing buttons and macros. */
+  reloadInternalMagazine() {
+    return this.reload();
+  }
+
+  /** Attempt to clear this Weapon's persistent jam using its linked combat Skill. */
+  async clearJam() {
+    if (this.type !== 'weapon' || !this.actor || !this.isOwner) return null;
+    if (!this.system.jammed) {
+      ui.notifications.info(game.i18n.format('YZEGS.Jam.NotJammed', { weapon: this.name }));
+      return null;
+    }
+    if (this.hasReliability && this.system.reliability.value <= 0) {
+      ui.notifications.warn(game.i18n.format('YZEGS.Jam.Broken', { weapon: this.name }));
+      return null;
+    }
+    if (!['character', 'npc'].includes(this.actor.type)) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Jam.NoCharacter'));
+      return null;
+    }
+    if (this.actor.getFlag(URBAN_SYSTEM_ID, CQ_ENGAGEMENT_FLAG)) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Urban.Engagement.RestrictedAction'));
+      return null;
+    }
+
+    const skillItem = this.actor.getSkill(this.system.skill);
+    if (!skillItem) {
+      ui.notifications.warn(game.i18n.format('YZEGS.Jam.SkillMissing', {
+        skill: this.system.skill || game.i18n.localize('YZEGS.SkillNames.rangedCombat'),
+      }));
+      return null;
+    }
+
+    const inActiveCombat = isActorInActiveCombat(this.actor, game.combat);
+    const actionResult = resolveClearJamAction({
+      inCombat: inActiveCombat,
+      slow: this.actor.system.actions?.slow?.value,
+    });
+    if (!actionResult.available) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Jam.NoSlowAction'));
+      return actionResult;
+    }
+    if (actionResult.spentFrom) await this._spendAction(this.actor, actionResult.spentFrom);
+
+    const statData = getAttributeAndSkill(skillItem, this.actor);
+    const rollMessage = await YZEGSRoller.taskCheck({
+      ...statData,
+      title: game.i18n.format('YZEGS.Jam.RollTitle', { weapon: this.name }),
+      actor: this.actor,
+      item: this,
+      modifier: getClearJamModifier(this.actor),
+      maxPush: 0,
+      skipDialog: true,
+    });
+    if (!rollMessage) return null;
+
+    const success = rollMessage.rolls[0].baseSuccessQty > 0;
+    if (success) {
+      await this.update({ 'system.jammed': false });
+      ui.notifications.info(game.i18n.format('YZEGS.Jam.Cleared', { weapon: this.name }));
+    }
+    else {
+      ui.notifications.warn(game.i18n.format('YZEGS.Jam.ClearFailed', { weapon: this.name }));
+    }
+    return { ...actionResult, success };
+  }
+
+  /** Refresh open Weapon Item windows after a reload changes this Item or a sibling Ammo Item. */
+  async _refreshOpenSheets() {
+    for (const app of Object.values(this.apps)) {
+      if (!app.rendered) continue;
+      if (app instanceof foundry.applications.api.ApplicationV2) await app.render({ force: true });
+      else app.render(false);
+    }
+  }
+
+  _getReloadActors(heavyWeapon) {
+    const bearer = ['character', 'npc'].includes(this.actor.type) ? this.actor : null;
+    if (!heavyWeapon && bearer) return [bearer];
+    const candidates = game.actors.contents.filter(actor => (
+      ['character', 'npc'].includes(actor.type) && (game.user.isGM || actor.isOwner)
+    ));
+    if (bearer) {
+      const index = candidates.findIndex(actor => actor.id === bearer.id);
+      if (index >= 0) candidates.splice(index, 1);
+      candidates.unshift(bearer);
+    }
+    return candidates;
+  }
+
+  async _retrieveReloadSource(source, reloader) {
+    const slow = Math.max(0, Number(reloader.system.actions?.slow?.value) || 0);
+    if (!slow) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Reload.BackpackNeedsSlowAction'));
+      return false;
+    }
+    const mobility = getReloadSkill(reloader, 'mobility', 'Mobility');
+    if (!mobility) {
+      ui.notifications.warn(game.i18n.format('YZEGS.Reload.SkillMissing', { skill: 'Mobility' }));
+      return false;
+    }
+    const statData = getAttributeAndSkill(mobility, reloader);
+    const rollMessage = await YZEGSRoller.taskCheck({
+      ...statData,
+      title: game.i18n.format('YZEGS.Reload.RetrieveTitle', { ammo: source.name }),
+      actor: reloader,
+      maxPush: 0,
+      skipDialog: true,
+    });
+    if (!rollMessage) return false;
+    await this._spendAction(reloader, 'slow');
+    if (rollMessage.rolls[0].baseSuccessQty <= 0) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.Reload.RetrieveFailed'));
+      await this._postReloadResult({ reloader, source, retrievalFailed: true, loaded: 0 });
+      return false;
+    }
+    await source.update({ 'system.backpack': false });
+    ui.notifications.info(game.i18n.format('YZEGS.Reload.Retrieved', { ammo: source.name }));
+    return true;
+  }
+
+  async _spendAction(actor, action) {
+    const current = Math.max(0, Number(actor.system.actions?.[action]?.value) || 0);
+    if (!current) return false;
+    await actor.update({ [`system.actions.${action}.value`]: current - 1 });
+    return true;
+  }
+
+  async _applyReloadSource(source, { useGranularRule = true } = {}) {
+    if (!weaponUsesInternalMagazine(this)) {
+      await this.update({ 'system.mag.target': source.id });
+      return Math.max(0, Math.trunc(Number(source.system.ammo.value) || 0));
+    }
+
+    const loaded = Math.max(0, Math.trunc(Number(this.system.mag.value) || 0));
+    const capacity = Math.max(0, Math.trunc(Number(this.system.mag.max) || 0));
+    const available = Math.max(0, Math.trunc(Number(source.system.qty) || 0));
+    const previousTarget = this.system.mag.target;
+    const previousAmmunition = this.actor.items.get(previousTarget);
+    const switchingAmmunition = loaded > 0 && previousTarget && previousTarget !== source.id;
+    const retainedRounds = switchingAmmunition ? 0 : loaded;
+    const perRound = useGranularRule && game.settings.get(
+      'fvtt-yze-generic-stepped',
+      INTERNAL_RELOAD_MODE_SETTING,
+    ) === INTERNAL_RELOAD_MODES.PER_ROUND;
+    const amount = getInternalReloadAmount({
+      loaded: retainedRounds,
+      capacity,
+      available,
+      perRound,
+    });
+    if (!amount) return 0;
+    const updates = [
+      {
+        _id: this.id,
+        'system.mag.value': retainedRounds + amount,
+        'system.mag.target': source.id,
+      },
+      { _id: source.id, 'system.qty': available - amount },
+    ];
+    if (switchingAmmunition && previousAmmunition) {
+      const previousQuantity = Math.max(0, Math.trunc(Number(previousAmmunition.system.qty) || 0));
+      updates.push({
+        _id: previousAmmunition.id,
+        'system.qty': previousQuantity + loaded,
+      });
+    }
+    await this.actor.updateEmbeddedDocuments('Item', updates);
+    return amount;
+  }
+
+  async _postReloadResult({
+    reloader,
+    source,
+    actionResult = {},
+    heavyWeapon = false,
+    retrievalFailed = false,
+    loaded = 0,
+  }) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/chat/reload-chat.hbs',
+      {
+        weapon: this.name,
+        ammunition: source.name,
+        reloader: reloader.name,
+        action: actionResult.action,
+        complete: actionResult.complete ?? false,
+        forfeited: actionResult.forfeited ?? false,
+        heavyWeapon,
+        retrievalFailed,
+        loaded,
+      },
+    );
+    return ChatMessage.create({
+      user: game.user.id,
+      speaker: ChatMessage.getSpeaker({ actor: reloader, token: reloader.token }),
+      content,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+    });
   }
 
   /* ------------------------------------------- */
@@ -512,10 +1280,9 @@ export default class ItemYZEGS extends Item {
       ammoData = this.system.ammo;
     }
     else if (this.type === 'weapon') {
-      ammoData = {
-        value: this.system.qty,
-        max: 100000,
-      };
+      ammoData = weaponUsesInternalMagazine(this)
+        ? this.system.mag
+        : { value: this.system.qty, max: 100000 };
     }
     else {
       throw new Error('yzegs | ItemYZEGS#updateAmmo() | This is not an ammunition!');
@@ -530,7 +1297,8 @@ export default class ItemYZEGS extends Item {
           await this.update({ 'system.ammo.value': newAmmoValue });
           break;
         case 'weapon':
-          await this.update({ 'system.qty': newAmmoValue });
+          if (weaponUsesInternalMagazine(this)) await this.update({ 'system.mag.value': newAmmoValue });
+          else await this.update({ 'system.qty': newAmmoValue });
           break;
       }
     }
@@ -561,6 +1329,10 @@ export default class ItemYZEGS extends Item {
       tokenId: token ? `${token.parent.id}.${token.id}` : null,
       owner: game.user.id,
       config: YZEGS,
+      canReload: this.type === 'weapon' && this.hasAmmo,
+      canClearJam: this.type === 'weapon'
+        && this.system.jammed
+        && ['character', 'npc'].includes(actor?.type),
     };
 
     // Creates the ChatMessage data object.
@@ -640,7 +1412,12 @@ export default class ItemYZEGS extends Item {
       case 'attack':
         await item.rollAttack({ askForOptions });
         break;
-      // TODO case 'reload': await item.rollReload({ askForOptions }); break;
+      case 'reload':
+        await item.reload();
+        break;
+      case 'clearJam':
+        await item.clearJam();
+        break;
     }
 
     // Re-enables the button.

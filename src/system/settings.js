@@ -26,6 +26,22 @@ import {
   PUSH_COST_MODES,
   PUSH_COST_MODE_SETTING,
 } from './push-costs.js';
+import {
+  INTERNAL_RELOAD_MODES,
+  INTERNAL_RELOAD_MODE_SETTING,
+} from './reloading.js';
+import {
+  SCENE_GRID_PRESET_IDS,
+  SCENE_GRID_PRESET_SETTING,
+} from './scene-grid.js';
+import {
+  DEFAULT_TOKEN_SIZE_DEFAULTS,
+  LEGACY_CHARACTER_TOKEN_SIZE_SETTING,
+  TOKEN_SIZE_DEFAULTS_SETTING,
+} from './token-size-defaults.js';
+import { TokenSizeDefaultsConfig } from './token-size-defaults-config.js';
+import { ACTION_SKILLS_SETTING } from './action-skills.js';
+import { ActionSkillsConfig } from './action-skills-config.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -70,6 +86,23 @@ function refreshActorSheets() {
  * Registers system settings.
  */
 export function registerSystemSettings() {
+  game.settings.register(SYSTEM_ID, ACTION_SKILLS_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.actionSkills.name',
+    type: Object,
+    default: {},
+  });
+
+  game.settings.registerMenu(SYSTEM_ID, ACTION_SKILLS_SETTING, {
+    name: 'SETTINGS.actionSkills.name',
+    label: 'SETTINGS.actionSkills.label',
+    hint: 'SETTINGS.actionSkills.hint',
+    icon: 'fa-solid fa-person-running',
+    type: ActionSkillsConfig,
+    restricted: true,
+  });
+
   game.settings.register(SYSTEM_ID, EXPERIENCE_CONFIG_SETTING, {
     config: false,
     scope: 'world',
@@ -155,6 +188,23 @@ export function registerSystemSettings() {
     hint: 'SETTINGS.combatModifiers.hint',
     icon: 'fa-solid fa-crosshairs',
     type: CombatModifierConfig,
+    restricted: true,
+  });
+
+  game.settings.register(SYSTEM_ID, TOKEN_SIZE_DEFAULTS_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.tokenSizeDefaults.name',
+    type: Object,
+    default: foundry.utils.deepClone(DEFAULT_TOKEN_SIZE_DEFAULTS),
+  });
+
+  game.settings.registerMenu(SYSTEM_ID, TOKEN_SIZE_DEFAULTS_SETTING, {
+    name: 'SETTINGS.tokenSizeDefaults.name',
+    label: 'SETTINGS.tokenSizeDefaults.label',
+    hint: 'SETTINGS.tokenSizeDefaults.hint',
+    icon: 'fa-solid fa-expand',
+    type: TokenSizeDefaultsConfig,
     restricted: true,
   });
 
@@ -247,6 +297,35 @@ export function registerSystemSettings() {
     default: PUSH_COST_MODES.BUTTON,
   });
 
+  game.settings.register(SYSTEM_ID, INTERNAL_RELOAD_MODE_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.internalMagazineReloadMode.name',
+    hint: 'SETTINGS.internalMagazineReloadMode.hint',
+    type: String,
+    choices: {
+      [INTERNAL_RELOAD_MODES.FULL]: 'SETTINGS.internalMagazineReloadMode.choices.full',
+      [INTERNAL_RELOAD_MODES.PER_ROUND]: 'SETTINGS.internalMagazineReloadMode.choices.perRound',
+    },
+    default: INTERNAL_RELOAD_MODES.FULL,
+  });
+
+  game.settings.register(SYSTEM_ID, SCENE_GRID_PRESET_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.defaultSceneGridPreset.name',
+    hint: 'SETTINGS.defaultSceneGridPreset.hint',
+    type: String,
+    choices: {
+      [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS]: 'SETTINGS.defaultSceneGridPreset.choices.closeQuarters',
+      [SCENE_GRID_PRESET_IDS.BATTLE]: 'SETTINGS.defaultSceneGridPreset.choices.battle',
+      [SCENE_GRID_PRESET_IDS.CITY]: 'SETTINGS.defaultSceneGridPreset.choices.city',
+      [SCENE_GRID_PRESET_IDS.TRAVEL]: 'SETTINGS.defaultSceneGridPreset.choices.travel',
+      [SCENE_GRID_PRESET_IDS.SYSTEM]: 'SETTINGS.defaultSceneGridPreset.choices.system',
+    },
+    default: SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
+  });
+
   game.settings.register('fvtt-yze-generic-stepped', 'trackPcAmmo', {
     config: true,
     scope: 'world',
@@ -292,8 +371,10 @@ export function registerSystemSettings() {
     default: 60,
   });
 
-  game.settings.register('fvtt-yze-generic-stepped', 'defaultCharTokenSize', {
-    config: true,
+  // Kept hidden so worlds using the former shared Character/NPC setting retain
+  // that value until the new per-type configuration is explicitly saved.
+  game.settings.register(SYSTEM_ID, LEGACY_CHARACTER_TOKEN_SIZE_SETTING, {
+    config: false,
     scope: 'world',
     name: 'SETTINGS.defaultCharTokenSize.name',
     hint: 'SETTINGS.defaultCharTokenSize.label',

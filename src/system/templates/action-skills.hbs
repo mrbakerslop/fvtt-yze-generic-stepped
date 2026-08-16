@@ -1,0 +1,24 @@
+<div class="action-skills-form">
+  <p class="hint">{{localize "SETTINGS.actionSkills.hint"}}</p>
+  <p class="hint">{{localize "SETTINGS.actionSkills.itemHint"}}</p>
+
+  {{#each groups as |group|}}
+  <fieldset>
+    <legend>{{group.label}}</legend>
+    <div class="action-skills-grid">
+      {{#each group.entries as |entry|}}
+      <label for="yzegs-action-skill-{{entry.id}}">{{entry.name}}</label>
+      {{> optionMenu name=entry.id selected=entry.selected options=entry.skillOptions
+          editable=true noBlank=true menuClass="action-skill-menu"}}
+      {{/each}}
+    </div>
+  </fieldset>
+  {{/each}}
+
+  <footer class="form-footer">
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "SETTINGS.actionSkills.save"}}</span>
+    </button>
+  </footer>
+</div>

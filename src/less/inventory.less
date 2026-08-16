@@ -1,4 +1,5 @@
 @itemGap: 4px;
+@inventoryControlsWidth: 116px;
 
 .yzegs.sheet .inventory {
 	margin: 0;
@@ -82,6 +83,26 @@
 		flex: 0 0 40px;
 	}
 
+	.item-detail.ammo-overridden {
+		font-weight: 700;
+		text-decoration: underline dotted;
+		text-underline-offset: 2px;
+	}
+
+	.item.is-jammed {
+		background: fade(@colorRed, 10%);
+
+		.weapon-jammed-marker,
+		.item-clear-jam {
+			color: @colorRed;
+		}
+	}
+
+	.weapon-jammed-marker {
+		flex: 0 0 auto;
+		margin-left: 5px;
+	}
+
 	.inventory-weapons .item-damage {
 		flex-basis: 56px;
 	}
@@ -145,6 +166,65 @@
 		.item-backpack:not(.packed) {
 			color: @colorTan;
 			opacity: .45;
+		}
+	}
+
+	/* Header and item rows share identical tracks so labels, values, and controls align. */
+	.inventory-weapons {
+		.items-header,
+		.item-list > .item {
+			display: grid;
+			grid-template-columns:
+				minmax(0, 1fr)
+				40px
+				56px
+				40px
+				50px
+				50px
+				40px
+				50px
+				44px
+				56px
+				@inventoryControlsWidth;
+		}
+	}
+
+	.inventory-armor {
+		.items-header,
+		.item-list > .item {
+			display: grid;
+			grid-template-columns:
+				minmax(0, 1fr)
+				70px
+				56px
+				56px
+				@inventoryControlsWidth;
+		}
+	}
+
+	.inventory-gear,
+	.inventory-ammo {
+		.items-header,
+		.item-list > .item {
+			display: grid;
+			grid-template-columns:
+				minmax(0, 1fr)
+				56px
+				@inventoryControlsWidth;
+		}
+	}
+
+	.inventory-weapons,
+	.inventory-armor,
+	.inventory-gear,
+	.inventory-ammo {
+		.items-header > *,
+		.item-list > .item > * {
+			min-width: 0;
+		}
+
+		.item-controls {
+			width: auto;
 		}
 	}
 

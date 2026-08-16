@@ -21,6 +21,21 @@ export function registerStatusEffects() {
       img: `${path}token_overwatch.webp`,
     },
     {
+      id: 'huggingWall',
+      name: 'EFFECT.StatusHuggingWall',
+      img: 'icons/svg/brick-wall.svg',
+    },
+    {
+      id: 'engaged',
+      name: 'EFFECT.StatusEngaged',
+      img: 'icons/svg/swords.svg',
+    },
+    {
+      id: 'aiming',
+      name: 'EFFECT.StatusAiming',
+      img: 'icons/svg/target.svg',
+    },
+    {
       id: 'suppressed',
       name: 'EFFECT.StatusSuppressed',
       img: `${path}token_suppressed.webp`,
@@ -64,6 +79,36 @@ export function registerStatusEffects() {
       img: 'icons/svg/net.svg',
       id: 'restrain',
       name: 'EFFECT.StatusRestrained',
+    },
+    {
+      img: 'icons/svg/falling.svg',
+      id: 'pinnedByDebris',
+      name: 'EFFECT.StatusPinnedByDebris',
+    },
+    {
+      img: 'icons/svg/falling.svg',
+      id: 'swimming',
+      name: 'EFFECT.StatusSwimming',
+    },
+    {
+      img: 'icons/svg/falling.svg',
+      id: 'submerged',
+      name: 'EFFECT.StatusSubmerged',
+    },
+    {
+      img: 'icons/svg/skull.svg',
+      id: 'drowning',
+      name: 'EFFECT.StatusDrowning',
+    },
+    {
+      img: 'icons/svg/falling.svg',
+      id: 'overboard',
+      name: 'EFFECT.StatusOverboard',
+    },
+    {
+      img: 'icons/svg/frozen.svg',
+      id: 'hypothermia',
+      name: 'EFFECT.StatusHypothermia',
     },
     {
       img: 'icons/svg/blind.svg',

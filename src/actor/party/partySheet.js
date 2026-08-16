@@ -1,6 +1,10 @@
 /* eslint-disable max-len */
 import ActorSheetYZEGS from '../actorSheet.js';
 import { TravelActionsConfig } from './components/travel-actions.js';
+import { isCityTravelScene } from '../../system/scene-grid.js';
+import { getCityFuelUsed } from '../../system/urban-operations.js';
+import { getWaterTravelProfile } from '../../system/water-rules.js';
+import { advanceWaterTravelShift, rollWaterFishing } from '../../system/water-travel.js';
 
 export default class ActorSheetYZEGSParty extends ActorSheetYZEGS {
   static DEFAULT_OPTIONS = {
@@ -23,7 +27,36 @@ export default class ActorSheetYZEGSParty extends ActorSheetYZEGS {
     const partyData = await super._prepareContext(options);
     partyData.partyMembers = {};
     partyData.travel = {};
-    partyData.travelActions = await this.getTravelActions();
+    partyData.waterTravel = Boolean(
+      this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelMode'),
+    );
+    partyData.cityTravel = !partyData.waterTravel && (isCityTravelScene() || Boolean(
+      this.actor.getFlag('fvtt-yze-generic-stepped', 'cityTravelMode'),
+    ));
+    partyData.cityStretch = Number(
+      this.actor.getFlag('fvtt-yze-generic-stepped', 'cityTravelStretch'),
+    ) || 0;
+    partyData.isGM = game.user.isGM;
+    partyData.waterStretch = Number(this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelStretch')) || 0;
+    partyData.waterTerrain = this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelTerrain') || 'river';
+    partyData.waterNight = Boolean(this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelNight'));
+    partyData.waterVesselUuid = this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelVessel') || '';
+    partyData.waterNavigatorUuid = this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelNavigator') || '';
+    partyData.waterRouteBranch = Boolean(this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelRouteBranch'));
+    partyData.waterTerrainChoices = {
+      river: game.i18n.localize('YZEGS.WaterTravel.Terrain.River'),
+      coast: game.i18n.localize('YZEGS.WaterTravel.Terrain.Coast'),
+      openWater: game.i18n.localize('YZEGS.WaterTravel.Terrain.OpenWater'),
+    };
+    partyData.waterVesselChoices = Object.fromEntries(game.actors
+      .filter(actor => actor.type === 'vehicle' && ['watercraft', 'amphibious'].includes(actor.system.domain))
+      .map(actor => [actor.uuid, actor.name]));
+    partyData.waterProfile = getWaterTravelProfile(partyData.waterTerrain, { night: partyData.waterNight });
+    const selectedVessel = partyData.waterVesselUuid
+      ? game.actors.find(actor => actor.uuid === partyData.waterVesselUuid)
+      : null;
+    partyData.waterCanCamp = Number(selectedVessel?.system.watercraft?.size) >= 2;
+    partyData.travelActions = await this.getTravelActions(partyData.cityTravel, partyData.waterTravel);
     let ownedActorId, assignedActorId, travelAction;
     for (let i = 0; i < (partyData.system.members || []).length; i++) {
       ownedActorId = partyData.system.members[i];
@@ -36,6 +69,8 @@ export default class ActorSheetYZEGSParty extends ActorSheetYZEGS {
         { async: true },
       );
     }
+    partyData.waterNavigatorChoices = Object.fromEntries(Object.values(partyData.partyMembers)
+      .map(actor => [actor.uuid, actor.name]));
     for (const travelActionKey in partyData.system.travel) {
       travelAction = partyData.system.travel[travelActionKey];
       partyData.travel[travelActionKey] = {};
@@ -65,6 +100,61 @@ export default class ActorSheetYZEGSParty extends ActorSheetYZEGS {
       await this.assignPartyMembersToAction(this.actor.system.members, 'other');
       this.render(true);
     });
+    html.find('.city-travel-toggle').on('change', async event => {
+      await this.setCityTravelMode(event.currentTarget.checked);
+      this.render(true);
+    });
+    html.find('.water-travel-toggle').on('change', async event => {
+      await this.setWaterTravelMode(event.currentTarget.checked);
+      this.render(true);
+    });
+    html.find('.water-travel-terrain').on('change', async event => {
+      await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelTerrain', event.currentTarget.value);
+      this.render(true);
+    });
+    html.find('.water-travel-vessel').on('change', async event => {
+      await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelVessel', event.currentTarget.value);
+      this.render(true);
+    });
+    html.find('.water-travel-night').on('change', async event => {
+      await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelNight', event.currentTarget.checked);
+      this.render(true);
+    });
+    html.find('.water-travel-navigator').on('change', async event => {
+      await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelNavigator', event.currentTarget.value);
+    });
+    html.find('.water-travel-route-branch').on('change', async event => {
+      await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelRouteBranch', event.currentTarget.checked);
+      this.render(true);
+    });
+    html.find('.water-fishing-roll').on('click', async event => {
+      event.preventDefault();
+      await rollWaterFishing(
+        this.actor,
+        this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelTerrain') || 'river',
+      );
+    });
+    html.find('.water-shift-advance').on('click', async event => {
+      event.preventDefault();
+      await this.advanceWaterShift();
+      this.render(true);
+    });
+    html.find('.city-stretch-advance').on('click', async event => {
+      event.preventDefault();
+      await this.advanceCityStretch();
+      this.render(true);
+    });
+    const updateCityFuel = () => {
+      const output = this.element.querySelector('.city-fuel-result');
+      if (!output) return;
+      const consumption = Number(this.element.querySelector('[name="cityFuelConsumption"]')?.value) || 0;
+      const roadHexes = Number(this.element.querySelector('[name="cityRoadHexes"]')?.value) || 0;
+      const offRoadHexes = Number(this.element.querySelector('[name="cityOffRoadHexes"]')?.value) || 0;
+      const fuelMultiplier = Number(this.element.querySelector('[name="cityFuelMultiplier"]')?.value) || 1;
+      output.textContent = String(getCityFuelUsed(consumption, { roadHexes, offRoadHexes, fuelMultiplier }));
+    };
+    html.find('.city-fuel-calculator input').on('input change', updateCityFuel);
+    updateCityFuel();
 
     let button;
     for (const key in TravelActionsConfig) {
@@ -75,8 +165,12 @@ export default class ActorSheetYZEGSParty extends ActorSheetYZEGS {
     }
   }
 
-  async getTravelActions() {
-    const travelActions = TravelActionsConfig;
+  async getTravelActions(cityTravel = false, waterTravel = false) {
+    const travelActions = Object.fromEntries(Object.entries(TravelActionsConfig).map(([key, action]) => [
+      key,
+      { ...action, buttons: (cityTravel && key === 'march') || (waterTravel && key === 'fish')
+        ? [] : [...action.buttons] },
+    ]));
     for (const action of Object.values(travelActions)) {
       action.displayJournalEntry = !!action.journalEntryName && !!game.journal.getName(action.journalEntryName);
       if (action.displayJournalEntry) {
@@ -85,6 +179,73 @@ export default class ActorSheetYZEGSParty extends ActorSheetYZEGS {
       }
     }
     return travelActions;
+  }
+
+  async setCityTravelMode(enabled) {
+    await this.actor.setFlag('fvtt-yze-generic-stepped', 'cityTravelMode', Boolean(enabled));
+    if (enabled) await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelMode', false);
+    if (!enabled) return;
+    const allowed = new Set(['march', 'drive', 'watch', 'other']);
+    const update = {};
+    const displaced = new Set(this.actor.system.travel.other ?? []);
+    for (const [key, assignment] of Object.entries(this.actor.system.travel)) {
+      if (allowed.has(key)) continue;
+      for (const actorId of Array.isArray(assignment) ? assignment : [assignment]) {
+        if (actorId) displaced.add(actorId);
+      }
+      update[`system.travel.${key}`] = Array.isArray(assignment) ? [] : '';
+    }
+    update['system.travel.other'] = [...displaced];
+    await this.actor.update(update);
+  }
+
+  async setWaterTravelMode(enabled) {
+    await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelMode', Boolean(enabled));
+    if (!enabled) return;
+    await this.actor.setFlag('fvtt-yze-generic-stepped', 'cityTravelMode', false);
+    const allowed = new Set(['drive', 'watch', 'fish', 'rest', 'sleep', 'camp', 'other']);
+    const update = {};
+    const displaced = new Set(this.actor.system.travel.other ?? []);
+    for (const [key, assignment] of Object.entries(this.actor.system.travel)) {
+      if (allowed.has(key)) continue;
+      for (const actorId of Array.isArray(assignment) ? assignment : [assignment]) {
+        if (actorId) displaced.add(actorId);
+      }
+      update[`system.travel.${key}`] = Array.isArray(assignment) ? [] : '';
+    }
+    update['system.travel.other'] = [...displaced];
+    await this.actor.update(update);
+  }
+
+  async advanceWaterShift() {
+    if (!game.user.isGM) return false;
+    const vesselUuid = this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelVessel') || '';
+    const terrain = this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelTerrain') || 'river';
+    const night = Boolean(this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelNight'));
+    const navigatorUuid = this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelNavigator') || '';
+    const routeBranch = Boolean(this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelRouteBranch'));
+    const result = await advanceWaterTravelShift(this.actor, {
+      vesselUuid, terrain, night, navigatorUuid, routeBranch,
+    });
+    if (!result) return false;
+    const stretch = (Number(this.actor.getFlag('fvtt-yze-generic-stepped', 'waterTravelStretch')) || 0) + 1;
+    await this.actor.setFlag('fvtt-yze-generic-stepped', 'waterTravelStretch', stretch);
+    return true;
+  }
+
+  async advanceCityStretch() {
+    if (!game.user.isGM) return false;
+    const stretch = (Number(
+      this.actor.getFlag('fvtt-yze-generic-stepped', 'cityTravelStretch'),
+    ) || 0) + 1;
+    await this.actor.setFlag('fvtt-yze-generic-stepped', 'cityTravelStretch', stretch);
+    const content = `<p>${game.i18n.format('YZEGS.Urban.CityTravel.StretchReminder', { stretch })}</p>`;
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+      content,
+      whisper: ChatMessage.getWhisperRecipients('GM').map(user => user.id),
+    });
+    return true;
   }
 
   async handleRemoveMember(event) {

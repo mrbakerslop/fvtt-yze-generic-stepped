@@ -1,10 +1,72 @@
 <div class="components-list">
 
+  {{#if isWatercraft}}
+  <section class="component-section watercraft-settings">
+    <h3>{{localize "YZEGS.Watercraft.Settings"}}</h3>
+    {{#if isLargeWatercraft}}<p class="watercraft-los-reminder">{{localize "YZEGS.Watercraft.LargeVesselLos"}}</p>{{/if}}
+    <div class="watercraft-fields">
+      <label>{{localize "YZEGS.Watercraft.Size"}}
+        <input type="number" name="system.watercraft.size" min="1" step="1" value="{{system.watercraft.size}}">
+      </label>
+      <label>{{localize "YZEGS.Watercraft.Propulsion.Label"}}
+        {{> optionMenu name="system.watercraft.propulsion" selected=system.watercraft.propulsion
+          options=config.vehicle.propulsionTypes localize=true editable=@root.editable noBlank=true}}
+      </label>
+      <label class="checkbox">
+        {{> checkboxControl name="system.watercraft.landingCraft" value=system.watercraft.landingCraft editable=@root.editable}}
+        {{localize "YZEGS.Watercraft.LandingCraft"}}
+      </label>
+      <label class="checkbox">
+        {{> checkboxControl name="system.watercraft.uniformArmor" value=system.watercraft.uniformArmor editable=@root.editable}}
+        {{localize "YZEGS.Watercraft.UniformArmor"}}
+      </label>
+      <label class="checkbox">
+        {{> checkboxControl name="system.watercraft.mineDetectionEquipment" value=system.watercraft.mineDetectionEquipment editable=@root.editable}}
+        {{localize "YZEGS.Watercraft.MineDetectionEquipment"}}
+      </label>
+    </div>
+    <div class="watercraft-state-grid">
+      <label class="checkbox">{{> checkboxControl name="system.watercraft.grounded" value=system.watercraft.grounded editable=@root.editable}}{{localize "YZEGS.Watercraft.States.Grounded"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.watercraft.stuck" value=system.watercraft.stuck editable=@root.editable}}{{localize "YZEGS.Watercraft.States.Stuck"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.watercraft.stopped" value=system.watercraft.stopped editable=@root.editable}}{{localize "YZEGS.Watercraft.States.Stopped"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.watercraft.sinking" value=system.watercraft.sinking editable=@root.editable}}{{localize "YZEGS.Watercraft.States.Sinking"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.watercraft.sunk" value=system.watercraft.sunk editable=@root.editable}}{{localize "YZEGS.Watercraft.States.Sunk"}}</label>
+      <label>{{localize "YZEGS.Watercraft.HullBreaches"}} <input type="number" name="system.watercraft.hullBreaches" min="0" value="{{system.watercraft.hullBreaches}}"></label>
+      <label>{{localize "YZEGS.Watercraft.SinkingProgress"}} <input type="number" name="system.watercraft.sinkingProgress" min="0" value="{{system.watercraft.sinkingProgress}}"></label>
+      <label>{{localize "YZEGS.Watercraft.SinkingDeadline"}} <input type="number" name="system.watercraft.sinkingDeadline" min="0" value="{{system.watercraft.sinkingDeadline}}"></label>
+    </div>
+    <div class="watercraft-actions">
+      <button type="button" class="watercraft-action" data-action="turn">{{localize "YZEGS.Watercraft.Actions.Turn"}}</button>
+      <button type="button" class="watercraft-action" data-action="careen">{{localize "YZEGS.Watercraft.Actions.Careen"}}</button>
+      <button type="button" class="watercraft-action" data-action="grounding">{{localize "YZEGS.Watercraft.Actions.Grounding"}}</button>
+      <button type="button" class="watercraft-action" data-action="landing">{{localize "YZEGS.Watercraft.Actions.Landing"}}</button>
+      <button type="button" class="watercraft-action" data-action="collision">{{localize "YZEGS.Watercraft.Actions.Collision"}}</button>
+      <button type="button" class="watercraft-action" data-action="ram">{{localize "YZEGS.Watercraft.Actions.Ram"}}</button>
+      <button type="button" class="watercraft-action" data-action="sinking">{{localize "YZEGS.Watercraft.Actions.SinkingCheck"}}</button>
+      <button type="button" class="watercraft-action" data-action="bailWater">{{localize "YZEGS.Watercraft.Actions.BailWater"}}</button>
+      <button type="button" class="watercraft-action" data-action="freeVessel">{{localize "YZEGS.Watercraft.Actions.FreeVessel"}}</button>
+      <button type="button" class="watercraft-action" data-action="repairHull">{{localize "YZEGS.Watercraft.Actions.RepairHull"}}</button>
+      <button type="button" class="watercraft-action" data-action="repairComponent">{{localize "YZEGS.Watercraft.Actions.RepairComponent"}}</button>
+      <button type="button" class="watercraft-action" data-action="internalExplosion">{{localize "YZEGS.Watercraft.Actions.InternalExplosion"}}</button>
+    </div>
+  </section>
+  {{/if}}
+
   {{!-- Inner Components --}}
   <section class="component-section inner-components">
     <h3>{{localize "YZEGS.VehicleSheet.InnerComponents"}}</h3>
 
     <div class="component-grid">
+      {{#if isWatercraft}}
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.hull.active" value=system.components.hull.active editable=@root.editable}}
+          <span>{{localize "YZEGS.Watercraft.Components.hull"}}</span>
+        </label>
+        <input type="number" class="boxed-value" name="system.components.hull.damage"
+          value="{{system.components.hull.damage}}" data-dtype="Number" />
+      </div>
+      {{/if}}
       <div class="component-row">
         <label class="checkbox">
           {{> checkboxControl name="system.components.fuel.active" value=system.components.fuel.active editable=@root.editable}}
@@ -19,6 +81,17 @@
           data-dtype="Number"
         />
       </div>
+
+      {{#if isWatercraft}}
+      <div class="component-row">
+        <label class="checkbox">
+          {{> checkboxControl name="system.components.mastRigging.active" value=system.components.mastRigging.active editable=@root.editable}}
+          <span>{{localize "YZEGS.Watercraft.Components.mastRigging"}}</span>
+        </label>
+        <input type="number" class="boxed-value" name="system.components.mastRigging.damage"
+          value="{{system.components.mastRigging.damage}}" data-dtype="Number" />
+      </div>
+      {{/if}}
 
       <div class="component-row">
         <label class="checkbox">
@@ -71,6 +144,14 @@
           <span>{{localize "YZEGS.VehicleSheet.Components.radio"}}</span>
         </label>
         <div class="radio-reliability">
+          <input
+            type="number"
+            class="boxed-value"
+            name="system.components.radio.damage"
+            value="{{system.components.radio.damage}}"
+            title="{{localize 'YZEGS.VehicleSheet.ComponentDamage'}}"
+            data-dtype="Number"
+          />
           <input
             type="number"
             class="boxed-value"

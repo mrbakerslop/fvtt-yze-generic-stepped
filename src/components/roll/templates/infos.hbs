@@ -31,6 +31,13 @@
             <span class='cuf-failure'>{{localize 'YZEGS.CuF.Failure'}}</span>
             <br />{{localize 'YZEGS.CuF.FailureEffects'}}
             <br />{{localize 'YZEGS.CuF.PanicSpreads'}}
+            {{#if roll.options.suppression.effectsApplied}}
+              <br /><span class='cuf-effects-applied'>{{localize 'YZEGS.Suppression.EffectsApplied'}}</span>
+              {{#if roll.options.suppression.panicCount}}
+                <br />{{localize 'YZEGS.Suppression.PanicChecksAdded'
+                  count=roll.options.suppression.panicCount}}
+              {{/if}}
+            {{/if}}
           {{/if}}
         </span>
       </div>
@@ -43,9 +50,27 @@
         <span class="result">
           {{roll.options.combatAction.label}} ({{roll.options.combatAction.speedLabel}})
           {{#if roll.options.combatAction.value}}{{roll.options.combatAction.displayValue}}{{/if}}
+          {{#if roll.options.combatAction.tracked}}
+            <br />{{localize 'YZEGS.CombatActions.Spent'
+              action=roll.options.combatAction.spentFromLabel
+              fast=roll.options.combatAction.remaining.fast slow=roll.options.combatAction.remaining.slow}}
+          {{/if}}
           {{#unless roll.options.situationalModifiers.length}}
             <br />{{localize 'YZEGS.CombatModifiers.FinalModifier'}} {{roll.options.signedModifier}}
           {{/unless}}
+        </span>
+      </div>
+    {{/if}}
+
+    {{! YZEGS: Action launcher context }}
+    {{#if roll.options.actionData}}
+      <div class="dice-info roll-action-workflow">
+        <span class="label">{{localize 'YZEGS.CombatActions.Action'}}</span>
+        <span class="result">
+          {{roll.options.actionData.label}}
+          {{#if roll.options.actionData.targetName}}<br />{{localize 'YZEGS.CombatActions.Target'}}: {{roll.options.actionData.targetName}}{{/if}}
+          {{#if roll.options.actionData.itemName}}<br />{{localize 'YZEGS.CombatActions.Item'}}: {{roll.options.actionData.itemName}}{{/if}}
+          {{#if roll.options.actionData.applied}}<br />{{localize 'YZEGS.CombatActions.OutcomeApplied'}}{{/if}}
         </span>
       </div>
     {{/if}}

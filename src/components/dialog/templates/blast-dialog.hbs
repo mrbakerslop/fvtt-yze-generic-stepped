@@ -1,0 +1,22 @@
+<div class="yzegs dialog blast-dialog">
+  <p>{{localize "YZEGS.Urban.Blast.Instructions"}}</p>
+  {{#if data.airburst}}
+    <p class="notification warning">{{localize "YZEGS.ConfinedSpace.Blast.AirburstHint"}}</p>
+  {{/if}}
+  {{#if data.directional}}
+    <p class="notification warning">{{localize "YZEGS.ConfinedSpace.Blast.DirectionalHint"}}</p>
+  {{/if}}
+  <div class="form-group">
+    <label>{{localize "YZEGS.ItemSheet.Blast"}}</label>
+    {{> optionMenu name="blast" selected=data.blast options=data.blastChoices
+      editable=true noBlank=true menuClass="dialog-option-menu"}}
+  </div>
+  {{#if data.indoor}}
+    <div class="form-group">
+      <label>{{localize "YZEGS.Urban.Blast.Contained"}}</label>
+      <input type="hidden" name="contained" value="false">
+      {{> checkboxControl name="contained" value=false editable=true
+        ariaLabel=(localize "YZEGS.Urban.Blast.Contained")}}
+    </div>
+  {{/if}}
+</div>

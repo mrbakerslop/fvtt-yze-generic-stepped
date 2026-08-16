@@ -1,0 +1,8 @@
+<div class="yzegs dialog vehicle-damage-dialog">
+  <p>{{localize "YZEGS.Watercraft.Damage.Instructions" target=data.target damage=data.damage}}</p>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Watercraft.Damage.Facing"}}</label>
+    {{> optionMenu name="facing" selected=data.facing options=data.facingChoices
+      editable=true noBlank=true menuClass="dialog-option-menu"}}
+  </div>
+</div>

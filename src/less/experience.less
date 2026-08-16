@@ -304,6 +304,7 @@
 
 .application.yzegs.experience-config,
 .application.yzegs.character-field-label-settings,
+.application.yzegs.token-size-defaults,
 .application.yzegs.combat-modifier-config {
   --background: #fff;
   --color-border: #000;
@@ -328,7 +329,8 @@
 
   .standard-form,
   .experience-config-form,
-  .character-field-labels-form {
+  .character-field-labels-form,
+  .token-size-defaults-form {
     color: #000;
 
     label,
@@ -385,6 +387,35 @@
 
     .checkbox-control .checkbox-control-toggle:focus-visible {
       outline-color: #000;
+    }
+  }
+}
+
+.application.yzegs.token-size-defaults .token-size-defaults-form {
+  .token-size-defaults-grid {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 90px 90px;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 8px 0;
+
+    > strong {
+      padding-bottom: 4px;
+      border-bottom: 1px solid #000;
+      text-align: center;
+
+      &:first-child {
+        text-align: left;
+      }
+    }
+
+    > label {
+      font-weight: 700;
+    }
+
+    > input[type='number'] {
+      width: 100%;
+      text-align: center;
     }
   }
 }

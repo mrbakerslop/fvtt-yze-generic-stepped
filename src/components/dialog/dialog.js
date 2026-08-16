@@ -1,6 +1,31 @@
 import { activateCheckboxControls } from '../checkbox-control.js';
 import { activateRatingMenus } from '../rating-menu.js';
 
+function getSelectedMenuOption(input) {
+  const menu = input?.closest('.rating-menu');
+  return [...(menu?.querySelectorAll('.rating-menu-option') ?? [])]
+    .find(option => option.dataset.value === input.value) ?? null;
+}
+
+function setMenuValue(menu, value) {
+  const input = menu?.querySelector('.rating-menu-input');
+  const options = [...(menu?.querySelectorAll('.rating-menu-option') ?? [])];
+  const selected = options.find(option => option.dataset.value === value && !option.hidden && !option.disabled)
+    ?? options.find(option => option.dataset.value === '');
+  if (!input || !selected) return;
+  input.value = selected.dataset.value ?? '';
+  for (const option of options) {
+    const isSelected = option === selected;
+    option.classList.toggle('is-selected', isSelected);
+    option.setAttribute('aria-selected', String(isSelected));
+  }
+  const trigger = menu.querySelector('.rating-menu-trigger');
+  if (trigger) {
+    trigger.textContent = selected.textContent.trim();
+    trigger.title = selected.textContent.trim();
+  }
+}
+
 /**
  * V2 dialog helpers used by the system's rolls and item actions.
  */
@@ -38,10 +63,10 @@ export default class YZEGSDialog {
       target.value = value >= 0 ? `+${value}` : value;
     });
 
-    html.find('select[name=combatAction]').on('change', function () {
+    html.find('input[name=combatAction]').on('change', function () {
       const modifierInput = html.find('input[name=modifier]')[0];
       const previousValue = Number(this.dataset.currentValue) || 0;
-      const selectedValue = Number(this.selectedOptions[0]?.dataset.value) || 0;
+      const selectedValue = Number(getSelectedMenuOption(this)?.dataset.valueModifier) || 0;
       const value = (Number(modifierInput.value) || 0) - previousValue + selectedValue;
       modifierInput.value = value >= 0 ? `+${value}` : value;
       this.dataset.currentValue = String(selectedValue);
@@ -85,6 +110,87 @@ export default class YZEGSDialog {
     html.find('.experience-award-question .checkbox-control-toggle').on('change', updateExperienceAwardTotal);
     html.find('[name="adjustment"]').on('input', updateExperienceAwardTotal);
     updateExperienceAwardTotal();
+
+    const actionInput = dialog.element.querySelector(
+      'input[name="actionId"], input[name="combatAction"]',
+    );
+    if (actionInput) {
+      const updateActionFields = () => {
+        const option = getSelectedMenuOption(actionInput);
+        const actionId = actionInput.value;
+        const targetMode = option?.dataset.targetMode || 'none';
+        const itemMode = option?.dataset.itemMode || 'none';
+        const targetGroup = dialog.element.querySelector('.action-dialog-target');
+        const itemGroup = dialog.element.querySelector('.action-dialog-item');
+        const targetMenu = targetGroup?.querySelector('.rating-menu');
+        const itemMenu = itemGroup?.querySelector('.rating-menu');
+        const targetInput = targetMenu?.querySelector('.rating-menu-input');
+        const itemInput = itemMenu?.querySelector('.rating-menu-input');
+        const modifierInput = dialog.element.querySelector('input[name="modifier"]');
+        for (const modifierLabel of dialog.element.querySelectorAll('.contextual-action-modifier')) {
+          const control = modifierLabel.querySelector('.contextual-action-modifier-toggle');
+          const applies = String(modifierLabel.dataset.actionIds ?? '').split(' ').includes(actionId);
+          const shouldCheck = applies && modifierLabel.dataset.defaultActive === 'true';
+          if (control?.checked !== shouldCheck) {
+            const modifierValue = Number(control?.dataset.value) || 0;
+            const value = (Number(modifierInput?.value) || 0) + (shouldCheck ? modifierValue : -modifierValue);
+            if (modifierInput) modifierInput.value = value >= 0 ? `+${value}` : value;
+            control.checked = shouldCheck;
+            control.classList.toggle('is-checked', shouldCheck);
+            control.setAttribute('aria-checked', String(shouldCheck));
+          }
+          modifierLabel.hidden = !applies;
+        }
+        if (targetGroup) targetGroup.hidden = targetMode === 'none';
+        if (itemGroup) itemGroup.hidden = itemMode === 'none';
+        if (targetInput) {
+          const targetOptions = [...targetMenu.querySelectorAll('.rating-menu-option')];
+          for (const targetOption of targetOptions) {
+            if (!targetOption.dataset.value) continue;
+            targetOption.hidden = targetMode === 'vehicle' && targetOption.dataset.type !== 'vehicle';
+          }
+          const selectedTarget = getSelectedMenuOption(targetInput);
+          if (selectedTarget?.hidden || selectedTarget?.disabled) setMenuValue(targetMenu, '');
+          const eligibleTargets = targetOptions.filter(targetOption => (
+            targetOption.dataset.value && !targetOption.hidden && !targetOption.disabled
+            && targetOption.dataset.self !== 'true'
+          ));
+          if (!targetInput.value && (
+            ['other', 'vehicle'].includes(targetMode)
+            || (targetMode === 'optional' && eligibleTargets.length === 1)
+          )) setMenuValue(targetMenu, eligibleTargets[0]?.dataset.value ?? '');
+        }
+        if (itemInput) {
+          const itemOptions = [...itemMenu.querySelectorAll('.rating-menu-option')];
+          for (const itemOption of itemOptions) {
+            if (!itemOption.dataset.value) continue;
+            itemOption.hidden = !String(itemOption.dataset.actions ?? '').split(' ').includes(actionId);
+          }
+          const selectedItem = getSelectedMenuOption(itemInput);
+          if (selectedItem?.hidden || selectedItem?.disabled) setMenuValue(itemMenu, '');
+          if (!itemInput.value && itemMode !== 'none' && !itemMode.endsWith('Optional')) {
+            const firstItem = itemOptions.find(itemOption => (
+              itemOption.dataset.value && !itemOption.hidden && !itemOption.disabled
+            ));
+            setMenuValue(itemMenu, firstItem?.dataset.value ?? '');
+          }
+        }
+        const hint = dialog.element.querySelector('.action-dialog-hint');
+        if (hint) {
+          hint.textContent = option?.dataset.hint ?? '';
+          hint.hidden = !hint.textContent;
+        }
+        const formula = dialog.element.querySelector('input[name="formula"]');
+        if (formula) {
+          formula.dataset.standardFormula ??= formula.value;
+          formula.value = option?.dataset.rollMode === 'blindFire'
+            ? game.i18n.localize('YZEGS.Urban.BlindFire.Formula')
+            : formula.dataset.standardFormula;
+        }
+      };
+      actionInput.addEventListener('change', updateActionFields);
+      updateActionFields();
+    }
   }
 
   static _contentElement(content) {
@@ -137,18 +243,39 @@ export default class YZEGSDialog {
     });
   }
 
+  static async chooseTwilightAction(actionData, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/action-dialog.hbs',
+      { data: actionData },
+    );
+    return this._wait({
+      title: game.i18n.localize('YZEGS.CombatActions.DialogTitle'),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.CombatActions.Perform'),
+      processForm: form => ({
+        actionId: form.elements.namedItem('actionId')?.value ?? '',
+        targetUuid: form.elements.namedItem('targetUuid')?.value ?? '',
+        itemId: form.elements.namedItem('itemId')?.value ?? '',
+      }),
+      options,
+    });
+  }
+
   static _processRollOptions(form) {
-    const selectedAction = form.elements.namedItem('combatAction')?.selectedOptions[0];
-    const actionValue = Number(selectedAction?.dataset.value) || 0;
+    const actionInput = form.elements.namedItem('combatAction');
+    const selectedAction = getSelectedMenuOption(actionInput);
+    const actionValue = Number(selectedAction?.dataset.valueModifier) || 0;
     let actionDisplayValue = '–';
     if (actionValue) actionDisplayValue = actionValue >= 0 ? `+${actionValue}` : `−${Math.abs(actionValue)}`;
-    const combatAction = selectedAction?.value ? {
-      id: selectedAction.value,
+    const combatAction = actionInput?.value ? {
+      id: actionInput.value,
       label: selectedAction.dataset.label,
       value: actionValue,
       displayValue: actionDisplayValue,
       speed: selectedAction.dataset.actionSpeed,
       speedLabel: selectedAction.dataset.actionSpeedLabel,
+      registry: selectedAction.dataset.registry === 'true',
+      rollMode: selectedAction.dataset.rollMode ?? '',
     } : null;
     const situationalModifiers = [...form.querySelectorAll('.situational-modifier.is-checked')].map(control => {
       const value = Number(control.dataset.value) || 0;
@@ -167,6 +294,8 @@ export default class YZEGSDialog {
       rof: parseInt(form.rof?.value) || 0,
       modifier: parseInt(form.modifier.value) || 0,
       combatAction,
+      targetUuid: form.elements.namedItem('targetUuid')?.value ?? '',
+      itemId: form.elements.namedItem('itemId')?.value ?? '',
       situationalModifiers,
       locate: form.elements.namedItem('locate')?.value === 'true',
       maxPush: parseInt(form.maxPush.value) || 1,
@@ -184,6 +313,33 @@ export default class YZEGSDialog {
       content,
       actionLabel: game.i18n.localize('YZEGS.Dialog.Actions.Normal'),
       processForm: this._processCuFOptions,
+      options,
+    });
+  }
+
+  static async chooseBlastResolution({
+    blast = 'D', indoor = false, airburst = false, directional = false,
+  } = {}, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/blast-dialog.hbs',
+      {
+        data: {
+          blast,
+          indoor,
+          airburst,
+          directional,
+          blastChoices: { A: 'A', B: 'B', C: 'C', D: 'D' },
+        },
+      },
+    );
+    return this._wait({
+      title: game.i18n.localize('YZEGS.Urban.Blast.Resolve'),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.Urban.Blast.Roll'),
+      processForm: form => ({
+        blast: form.elements.namedItem('blast')?.value ?? blast,
+        contained: form.elements.namedItem('contained')?.value === 'true',
+      }),
       options,
     });
   }
@@ -212,6 +368,28 @@ export default class YZEGSDialog {
 
   static _processActorChoice(form) {
     return { actor: form.actor.value };
+  }
+
+  static async chooseReload(reloadData, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/reload-dialog.hbs',
+      { data: reloadData, config: CONFIG.YZEGS },
+    );
+    return this._wait({
+      title: game.i18n.format('YZEGS.Reload.DialogTitle', { weapon: reloadData.weaponName }),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.Dialog.Actions.Reload'),
+      processForm: this._processReloadChoice,
+      options,
+    });
+  }
+
+  static _processReloadChoice(form) {
+    return {
+      sourceId: form.elements.namedItem('sourceId')?.value ?? '',
+      reloaderId: form.elements.namedItem('reloaderId')?.value ?? '',
+      modifier: Number(form.elements.namedItem('modifier')?.value) || 0,
+    };
   }
 
   static async awardExperience(experienceData, options) {
@@ -307,10 +485,40 @@ export default class YZEGSDialog {
     });
   }
 
+  static async chooseBlockMethod(blockData, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/block-choice-dialog.hbs',
+      { data: blockData },
+    );
+    return this._wait({
+      title: game.i18n.localize('YZEGS.Defense.Block'),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.Defense.DeclareBlock'),
+      processForm: form => ({ itemUuid: form.elements.namedItem('itemUuid')?.value ?? '' }),
+      options,
+    });
+  }
+
+  static async chooseCover(coverData, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/cover-dialog.hbs',
+      { data: coverData },
+    );
+    return this._wait({
+      title: game.i18n.localize('YZEGS.Cover.Configure'),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.Cover.TakeCover'),
+      processForm: form => ({
+        armor: Math.max(0, Math.trunc(Number(form.elements.namedItem('armor')?.value) || 0)),
+      }),
+      options,
+    });
+  }
+
   static _processDamageChoice(form) {
     return {
-      damage: parseInt(form.damage.value) || 0,
-      hitCount: parseInt(form.hits?.value) || 0,
+      ammoSpend: parseInt(form.elements.namedItem('ammoSpend')?.value) || 0,
+      adjustment: parseInt(form.elements.namedItem('adjustment')?.value) || 0,
       barriers: form.barriers?.value,
     };
   }

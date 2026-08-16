@@ -14,7 +14,7 @@ setting.
 
 ## Compatibility
 
-- System version: 14.0.7
+- System version: 14.0.8
 - Minimum Foundry version: 14.359
 - Verified Foundry version: 14.366
 
@@ -90,6 +90,203 @@ Unit Morale, group gear, and a starting vehicle remain group decisions and are
 shown as a completion reminder rather than applied to an individual Character.
 Published setting content is not bundled; worlds and appropriately licensed
 content modules can supply their own Archetype Items.
+
+## Action Skills
+
+The GM-only **Action Skills** world configuration maps automated character,
+travel, watercraft, hazard, and environmental checks to the Skill Items used by
+the current world. Its choices come from the configured **Skill and Specialty
+Item Source**, so a game can replace the example Skill list without losing
+action automation. Existing worlds retain their current system defaults until
+a mapping is changed. Weapon attacks, reloads, and jam clearing use the Skill
+selected on the individual Weapon Item.
+
+## Scene grids
+
+New Scenes default to an approximate Close Quarters flat-top grid with 2.5
+metres per hex. *Urban Operations* defines its 1:125 Close Quarters maps using
+gridless room-sized sectors; 2.5 metres is the proportional Foundry estimate
+from the standard 1:500, 10-metre battle scale. The **Default Scene Grid** world
+setting can instead select Battle (10 m), City (200 m), Travel (10 km), or the
+system manifest default. The core Scene configuration window provides all four
+scale preset buttons for existing Scenes.
+
+Each preset records a rules mode on the Scene. Close Quarters enables Urban
+Operations automatically; on a normal Battle Scene, use **Enable Urban
+Operations rules on this Scene** when the map depicts built-up terrain. This
+keeps indoor modifiers and urban actions off wilderness battle maps that happen
+to use the same 10-metre scale.
+
+## Urban Operations
+
+Urban Scenes extend the Take Action and Skill roll dialogs with building entry,
+floor and sector movement, wall-hugging, shooter spotting, breaching, blocking,
+aperture overwatch, vehicle cover, booby-trap, crowd, and radio tasks. Extended
+stretch/shift tasks are available outside combat and cannot consume an ordinary
+combat action accidentally.
+
+On a Close Quarters Scene, firing an ammunition weapon adds **Blind Fire** to
+the Weapon roll dialog. Blind fire rolls ammunition dice only and can cause
+suppression, but its attack card cannot apply direct firearm damage. Close
+combat also establishes a persistent engagement: Slow Actions are restricted
+to close attacks, third-party fire randomly selects one participant, and the
+state ends on retreat, shove, suppression, incapacitation, or combat end.
+
+Explosive attack cards expose **Resolve Blast**. Target all Actors at the same
+effective blast power, choose that A–D rating, and the system rolls separately
+for each target with the matching damage profile. Blast targets are knocked
+prone and receive their own CUF control. The dialog defaults an indoor Close
+Quarters blast one step higher and lets the GM record containment; Walls and
+Regions remain the authoritative way to mark rooms, apertures, control zones,
+checkpoints, and hidden traps on the Scene.
+
+Party sheets can switch their Travel tab to **Urban Operations city travel**.
+Only March, Drive, and Keep Watch remain assignable. The sheet includes the
+200-metre-hex movement reminders, backing-off rule, fuel conversion calculator,
+and a GM-only stretch counter which whispers an encounter/checkpoint reminder.
+
+The system provides mechanics and configurable Specialty action-modifier hooks,
+but does not redistribute published Archetype, Specialty, encounter, or site
+text. Those Items can be created locally from material the world owner has the
+right to use.
+
+The presets change only grid type, distance, and units. Grid pixel size and map
+alignment remain under the GM's control so importing a map does not disturb its
+artwork. The alternative even-column hex type remains available through
+Foundry's normal Grid Type control when a particular image uses that offset.
+
+The **Default Prototype Token Sizes** world configuration sets independent
+width and height values, in grid spaces, for newly created Characters, NPCs,
+Vehicles, Units, Parties, and Containers. All types default to 1 × 1; vehicles
+and large storage can use rectangular dimensions. Existing Actor prototypes and
+placed Scene tokens are never resized by this setting.
+
+## Containers
+
+Containers are inventory-focused Actors for chests, crates, lockers, weapon
+racks, and other storage. Create a **Container** Actor, choose its image and
+type, then place it in a scene as a token. Container tokens are linked by
+default, so their contents remain attached to the source Actor.
+
+Physical Items can be dragged onto a Container from the Items directory or an
+inventory. Drag an Item between a Character and Container sheet to choose a
+quantity and move it in either direction. Single-item stacks move immediately.
+A player needs **Owner** permission for both Actors to perform a transfer; this
+lets a GM control which Containers a Character may access using Foundry's
+normal ownership settings.
+
+## Weapon reloading
+
+Weapons with an Ammo Identifier and a configured feed system expose a Reload
+control in Character inventories, embedded Weapon sheets, and Weapon chat
+cards. The reload dialog only offers ammunition with a matching identifier and
+feed type, shows its current rounds and inventory location, and preserves the
+removed magazine or belt in inventory.
+
+In a started combat encounter, ordinary firearm reloads make a Ranged Combat check: success spends
+a fast action and failure spends a slow action. A failed check with only a fast
+action remaining forfeits that action without completing the reload. A
+Specialty modifier targeting **Reload** is applied automatically. Ammunition in
+a backpack first requires an available slow action and a successful Mobility
+check. Outside combat, reloads do not consume tracked actions or require these
+checks. Merely adding a Character to an encounter does not activate these costs
+until combat has started.
+
+Weapons using the Heavy Weapons Skill, or marked **Heavy Weapon**, always
+require a slow action and do not roll to reload. Their dialog can select another
+owned Character or NPC as loader. Internal magazines normally fill in one
+reload while consuming the required loose rounds; the **Internal Magazine
+Reloading** world setting can instead require one reload action per round.
+
+## Combat actions
+
+The Combat tab on Character and NPC sheets includes a **Take Action** button.
+It contains the Players' Manual Slow, Fast, and Free actions together with the
+special actions described later in the combat chapter. In an active encounter,
+the launcher spends the Actor's tracked action; outside combat it records the
+action without deducting narrative time.
+
+Target another token before opening the launcher when an action affects another
+character, a target hex, or a vehicle. Actions that require equipment expose a
+filtered Item field. Skill-based actions use the appropriate embedded Skill and
+remain pushable. First Aid, Rally, shove, disarm, grapple, break free, backpack
+retrieval, and extinguishing fire receive an **Apply Outcome** button once the
+final roll is accepted.
+
+Rolling a standard Twilight: 2000 Skill also offers the actions associated with
+that Skill directly in its roll dialog. For example, Medical Aid offers First
+Aid, Command offers Rally, and Mobility offers its movement and environmental
+actions. Target and Item fields appear only when the chosen action needs them,
+and action-specific Specialty modifiers follow the chosen action. Weapon
+attacks, Reload, and Clear Jam retain their dedicated controls because those
+workflows also need the Weapon's current ammunition and jam state.
+
+Blockable close-combat attacks now begin with an attack-declaration card. The
+target's owner or the GM must choose **Block** or **Do Not Block** before the
+attack is rolled. A Block spends a Fast action immediately. After the attacker
+accepts the roll or finishes pushing, the defender rolls Close Combat and may
+push; every Block success removes one attack success. This applies to ordinary
+melee and unarmed attacks, shove, disarm, and initial grapple attempts, but not
+to ranged attacks, grapple attacks, or free attacks caused by failed retreats.
+
+When taking cover, select a threatening token when possible and enter the
+terrain or barrier's Armor Level. Partial cover protects torso and legs, while
+full cover protects all locations. The Mobility action **Drop prone from a
+grenade** is reactive, costs no action, and applies prone after a successful
+final roll.
+
+Prone, cover, aiming, overwatch, grapple, and preparation states are persisted
+on the relevant Actor or Item. Firearms apply the correct quick-shot penalty
+unless the attacker has aimed at that target with that weapon. Telescopic aim
+applies its normal bonus and disables ammo dice, and heavy weapons cannot fire
+until aimed. Bows must be prepared and grenade pins pulled before attacking.
+
+## Confined spaces and minefields
+
+Enable **Confined-Space Hazards** in a Scene's configuration when attacks are
+being resolved in tunnels, bunkers, basements, or similarly enclosed areas.
+The attack chat card then offers GM controls for missed-shot ricochets and
+structural-collapse checks. Collapse results can pin selected Characters or
+NPCs under debris and direct the GM to the appropriate critical-injury table.
+
+Mines are configured as Explosive Items using the **Explosive Type** field.
+Create a Region and add the **Minefield** behavior to automate a hazardous
+area. Its configuration controls which Actors can trigger it, its density and
+condition, detection difficulty, direct-hit profile, Blast rating, and whether
+it has already been discovered. When a compatible token crosses the Region,
+the active GM confirms the movement method, scout, crossed hexes, and number of
+entrants. Detection, trigger, dud, direct-damage, and Blast results then appear
+in chat. Vehicle damage resolves armor and component hits automatically.
+Water minefields can additionally restrict triggering by vessel Size, require
+submerged detection equipment, and use Driving to navigate a discovered field.
+
+## Water and watercraft
+
+Set a Vehicle's **Vehicle Domain** to Watercraft or Amphibious to expose its
+vessel configuration and operations. Size controls large-vessel turning and
+collision damage. The Components tab tracks the hull, breaches, flooding,
+grounding, propulsion, and sinking state, and provides GM controls for common
+vessel incidents and extended repairs. Gear Items can be marked as suitable
+spare parts, while equipped water-protection Gear can exempt or modify
+cold-water checks.
+
+Add the **Water** behavior to a Scene Region to mark shallow or deep water and
+its temperature. Entering deep water applies the Swimming state; combat rounds
+then track submerged breath checks, drowning damage, and drowning death saves.
+The Take Action launcher and relevant Skill roll dialogs include swimming,
+rescue, boarding, bailing, grounding, repair, turning, and ramming actions.
+
+Mounted and portable Weapons can use a setting-neutral guided profile with a
+target class, firing arc, impact delay, and evasion modifier. A successful
+attack is launched from its chat card, becomes ready on the configured combat
+round, and offers an eligible target's driver or helmsman a tracked Slow Action
+evasion attempt.
+
+Travel Party Actors provide a separate **Use water travel** mode. Select a
+vessel and River, Coastline, or Open Water terrain, then assign Drive, Watch,
+Fish, Rest, Sleep, and other duties. The GM's shift control applies day/night
+speed, Driving and fishing modifiers, route-branch navigation, encounter
+distance, and water-travel mishaps to the selected vessel.
 
 English is the source language. The included German, Spanish, French, Russian,
 Swedish, and Ukrainian localizations are community translations and may lag

@@ -32,7 +32,7 @@ import {
 } from './system/macros.js';
 import displayMessages from './components/message-system.js';
 // import * as Chat from './components/chat/chat.js';
-import ChatMessageYZEGS, { addChatMessageContextOptions } from './components/chat/chat.js';
+import ChatMessageYZEGS from './components/chat/chat.js';
 
 // Imports Documents.
 import ActorYZEGS from './actor/actor.js';
@@ -43,6 +43,7 @@ import ActorSheetYZEGSCharacter from './actor/character/characterSheet.js';
 import ActorSheetYZEGSVehicle from './actor/vehicle/vehicleSheet.js';
 import ActorSheetYZEGSUnit from './actor/unit/unitSheet.js';
 import ActorSheetYZEGSParty from './actor/party/partySheet.js';
+import ActorSheetYZEGSContainer from './actor/container/containerSheet.js';
 import ItemSheetYZEGS from './item/itemSheet.js';
 
 // Imports Helpers.
@@ -52,6 +53,28 @@ import * as YZUR from './lib/yzur.js';
 import * as Experience from './system/experience.js';
 import * as Archetypes from './system/archetypes.js';
 import { migrateAdvancementItemSource } from './system/experience-config.js';
+import { resetCombatantActions } from './system/combat-actions.js';
+import { registerDefenseSocket } from './system/defense-workflows.js';
+import {
+  advanceCombatSuppression,
+  clearCombatantSuppression,
+  clearCombatSuppression,
+  registerSuppressionSocket,
+} from './system/suppression-workflows.js';
+import {
+  clearCombatEngagements,
+  registerUrbanSocket,
+  restoreHuggingWallCover,
+} from './system/urban-workflows.js';
+import { registerSceneGridHooks } from './system/scene-grid.js';
+import { registerMinefieldRegionBehavior } from './system/minefield-region.js';
+import { registerWaterRegionBehavior } from './system/water-region.js';
+import { advanceCombatWaterHazards } from './system/water-environment.js';
+import {
+  advanceCombatWatercraft,
+  advanceWorldTimeWatercraft,
+} from './system/watercraft-workflows.js';
+import { advanceGuidedImpacts } from './system/guided-weapons.js';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -79,6 +102,7 @@ Hooks.once('init', function () {
       ActorSheetYZEGSVehicle,
       ActorSheetYZEGSUnit,
       ActorSheetYZEGSParty,
+      ActorSheetYZEGSContainer,
       ItemSheetYZEGS,
     },
     config: YZEGS,
@@ -104,6 +128,8 @@ Hooks.once('init', function () {
   CONFIG.Actor.documentClass = ActorYZEGS;
   CONFIG.Item.documentClass = ItemYZEGS;
   registerDataModels();
+  registerMinefieldRegionBehavior();
+  registerWaterRegionBehavior();
 
   // Patches Core functions.
   CONFIG.Combat.initiative = {
@@ -148,10 +174,16 @@ Hooks.once('init', function () {
     makeDefault: true,
     label: 'YZEGS.SheetClassParty',
   });
+  documentSheets.registerSheet(ActorYZEGS, 'fvtt-yze-generic-stepped', ActorSheetYZEGSContainer, {
+    types: ['container'],
+    makeDefault: true,
+    label: 'YZEGS.SheetClassContainer',
+  });
 
   documentSheets.registerSheet(ItemYZEGS, 'fvtt-yze-generic-stepped', ItemSheetYZEGS, { makeDefault: true });
 
   registerSystemSettings();
+  registerSceneGridHooks();
   enrichTextEditors();
   registerHandlebars();
   preloadHandlebarsTemplates();
@@ -161,6 +193,9 @@ Hooks.once('init', function () {
 });
 
 Hooks.once('ready', async function () {
+  registerDefenseSocket();
+  registerSuppressionSocket();
+  registerUrbanSocket();
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to.
   Hooks.on('hotbarDrop', (_bar, data, slot) => createYZEGSMacro(data, slot));
 
@@ -190,7 +225,6 @@ Hooks.on('renderChatMessageHTML', (app, html, data) => {
   ChatMessageYZEGS.addChatListeners(html);
   // Hides chat action buttons.
   ChatMessageYZEGS.hideChatActionButtons(html);
-  // addChatMessageContextOptions(html);
 
   // Automatically closes dice results tooltips.
   // let delay = game.settings.get('fvtt-yze-generic-stepped', 'closeRollTooltipDelay');
@@ -203,8 +237,85 @@ Hooks.on('renderChatMessageHTML', (app, html, data) => {
 
 /* -------------------------------------------- */
 
-Hooks.on('getChatMessageContextOptions', (_app, options) => addChatMessageContextOptions(options));
+Hooks.on('updateCombat', async (combat, changes, _options, userId) => {
+  try {
+    await resetCombatantActions(combat, changes, userId);
+    await advanceCombatSuppression(combat, changes, userId);
+    await restoreHuggingWallCover(combat, changes, userId);
+    await advanceCombatWaterHazards(combat, changes, userId);
+    await advanceCombatWatercraft(combat, changes, userId);
+    await advanceGuidedImpacts(combat, changes, userId);
+    if (Object.hasOwn(changes, 'turn') && game.user.isGM && userId === game.user.id) {
+      const actor = combat.combatant?.actor;
+      if (actor?.statuses?.has?.('overwatch')) {
+        await actor.toggleStatusEffect('overwatch', { active: false });
+        await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionOverwatch');
+      }
+    }
+  }
+  catch (error) {
+    console.error('yzegs | Failed to reset combatant actions for the new round.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.CombatActions.ResetFailed'));
+  }
+});
 
+Hooks.on('deleteCombat', async (combat, _options, userId) => {
+  try {
+    await clearCombatSuppression(combat, userId);
+    await clearCombatEngagements(combat, userId);
+  }
+  catch (error) {
+    console.error('yzegs | Failed to clear suppression when combat ended.', error);
+  }
+});
+
+Hooks.on('updateWorldTime', advanceWorldTimeWatercraft);
+
+Hooks.on('deleteCombatant', async (combatant, _options, userId) => {
+  try {
+    await clearCombatantSuppression(combatant, userId);
+  }
+  catch (error) {
+    console.error('yzegs | Failed to clear suppression from a removed combatant.', error);
+  }
+});
+
+Hooks.on('createActiveEffect', async (effect, _options, userId) => {
+  if (userId !== game.user.id || !effect.statuses?.has?.('suppressed')) return;
+  const actor = effect.parent;
+  if (!actor?.statuses?.has?.('overwatch')) return;
+  await actor.toggleStatusEffect('overwatch', { active: false });
+  await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionOverwatch');
+});
+
+Hooks.on('deleteActiveEffect', async (effect, _options, userId) => {
+  if (userId !== game.user.id || !effect.statuses?.has?.('suppressed')) return;
+  const actor = effect.parent;
+  if (actor?.getFlag('fvtt-yze-generic-stepped', 'suppressionTurn')) {
+    await actor.unsetFlag('fvtt-yze-generic-stepped', 'suppressionTurn');
+  }
+});
+
+Hooks.on('updateActor', async (actor, changes, _options, userId) => {
+  if (userId !== game.user.id || !['character', 'npc'].includes(actor.type)) return;
+  const health = foundry.utils.getProperty(changes, 'system.health.value');
+  const sanity = foundry.utils.getProperty(changes, 'system.sanity.value');
+  try {
+    if (health !== undefined && actor.statuses?.has?.('overwatch')) {
+      await actor.toggleStatusEffect('overwatch', { active: false });
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionOverwatch');
+    }
+    if (Number(health) > 0 && actor.getFlag('fvtt-yze-generic-stepped', 'actionFirstAidAttempts')) {
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionFirstAidAttempts');
+    }
+    if (Number(sanity) > 0 && actor.getFlag('fvtt-yze-generic-stepped', 'actionRallyAttempts')) {
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionRallyAttempts');
+    }
+  }
+  catch (error) {
+    console.error('yzegs | Failed to clear recovery action history.', error);
+  }
+});
 
 /* -------------------------------------------- */
 

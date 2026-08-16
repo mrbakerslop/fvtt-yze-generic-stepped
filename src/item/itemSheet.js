@@ -5,16 +5,23 @@ import { activateCheckboxControls } from '../components/checkbox-control.js';
 import { getAdvancementSourceItems } from '../system/experience.js';
 import { COMBAT_TYPES } from '../system/combat-modifiers.js';
 import { linesFromText, parseRankOptions } from '../system/archetype-rules.js';
+import { usesItemQuantity } from '../system/item-quantity.js';
+import {
+  weaponUsesAmmoBelt,
+  weaponUsesInternalMagazine,
+  weaponUsesMagazine,
+} from '../system/ammunition-compatibility.js';
+import { getEffectiveWeaponProfile } from '../system/weapon-profile.js';
 
 const ITEM_SHEET_HEIGHTS = {
   ammunition: 480,
   archetype: 760,
   armor: 390,
   gear: 370,
-  grenade: 430,
+  grenade: 500,
   injury: 360,
   skill: 320,
-  weapon: 625,
+  weapon: 730,
 };
 
 const ITEM_SHEET_WIDTHS = {
@@ -141,6 +148,54 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
       // QoL getters
       inActor: !!this.item.actor,
       inVehicle: this.item.actor?.type === 'vehicle',
+      showQuantity: this.item.isPhysical && usesItemQuantity(this.item.type, this.item.system),
+      internalMagazine: weaponUsesInternalMagazine(this.item),
+      canClearJam: this.item.type === 'weapon'
+        && this.item.system.jammed
+        && ['character', 'npc'].includes(this.item.actor?.type),
+      explosiveTypeChoices: {
+        grenade: game.i18n.localize('YZEGS.ExplosiveTypes.grenade'),
+        antiPersonnelMine: game.i18n.localize('YZEGS.ExplosiveTypes.antiPersonnelMine'),
+        antiVehicleMine: game.i18n.localize('YZEGS.ExplosiveTypes.antiVehicleMine'),
+        directionalMine: game.i18n.localize('YZEGS.ExplosiveTypes.directionalMine'),
+        multipurposeMine: game.i18n.localize('YZEGS.ExplosiveTypes.multipurposeMine'),
+      },
+      guidanceModeChoices: {
+        none: game.i18n.localize('YZEGS.Guidance.Modes.None'),
+        directed: game.i18n.localize('YZEGS.Guidance.Modes.Directed'),
+        surfaceSeeking: game.i18n.localize('YZEGS.Guidance.Modes.SurfaceSeeking'),
+        airSeeking: game.i18n.localize('YZEGS.Guidance.Modes.AirSeeking'),
+        underwaterSeeking: game.i18n.localize('YZEGS.Guidance.Modes.UnderwaterSeeking'),
+      },
+      guidanceTargetChoices: {
+        any: game.i18n.localize('YZEGS.Guidance.Targets.Any'),
+        aircraft: game.i18n.localize('YZEGS.Guidance.Targets.Aircraft'),
+        watercraft: game.i18n.localize('YZEGS.Guidance.Targets.Watercraft'),
+        largeVessel: game.i18n.localize('YZEGS.Guidance.Targets.LargeVessel'),
+        groundOrWater: game.i18n.localize('YZEGS.Guidance.Targets.GroundOrWater'),
+      },
+      firingArcChoices: {
+        all: game.i18n.localize('YZEGS.Guidance.Arcs.All'),
+        front: game.i18n.localize('YZEGS.Guidance.Arcs.Front'),
+        rear: game.i18n.localize('YZEGS.Guidance.Arcs.Rear'),
+        port: game.i18n.localize('YZEGS.Guidance.Arcs.Port'),
+        starboard: game.i18n.localize('YZEGS.Guidance.Arcs.Starboard'),
+      },
+      sparePartChoices: {
+        none: game.i18n.localize('YZEGS.SpareParts.None'),
+        universal: game.i18n.localize('YZEGS.SpareParts.Universal'),
+        hull: game.i18n.localize('YZEGS.SpareParts.Hull'),
+        engine: game.i18n.localize('YZEGS.SpareParts.Engine'),
+        propulsion: game.i18n.localize('YZEGS.SpareParts.Propulsion'),
+        rigging: game.i18n.localize('YZEGS.SpareParts.Rigging'),
+        radio: game.i18n.localize('YZEGS.SpareParts.Radio'),
+        antenna: game.i18n.localize('YZEGS.SpareParts.Antenna'),
+      },
+      waterProtectionChoices: {
+        none: game.i18n.localize('YZEGS.WaterProtection.None'),
+        wetsuit: game.i18n.localize('YZEGS.WaterProtection.Wetsuit'),
+        drySuit: game.i18n.localize('YZEGS.WaterProtection.DrySuit'),
+      },
     });
 
     if (this.item.type === 'specialty' && this.tabGroups.primary === 'features') {
@@ -160,7 +215,16 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
       );
     }
     if (this.item.type === 'weapon') {
-      sheetData.ammunitionTargets = this._getItemAmmunitionTargets();
+      const loadedAmmunition = this.item.actor?.items.get(this.item.system.mag.target);
+      // Recalculate from the current target instead of trusting derived Item data
+      // which may predate a sibling Ammunition document update.
+      sheetData.system.effectiveAttack = getEffectiveWeaponProfile(this.item, loadedAmmunition);
+      if (loadedAmmunition?.type === 'ammunition') {
+        const ammunitionCount = weaponUsesInternalMagazine(this.item)
+          ? ''
+          : ` [${loadedAmmunition.system.ammo.value}/${loadedAmmunition.system.ammo.max}]`;
+        sheetData.loadedAmmunitionLabel = `${loadedAmmunition.name}${ammunitionCount}`;
+      }
     }
 
     return sheetData;
@@ -319,31 +383,6 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
 
   /* ------------------------------------------- */
 
-  /**
-   * Gets the valid item consumption targets which exist on the actor.
-   * @return {{string: string}} An object of potential consumption targets
-   * @private
-   */
-  _getItemAmmunitionTargets() {
-    // TODO clean this code
-    const itemData = this.item.system;
-    // const ammoType = itemData.ammo;
-    // if (!ammoType) return {};
-
-    const actor = this.item.actor;
-    if (!actor) return {};
-
-    return actor.itemTypes.ammunition.reduce(
-      (ammo, i) => {
-        // if (i.system.itemType === ammoType) {
-        ammo[i.id] = i.detailedName;
-        // }
-        return ammo;
-      },
-      { [this.item.id]: `${this.item.name} (${itemData.qty})` },
-    );
-  }
-
   /* ------------------------------------------- */
   /*  Sheet Listeners                            */
   /* ------------------------------------------- */
@@ -376,6 +415,14 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
     // Ammo Generation
     if (this.item.actor) {
       html.find('button.create-ammo').click(this._onCreateAmmo.bind(this));
+      html.find('button.weapon-reload-action').click(event => {
+        event.preventDefault();
+        return this.item.reload();
+      });
+      html.find('button.weapon-clear-jam-action').click(event => {
+        event.preventDefault();
+        return this.item.clearJam();
+      });
     }
   }
 
@@ -431,13 +478,22 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
     if (ammo.match(/\d{2}$/)) ammo += 'mm';
 
     const size = this.item.system.mag.max;
-    // eslint-disable-next-line no-nested-ternary
-    const mag = size > 40 ? (size > 55 ? (size > 150 ? 'Box' : 'Belt') : 'Drum') : 'Mag';
+    const isBelt = weaponUsesAmmoBelt(this.item);
+    const isMagazine = weaponUsesMagazine(this.item);
+    const isInternal = weaponUsesInternalMagazine(this.item);
+    let mag = 'Ammo';
+    if (isBelt) mag = 'Belt';
+    else if (isMagazine) mag = size > 40 ? 'Drum' : 'Mag';
 
     const itemData = {
       name: `${ammo}, ${size}-round ${mag}`,
       type: 'ammunition',
-      'system.ammo': { value: size, max: size },
+      'system.itemType': this.item.system.ammo,
+      'system.qty': isInternal ? size : 1,
+      'system.ammo': isInternal ? { value: 1, max: 1 } : { value: size, max: size },
+      'system.props.magazine': isMagazine,
+      'system.props.ammoBelt': isBelt,
+      'system.props.ammoBox': false,
     };
 
     const [ammunition] = await this.item.actor.createEmbeddedDocuments('Item', [itemData]);

@@ -16,25 +16,33 @@
         {{#if system.rof}}
         <div><b>{{localize "YZEGS.ItemSheet.RoF"}}:</b> <code>{{system.rof}}</code></div>
         {{/if}}
-        <div><b>{{localize "YZEGS.ItemSheet.Damage"}}:</b> <code>{{system.damage}}</code></div>
-        <div><b>{{localize "YZEGS.ItemSheet.Crit"}}:</b> <code>{{system.crit}}</code></div>
-        <div><b>{{localize "YZEGS.ItemSheet.Armor"}}:</b> <code>{{#if (gte system.armorModifier 1)}}+{{/if}}{{system.armorModifier}}</code></div>
-        {{#if system.range}}
-        <div><b>{{localize "YZEGS.ItemSheet.Range"}}:</b> <code>{{system.range}}</code></div>
+        <div><b>{{localize "YZEGS.ItemSheet.Damage"}}:</b> <code>{{system.effectiveAttack.damage}}</code></div>
+        <div><b>{{localize "YZEGS.ItemSheet.Crit"}}:</b> <code>{{system.effectiveAttack.crit}}</code></div>
+        <div><b>{{localize "YZEGS.ItemSheet.Armor"}}:</b> <code>{{#if (gte system.effectiveAttack.armorModifier 1)}}+{{/if}}{{system.effectiveAttack.armorModifier}}</code></div>
+        {{#if system.effectiveAttack.range}}
+        <div><b>{{localize "YZEGS.ItemSheet.Range"}}:</b> <code>{{system.effectiveAttack.range}}</code></div>
         {{/if}}
-        {{#unless (eq system.blast "–")}}
-        <div><b>{{localize "YZEGS.ItemSheet.Blast"}}:</b> <code>{{system.blast}}</code></div>
+        {{#unless (eq system.effectiveAttack.blast "–")}}
+        <div><b>{{localize "YZEGS.ItemSheet.Blast"}}:</b> <code>{{system.effectiveAttack.blast}}</code></div>
         {{/unless}}
       </div>
     </div>
 
     <div class="card-buttons">
+      {{#if system.jammed}}
+      <p class="weapon-jammed-status"><strong>{{localize "YZEGS.Jam.Status"}}</strong></p>
+      {{/if}}
       {{#unless system.isMounted}}
+      {{#unless system.jammed}}
       <button class="weapon-attack" data-action="attack">{{{@root.config.Icons.buttons.attack}}} {{localize "YZEGS.Chat.Actions.Attack"}}</button>
-      {{!-- {{#if system.mag.max}}
-      <button class="weapon-reload"{{#if (eq system.mag.value system.mag.max)}} data-action="reload" disabled{{/if}}>{{{@root.config.Icons.buttons.reload}}} {{localize "YZEGS.Chat.Actions.Reload"}}</button>
-      {{/if}} --}}
       {{/unless}}
+      {{/unless}}
+      {{#if canClearJam}}
+      <button class="weapon-clear-jam" data-action="clearJam">{{{@root.config.Icons.buttons.clearJam}}} {{localize "YZEGS.ActionNames.clearJam"}}</button>
+      {{/if}}
+      {{#if canReload}}
+      <button class="weapon-reload" data-action="reload">{{{@root.config.Icons.buttons.reload}}} {{localize "YZEGS.Chat.Actions.Reload"}}</button>
+      {{/if}}
     </div>
 
   </div>

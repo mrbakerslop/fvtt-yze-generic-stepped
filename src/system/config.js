@@ -1,3 +1,5 @@
+import { TWILIGHT_ACTIONS } from './twilight-actions.js';
+
 /**
  * The YZEGS Configuration.
  * @constant
@@ -28,33 +30,11 @@ YZEGS.constantsOptions = {
   'constant.encumbrance' : 'YZEGS.ConstantNames.encumbrance',
 };
 
-YZEGS.actionOptions = {
-  'action.aim' : 'YZEGS.ActionNames.aim',
-  'action.aimMortar' : 'YZEGS.ActionNames.aimMortar',
-  'action.aimSniper' : 'YZEGS.ActionNames.aimSniper',
-  'action.overwatch' : 'YZEGS.ActionNames.overwatch',
-  'action.breakFree' : 'YZEGS.ActionNames.breakFree',
-  'action.clearJam' : 'YZEGS.ActionNames.clearJam',
-  'action.crawl' : 'YZEGS.ActionNames.crawl',
-  'action.directFire' : 'YZEGS.ActionNames.directFire',
-  'action.disarm' : 'YZEGS.ActionNames.disarm',
-  'action.drive' : 'YZEGS.ActionNames.drive',
-  'action.firstAid' : 'YZEGS.ActionNames.firstAid',
-  'action.grapple' : 'YZEGS.ActionNames.grapple',
-  'action.meleeAttack' : 'YZEGS.ActionNames.meleeAttack',
-  'action.prepareBow' : 'YZEGS.ActionNames.prepareBow',
-  'action.rally' : 'YZEGS.ActionNames.rally',
-  'action.reload' : 'YZEGS.ActionNames.reload',
-  'action.retreat' : 'YZEGS.ActionNames.retreat',
-  'action.run' : 'YZEGS.ActionNames.run',
-  'action.seekCover': 'YZEGS.ActionNames.seekCover',
-  'action.shootBow' : 'YZEGS.ActionNames.shootBow',
-  'action.shootFirearm' : 'YZEGS.ActionNames.shootFirearm',
-  'action.shootHeavyWeapon' : 'YZEGS.ActionNames.shootHeavyWeapon',
-  'action.shove' : 'YZEGS.ActionNames.shove',
-  'action.throwWeapon' : 'YZEGS.ActionNames.throwWeapon',
-  'action.unarmedAttack' : 'YZEGS.ActionNames.unarmedAttack',
-};
+YZEGS.actionOptions = Object.fromEntries(
+  TWILIGHT_ACTIONS.map(action => [`action.${action.id}`, action.label]),
+);
+// Preserve the original modifier key used by existing Specialty Items.
+YZEGS.actionOptions['action.seekCover'] = 'YZEGS.ActionNames.seekCover';
 
 YZEGS.travelTaskOptions = {
   'travel.cooking' :'YZEGS.TravelTaskNames.cooking',
@@ -116,6 +96,17 @@ YZEGS.vehicle = {
     D: 'YZEGS.VehicleSheet.Diesel',
     A: 'YZEGS.VehicleSheet.Alcohol',
     N: 'YZEGS.VehicleSheet.Nuclear',
+  },
+  domains: {
+    land: 'YZEGS.VehicleSheet.Domains.Land',
+    watercraft: 'YZEGS.VehicleSheet.Domains.Watercraft',
+    amphibious: 'YZEGS.VehicleSheet.Domains.Amphibious',
+  },
+  propulsionTypes: {
+    motor: 'YZEGS.VehicleSheet.Propulsion.Motor',
+    sail: 'YZEGS.VehicleSheet.Propulsion.Sail',
+    paddle: 'YZEGS.VehicleSheet.Propulsion.Paddle',
+    other: 'YZEGS.VehicleSheet.Propulsion.Other',
   },
   components: [
     'FUEL',
@@ -270,6 +261,7 @@ YZEGS.Icons = {
     secondaryWeapon: '<i class="fas fa-angle-double-up"></i>',
     attack: '<i class="fas fa-crosshairs"></i>',
     reload: '<i class="fas fa-sync-alt"></i>',
+    clearJam: '<i class="fas fa-tools"></i>',
     lethal: '<i class="fas fa-skull"></i>',
     mental: '<i class="fas fa-brain"></i>',
     chat: '<i class="far fa-comment-dots"></i>',

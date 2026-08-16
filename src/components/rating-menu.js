@@ -33,14 +33,19 @@ export function activateRatingMenus(root) {
 
     const triggerRect = trigger.getBoundingClientRect();
     const screenGap = 4;
+    const isActionMenu = menu.classList.contains('action-option-menu');
     const optionCount = optionsPanel.querySelectorAll('.rating-menu-option:not([hidden])').length;
     const groupCount = optionsPanel.querySelectorAll('.rating-menu-group-label').length;
-    const desiredHeight = Math.min(196, optionCount * 28 + groupCount * 22 + 2);
+    const maximumHeight = isActionMenu ? 320 : 196;
+    const rowHeight = isActionMenu ? 42 : 28;
+    const desiredHeight = Math.min(maximumHeight, optionCount * rowHeight + groupCount * 22 + 2);
     const spaceBelow = window.innerHeight - triggerRect.bottom - screenGap;
     const spaceAbove = triggerRect.top - screenGap;
     const openAbove = spaceBelow < desiredHeight && spaceAbove > spaceBelow;
     const availableHeight = openAbove ? spaceAbove : spaceBelow;
-    const panelWidth = triggerRect.width;
+    const panelWidth = isActionMenu
+      ? Math.min(Math.max(triggerRect.width, 360), window.innerWidth - (screenGap * 2))
+      : triggerRect.width;
     const panelLeft = Math.max(
       screenGap,
       Math.min(triggerRect.left, window.innerWidth - panelWidth - screenGap),
@@ -48,7 +53,7 @@ export function activateRatingMenus(root) {
 
     optionsPanel.style.width = `${panelWidth}px`;
     optionsPanel.style.left = `${panelLeft}px`;
-    optionsPanel.style.maxHeight = `${Math.max(40, Math.min(196, availableHeight))}px`;
+    optionsPanel.style.maxHeight = `${Math.max(40, Math.min(maximumHeight, availableHeight))}px`;
     optionsPanel.style.top = openAbove ? 'auto' : `${triggerRect.bottom + 1}px`;
     optionsPanel.style.bottom = openAbove ? `${window.innerHeight - triggerRect.top + 1}px` : 'auto';
     optionsPanel.showPopover();
@@ -106,7 +111,10 @@ export function activateRatingMenus(root) {
         const value = option.dataset.value;
 
         if (isComboMenu) trigger.value = value;
-        else trigger.textContent = option.textContent.trim();
+        else {
+          trigger.textContent = option.textContent.trim();
+          trigger.title = option.textContent.trim();
+        }
         input.value = value;
         options.forEach(candidate => {
           const isSelected = candidate === option;

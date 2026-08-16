@@ -40,25 +40,38 @@
   {{! Combat Action and Situational Modifiers }}
   {{#if (or data.combatActionGroups.length data.combatModifierGroups.length)}}
     <div class="combat-modifier-groups combat-modifier-groups-{{data.combatType}}">
-      <h3>{{localize (concat 'YZEGS.CombatModifiers.CombatTypes.' data.combatType)}}</h3>
+      <h3>{{data.actionHeading}}</h3>
 
       {{#if data.combatActionGroups.length}}
+        {{#if data.tracksCombatActions}}
+          <p class="combat-action-remaining">
+            {{localize 'YZEGS.CombatActions.Remaining'
+              fast=data.trackedActions.fast slow=data.trackedActions.slow}}
+          </p>
+        {{/if}}
         <div class="form-group combat-action-selector">
           <label for="yzegs-combat-action">{{localize 'YZEGS.CombatModifiers.Action'}}</label>
-          <select id="yzegs-combat-action" name="combatAction">
-            <option value="" data-value="0">{{localize 'YZEGS.CombatModifiers.NoAction'}}</option>
-            {{#each data.combatActionGroups as |group|}}
-              <optgroup label="{{group.name}}">
-                {{#each group.actions as |action|}}
-                  <option value="{{action.id}}" data-value="{{action.value}}" data-label="{{action.name}}"
-                    data-action-speed="{{action.group}}" data-action-speed-label="{{action.speedName}}">
-                    {{action.name}}{{#if action.value}} ({{action.displayValue}}){{/if}}
-                  </option>
-                {{/each}}
-              </optgroup>
-            {{/each}}
-          </select>
+          {{> dialogActionMenu name="combatAction" selected=data.selectedCombatActionId
+            selectedLabel=data.selectedCombatActionLabel groups=data.combatActionGroups
+            placeholder=(localize 'YZEGS.CombatModifiers.NoAction') editable=true
+            blankDisabled=data.tracksCombatActions inputClass="combat-action-input"}}
         </div>
+
+        {{#if data.actionTargets.length}}
+          <div class="form-group action-dialog-target" hidden>
+            <label for="yzegs-roll-action-target">{{localize "YZEGS.CombatActions.Target"}}</label>
+            {{> dialogChoiceMenu name="targetUuid" selected="" choices=data.actionTargets
+              placeholder=(localize "YZEGS.CombatActions.NoTarget") editable=true}}
+          </div>
+        {{/if}}
+
+        <div class="form-group action-dialog-item" hidden>
+          <label for="yzegs-roll-action-item">{{localize "YZEGS.CombatActions.Item"}}</label>
+          {{> dialogChoiceMenu name="itemId" selected="" choices=data.actionItems
+            placeholder=(localize "YZEGS.CombatActions.NoItem") editable=true}}
+        </div>
+
+        <p class="hint action-dialog-hint" hidden></p>
       {{/if}}
 
       {{#each data.combatModifierGroups as |group|}}
@@ -108,9 +121,16 @@
   {{! Modifiers }}
   <div class='form-group-stacked actor-roll-modifiers'>
     {{#each data.modifiers}}
-      <label class='checkbox' title='{{description}}'>
-        {{> checkboxControl value=active editable=true inputClass='item-modifier'
-          dataValue=value ariaLabel=label}}
+      <label class='checkbox{{#if contextualActionModifier}} contextual-action-modifier{{/if}}'
+        title='{{description}}' data-action-ids='{{contextualActionIds}}'
+        data-default-active='{{contextualDefaultActive}}' {{#if contextualActionModifier}}hidden{{/if}}>
+        {{#if contextualActionModifier}}
+          {{> checkboxControl value=false editable=true inputClass='item-modifier contextual-action-modifier-toggle'
+            dataValue=value ariaLabel=label}}
+        {{else}}
+          {{> checkboxControl value=active editable=true inputClass='item-modifier'
+            dataValue=value ariaLabel=label}}
+        {{/if}}
         {{label}}
       </label>
     {{/each}}
@@ -143,9 +163,8 @@
   {{! Roll Mode }}
   <div class='form-group'>
     <label>{{localize 'YZEGS.Dialog.Roll.RollMode'}}</label>
-    <select name='messageMode'>
-      {{selectOptions config.messageModes selected=data.messageMode localize=true}}
-    </select>
+    {{> optionMenu name="messageMode" selected=data.messageMode options=config.messageModes
+      editable=true noBlank=true localize=true menuClass="dialog-option-menu"}}
   </div>
 
 </div>

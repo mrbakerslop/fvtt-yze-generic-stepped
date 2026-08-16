@@ -1,11 +1,14 @@
 /* eslint-disable no-empty-function */
 /* eslint-disable no-unused-vars */
-import { getDieSize, YZEGSRoller } from '../components/roll/dice.js';
+import { getAttributeAndSkill, getDieSize, YZEGSRoller } from '../components/roll/dice.js';
 import { YZEGS } from '../system/config.js';
 import Modifier from '../components/modifier.js';
 import { YearZeroRoll } from '../lib/yzur.js';
 import Armor from '../components/armor.js';
 import { getRadiationLabel, isRadiationEnabled } from '../system/settings.js';
+import { coverProtectsLocation } from '../system/defense.js';
+import { getDefaultTokenDimensions } from '../system/token-size-defaults.js';
+import { getActorActionSkill } from '../system/action-skills.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor.
@@ -30,6 +33,20 @@ export default class ActorYZEGS extends Actor {
     return null;
   }
 
+  get coverDetails() {
+    const type = this.cover;
+    if (!type) return null;
+    const stored = this.getFlag('fvtt-yze-generic-stepped', 'actionCover') ?? {};
+    const storedArmor = Number(stored.armor);
+    const defaultArmor = type === 'fullCover' ? 2 : 1;
+    return {
+      type,
+      armor: Number.isFinite(storedArmor) ? Math.max(0, storedArmor) : defaultArmor,
+      againstUuid: stored.againstUuid ?? '*',
+      againstName: stored.againstName ?? '',
+    };
+  }
+
   /**
    * Resolve an embedded Skill Item by ID or its legacy fixed-system key.
    * @param {string|Item} reference Skill Item or stored reference
@@ -38,9 +55,25 @@ export default class ActorYZEGS extends Actor {
   getSkill(reference) {
     if (reference?.type === 'skill') return reference;
     if (!reference) return null;
-    return this.items.get(reference)
+    const value = typeof reference === 'object'
+      ? (reference.uuid ?? reference.id ?? reference.legacyKey ?? reference.name)
+      : reference;
+    const legacyKey = typeof reference === 'object' ? reference.legacyKey : reference;
+    const sourceUuid = typeof reference === 'object' ? reference.uuid : reference;
+    const referenceName = typeof reference === 'object' ? reference.name : '';
+    return this.items.get(value)
       ?? this.itemTypes.skill.find(skill => (
-        skill.getFlag('fvtt-yze-generic-stepped', 'legacySkillKey') === reference
+        legacyKey && skill.getFlag('fvtt-yze-generic-stepped', 'legacySkillKey') === legacyKey
+      ))
+      ?? this.itemTypes.skill.find(skill => (
+        sourceUuid && [skill.uuid, skill.getFlag('core', 'sourceId')].includes(sourceUuid)
+      ))
+      ?? this.itemTypes.skill.find(skill => (
+        referenceName && skill.name.localeCompare(
+          referenceName,
+          game.i18n.lang,
+          { sensitivity: 'base' },
+        ) === 0
       ))
       ?? null;
   }
@@ -74,6 +107,8 @@ export default class ActorYZEGS extends Actor {
         break;
       case 'party':
         this._preparePartyData(actorData);
+        break;
+      case 'container':
         break;
       default:
         throw new TypeError(`yzegs | Unknown Actor Type: "${actorData.type}"`);
@@ -429,6 +464,44 @@ export default class ActorYZEGS extends Actor {
   /* ------------------------------------------- */
 
   /** @override */
+  async _preUpdate(changed, options, user) {
+    await super._preUpdate(changed, options, user);
+    if (this.type !== 'vehicle') return;
+    const nextDomain = foundry.utils.getProperty(changed, 'system.domain') ?? changed['system.domain'];
+    if (nextDomain === 'watercraft') foundry.utils.setProperty(changed, 'system.movement.type', 'N');
+    const vehicleDomain = nextDomain ?? this.system.domain;
+    if (vehicleDomain === 'watercraft') {
+      for (const scale of ['combat', 'travel']) {
+        const onRoad = foundry.utils.getProperty(changed, `system.movement.${scale}.onRoad`)
+          ?? changed[`system.movement.${scale}.onRoad`];
+        const offRoad = foundry.utils.getProperty(changed, `system.movement.${scale}.offRoad`)
+          ?? changed[`system.movement.${scale}.offRoad`];
+        const speed = onRoad ?? offRoad ?? (nextDomain === 'watercraft'
+          ? this.system.movement?.[scale]?.onRoad
+          : undefined);
+        if (speed === undefined) continue;
+        foundry.utils.setProperty(changed, `system.movement.${scale}.onRoad`, speed);
+        foundry.utils.setProperty(changed, `system.movement.${scale}.offRoad`, speed);
+      }
+    }
+    const uniformChange = foundry.utils.getProperty(changed, 'system.watercraft.uniformArmor')
+      ?? changed['system.watercraft.uniformArmor'];
+    const uniformArmor = uniformChange ?? this.system.watercraft?.uniformArmor;
+    if (!uniformArmor) return;
+    const facings = ['front', 'left', 'right', 'rear'];
+    for (const property of ['value', 'max']) {
+      const changedValue = facings.map(facing => (
+        foundry.utils.getProperty(changed, `system.armor.${facing}.${property}`)
+        ?? changed[`system.armor.${facing}.${property}`]
+      )).find(value => value !== undefined);
+      if (changedValue === undefined) continue;
+      for (const facing of facings) {
+        foundry.utils.setProperty(changed, `system.armor.${facing}.${property}`, changedValue);
+      }
+    }
+  }
+
+  /** @override */
   async _preCreate(data, options, user) {
     await super._preCreate(data, options, user);
 
@@ -452,17 +525,19 @@ export default class ActorYZEGS extends Actor {
       case 'unit':
         updateData.displayName = CONST.TOKEN_DISPLAY_MODES.ALWAYS;
         break;
+      case 'container':
+        updateData.actorLink = true;
+        updateData.disposition = CONST.TOKEN_DISPOSITIONS.NEUTRAL;
+        updateData.displayBars = CONST.TOKEN_DISPLAY_MODES.NONE;
+        updateData.bar1 = { attribute: null };
+        updateData.bar2 = { attribute: null };
+        break;
     }
-    // Adds default character token size.
-    if (['character', 'npc'].includes(this.type)) {
-      const size = game.settings.get('fvtt-yze-generic-stepped', 'defaultCharTokenSize');
-      if (size >= 0.3 && size <= 2) {
-        updateData.height = size;
-        updateData.width = size;
-      }
-      else {
-        console.warn('yzegs | defaultCharTokenSize settings not between acceptable range.', size);
-      }
+    // Apply per-type dimensions to genuinely new Actors. Imported Actors retain
+    // the Prototype Token dimensions supplied by their source.
+    if (!(options?.fromCompendium || options?.sourceId || options?.imported)) {
+      const dimensions = getDefaultTokenDimensions(this.type);
+      if (dimensions) Object.assign(updateData, dimensions);
     }
     // Performs the update.
     this.prototypeToken.updateSource(updateData);
@@ -557,12 +632,15 @@ export default class ActorYZEGS extends Actor {
 
     if (sievert <= 0) return;
 
+    const skill = getActorActionSkill(this, 'radiationCheck', 'stamina');
     const rollConfig = foundry.utils.mergeObject(
       {
         title: getRadiationLabel({ roll: true }),
-        attributeName: 'str',
-        attribute: system.attributes.str.value,
-        skill: this.getSkill('stamina')?.system.value ?? 0,
+        ...(skill ? getAttributeAndSkill(skill, this) : {
+          attributeName: 'str',
+          attribute: system.attributes.str.value,
+          skill: 0,
+        }),
         modifier: YZEGS.radiationVirulence - sievert,
       },
       options,
@@ -584,7 +662,7 @@ export default class ActorYZEGS extends Actor {
       case 'npc':
         return this.applyDamageToCharacter(amount, attackData, sendMessage);
       case 'vehicle':
-        return this.applyDamageToVehicle();
+        return this.applyDamageToVehicle(amount, attackData, sendMessage);
     }
   }
 
@@ -604,8 +682,19 @@ export default class ActorYZEGS extends Actor {
       attackData.location = YZEGS.hitLocs[loc - 1];
     }
 
-    // 2 — Barrier(s)
+    // 2 — Directional cover protects every location when full, but only
+    // torso and legs when partial. Other explicit barriers remain independent.
     const armors = [];
+    if (coverProtectsLocation(attackData.coverType, attackData.location)) {
+      for (let i = 0; i < (attackData.coverBarriers ?? []).length; i++) {
+        const barrierRating = +attackData.coverBarriers[i];
+        if (!barrierRating) continue;
+        const barrierName = `${game.i18n.localize('YZEGS.Combat.Barrier')} #${i + 1}`;
+        const barrier = new Armor(barrierRating, barrierName);
+        amount = await barrier.penetration(amount, baseDamage, armorModifier);
+        armors.push(barrier);
+      }
+    }
     for (let i = 0; i < (attackData.barriers ?? []).length; i++) {
       const barrierRating = +attackData.barriers[i];
       if (!barrierRating) continue;
@@ -644,6 +733,10 @@ export default class ActorYZEGS extends Actor {
     const diff = newVal - oldVal;
 
     if (diff !== 0) await this.update({ 'system.health.value': newVal });
+    if (newVal <= 0) {
+      const { clearCloseQuartersEngagement } = await import('../system/urban-workflows.js');
+      await clearCloseQuartersEngagement(this);
+    }
 
     if (!sendMessage) return diff;
 
@@ -674,8 +767,9 @@ export default class ActorYZEGS extends Actor {
 
   /* ------------------------------------------- */
 
-  async applyDamageToVehicle() {
-    ui.notifications.warn('Automatic Apply Damage to Vehicles is not yet implemented.');
+  async applyDamageToVehicle(amount, attackData = {}, sendMessage = true) {
+    const { applyVehicleDamage } = await import('../system/vehicle-damage.js');
+    return applyVehicleDamage(this, amount, attackData, sendMessage);
   }
 
   /* ------------------------------------------- */

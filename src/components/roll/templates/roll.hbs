@@ -27,5 +27,213 @@
         <button class='dice-button accept' data-action='accept' data-actor-id="{{roll.options.actorId}}">{{localize 'YZUR.CHAT.ROLL.Accept'}}</button>
       </div>
     {{/if}}
+
+    {{! A declared Block is rolled only after the attacker has completed all pushes. }}
+    {{#if roll.options.defense}}
+      {{#if (eq roll.options.defense.status "awaitingBlockRoll")}}
+        {{#unless pushable}}
+          {{#if (gt roll.baseSuccessQty 0)}}
+            <p class="defense-roll-status">
+              {{localize "YZEGS.Defense.BlockAwaiting" defender=roll.options.defense.defenderName}}
+            </p>
+            <div class="dice-buttons defense-roll-buttons">
+              <button class="dice-button roll-block" data-owner-uuid="{{roll.options.defense.defenderUuid}}">
+                <i class="fas fa-shield-halved"></i> {{localize "YZEGS.Defense.RollBlock"}}
+              </button>
+            </div>
+          {{else}}
+            <p class="defense-roll-status">{{localize "YZEGS.Defense.AttackMissedNoBlock"}}</p>
+          {{/if}}
+        {{/unless}}
+      {{/if}}
+      {{#if (eq roll.options.defense.status "resolved")}}
+        <p class="defense-resolution{{#if roll.options.defense.blocked}} fully-blocked{{/if}}">
+          {{localize "YZEGS.Defense.Resolution" block=roll.options.defense.blockSuccesses
+            cancelled=roll.options.defense.cancelledSuccesses remaining=roll.options.defense.remainingSuccesses}}
+        </p>
+      {{/if}}
+    {{/if}}
+
+    {{#if roll.options.defenseFor}}
+      {{#unless pushable}}
+        {{#unless roll.options.defenseFor.applied}}
+          <div class="dice-buttons defense-apply-buttons">
+            <button class="dice-button apply-block" data-action="apply-block">
+              <i class="fas fa-shield-halved"></i> {{localize "YZEGS.Defense.ApplyBlock"}}
+            </button>
+          </div>
+        {{else}}
+          <p class="defense-resolution">{{localize "YZEGS.Defense.BlockApplied"}}</p>
+        {{/unless}}
+      {{/unless}}
+    {{/if}}
+
+    {{! Apply the final result of First Aid, Rally, Shove, Grapple, and similar actions. }}
+    {{#if roll.options.actionData.canApplyOutcome}}
+      {{#unless (defensePending roll)}}
+        {{#unless pushable}}
+          {{#if (gt (effectiveAttackSuccesses roll) 0)}}
+            {{#unless roll.options.actionData.applied}}
+              <div class='dice-buttons apply-action-outcome-buttons'>
+                <button class='dice-button apply-action-outcome' data-action='apply-action-outcome'>
+                  <i class="fas fa-check"></i> {{localize 'YZEGS.CombatActions.ApplyOutcome'}}
+                </button>
+              </div>
+            {{/unless}}
+          {{else}}
+            <p class='action-outcome-unsuccessful'>
+              <i class="fas fa-xmark"></i> {{localize 'YZEGS.CombatActions.OutcomeUnsuccessful'}}
+            </p>
+          {{/if}}
+        {{/unless}}
+      {{/unless}}
+    {{/if}}
+
+    {{#if roll.options.actionData.failureMessage}}
+      {{#unless pushable}}
+        {{#unless (gt (effectiveAttackSuccesses roll) 0)}}
+          <p class='action-outcome-unsuccessful'>
+            <i class='fas fa-triangle-exclamation'></i> {{roll.options.actionData.failureMessage}}
+          </p>
+        {{/unless}}
+      {{/unless}}
+    {{/if}}
+
+    {{! YZEGS: Attack damage application }}
+    {{#if roll.options.attackData}}
+      {{#if roll.options.attackData.blindFire}}
+        <p class='damage-application-missed'>
+          <i class='fas fa-eye-slash'></i> {{localize 'YZEGS.Urban.BlindFire.NoDirectHit'}}
+        </p>
+      {{else}}
+      {{#unless (defensePending roll)}}
+        {{#unless pushable}}
+        {{#if (gt (effectiveAttackSuccesses roll) 0)}}
+          {{#if (guidedImpactCanSchedule roll)}}
+            <div class='dice-buttons guided-impact-buttons'>
+              <button class='dice-button schedule-guided-impact'>
+                <i class='fas fa-satellite-dish'></i> {{localize 'YZEGS.Guidance.Schedule'}}
+              </button>
+            </div>
+          {{else if (guidedImpactIsPending roll)}}
+            <p class='guided-impact-pending'><i class='fas fa-hourglass-half'></i>
+              {{localize 'YZEGS.Guidance.Pending' round=roll.options.guidedImpact.dueRound}}</p>
+            {{#if (guidedImpactCanEvade roll)}}
+              <button class='dice-button evade-guided-impact' data-owner-uuid='{{roll.options.guidedImpact.targetUuid}}'>
+                <i class='fas fa-person-running'></i> {{localize 'YZEGS.Guidance.Evade'}}
+              </button>
+            {{/if}}
+          {{else if (guidedImpactWasEvaded roll)}}
+            <p class='damage-application-missed'><i class='fas fa-check'></i>
+              {{localize 'YZEGS.Guidance.Evaded'}}</p>
+          {{else if roll.options.damageApplication.complete}}
+            <p class='damage-application-complete'>
+              <i class="fas fa-check"></i> {{localize 'YZEGS.Chat.Damage.ApplicationComplete'}}
+            </p>
+          {{else}}
+            {{#if (guidedImpactCanApply roll)}}
+            <div class='dice-buttons apply-damage-buttons'>
+              <button class='dice-button apply-damage' data-action='apply-damage'>
+                <i class="fas fa-crosshairs"></i>
+                {{#if roll.options.damageApplication.primaryApplied}}
+                  {{localize 'YZEGS.Chat.Actions.ApplyAdditionalHit'}}
+                {{else}}
+                  {{localize 'YZEGS.Chat.Actions.ApplyDamage'}}
+                {{/if}}
+              </button>
+            </div>
+            {{/if}}
+            {{#if roll.options.damageApplication.primaryApplied}}
+              <p class='damage-ammo-remaining'>
+                {{localize 'YZEGS.Chat.Damage.AmmoSuccessesRemaining'
+                  count=roll.options.damageApplication.ammoSuccessesRemaining}}
+              </p>
+            {{/if}}
+          {{/if}}
+        {{else}}
+          <p class='damage-application-missed'>
+            <i class="fas fa-xmark"></i> {{localize 'YZEGS.Chat.Damage.AttackMissed'}}
+          </p>
+        {{/if}}
+        {{/unless}}
+      {{/unless}}
+      {{/if}}
+    {{/if}}
+
+    {{#unless pushable}}
+      {{#if (confinedRicochetRequired roll)}}
+        <div class='dice-buttons confined-space-buttons'>
+          <button class='dice-button resolve-ricochet' data-gm-only='true'>
+            <i class='fas fa-arrows-turn-to-dots'></i> {{localize 'YZEGS.ConfinedSpace.Ricochet.Resolve'}}
+          </button>
+        </div>
+      {{/if}}
+      {{#if (confinedCollapseRequired roll)}}
+        <div class='dice-buttons confined-space-buttons'>
+          <button class='dice-button resolve-collapse' data-gm-only='true'>
+            <i class='fas fa-house-crack'></i> {{localize 'YZEGS.ConfinedSpace.Collapse.Resolve'}}
+          </button>
+        </div>
+      {{/if}}
+    {{/unless}}
+
+    {{! YZEGS: Rules-as-written suppression resolution }}
+    {{#if (hasBlast roll)}}
+      {{#unless roll.options.attackData.blastResolution}}
+        {{#unless pushable}}
+          <div class='dice-buttons blast-resolution-buttons'>
+            <button class='dice-button resolve-blast' data-action='resolve-blast'>
+              <i class='fas fa-burst'></i> {{localize 'YZEGS.Urban.Blast.Resolve'}}
+            </button>
+          </div>
+        {{/unless}}
+      {{/unless}}
+    {{/if}}
+
+    {{#if (suppressionRequired roll)}}
+      {{#unless (defensePending roll)}}
+        {{#unless pushable}}
+          <div class='suppression-resolution'>
+            <p class='suppression-heading'>
+              <i class='fas fa-person-falling'></i> {{localize 'YZEGS.Suppression.CheckRequired'}}
+            </p>
+            {{#unless roll.options.suppression.targets.length}}
+              <p class='suppression-no-target'>{{localize 'YZEGS.Suppression.NoRecordedTarget'}}</p>
+              <button class='dice-button assign-suppression' data-action='assign-suppression'
+                data-owner-uuid='{{roll.options.actorUuid}}'>
+                <i class='fas fa-crosshairs'></i> {{localize 'YZEGS.Suppression.AssignTarget'}}
+              </button>
+            {{/unless}}
+            {{#each roll.options.suppression.targets as |target|}}
+              <div class='suppression-target'>
+                <span class='suppression-target-name'>
+                  {{target.name}}{{#if (eq target.cause 'panic')}} —
+                    {{localize 'YZEGS.Suppression.PanicFrom' source=target.sourceName}}{{/if}}
+                </span>
+                {{#if (eq target.status 'pending')}}
+                  <button class='dice-button roll-suppression' data-action='roll-suppression'
+                    data-owner-uuid='{{target.actorUuid}}' data-target-uuid='{{target.actorUuid}}'>
+                    <i class='fas fa-dice'></i> {{localize 'YZEGS.Suppression.RollCuF'}}
+                  </button>
+                {{else if (eq target.status 'success')}}
+                  <span class='suppression-success'><i class='fas fa-check'></i>
+                    {{localize 'YZEGS.Suppression.Resisted'}}</span>
+                {{else if (eq target.status 'failure')}}
+                  <span class='suppression-failure'><i class='fas fa-person-falling'></i>
+                    {{localize 'YZEGS.Suppression.Applied'}}</span>
+                {{else if (eq target.status 'immune')}}
+                  <span class='suppression-immune'><i class='fas fa-car-side'></i>
+                    {{localize 'YZEGS.Suppression.VehicleProtected' vehicle=target.vehicleName}}</span>
+                {{/if}}
+              </div>
+            {{/each}}
+            {{#if roll.options.suppression.complete}}
+              <p class='suppression-complete'><i class='fas fa-check'></i>
+                {{localize 'YZEGS.Suppression.Complete'}}</p>
+            {{/if}}
+          </div>
+        {{/unless}}
+      {{/unless}}
+    {{/if}}
   </div>
 </div>

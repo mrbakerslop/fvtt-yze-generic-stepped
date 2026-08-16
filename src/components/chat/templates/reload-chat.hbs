@@ -1,0 +1,18 @@
+<div class="yzegs chat-card reload-result">
+  <div class="card-content">
+    <div class="card-name"><h2>{{localize "YZEGS.Reload.ResultTitle"}}</h2></div>
+    <p><strong>{{reloader}}</strong> — {{weapon}}</p>
+    {{#if retrievalFailed}}
+      <p>{{localize "YZEGS.Reload.ResultRetrieveFailed"}}</p>
+    {{else if complete}}
+      <p>{{localize "YZEGS.Reload.ResultCompleted"}} <strong>{{ammunition}}</strong>.</p>
+      <p>{{localize "YZEGS.Reload.RoundsLoaded"}}: <strong>{{loaded}}</strong></p>
+      {{#if action}}<p>{{localize (concat "YZEGS.Reload.ActionSpent." action)}}</p>{{/if}}
+      {{#if heavyWeapon}}<p>{{localize "YZEGS.Reload.HeavyWeaponResult"}}</p>{{/if}}
+    {{else if forfeited}}
+      <p>{{localize "YZEGS.Reload.ResultForfeited"}}</p>
+    {{else}}
+      <p>{{localize "YZEGS.Reload.ResultNoAction"}}</p>
+    {{/if}}
+  </div>
+</div>

@@ -1,5 +1,205 @@
 # Changelog
 
+## 14.0.8 — 2026-08-16
+
+### Added
+
+- Added a GM-only **Action Skills** world configuration. Character actions,
+  Travel Party rolls, and supporting automated checks can now use arbitrary
+  world or compendium Skill Items, while Weapon actions continue to use the
+  Skill configured on each Weapon.
+- Added setting-neutral watercraft support to Vehicle Actors, including land,
+  watercraft, and amphibious domains; vessel Size and propulsion; uniform
+  armor; hull, mast, and rigging components; grounding, flooding, and sinking
+  state; and watercraft-specific sheet controls.
+- Added automatic Vehicle armor penetration and component-hit resolution,
+  hull breaches, penetrated-vessel crew shock, collisions, ramming, careening,
+  amphibious landings, internal explosions, hull repair, bailing, and freeing
+  grounded vessels.
+- Added Water Region behaviors and Swimming, Submerged, Drowning, Overboard,
+  and Hypothermia states. Deep-water combat now enforces movement and attack
+  restrictions, drowning advances each combat round, and configurable Gear
+  provides cold-water protection.
+- Added water actions to the shared action and Skill-roll dialogs, including
+  swimming, staying afloat, surfacing, rescue, climbing aboard, turning,
+  ramming, bailing, freeing a vessel, and repairing a hull.
+- Added configurable guided Weapon profiles with target classes, firing arcs,
+  delayed impacts, round tracking, and target-owned Driving evasion.
+- Extended Minefield Regions with water-mine modes, vessel Size thresholds,
+  submerged detection equipment, detected-mine avoidance, automatic Vehicle
+  damage, and penetrating hull breaches.
+- Added a mutually exclusive Water Travel mode to Travel Party Actors with
+  vessel, terrain, night, route-branch, navigator, Driving, fishing, encounter
+  distance, mishap, and vessel-state automation.
+- Added Container Actors for persistent chests, crates, lockers, weapon racks,
+  and other storage placed as linked scene tokens.
+- Added permission-aware, bidirectional drag-and-drop transfers with a quantity
+  prompt for physical Items moving between Character and Container inventories.
+- Added a unified Weapon reload workflow to Character inventories, Weapon
+  sheets, and chat cards, with compatible source selection, Ranged Combat
+  checks, automatic Reload action modifiers, and fast/slow action spending.
+- Added backpack ammunition retrieval using a slow action and Mobility check,
+  plus heavy-weapon reloads, alternate loaders, and reload result chat cards.
+- Added a world setting which switches internal magazines between full reloads
+  and the optional one-round-per-action rule.
+- Added persistent Weapon jams. Qualifying pushed attacks now mark the Weapon
+  as jammed, prevent it from firing, and expose a Clear Jam action on Weapon and
+  Actor sheets.
+- Added rules-based Clear Jam attempts using the Weapon's linked Skill. Attempts
+  spend a slow action during active combat, retain the jam on failure, and may
+  be repeated; outside combat, the Skill roll remains but time is narrative.
+- Linked combat actions selected in Close and Ranged roll dialogs to Character
+  and NPC Fast/Slow action pools during active combat, including Slow-to-Fast
+  conversion, unavailable-action checks, and remaining-action summaries.
+- Character and NPC Fast/Slow action pools now reset to their configured maxima
+  whenever an active encounter advances to a new combat round.
+- Moved Apply Damage from the chat-message context menu to a visible button on
+  attack roll cards, with an explicit warning when no target is selected.
+- Added a Character/NPC Take Action launcher backed by a shared Twilight: 2000
+  action registry containing the complete Slow, Fast, and Free action tables
+  plus the chapter's specialist combat, medical, environmental, and vehicle
+  actions.
+- Added tracked action and correct-skill workflows for movement, inventory,
+  support, close-combat, ranged, heavy-weapon, and vehicle actions. Narrative
+  actions still produce a chat record without imposing artificial automation.
+- Added automated prone, cover, aiming, overwatch, bow/grenade preparation,
+  inventory readiness, shove, disarm, grapple, break-free, First Aid, Rally,
+  and extinguish-fire outcomes. Pushable results are applied from their final
+  chat card rather than from the initial roll.
+- Added target and prerequisite validation, treatment-attempt limits, reactive
+  action tracking, automatic quick-shot and telescopic-aim modifiers, and the
+  rule that heavy weapons must be aimed before firing.
+- Relevant registry actions now appear directly in ordinary Skill roll dialogs,
+  with contextual target, inventory, action-cost, and Specialty modifier fields.
+- Added staged close-combat defense cards. A defender must declare Block before
+  the attack roll, spends the reactive Fast action immediately, and rolls only
+  after the attacker has completed any push.
+- Added rules-based Block resolution for melee, unarmed, shove, disarm, and
+  grapple attempts. Each Block success cancels one attack success and fully
+  blocked attacks cannot apply damage or outcomes.
+- Added the no-action Mobility reaction for dropping prone from a grenade, with
+  successful final rolls applying the prone status.
+- Added rules-as-written firearm suppression. Final attack cards request a
+  target-owned CUF check after a hit or an ammo-die success on a miss; failed
+  checks automatically apply prone, one Stress, the Suppressed marker, and the
+  loss of both actions on the target's next turn.
+- Added same-hex panic spread with one CUF check per fighter per attack, plus
+  automatic expiry after the suppressed turn and protection for fully enclosed
+  Vehicle occupants.
+- Added Twilight: 2000 Scene grid presets. New worlds default to an approximate
+  2.5-metre Close Quarters hex scale, with selectable 10-metre Battle,
+  200-metre City, 10-kilometre Travel, and system-default options plus
+  deliberate preset controls in Scene config.
+- Added per-Actor-type Prototype Token width and height defaults for Characters,
+  NPCs, Vehicles, Units, Parties, and Containers while preserving existing and
+  imported token dimensions.
+- Added explicit per-Scene Twilight scale and Urban Operations flags. Close
+  Quarters Scenes enable the urban rules automatically, while a GM can enable
+  them independently on a 10-metre Battle Scene.
+- Added Urban Operations actions for shooter spotting, wall-hugging, entering
+  buildings, sector and floor movement, slow breaching, blocking apertures,
+  aperture overwatch, vehicle cover, booby traps, crowd control, and radio
+  monitoring. Stretch and shift tasks are prevented during active combat.
+- Added Close Quarters blind fire to Weapon roll dialogs. It rolls ammunition
+  dice only, cannot inflict direct firearm damage, and retains suppression;
+  explosive attacks can still resolve their sector blast.
+- Added rules-based blast resolution from attack cards, including one roll per
+  selected target, A–D blast profiles, indoor blast stepping, containment
+  reminders, automatic knockdown, and CUF suppression checks.
+- Added persistent Close Quarters engagements, restricted Slow Actions,
+  random third-party ranged targets, and automatic release after retreat,
+  shove, suppression, incapacitation, or the end of combat.
+- Added wall-hugging exposure and restoration, aperture-specific overwatch,
+  and vehicle-cover hit redirection.
+- Added an Urban Operations mode to Party travel sheets. It limits assignments
+  to March, Drive, and Keep Watch; includes city movement/back-off guidance,
+  a city fuel calculator, and a GM stretch/encounter tracker.
+- Added a generic Confined-Space Hazards Scene option with indoor Blast
+  increases, missed-shot ricochets, structural-collapse checks, and a
+  persistent Pinned by Debris condition with a Break Free action.
+- Added Shotgun, Airburst, Directional, and Explosive Type fields so Weapons
+  and Explosives can identify the special handling their attacks require.
+- Added a native Minefield Region behavior with GM-configurable density,
+  condition, mine type, damage, Blast, armor, detection, Airburst, Directional,
+  and discovered state. Token movement can resolve hidden detection, careful
+  probing, trigger checks, duds, direct damage, and Blast effects.
+- Added Detect Mines, Cautious Mine Movement, Probe Mines, Place Mines, Clear
+  Mines, and Break Free from Debris to the action and Skill-roll workflows.
+
+### Changed
+
+- Taking cover now records its real Armor Level and an optional threat
+  direction. Partial cover protects only torso and legs, while full cover
+  protects every hit location and applies its ranged-attack penalty.
+- Blocking can use an equipped Weapon or be performed unarmed so pushed-roll
+  Reliability loss or personal Damage is assigned to the correct document.
+
+- Apply Damage now follows Twilight: 2000 ammo-die allocation: players can
+  spend successes as bonus damage or preserve them for separately resolved
+  additional hits, each with its own hit location and armor resolution. Only
+  GMs see the optional narrative damage adjustment.
+- Roll, action, target, item, roll-mode, and rolling-Actor selections now use
+  the system's custom button-based menus instead of Foundry's native selects.
+- Weapon attack roll dialogs now show their rules-appropriate attack action in
+  the Action Used menu while retaining dedicated Weapon workflow validation.
+- Magazine Ammunition now represents one physical magazine: its generic stack
+  quantity is fixed at one and hidden, while its rounds remain tracked by the
+  ammunition value and capacity fields.
+- Added an Is Ammo Belt property to Ammunition. Belts use the same single-item
+  quantity behavior as magazines and can only be selected by Weapons configured
+  with the Is Ammo Belt property.
+- Added an Is Box of Ammo property for purchasable ammunition stacks. Boxes keep
+  the standard quantity field and cannot be selected as a Weapon's ammunition.
+- Renamed the Weapon-side ammunition belt property to Is Belt Fed while keeping
+  Is Ammo Belt on Ammunition Items.
+- Added a Magazine Fed property to Weapons. Magazine-fed Weapons accept only
+  magazine Ammunition, belt-fed Weapons accept only belts, and Weapons with
+  neither property accept only loose ammunition.
+- Added an Internal Magazine Weapon property with loaded/capacity tracking.
+  Internal magazines draw from loose ammunition, consume loaded rounds when
+  fired, and cannot select magazines, belts, or boxes.
+- Added a Heavy Weapon property. Heavy weapons always spend a slow action to
+  reload and may use another owned Character or NPC as their loader.
+- Weapon ammunition menus now require the Ammunition Item's Ammo Identifier to
+  match the Weapon's Ammo field, ignoring case and whitespace. Generated
+  ammunition inherits the Weapon's identifier automatically.
+- Embedded Weapon ammunition selectors are now read-only so changing ammunition
+  cannot bypass the reload roll, action cost, or backpack retrieval procedure.
+- Reload rolls and action costs only apply while the reloading Character is in a
+  started combat encounter; outside active combat, reloading is automatic.
+- Reload dialogs show the currently loaded magazine, belt, or ammunition type
+  and list every compatible replacement by Item name. Full and partially loaded
+  weapons can be reloaded solely to change ammunition type.
+- Reload ammunition choices show current/maximum rounds for magazines and belts,
+  or the available quantity for loose internal-magazine ammunition.
+- Outside active combat, reload dialogs hide all combat roll, modifier, action,
+  and backpack-access costs and identify the reload as automatic narrative time.
+- Replaced the embedded Weapon sheet's magazine selector with a wider read-only
+  loaded-ammunition display and a square icon-only Reload button on the same row.
+- Increased the default Weapon sheet height so its complete Features tab,
+  including the effective loaded-ammunition profile, fits without routine
+  vertical scrolling.
+- Aligned Character Gear-tab headers and item rows to shared grid columns for
+  Weapon statistics, Armor values, Weight, and item controls.
+- Loaded Ammunition with Override Weapon's Features now displays its effective
+  Damage, Crit, Blast, Range, and Armor values on Weapon sheets, Character
+  inventories, Vehicle inventories, and Weapon chat cards while leaving the
+  Weapon's editable base values unchanged.
+- Weapon and grenade attacks now select and spend their required Slow action
+  automatically. Aiming, sniper aiming, and overwatch are established as
+  separate persistent actions instead of being treated as attack-roll labels.
+
+### Fixed
+
+- Unsuccessful final action rolls now show a clear failure message instead of
+  offering an Apply Outcome button which cannot produce a result.
+- Attack rolls now preserve the loaded Ammunition profile at the moment of the
+  roll, so reloading or changing ammunition before Apply Damage cannot alter the
+  attack's Damage or Armor behavior.
+- Open Weapon Item sheets now recalculate and refresh their effective profile
+  after every reload, preventing stale specialty-ammunition values when changing
+  back to standard ammunition.
+
 ## 14.0.7 - 2026-08-16 — Archetypes and Push Costs
 
 ### Added

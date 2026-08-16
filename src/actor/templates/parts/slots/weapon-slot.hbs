@@ -1,15 +1,26 @@
-<div class="item item-weapon flexrow" data-item-id="{{id}}">
+<div class="item item-weapon flexrow{{#if system.jammed}} is-jammed{{/if}}" data-item-id="{{id}}">
 
   <div class="item-name flexrow">
     <img class="item-roll" src="{{img}}" title="{{name}}" width="24" height="24"/>
     <a class="item-roll">{{detailedName}}</a>
+    {{#if system.jammed}}
+    <span class="weapon-jammed-marker" title="{{localize 'YZEGS.Jam.Status'}}">
+      {{{@root.config.Icons.buttons.clearJam}}}
+    </span>
+    {{/if}}
   </div>
   <div class="item-detail item-rof">{{system.rof}}</div>
-  <div class="item-detail item-damage">{{system.damage}}</div>
-  <div class="item-detail item-crit">{{system.crit}}</div>
-  <div class="item-detail item-armor">{{#if (gte system.armorModifier 1)}}+{{/if}}{{system.armorModifier}}</div>
-  <div class="item-detail item-range">{{system.range}}</div>
-  {{#if system.mag.max}}
+  <div class="item-detail item-damage{{#if system.effectiveAttack.overridden}} ammo-overridden{{/if}}"
+    title="{{system.effectiveAttack.ammunitionName}}">{{system.effectiveAttack.damage}}</div>
+  <div class="item-detail item-crit{{#if system.effectiveAttack.overridden}} ammo-overridden{{/if}}"
+    title="{{system.effectiveAttack.ammunitionName}}">{{system.effectiveAttack.crit}}</div>
+  <div class="item-detail item-armor{{#if system.effectiveAttack.overridden}} ammo-overridden{{/if}}"
+    title="{{system.effectiveAttack.ammunitionName}}">{{#if (gte system.effectiveAttack.armorModifier 1)}}+{{/if}}{{system.effectiveAttack.armorModifier}}</div>
+  <div class="item-detail item-range{{#if system.effectiveAttack.overridden}} ammo-overridden{{/if}}"
+    title="{{system.effectiveAttack.ammunitionName}}">{{system.effectiveAttack.range}}</div>
+  {{#if system.reload}}
+  <div class="item-detail item-mag" title="{{system.reload.sourceName}}">{{system.reload.value}}/{{system.reload.max}}</div>
+  {{else if system.mag.max}}
   <div class="item-detail item-mag">{{system.mag.max}}</div>
     {{!-- <input type="number" class="weapon-edit-ammo" value="{{system.mag.value}}" title="{{system.mag.value}}/{{system.mag.max}}"/> --}}
   {{!-- </div> --}}
@@ -17,7 +28,8 @@
   <div class="item-detail item-mag" title="{{system.mag.value}}/{{system.mag.max}}">{{system.mag.value}}</div>
   {{/if}}
   <div class="item-detail item-reliability" title="{{system.reliability.value}}/{{system.reliability.max}}">{{system.reliability.value}}</div>
-  <div class="item-detail item-blast">{{system.blast}}</div>
+  <div class="item-detail item-blast{{#if system.effectiveAttack.overridden}} ammo-overridden{{/if}}"
+    title="{{system.effectiveAttack.ammunitionName}}">{{system.effectiveAttack.blast}}</div>
   <div class="item-detail item-weight" title="{{localize "YZEGS.ItemSheet.Quantity"}}: {{system.qty}}">{{system.encumbrance}}</div>
 
   <div class="item-controls">

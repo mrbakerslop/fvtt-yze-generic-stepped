@@ -41,6 +41,23 @@
             {{!-- Other Parameters --}}
             <div class="features-other flexcol">
 
+                <div class="form-group">
+                    <label>{{localize "YZEGS.SpareParts.Label"}}</label>
+                    {{> optionMenu name="system.sparePartType" selected=system.sparePartType options=sparePartChoices
+                      editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+                </div>
+                <div class="form-group">
+                    <label>{{localize "YZEGS.WaterProtection.Label"}}</label>
+                    {{> optionMenu name="system.waterProtection" selected=system.waterProtection options=waterProtectionChoices
+                      editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+                </div>
+                {{#if (eq system.waterProtection "wetsuit")}}
+                <div class="form-group">
+                    <label>{{localize "YZEGS.WaterProtection.Modifier"}}</label>
+                    <input type="number" name="system.coldWaterModifier" value="{{system.coldWaterModifier}}">
+                </div>
+                {{/if}}
+
                 {{!-- Properties --}}
                 <div class="form-group-stacked item-properties">
                     {{#each system.props as | prop name |}}

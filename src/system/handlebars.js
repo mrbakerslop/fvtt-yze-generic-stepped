@@ -1,4 +1,13 @@
 /* eslint-disable quotes */
+import { attackCausesSuppression } from './suppression.js';
+import {
+  guidedImpactCanApply,
+  guidedImpactCanEvade,
+  guidedImpactCanSchedule,
+  guidedImpactIsPending,
+  guidedImpactWasEvaded,
+} from './guided-weapons.js';
+
 /**
  * Defines a set of template paths to pre-load.
  * Pre-loaded templates are compiled and cached for fast access when rendering.
@@ -58,6 +67,56 @@ export async function preloadHandlebarsTemplates() {
  * Defines Handlebars custom Helpers and Partials.
  */
 export function registerHandlebars() {
+  Handlebars.registerHelper('guidedImpactCanApply', guidedImpactCanApply);
+  Handlebars.registerHelper('guidedImpactCanSchedule', guidedImpactCanSchedule);
+  Handlebars.registerHelper('guidedImpactIsPending', guidedImpactIsPending);
+  Handlebars.registerHelper('guidedImpactWasEvaded', guidedImpactWasEvaded);
+  Handlebars.registerHelper('guidedImpactCanEvade', guidedImpactCanEvade);
+  Handlebars.registerHelper('effectiveAttackSuccesses', roll => {
+    const defense = roll?.options?.defense;
+    return defense?.status === 'resolved'
+      ? Math.max(0, Number(defense.remainingSuccesses) || 0)
+      : Math.max(0, Number(roll?.baseSuccessQty) || 0);
+  });
+
+  Handlebars.registerHelper('defensePending', roll => (
+    roll?.options?.defense?.status === 'awaitingBlockRoll'
+  ));
+
+  Handlebars.registerHelper('suppressionRequired', roll => (
+    Boolean(roll?.options?.suppression) && (roll.options.suppression.force || attackCausesSuppression({
+      attackSuccesses: roll?.options?.defense?.status === 'resolved'
+        ? roll.options.defense.remainingSuccesses
+        : roll?.baseSuccessQty,
+      ammoSuccesses: roll?.hitCount,
+    }))
+  ));
+
+  Handlebars.registerHelper('hasBlast', roll => (
+    ['A', 'B', 'C', 'D'].includes(String(roll?.options?.attackData?.blast ?? '').toLocaleUpperCase())
+  ));
+
+  Handlebars.registerHelper('confinedRicochetRequired', roll => {
+    const defense = roll?.options?.defense;
+    const successes = defense?.status === 'resolved'
+      ? Math.max(0, Number(defense.remainingSuccesses) || 0)
+      : Math.max(0, Number(roll?.baseSuccessQty) || 0);
+    return Boolean(
+      roll?.options?.attackData?.ricochetEligible
+      && roll.options.attackData.primaryTargetUuid
+      && !roll.options.confinedSpaceResolution?.ricochet
+      && defense?.status !== 'awaitingBlockRoll'
+      && successes === 0,
+    );
+  });
+
+  Handlebars.registerHelper('confinedCollapseRequired', roll => Boolean(
+    roll?.options?.attackData?.confinedSpace
+    && ['A', 'B', 'C', 'D'].includes(String(roll.options.attackData.blast).toLocaleUpperCase())
+    && !roll.options.attackData.blastResolution
+    && !roll.options.confinedSpaceResolution?.collapse,
+  ));
+
   Handlebars.registerHelper('concat', function () {
     let str = '';
     for (const arg in arguments) {
@@ -194,6 +253,71 @@ export function registerHandlebars() {
         <button type="button" class="rating-menu-option{{#if (eq value ../../selected)}} is-selected{{/if}}"
           data-value="{{value}}" role="option" tabindex="-1"
           aria-selected="{{#if (eq value ../../selected)}}true{{else}}false{{/if}}">{{label}}</button>
+        {{/each}}
+      {{/each}}
+      </div>
+    </div>`,
+  );
+
+  /** Custom menu for dialog choices which carry contextual filtering metadata. */
+  Handlebars.registerPartial(
+    'dialogChoiceMenu',
+    `<div class="rating-menu option-menu dialog-option-menu {{menuClass}}">
+      <input type="hidden" class="rating-menu-input {{inputClass}}" name="{{name}}"
+        value="{{selected}}" data-dtype="String">
+      <button type="button" class="rating-menu-trigger" aria-haspopup="listbox" aria-expanded="false"
+        title="{{selectedLabel}}">
+        {{#if selectedLabel}}{{selectedLabel}}{{else}}{{placeholder}}{{/if}}
+      </button>
+      <div class="rating-menu-options" role="listbox">
+      {{#unless noBlank}}
+        <button type="button" class="rating-menu-option{{#unless selected}} is-selected{{/unless}}"
+          data-value="" role="option" tabindex="-1"
+          aria-selected="{{#unless selected}}true{{else}}false{{/unless}}">{{placeholder}}</button>
+      {{/unless}}
+      {{#each choices as |choice|}}
+        <button type="button" class="rating-menu-option{{#if (eq choice.value ../selected)}} is-selected{{/if}}"
+          data-value="{{choice.value}}" data-type="{{choice.type}}" data-self="{{choice.self}}"
+          data-actions="{{choice.actionIds}}" role="option" tabindex="-1"
+          aria-selected="{{#if (eq choice.value ../selected)}}true{{else}}false{{/if}}"
+          {{#if choice.disabled}}disabled{{/if}}>{{choice.label}}</button>
+      {{/each}}
+      </div>
+    </div>`,
+  );
+
+  /** Grouped custom menu for Twilight: 2000 actions and their workflow metadata. */
+  Handlebars.registerPartial(
+    'dialogActionMenu',
+    `<div class="rating-menu option-menu grouped-option-menu dialog-option-menu action-option-menu">
+      <input type="hidden" class="rating-menu-input {{inputClass}}" name="{{name}}"
+        value="{{selected}}" data-dtype="String">
+      <button type="button" class="rating-menu-trigger" aria-haspopup="listbox" aria-expanded="false"
+        title="{{selectedLabel}}">
+        {{#if selectedLabel}}{{selectedLabel}}{{else}}{{placeholder}}{{/if}}
+      </button>
+      <div class="rating-menu-options" role="listbox">
+      {{#unless noBlank}}
+        <button type="button" class="rating-menu-option{{#unless selected}} is-selected{{/unless}}"
+          data-value="" data-value-modifier="0" role="option" tabindex="-1"
+          aria-selected="{{#unless selected}}true{{else}}false{{/unless}}"
+          {{#if blankDisabled}}disabled{{/if}}>{{placeholder}}</button>
+      {{/unless}}
+      {{#each groups as |group|}}
+        <div class="rating-menu-group-label">{{#if group.name}}{{group.name}}{{else}}{{group.label}}{{/if}}</div>
+        {{#each group.actions as |action|}}
+        <button type="button" class="rating-menu-option{{#if (eq action.id ../../selected)}} is-selected{{/if}}"
+          data-value="{{action.id}}" data-value-modifier="{{action.value}}" data-label="{{action.name}}"
+          data-action-speed="{{action.group}}" data-action-speed-label="{{action.speedName}}"
+          data-registry="{{action.registry}}" data-target-mode="{{action.target}}"
+          data-item-mode="{{action.item}}" data-hint="{{action.hint}}" data-roll-mode="{{action.rollMode}}"
+          title="{{action.name}}"
+          role="option" tabindex="-1" aria-selected="{{#if (eq action.id ../../selected)}}true{{else}}false{{/if}}"
+          {{#if action.disabled}}disabled{{/if}}>
+          {{action.name}}{{#if action.value}} ({{action.displayValue}}){{/if}}{{#if action.usesSlowForFast}}
+            — {{localize 'YZEGS.CombatActions.UsesSlow'}}{{/if}}{{#if action.disabled}}
+            — {{localize 'YZEGS.CombatActions.Unavailable'}}{{/if}}
+        </button>
         {{/each}}
       {{/each}}
       </div>

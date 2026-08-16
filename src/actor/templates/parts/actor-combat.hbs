@@ -58,7 +58,15 @@
 
   {{!-- ACTIONS --}}
   <div class="action">
-    <h2>{{localize "YZEGS.ActorSheet.Actions"}}</h2>
+    <h2>
+      <span>{{localize "YZEGS.ActorSheet.Actions"}}</span>
+      {{#if editable}}
+      <button type="button" class="take-action-button" data-action="takeAction"
+        title="{{localize 'YZEGS.CombatActions.TakeAction'}}" aria-label="{{localize 'YZEGS.CombatActions.TakeAction'}}">
+        <i class="fa-solid fa-person-running"></i> {{localize "YZEGS.CombatActions.TakeAction"}}
+      </button>
+      {{/if}}
+    </h2>
 
     {{!-- Header line --}}
     <div class="action-header">

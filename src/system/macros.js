@@ -2,6 +2,7 @@ import { YZEGS } from './config';
 import { getActiveActor } from '@utils/get-actor';
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
 import { getSkillCombatType } from './combat-modifiers.js';
+import { getActorActionSkill } from './action-skills.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 const LEGACY_SYSTEM_MACRO_FOLDER = 'YZE Stepped Dice Roll Macros';
@@ -142,13 +143,14 @@ export async function rollAction(actionKey) {
   const actor = await getActiveActor();
   if (!actor) return null;
 
-  const skill = actor.getSkill(skillKey);
+  const skill = getActorActionSkill(actor, actionKey, skillKey);
   if (!skill) return null;
   const statData = getAttributeAndSkill(skill, actor);
   return YZEGSRoller.taskCheck({
     ...statData,
     actor,
-    rof: ['rangedCombat', 'heavyWeapons'].includes(skillKey) ? 6 : 0,
+    rof: skill.system.combatType === 'ranged'
+      || ['rangedCombat', 'heavyWeapons'].includes(skill.getFlag(SYSTEM_ID, 'legacySkillKey')) ? 6 : 0,
   });
 }
 

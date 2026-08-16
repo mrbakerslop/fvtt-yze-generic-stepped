@@ -1,0 +1,73 @@
+.application.yzegs.action-skills-config > .window-header {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+
+  .window-title,
+  .window-icon {
+    color: #fff;
+  }
+
+  button.header-control {
+    --button-background-color: transparent;
+    --button-border-color: transparent;
+    --button-text-color: #fff;
+    --button-hover-background-color: #fff;
+    --button-hover-border-color: #fff;
+    --button-hover-text-color: #000;
+
+    background: transparent;
+    border: 0;
+    color: #fff;
+
+    &:hover,
+    &:focus-visible {
+      background: #fff;
+      color: #000;
+    }
+  }
+}
+
+.application.yzegs.action-skills-config .window-content {
+  color: #000;
+  overflow-y: auto;
+
+  .hint,
+  fieldset,
+  legend,
+  label,
+  .rating-menu-trigger,
+  .rating-menu-option {
+    color: #000;
+  }
+
+  .rating-menu-option.is-selected,
+  .rating-menu-option:hover,
+  .rating-menu-option:focus {
+    background: #e5e5e5;
+    color: #000;
+  }
+
+  .form-footer button {
+    color: #000;
+  }
+}
+
+.action-skills-form {
+  fieldset {
+    margin-block: 0.75rem;
+  }
+
+  .action-skills-grid {
+    display: grid;
+    grid-template-columns: minmax(13rem, 1fr) minmax(18rem, 1.35fr);
+    gap: 0.35rem 0.75rem;
+    align-items: center;
+  }
+
+  .action-skill-menu {
+    --option-menu-width: 100%;
+
+    min-width: 0;
+  }
+}

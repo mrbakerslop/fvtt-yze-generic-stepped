@@ -1,0 +1,68 @@
+<div class="reload-dialog-form">
+  <div class="reload-dialog-status">
+    <div>
+      <span>{{localize "YZEGS.Reload.Weapon"}}</span>
+      <strong>{{data.weaponName}}</strong>
+    </div>
+    <div>
+      <span>{{localize "YZEGS.Reload.Loaded"}}</span>
+      <strong>{{data.loaded}} / {{data.capacity}}</strong>
+    </div>
+    <div>
+      <span>{{localize "YZEGS.Reload.CurrentlyLoaded"}}</span>
+      <strong>{{data.currentLoadName}}</strong>
+    </div>
+    {{#if data.inActiveCombat}}
+    <div>
+      <span>{{localize "YZEGS.Reload.ActionsAvailable"}}</span>
+      <strong>{{data.actionSummary}}</strong>
+    </div>
+    {{/if}}
+  </div>
+
+  <div class="reload-dialog-field">
+    <label>{{localize "YZEGS.Reload.AmmunitionToLoad"}}</label>
+    {{> optionMenu name="sourceId" selected=data.selectedSource options=data.sourceOptions
+      editable=true noBlank=true menuClass="reload-dialog-menu"}}
+  </div>
+
+  {{#if data.showReloader}}
+  <div class="reload-dialog-field">
+    <label>{{localize "YZEGS.Reload.ReloadingCharacter"}}</label>
+    {{> optionMenu name="reloaderId" selected=data.selectedReloader options=data.reloaderOptions
+      editable=true noBlank=true menuClass="reload-dialog-menu"}}
+  </div>
+  {{else}}
+  <input type="hidden" name="reloaderId" value="{{data.selectedReloader}}"/>
+  {{/if}}
+
+  {{#if data.inActiveCombat}}
+  {{#unless data.heavyWeapon}}
+  <div class="reload-dialog-modifiers">
+    <div>
+      <span>{{localize "YZEGS.Reload.ReloaderBonus"}}</span>
+      <strong>{{numberFormat data.automaticModifier sign=true}}</strong>
+    </div>
+    <label>
+      <span>{{localize "YZEGS.Reload.AdditionalModifier"}}</span>
+      <input type="number" name="modifier" value="0"/>
+    </label>
+  </div>
+  {{/unless}}
+  {{/if}}
+
+  <p class="reload-dialog-hint">
+    {{#if data.inActiveCombat}}
+      {{#if data.heavyWeapon}}
+        {{localize "YZEGS.Reload.HeavyWeaponHint"}}
+      {{else}}
+        {{localize "YZEGS.Reload.FirearmHint"}}
+      {{/if}}
+    {{else}}
+      {{localize "YZEGS.Reload.OutOfCombatHint"}}
+    {{/if}}
+  </p>
+  {{#if data.hasBackpackSource}}
+  <p class="reload-dialog-warning"><i class="fa-solid fa-triangle-exclamation"></i> {{localize "YZEGS.Reload.BackpackHint"}}</p>
+  {{/if}}
+</div>

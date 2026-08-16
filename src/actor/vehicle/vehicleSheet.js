@@ -1,5 +1,6 @@
 import ActorSheetYZEGS from '../actorSheet.js';
 import { YZEGS } from '../../system/config.js';
+import { runWatercraftSheetAction } from '../../system/watercraft-workflows.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor Sheet for Vehicles.
@@ -41,6 +42,8 @@ export default class ActorSheetYZEGSVehicle extends ActorSheetYZEGS {
       this._prepareCrew(sheetData);
       this._prepareMountedWeapons(sheetData);
       sheetData.inVehicle = true;
+      sheetData.isWatercraft = ['watercraft', 'amphibious'].includes(sheetData.system.domain);
+      sheetData.isLargeWatercraft = sheetData.isWatercraft && Number(sheetData.system.watercraft?.size) >= 2;
     }
 
     return sheetData;
@@ -127,7 +130,14 @@ export default class ActorSheetYZEGSVehicle extends ActorSheetYZEGS {
       // Items
       html.find('.item-mount').click(this._onWeaponMount.bind(this));
       html.find('.item-mount-move').click(this._onWeaponMountMove.bind(this));
+      html.find('.watercraft-action').click(this._onWatercraftAction.bind(this));
     }
+  }
+
+  async _onWatercraftAction(event) {
+    event.preventDefault();
+    await runWatercraftSheetAction(this.actor, event.currentTarget.dataset.action);
+    this.render(true);
   }
 
   /* ------------------------------------------- */

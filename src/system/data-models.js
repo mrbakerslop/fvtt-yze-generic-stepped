@@ -138,6 +138,7 @@ class VehicleData extends foundry.abstract.TypeDataModel {
     return {
       ...descriptionSchema(),
       vehicleType: stringField(),
+      domain: stringField('land'),
       reliability: valueMaxField(5),
       movement: schemaField({
         combat: schemaField({ onRoad: numberField(), offRoad: numberField() }),
@@ -164,12 +165,14 @@ class VehicleData extends foundry.abstract.TypeDataModel {
       }),
       tempDamage: stringField(),
       components: schemaField({
+        hull: componentField(),
         fuel: componentField(),
         engine: componentField(),
         suspension: componentField(),
         ammunition: componentField(),
         radio: schemaField({
           active: booleanField(true),
+          damage: numberField(),
           reliability: valueMaxField(1),
         }),
         trackWheel: componentField(),
@@ -179,6 +182,22 @@ class VehicleData extends foundry.abstract.TypeDataModel {
           type: stringField(),
         }),
         antenna: componentField(),
+        mastRigging: componentField(),
+      }),
+      watercraft: schemaField({
+        size: numberField(1),
+        propulsion: stringField('motor'),
+        landingCraft: booleanField(),
+        mineDetectionEquipment: booleanField(),
+        uniformArmor: booleanField(true),
+        grounded: booleanField(),
+        stuck: booleanField(),
+        stopped: booleanField(),
+        hullBreaches: numberField(),
+        sinkingProgress: numberField(),
+        sinkingDeadline: numberField(),
+        sinking: booleanField(),
+        sunk: booleanField(),
       }),
       trailer: booleanField(),
       smokeDischarger: booleanField(),
@@ -230,6 +249,22 @@ class PartyData extends foundry.abstract.TypeDataModel {
   }
 }
 
+class ContainerData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      ...descriptionSchema(),
+      containerType: stringField(),
+      allowedItemTypes: schemaField({
+        weapon: booleanField(true),
+        armor: booleanField(true),
+        gear: booleanField(true),
+        ammunition: booleanField(true),
+        grenade: booleanField(true),
+      }),
+    };
+  }
+}
+
 const itemBaseSchema = () => ({
   qty: numberField(1),
   itemType: stringField(),
@@ -271,7 +306,12 @@ class WeaponData extends foundry.abstract.TypeDataModel {
       mountSlot: numberField(),
       props: schemaField({
         twoHanded: booleanField(),
+        swinging: booleanField(),
+        magazineFed: booleanField(true),
         ammoBelt: booleanField(),
+        internalMagazine: booleanField(),
+        heavyWeapon: booleanField(),
+        shotgun: booleanField(),
         disposable: booleanField(),
         scope: booleanField(),
         nightVision: booleanField(),
@@ -292,6 +332,13 @@ class WeaponData extends foundry.abstract.TypeDataModel {
         fcs: booleanField(),
         ir: booleanField(),
         tm: booleanField(),
+      }),
+      guidance: schemaField({
+        mode: stringField('none'),
+        delayRounds: numberField(),
+        targetClass: stringField('any'),
+        evasionModifier: numberField(-3),
+        firingArc: stringField('all'),
       }),
     };
   }
@@ -325,7 +372,11 @@ class AmmunitionData extends foundry.abstract.TypeDataModel {
       range: numberField(),
       armorModifier: numberField(),
       override: booleanField(),
-      props: schemaField({ magazine: booleanField(true) }),
+      props: schemaField({
+        magazine: booleanField(true),
+        ammoBelt: booleanField(),
+        ammoBox: booleanField(),
+      }),
     };
   }
 }
@@ -337,7 +388,12 @@ class GrenadeData extends foundry.abstract.TypeDataModel {
       ...offensiveSchema(),
       weight: numberField(0.25),
       mag: valueMaxField(0),
-      props: schemaField({ disposable: booleanField(true) }),
+      explosiveType: stringField('grenade'),
+      props: schemaField({
+        disposable: booleanField(true),
+        airburst: booleanField(),
+        directional: booleanField(),
+      }),
     };
   }
 }
@@ -348,6 +404,9 @@ class GearData extends foundry.abstract.TypeDataModel {
       ...itemBaseSchema(),
       ...modifiersSchema(),
       ...reliabilitySchema(),
+      sparePartType: stringField('none'),
+      waterProtection: stringField('none'),
+      coldWaterModifier: numberField(),
       props: schemaField({
         twoHanded: booleanField(),
         mounted: booleanField(),
@@ -435,6 +494,7 @@ export function registerDataModels() {
     vehicle: VehicleData,
     unit: UnitData,
     party: PartyData,
+    container: ContainerData,
   });
 
   Object.assign(CONFIG.Item.dataModels, {

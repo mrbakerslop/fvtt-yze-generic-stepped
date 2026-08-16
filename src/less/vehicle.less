@@ -62,6 +62,10 @@
       --option-menu-width: 120px;
     }
 
+    .vehicle-domain-menu {
+      --option-menu-width: 150px;
+    }
+
     .vehicle-fuel-menu {
       --option-menu-width: 90px;
     }
@@ -385,6 +389,46 @@
         }
       }
 
+      .watercraft-settings {
+        padding-bottom: @gap;
+        margin-bottom: @gap;
+        border-bottom: @borderSheetBold;
+      }
+
+      .watercraft-fields,
+      .watercraft-state-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: @gap @gap * 2;
+        align-items: center;
+        margin-bottom: @gap;
+
+        > label {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: @gap;
+          min-width: 0;
+        }
+
+        input[type="number"] {
+          width: 58px;
+          flex: none;
+        }
+      }
+
+      .watercraft-actions {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: @gap;
+
+        button {
+          min-width: 0;
+          white-space: normal;
+          line-height: 1.1;
+        }
+      }
+
       .outer-components {
         padding-top: @gap;
         margin-top: @gap;
@@ -427,7 +471,7 @@
 
       .radio-reliability {
         display: grid;
-        grid-template-columns: 42px auto 42px;
+        grid-template-columns: 42px 42px auto 42px;
         align-items: center;
 
         input.boxed-value {

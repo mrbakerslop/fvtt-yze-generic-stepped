@@ -12,3 +12,13 @@ export const LEGACY_SKILLS = Object.freeze({
   persuasion: { id: 'skillPersuasion0', attribute: 'emp', label: 'YZEGS.SkillNames.persuasion' },
   medicalAid: { id: 'skillMedicalAid0', attribute: 'emp', label: 'YZEGS.SkillNames.medicalAid' },
 });
+
+const SYSTEM_ID = 'fvtt-yze-generic-stepped';
+
+/** Resolve the canonical Twilight: 2000 key represented by a migrated Skill Item. */
+export function getLegacySkillKey(skill) {
+  if (!skill || skill.type !== 'skill') return '';
+  const flaggedKey = skill.getFlag?.(SYSTEM_ID, 'legacySkillKey');
+  if (Object.hasOwn(LEGACY_SKILLS, flaggedKey)) return flaggedKey;
+  return Object.entries(LEGACY_SKILLS).find(([, definition]) => definition.id === skill.id)?.[0] ?? '';
+}

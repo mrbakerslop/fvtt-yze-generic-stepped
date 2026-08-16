@@ -104,6 +104,56 @@ table.travel-actions td {
   min-height: 1px;
 }
 
+.city-travel-mode,
+.water-travel-mode {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  margin: 0.25rem 0;
+}
+
+.water-travel-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+
+  > label {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr);
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  > p,
+  > button { grid-column: 1 / -1; }
+}
+
+.city-travel-rules {
+  border: 1px solid var(--color-border-light-primary);
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.city-travel-rules p { margin: 0.2rem 0; }
+
+.city-fuel-calculator {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.city-fuel-calculator label {
+  display: grid;
+  grid-template-columns: 1fr 5rem;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.city-fuel-calculator strong { grid-column: 1 / -1; }
+
 .travel-action {
   min-width: 196px;
   min-height: 116px;

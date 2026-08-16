@@ -40,6 +40,18 @@
     {{/if}}
   {{/unless}}
   {{#unless (eq type 'specialty')}}
+  {{#if (and (eq type 'weapon') system.reload)}}
+  <a class="button item-reload" title="{{localize 'YZEGS.Chat.Actions.Reload'}}">
+    {{{@root.config.Icons.buttons.reload}}}
+  </a>
+  {{/if}}
+  {{#if (and (eq type 'weapon') system.jammed)}}
+  {{#unless @root.inVehicle}}
+  <a class="button item-clear-jam" title="{{localize 'YZEGS.ActionNames.clearJam'}}">
+    {{{@root.config.Icons.buttons.clearJam}}}
+  </a>
+  {{/unless}}
+  {{/if}}
   <a class="button item-chat" title="{{localize "YZEGS.ActorSheet.ToChat"}}">
     {{{@root.config.Icons.buttons.chat}}}
   </a>

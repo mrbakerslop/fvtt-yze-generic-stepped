@@ -2,6 +2,7 @@ YZEGS.SheetClassCharacter: Character Sheet
 YZEGS.SheetClassVehicle: Vehicle Sheet
 YZEGS.SheetClassUnit: Unit Sheet
 YZEGS.SheetClassParty: Party Sheet
+YZEGS.SheetClassContainer: Container Sheet
 YZEGS.Attribute: Attribute
 YZEGS.Attributes: Attributes
 YZEGS.AttributeNames.str: Strength
@@ -31,6 +32,16 @@ YZEGS.ActionNames.grapple: Grapple
 YZEGS.ActionNames.breakFree: Break free
 YZEGS.ActionNames.shootFirearm: Shoot firearm
 YZEGS.ActionNames.clearJam: Clear jam
+YZEGS.Jam.Status: WEAPON JAMMED
+YZEGS.Jam.CannotFire: '{weapon} is jammed and cannot be fired until the jam is cleared.'
+YZEGS.Jam.NotJammed: '{weapon} is not jammed.'
+YZEGS.Jam.Broken: '{weapon} is broken and must be repaired before its jam can be cleared.'
+YZEGS.Jam.NoCharacter: A Character or NPC must hold the weapon to clear its jam.
+YZEGS.Jam.SkillMissing: 'The character does not have the weapon skill {skill}.'
+YZEGS.Jam.NoSlowAction: Clearing a weapon jam requires an available slow action.
+YZEGS.Jam.RollTitle: 'Clear Jam: {weapon}'
+YZEGS.Jam.Cleared: The jam in {weapon} has been cleared.
+YZEGS.Jam.ClearFailed: '{weapon} remains jammed. Another attempt may be made.'
 YZEGS.ActionNames.aimSniper: Sniper aim
 YZEGS.ActionNames.shootBow: Shoot bow
 YZEGS.ActionNames.throwWeapon: Throw weapon
@@ -50,6 +61,101 @@ YZEGS.ActionNames.prepareBow: Prepare bow
 YZEGS.ActionNames.overwatch: Assume overwatch position
 YZEGS.ActionNames.reload: Reload
 YZEGS.ActionNames.drive: Drive
+YZEGS.ActionNames.getItemFromBackpack: Get item from backpack
+YZEGS.ActionNames.persuade: Persuade
+YZEGS.ActionNames.enterExitVehicle: Enter or exit vehicle
+YZEGS.ActionNames.dropBackpack: Drop backpack
+YZEGS.ActionNames.seekPartialCover: Seek partial cover
+YZEGS.ActionNames.seekFullCover: Seek full cover
+YZEGS.ActionNames.fullToPartialCover: Go from full to partial cover
+YZEGS.ActionNames.crossLowBarrier: Cross low barrier
+YZEGS.ActionNames.crossHighBarrier: Cross high barrier
+YZEGS.ActionNames.moveThroughDoor: Move through door
+YZEGS.ActionNames.getUp: Get up
+YZEGS.ActionNames.drawItem: Draw item from combat gear
+YZEGS.ActionNames.grappleAttack: Grapple attack
+YZEGS.ActionNames.pullGrenadePin: Pull grenade pin
+YZEGS.ActionNames.getOnBike: Get on or off a bike
+YZEGS.ActionNames.grabWheel: Grab the wheel
+YZEGS.ActionNames.startEngine: Start engine
+YZEGS.ActionNames.useItem: Use item
+YZEGS.ActionNames.dropProne: Drop to the ground
+YZEGS.ActionNames.dropHeldItem: Drop held item
+YZEGS.ActionNames.partialToFullCover: Go from partial to full cover
+YZEGS.ActionNames.shout: Shout a few words
+YZEGS.ActionNames.spotShooter: Spot a shooter
+YZEGS.ActionNames.spotSilentShooter: Spot a silent or suppressed shooter
+YZEGS.ActionNames.blindFire: Blind fire
+YZEGS.ActionNames.hugWall: Hug the wall
+YZEGS.ActionNames.enterBuilding: Enter a building
+YZEGS.ActionNames.moveSector: Move to an adjacent sector
+YZEGS.ActionNames.moveIndoorHex: Move one indoor hex
+YZEGS.ActionNames.changeFloor: Move one floor using stairs
+YZEGS.ActionNames.climbFloor: Climb one floor without stairs
+YZEGS.ActionNames.breachWallStamina: Slowly breach a wall (Stamina)
+YZEGS.ActionNames.breachWallTech: Slowly breach a wall (Tech)
+YZEGS.ActionNames.blockAperture: Block a door or window
+YZEGS.ActionNames.blockIndoorHex: Block an indoor hex
+YZEGS.ActionNames.breachApertureStamina: Slowly breach an aperture (Stamina)
+YZEGS.ActionNames.breachApertureTech: Slowly breach an aperture (Tech)
+YZEGS.ActionNames.calmCrowd: Calm a crowd
+YZEGS.ActionNames.monitorRadio: Monitor radio traffic
+YZEGS.ActionNames.overwatchAperture: Overwatch an aperture
+YZEGS.ActionNames.seekVehicleCover: Take cover behind a vehicle
+YZEGS.ActionNames.searchBoobyTrap: Check for a booby trap
+YZEGS.ActionNames.placeBoobyTrap: Place a booby trap
+YZEGS.ActionNames.placeUrbanObstacle: Place an urban obstacle
+YZEGS.ActionNames.detectMines: Detect mines
+YZEGS.ActionNames.cautiousMineMovement: Move cautiously through mines
+YZEGS.ActionNames.probeMines: Probe for mines
+YZEGS.ActionNames.placeMines: Place mines
+YZEGS.ActionNames.clearMines: Clear mines
+YZEGS.ActionNames.breakFreeDebris: Break free from debris
+YZEGS.ActionNames.retrieveArrowFromVictim: Retrieve arrow from victim
+YZEGS.ActionNames.retrieveArrowFromGround: Retrieve arrow from ground
+YZEGS.ActionNames.extinguishFire: Extinguish fire
+YZEGS.ActionNames.putOnMask: Put on protective mask
+YZEGS.ActionNames.injectAtropine: Inject atropine
+YZEGS.ActionNames.getVehicleUnstuck: Get vehicle unstuck
+YZEGS.ActionNames.bailOut: Bail out
+YZEGS.ActionNames.takeDriverControl: Take over as driver
+YZEGS.ActionNames.fireSmokeLauncher: Fire smoke launcher
+YZEGS.ActionNames.correctIndirectFire: Correct indirect fire
+YZEGS.ActionNames.guideMissile: Guide wire-guided missile
+YZEGS.ActionNames.block: Block
+YZEGS.ActionNames.helpFast: Help with a Fast action
+YZEGS.ActionNames.helpSlow: Help with a Slow action
+YZEGS.ActionNames.retreatFreeAttack: Free attack against a failed retreat
+YZEGS.ActionNames.diveFromGrenade: Drop prone from a grenade (no action)
+YZEGS.ActionNames.overwatchContest: Resolve simultaneous overwatch fire
+YZEGS.Defense.IncomingAttack: Incoming Close-Combat Attack
+YZEGS.Defense.DeclarationDescription: '{attacker} declares {action} against {defender}.'
+YZEGS.Defense.AwaitingDeclaration: The defender must declare whether they will Block before the attack is rolled.
+YZEGS.Defense.Block: Block
+YZEGS.Defense.DeclareBlock: Declare Block
+YZEGS.Defense.DoNotBlock: Do Not Block
+YZEGS.Defense.BlockDeclared: '{defender} will Block.'
+YZEGS.Defense.BlockDeclined: '{defender} will not Block.'
+YZEGS.Defense.RollAttack: Roll Attack
+YZEGS.Defense.AttackContinued: The attack roll has been created.
+YZEGS.Defense.BlockWith: Block with
+YZEGS.Defense.Unarmed: Unarmed
+YZEGS.Defense.BlockMethodHint: Choose an equipped melee weapon or block unarmed. A pushed Block can damage the chosen weapon or the defender.
+YZEGS.Defense.SelectSingleTarget: Select exactly one target before declaring a blockable close-combat attack.
+YZEGS.Defense.BlockAwaiting: '{defender} declared a Block and may now roll it.'
+YZEGS.Defense.RollBlock: Roll Block
+YZEGS.Defense.BlockRollTitle: 'Block: {defender}'
+YZEGS.Defense.ApplyBlock: Apply Block
+YZEGS.Defense.BlockApplied: The Block result has been applied to the incoming attack.
+YZEGS.Defense.AttackMissedNoBlock: The attack missed without needing the Block roll. The declared Fast action remains spent.
+YZEGS.Defense.Resolution: 'Block successes: {block}; cancelled: {cancelled}; attack successes remaining: {remaining}.'
+YZEGS.Cover.Configure: Configure Cover
+YZEGS.Cover.TakeCover: Take Cover
+YZEGS.Cover.ArmorLevel: Armor Level
+YZEGS.Cover.ArmorHint: Enter the Armor Level of the terrain or barrier providing this cover.
+YZEGS.Cover.DirectionTarget: 'This cover protects against attacks from {target}''s direction.'
+YZEGS.Cover.DirectionGeneral: No threat direction was selected, so the cover is treated as generally applicable until adjudicated by the Referee.
+YZEGS.CombatActions.Hints.diveFromGrenade: Use only when a hand grenade lands in this character's hex. Success drops the character prone before detonation and reduces Blast Power by one step.
 YZEGS.Constants: Constants
 YZEGS.ConstantNames.encumbrance: Encumbrance
 YZEGS.ConstantNames.awareness: Combat awareness
@@ -80,6 +186,8 @@ YZEGS.InjuryCategoryNames.physical: Physical
 YZEGS.InjuryCategoryNames.mental: Mental
 YZEGS.ActionTypes.fast: Fast
 YZEGS.ActionTypes.slow: Slow
+YZEGS.ActionTypes.free: Free
+YZEGS.ActionTypes.extended: Extended Task
 YZEGS.Ranges.close: In close combat
 YZEGS.Ranges.short: Short
 YZEGS.Ranges.medium: Medium
@@ -95,8 +203,16 @@ YZEGS.ItemTypes.weapon: Weapon
 YZEGS.ItemPropNames.twoHanded: Two-Handed
 YZEGS.ItemPropNames.mounted: Mounted
 YZEGS.ItemPropNames.disposable: Disposable
-YZEGS.ItemPropNames.ammoBelt: Ammo Belt
+YZEGS.ItemPropNames.ammoBelt: Is Ammo Belt
+YZEGS.ItemPropNames.beltFed: Is Belt Fed
+YZEGS.ItemPropNames.magazineFed: Magazine Fed
+YZEGS.ItemPropNames.internalMagazine: Internal Magazine
 YZEGS.ItemPropNames.magazine: Is Magazine
+YZEGS.ItemPropNames.ammoBox: Is Box of Ammo
+YZEGS.ItemPropNames.heavyWeapon: Heavy Weapon
+YZEGS.ItemPropNames.shotgun: Shotgun
+YZEGS.ItemPropNames.airburst: Airburst
+YZEGS.ItemPropNames.directional: Directional
 YZEGS.ItemPropNames.armored: Armored
 YZEGS.ItemPropNames.bipod: Bipod
 YZEGS.ItemPropNames.tripod: Tripod
@@ -107,6 +223,7 @@ YZEGS.ItemPropNames.suppressor: Suppressor
 YZEGS.ActorTypes.character: Player Character (PC)
 YZEGS.ActorTypes.npc: Non-Player Character (NPC)
 YZEGS.ActorTypes.vehicle: Vehicle
+YZEGS.ActorTypes.container: Container
 YZEGS.ActorSheet.Name: Name
 YZEGS.ActorSheet.CharacterName: Character Name
 YZEGS.ActorSheet.MainTab: Stats
@@ -117,6 +234,35 @@ YZEGS.ActorSheet.NoteTab: Notes
 YZEGS.ActorSheet.Nationality: Nationality
 YZEGS.ActorSheet.Branch: Branch
 YZEGS.ActorSheet.MilitaryRank: Rank
+YZEGS.ContainerSheet.InventoryTab: Contents
+YZEGS.ContainerSheet.DescriptionTab: Description
+YZEGS.ContainerSheet.SettingsTab: Storage Settings
+YZEGS.ContainerSheet.ContainerType: Container Type
+YZEGS.ContainerSheet.ContainerTypePlaceholder: Chest, crate, locker, weapon rack…
+YZEGS.ContainerSheet.Item: Item
+YZEGS.ContainerSheet.Type: Type
+YZEGS.ContainerSheet.TotalWeight: Total Weight
+YZEGS.ContainerSheet.DropHint: Drag physical Items here to add them to this Container.
+YZEGS.ContainerSheet.TransferHint: >-
+  Drag Items between this sheet and a Character sheet to choose how many to
+  move. The user must have Owner permission for both Actors.
+YZEGS.ContainerSheet.Empty: This Container is empty.
+YZEGS.ContainerSheet.AllowedItemTypes: Allowed Item Types
+YZEGS.ContainerSheet.AllowedItemTypesHint: >-
+  Choose which Item types can be added to this Container. Disabling a type does
+  not remove Items already stored here.
+YZEGS.ContainerSheet.TransferTitle: Move Item
+YZEGS.ContainerSheet.TransferPrompt: Move {item} from {source} to {destination}.
+YZEGS.ContainerSheet.Move: Move
+YZEGS.ContainerSheet.ItemMoved: '{quantity} × {item} moved from {source} to {destination}.'
+YZEGS.ContainerSheet.Errors.PhysicalItemsOnly: Containers can only hold physical Items.
+YZEGS.ContainerSheet.Errors.ItemTypeNotAllowed: >-
+  {container} does not accept Items of type {type}.
+YZEGS.ContainerSheet.Errors.Permission: >-
+  You must have Owner permission for both the Container and Character to move
+  Items between them.
+YZEGS.ContainerSheet.Errors.SourceMissing: The Item is no longer present in its source inventory.
+YZEGS.ContainerSheet.Errors.TransferFailed: The Item could not be moved. Check both inventories before trying again.
 YZEGS.ActorSheet.HitCapacity: Hit Capacity
 YZEGS.ActorSheet.StressCapacity: Stress Capacity
 YZEGS.ActorSheet.CapacityModifier: 'Modifier:'
@@ -280,11 +426,96 @@ YZEGS.ItemSheet.DescriptionTab: Notes
 YZEGS.ItemSheet.AttributeUsed: Attribute Used
 YZEGS.ItemSheet.SkillUsed: Skill Used
 YZEGS.ItemSheet.WeaponMagazine: Magazine
+YZEGS.ItemSheet.AmmunitionSource: Ammunition Source
+YZEGS.ItemSheet.ExplosiveType: Explosive Type
+YZEGS.ExplosiveTypes.grenade: Grenade
+YZEGS.ExplosiveTypes.antiPersonnelMine: Anti-Personnel Mine
+YZEGS.ExplosiveTypes.antiVehicleMine: Anti-Vehicle Mine
+YZEGS.ExplosiveTypes.directionalMine: Directional Mine
+YZEGS.ExplosiveTypes.multipurposeMine: Multipurpose Mine
+EFFECT.StatusPinnedByDebris: Pinned by Debris
+YZEGS.ConfinedSpace.Failed: The confined-space hazard could not be resolved.
+YZEGS.ConfinedSpace.Applied: Applied
+YZEGS.ConfinedSpace.ManualVehicleDamage: '{target} takes {damage} damage. Resolve vehicle armor, hit location, and component damage manually.'
+YZEGS.ConfinedSpace.Ricochet.Title: Ricochet
+YZEGS.ConfinedSpace.Ricochet.Resolve: Resolve Ricochet
+YZEGS.ConfinedSpace.Ricochet.Apply: Apply Ricochet Damage
+YZEGS.ConfinedSpace.Ricochet.BaseDamage: 'Base Damage {damage}'
+YZEGS.ConfinedSpace.Ricochet.Result: '{shots} shots produced {ricochets} ricochets.'
+YZEGS.ConfinedSpace.Ricochet.NoTarget: No eligible token was closest to the original target.
+YZEGS.ConfinedSpace.Collapse.Title: Structural Collapse
+YZEGS.ConfinedSpace.Collapse.Resolve: Check for Collapse
+YZEGS.ConfinedSpace.Collapse.Apply: Apply Collapse to Selected Tokens
+YZEGS.ConfinedSpace.Collapse.Result: 'Blast {blast} collapse check: {successes} successes.'
+YZEGS.ConfinedSpace.Collapse.Occurred: The structure collapses in the affected space.
+YZEGS.ConfinedSpace.Collapse.None: The structure holds.
+YZEGS.ConfinedSpace.Collapse.SelectTargets: Select every token caught in the collapsed space.
+YZEGS.ConfinedSpace.Collapse.ManualCritical: '{target} suffers a random critical injury to the {location}. Draw from the appropriate critical-injury table.'
+YZEGS.ConfinedSpace.Blast.AirburstHint: Airburst applies at full effect against prone targets; do not reduce the Blast rating for being prone.
+YZEGS.ConfinedSpace.Blast.DirectionalHint: This is a directional explosive. Include only targets inside its directed area and reduce the Blast rating one step for every three hexes of distance.
+YZEGS.Minefield.Region.Label: Minefield
+YZEGS.Minefield.Region.Hint: Resolve detection and mine trigger checks when a token moves into or within this Region.
+YZEGS.Minefield.Region.Fields.Density: Density
+YZEGS.Minefield.Region.Fields.Condition: Condition
+YZEGS.Minefield.Region.Fields.Type: Mine Type
+YZEGS.Minefield.Region.Fields.Damage: Direct Damage
+YZEGS.Minefield.Region.Fields.Crit: Critical Rating
+YZEGS.Minefield.Region.Fields.Blast: Blast Rating
+YZEGS.Minefield.Region.Fields.Armor: Armor Modifier
+YZEGS.Minefield.Region.Fields.Airburst: Airburst
+YZEGS.Minefield.Region.Fields.Directional: Directional
+YZEGS.Minefield.Region.Fields.Detection: Detection Modifier
+YZEGS.Minefield.Region.Fields.Discovered: Discovered
+YZEGS.Minefield.Region.Hints.Density: Controls how many entrants make a trigger check for each crossed hex. False minefields never detonate.
+YZEGS.Minefield.Region.Hints.Condition: Older or overgrown fields have an increasing chance for triggered mines to be duds.
+YZEGS.Minefield.Region.Hints.Type: Controls whether personnel, vehicles, or both can trigger this field.
+YZEGS.Minefield.Region.Hints.Damage: Base direct-hit damage caused by each detonation.
+YZEGS.Minefield.Region.Hints.Crit: Critical-injury threshold for a direct hit.
+YZEGS.Minefield.Region.Hints.Blast: Blast effect resolved against nearby selected tokens.
+YZEGS.Minefield.Region.Hints.Armor: Modifier applied when the mine tests armor.
+YZEGS.Minefield.Region.Hints.Airburst: Prone targets do not reduce the Blast rating.
+YZEGS.Minefield.Region.Hints.Directional: Resolve Blast only inside the mine's directed area and reduce it one step for every three hexes.
+YZEGS.Minefield.Region.Hints.Detection: Additional modifier applied to automatic detection checks.
+YZEGS.Minefield.Region.Hints.Discovered: Marks the field as known and skips further automatic detection tests.
+YZEGS.Minefield.Density.False: False Minefield
+YZEGS.Minefield.Density.Sparse: Sparse
+YZEGS.Minefield.Density.Normal: Normal
+YZEGS.Minefield.Density.Dense: Dense
+YZEGS.Minefield.Condition.Fresh: Fresh
+YZEGS.Minefield.Condition.Old: Old
+YZEGS.Minefield.Condition.Overgrown: Overgrown
+YZEGS.Minefield.Type.AntiPersonnel: Anti-Personnel
+YZEGS.Minefield.Type.AntiVehicle: Anti-Vehicle
+YZEGS.Minefield.Type.Mixed: Mixed
+YZEGS.Minefield.Movement.Unaware: Unaware Movement
+YZEGS.Minefield.Movement.Cautious: Cautious Movement
+YZEGS.Minefield.Movement.Probing: Probing
+YZEGS.Minefield.Dialog.Title: Resolve Minefield Movement
+YZEGS.Minefield.Dialog.Instructions: '{actor} moved through {region}. Confirm how the group crossed the affected area.'
+YZEGS.Minefield.Dialog.Movement: Movement Method
+YZEGS.Minefield.Dialog.Scout: Scout
+YZEGS.Minefield.Dialog.NoScout: No detection check
+YZEGS.Minefield.Dialog.Hexes: Affected Hexes Crossed
+YZEGS.Minefield.Dialog.Entrants: Entrants
+YZEGS.Minefield.Dialog.Resolve: Resolve Movement
+YZEGS.Minefield.Detection.Title: 'Detect Mines: {actor}'
+YZEGS.Minefield.Detection.Spotted: Minefield Detected
+YZEGS.Minefield.Detection.SpottedDetail: '{actor} detects {region} before a mine is triggered.'
+YZEGS.Minefield.Result.Title: Minefield Trigger Check
+YZEGS.Minefield.Result.Summary: '{checks} checks caused {triggers} triggers, {duds} duds, and {detonations} detonations.'
+YZEGS.Minefield.Result.Applied: Direct damage applied
+YZEGS.Minefield.Result.ApplyDirect: Apply Direct Mine Damage
+YZEGS.Minefield.Result.ResolveBlast: Resolve Blast Against Selected Tokens
+YZEGS.Minefield.Result.ManualVehicleDamage: '{actor} suffers {detonations} mine detonations at base Damage {damage}. Resolve vehicle hit location, armor, and component damage manually.'
+YZEGS.ItemSheet.LoadedCapacity: Loaded / Capacity
+YZEGS.ItemSheet.LoadOneRound: Load One Round
 YZEGS.ItemSheet.Quantity: Quantity
 YZEGS.ItemSheet.ItemType: Type
 YZEGS.ItemSheet.Ammo: Ammo
 YZEGS.ItemSheet.AmmoType: Ammo Identifier
 YZEGS.ItemSheet.OverrideOption: Override Weapon's Features
+YZEGS.ItemSheet.EffectiveProfile: Effective Loaded Profile
+YZEGS.ItemSheet.EffectiveProfileHint: These are the effective attack values supplied by the loaded ammunition. The editable fields below remain the weapon's base values.
 YZEGS.ItemSheet.Reliability: Rel
 YZEGS.ItemSheet.RoF: RoF
 YZEGS.ItemSheet.Damage: Damage
@@ -314,6 +545,9 @@ YZEGS.Chat.Actions.Reload: Reload
 YZEGS.Chat.Actions.Roll: Roll
 YZEGS.Chat.Actions.Push: Push
 YZEGS.Chat.Actions.ApplyDamage: Apply Damage
+YZEGS.Chat.Actions.ApplyAdditionalHit: Apply Additional Hit
+YZEGS.Combat.SelectDamageTarget: Select at least one target before applying damage.
+YZEGS.Combat.SelectSingleDamageTarget: Select exactly one target for each hit before applying damage.
 YZEGS.Chat.Roll.Success: Success
 YZEGS.Chat.Roll.Successes: Successes
 YZEGS.Chat.Roll.Pushed: — Pushed
@@ -334,12 +568,60 @@ YZEGS.Chat.Damage.InitialAmount: >-
 YZEGS.Chat.Damage.DeflectedDamage: deflected {damage} damage
 YZEGS.Chat.Damage.DeflectedAllDamage: deflected all damage
 YZEGS.Chat.Damage.NoEffect: no effect
+YZEGS.Chat.Damage.ApplicationComplete: All damage and ammunition-die successes have been resolved.
+YZEGS.Chat.Damage.AmmoSuccessesRemaining: 'Ammo-die successes remaining: {count}'
+YZEGS.Chat.Damage.AttackMissed: The attack missed. Ammo-die successes can cause suppression but cannot inflict damage.
 YZEGS.Combat.Attack: '{weapon} — Attack'
 YZEGS.Combat.Barrier: Barrier
 YZEGS.Combat.BodyArmor: Body Armor
 YZEGS.Combat.NoQuantityLeft: No unit left for weapon {weapon}.
 YZEGS.Combat.NoAmmoLeft: No ammo left in the magazine of the weapon {weapon}.
 YZEGS.Combat.NoMag: Please insert a magazine for the weapon {weapon}.
+YZEGS.Combat.IncompatibleAmmo: '{ammo} cannot be loaded into {weapon}.'
+YZEGS.Combat.InternalMagazineFull: The internal magazine of {weapon} is already full.
+YZEGS.Combat.NoLooseAmmo: Select available loose ammunition for {weapon} before reloading.
+YZEGS.Combat.InternalMagazineReloaded: >-
+  Loaded one {ammo} round into {weapon} ({loaded}/{capacity}).
+YZEGS.Reload.DialogTitle: 'Reload: {weapon}'
+YZEGS.Reload.Weapon: Weapon
+YZEGS.Reload.Loaded: Loaded
+YZEGS.Reload.ActionsAvailable: Actions Available
+YZEGS.Reload.AmmunitionSource: Ammunition Source
+YZEGS.Reload.AmmunitionToLoad: Ammunition to Load
+YZEGS.Reload.CurrentlyLoaded: Currently Loaded
+YZEGS.Reload.NothingLoaded: Nothing
+YZEGS.Reload.LooseRoundsAvailable: '{count} rounds available'
+YZEGS.Reload.ReloadingCharacter: Reloading Character
+YZEGS.Reload.ReloaderBonus: Reloader Bonus
+YZEGS.Reload.AdditionalModifier: Additional Modifier
+YZEGS.Reload.FirearmHint: A successful Ranged Combat roll makes this a fast action; failure makes it a slow action.
+YZEGS.Reload.HeavyWeaponHint: Heavy weapons always require a slow action and do not make a reload roll.
+YZEGS.Reload.OutOfCombatHint: Outside active combat, reloading is automatic. No roll or tracked action is required; the time taken is narrative only.
+YZEGS.Reload.BackpackHint: Sources marked Backpack require a slow action and a successful Mobility roll before reloading in combat.
+YZEGS.Reload.ActionCounts: 'Fast: {fast}, Slow: {slow}'
+YZEGS.Reload.LocationBackpack: Backpack
+YZEGS.Reload.LocationCombatGear: Combat Gear
+YZEGS.Reload.AlreadyFull: '{weapon} is already fully loaded.'
+YZEGS.Reload.NoCompatibleSource: No compatible ammunition is available to reload {weapon}.
+YZEGS.Reload.SourceUnavailable: The selected ammunition is no longer available for {weapon}.
+YZEGS.Reload.NoReloadingCharacter: No character is available to reload this weapon.
+YZEGS.Reload.SkillMissing: 'The reloading character does not have the {skill} skill.'
+YZEGS.Reload.RollTitle: '{weapon} — Reload'
+YZEGS.Reload.RetrieveTitle: 'Retrieve {ammo} from backpack'
+YZEGS.Reload.BackpackNeedsSlowAction: Retrieving ammunition from a backpack requires an available slow action.
+YZEGS.Reload.RetrieveFailed: The ammunition could not be retrieved from the backpack. The slow action was spent.
+YZEGS.Reload.Retrieved: Retrieved {ammo} from the backpack.
+YZEGS.Reload.FastActionForfeited: The reload failed with only a fast action remaining. The fast action was forfeited.
+YZEGS.Reload.NoActionAvailable: There is no suitable action remaining to reload this weapon.
+YZEGS.Reload.ResultTitle: Reload
+YZEGS.Reload.ResultCompleted: Reloaded using
+YZEGS.Reload.RoundsLoaded: Rounds loaded
+YZEGS.Reload.ResultForfeited: The reload failed and the remaining fast action was forfeited.
+YZEGS.Reload.ResultNoAction: The weapon was not reloaded because no suitable action remained.
+YZEGS.Reload.ResultRetrieveFailed: The backpack retrieval failed and the slow action was spent.
+YZEGS.Reload.HeavyWeaponResult: Heavy weapon reload — no Ranged Combat roll required.
+YZEGS.Reload.ActionSpent.fast: Fast action spent.
+YZEGS.Reload.ActionSpent.slow: Slow action spent.
 YZEGS.Dialog.Actions.Normal: Roll
 YZEGS.Dialog.Actions.Reload: Reload
 YZEGS.Dialog.Actions.Ok: OK
@@ -359,11 +641,36 @@ YZEGS.CuF.Success: Success — You keep your cool and are not suppressed.
 YZEGS.CuF.Failure: Failure — You are suppressed.
 YZEGS.CuF.FailureEffects: Drop prone, suffer 1 Stress, and lose both actions on your next turn.
 YZEGS.CuF.PanicSpreads: Friendly fighters in the same hex must immediately make CUF rolls.
+YZEGS.Suppression.CheckRequired: Suppression resolution
+YZEGS.Suppression.RollCuF: Roll CUF
+YZEGS.Suppression.NoRecordedTarget: No target was recorded when this attack was rolled.
+YZEGS.Suppression.AssignTarget: Assign Selected Target
+YZEGS.Suppression.SelectSingleTarget: Select exactly one token to assign the suppression check.
+YZEGS.Suppression.AssignFailed: The selected suppression target could not be assigned.
+YZEGS.Suppression.PanicFrom: 'panic from {source}'
+YZEGS.Suppression.Resisted: Kept cool
+YZEGS.Suppression.Applied: Suppressed
+YZEGS.Suppression.VehicleProtected: 'Protected inside {vehicle}'
+YZEGS.Suppression.Complete: All suppression checks have been resolved.
+YZEGS.Suppression.EffectsApplied: Suppression effects applied automatically.
+YZEGS.Suppression.PanicChecksAdded: '{count} panic-spread CUF check(s) added to the attack card.'
+YZEGS.Suppression.RollFailed: The Coolness Under Fire check could not be completed.
+YZEGS.Suppression.TurnLost: '{name} is suppressed and loses both actions this turn.'
 YZEGS.Dialog.Actor.ChooseActor: Choose an Actor
-YZEGS.Dialog.Damage.ChooseDamage: Amount of Damage
-YZEGS.Dialog.Damage.Description: Choose how much damage to inflict to <b>{target}</b>.
-YZEGS.Dialog.Damage.DamageQuantity: Base Amount
-YZEGS.Dialog.Damage.ExtraHits: Extra Hits
+YZEGS.Dialog.Damage.ChooseDamage: Apply Damage
+YZEGS.Dialog.Damage.PrimaryDescription: Apply the primary hit to <b>{target}</b>.
+YZEGS.Dialog.Damage.AdditionalDescription: Apply an additional ammunition-die hit to <b>{target}</b>.
+YZEGS.Dialog.Damage.RandomLocation: A separate random hit location will be rolled for this additional hit.
+YZEGS.Dialog.Damage.CalculatedDamage: Rules Damage
+YZEGS.Dialog.Damage.AmmoSuccessesAvailable: 'Ammo-die successes remaining: {count}'
+YZEGS.Dialog.Damage.AmmoSpendPrimary: Add to primary-hit damage
+YZEGS.Dialog.Damage.AmmoSpendAdditional: Spend on this additional hit
+YZEGS.Dialog.Damage.AmmoPrimaryHint: Each success spent here adds +1 damage. Leave successes unspent to create additional hits.
+YZEGS.Dialog.Damage.AmmoAdditionalHint: The first success creates this hit. Every further success spent adds +1 damage.
+YZEGS.Dialog.Damage.AdditionalTargetHint: The target must be the original target or an eligible secondary target in the same hex that was not harder to hit.
+YZEGS.Dialog.Damage.GMOverride: GM Override
+YZEGS.Dialog.Damage.NarrativeAdjustment: Narrative damage adjustment
+YZEGS.Dialog.Damage.NarrativeAdjustmentHint: Optional GM-only adjustment applied after the rules calculation. This does not alter the Weapon's base Damage.
 YZEGS.Dialog.Damage.BarrierArmors: Barrier's Armor Levels
 YZEGS.Dialog.Damage.BarrierArmorsHint: Multiple barriers are comma-separated.
 YZEGS.MACRO.GetActorTitle: Choose an Actor
@@ -423,6 +730,28 @@ SETTINGS.trackNpcAmmo.name: Track NPCs' Ammunitions
 SETTINGS.trackNpcAmmo.label: Whether the ammo consumption should be tracked for NPCs.
 SETTINGS.trackVehicleAmmo.name: Track Vehicles' Ammunitions
 SETTINGS.trackVehicleAmmo.label: Whether the ammo consumption should be tracked for weaponized vehicles.
+SETTINGS.internalMagazineReloadMode.name: Internal Magazine Reloading
+SETTINGS.internalMagazineReloadMode.hint: Choose the rules-as-written full reload or the optional granular rule which loads one round per reload action.
+SETTINGS.internalMagazineReloadMode.choices.full: Full Reload (Rules as Written)
+SETTINGS.internalMagazineReloadMode.choices.perRound: Load One Round per Action (Optional)
+SETTINGS.defaultSceneGridPreset.name: Default Scene Grid
+SETTINGS.defaultSceneGridPreset.hint: Choose the grid automatically applied to newly created Scenes. Imported Scenes retain their existing grid configuration.
+SETTINGS.defaultSceneGridPreset.choices.closeQuarters: 'Close Quarters — Approximate Flat-Top Hexes, 2.5 m'
+SETTINGS.defaultSceneGridPreset.choices.battle: 'Battle — Flat-Top Hexes, 10 m'
+SETTINGS.defaultSceneGridPreset.choices.city: 'City — Flat-Top Hexes, 200 m'
+SETTINGS.defaultSceneGridPreset.choices.travel: 'Travel — Flat-Top Hexes, 10 km'
+SETTINGS.defaultSceneGridPreset.choices.system: System Manifest Default
+YZEGS.SceneGrid.Presets: Grid Presets
+YZEGS.SceneGrid.PresetsHint: Applies the selected scale and flat-top hex type while preserving grid pixel size and map alignment. The 2.5 m Close Quarters grid approximates the book's gridless 1:125 sector maps. Existing Scene changes are saved immediately.
+YZEGS.SceneGrid.CloseQuarters: Close Quarters — 2.5 m
+YZEGS.SceneGrid.Battle: Battle — 10 m
+YZEGS.SceneGrid.City: City — 200 m
+YZEGS.SceneGrid.Travel: Travel — 10 km
+YZEGS.SceneGrid.UrbanOperations: Enable Urban Operations rules on this Scene
+YZEGS.SceneGrid.ConfinedSpace: Enable confined-space hazards on this Scene
+YZEGS.SceneGrid.Applied: Scene grid preset applied.
+YZEGS.SceneGrid.Prepared: Scene grid preset selected. Save the new Scene to apply it.
+YZEGS.SceneGrid.ApplyFailed: The Scene grid preset could not be applied.
 SETTINGS.showTaskCheckOptions.name: Ask for Task Check Options by Default
 SETTINGS.showTaskCheckOptions.label: Hold Shift to toggle.
 SETTINGS.closeRollTooltipDelay.name: Close Roll Tooltip Delay
@@ -433,6 +762,33 @@ SETTINGS.defaultCharTokenSize.name: Default Token Size for Characters & NPCs
 SETTINGS.defaultCharTokenSize.label: >-
   Set a default size between [0.3, 2.0] for newly created character & npc
   Actors.
+SETTINGS.tokenSizeDefaults.name: Default Prototype Token Sizes
+SETTINGS.tokenSizeDefaults.label: Configure Token Sizes
+SETTINGS.tokenSizeDefaults.hint: >-
+  Set the Prototype Token width and height used when each type of Actor is
+  newly created. Existing Actors and placed tokens are not resized.
+SETTINGS.tokenSizeDefaults.actorType: Actor Type
+SETTINGS.tokenSizeDefaults.width: Width
+SETTINGS.tokenSizeDefaults.height: Height
+SETTINGS.tokenSizeDefaults.rangeHint: >-
+  Dimensions are measured in grid spaces and must be between {minimum} and
+  {maximum}. Rectangular dimensions are useful for vehicles and large storage.
+SETTINGS.tokenSizeDefaults.save: Save Token Sizes
+SETTINGS.tokenSizeDefaults.saved: Default Prototype Token sizes saved.
+SETTINGS.actionSkills.name: Action Skills
+SETTINGS.actionSkills.label: Configure Action Skills
+SETTINGS.actionSkills.hint: Choose which Skill Item is used for each automated action in this world. The available choices come from the configured Skill and Specialty Item Source.
+SETTINGS.actionSkills.itemHint: Weapon attacks, reloads, and clearing jams continue to use the Skill selected on the Weapon Item.
+SETTINGS.actionSkills.save: Save Action Skills
+SETTINGS.actionSkills.saved: Action Skill mappings saved.
+YZEGS.ActionSkillConfig.Groups.Actions: Character Actions
+YZEGS.ActionSkillConfig.Groups.Travel: Travel Actions
+YZEGS.ActionSkillConfig.Groups.Supporting: Other Automated Checks
+YZEGS.ActionSkillConfig.DefaultSkill: 'System default — {skill}'
+YZEGS.ActionSkillConfig.UnavailableSkill: 'Unavailable — {skill}'
+YZEGS.ActionSkillConfig.WaterTravelDriving: Water travel driving
+YZEGS.ActionSkillConfig.WaterMineAvoidance: Avoid a water mine
+YZEGS.ActionSkillConfig.ColdWaterCheck: Resist cold water
 SETTINGS.hideCapacitiesButtons.name: Hide Capacities Modifiers
 SETTINGS.hideCapacitiesButtons.label: >-
   Whether to hide from the players the plus-minus buttons used to modify the Hit
@@ -468,6 +824,7 @@ TYPES.Actor.npc: Non-Player Character
 TYPES.Actor.vehicle: Vehicle
 TYPES.Actor.unit: Military Unit
 TYPES.Actor.party: Travel Party
+TYPES.Actor.container: Container
 TYPES.Item.weapon: Weapon
 TYPES.Item.armor: Body Armor
 TYPES.Item.ammunition: Ammo
@@ -478,6 +835,9 @@ TYPES.Item.specialty: Specialty
 EFFECT.StatusFullCover: Full Cover
 EFFECT.StatusPartialCover: Partial Cover
 EFFECT.StatusOverwatch: Overwatch
+EFFECT.StatusHuggingWall: Hugging Wall
+EFFECT.StatusEngaged: Close Quarters Engaged
+EFFECT.StatusAiming: Aiming
 EFFECT.StatusSuppressed: Suppressed
 EFFECT.StatusStop: Stop
 EFFECT.StatusSmoke: Smoke
@@ -617,6 +977,126 @@ YZEGS.CombatModifiers.NoAction: No Action Selected
 YZEGS.CombatModifiers.SelectedAction: Combat Action
 YZEGS.CombatModifiers.Selected: Situational Modifiers
 YZEGS.CombatModifiers.FinalModifier: Final Modifier
+YZEGS.CombatActions.Remaining: 'Remaining — Fast: {fast}, Slow: {slow}'
+YZEGS.CombatActions.UsesSlow: Uses Slow Action
+YZEGS.CombatActions.Unavailable: Unavailable
+YZEGS.CombatActions.NoFastAction: No Fast or Slow action remains for the selected Fast action.
+YZEGS.CombatActions.NoSlowAction: No Slow action remains for the selected Slow action.
+YZEGS.CombatActions.Spent: 'Spent {action} — Remaining: Fast {fast}, Slow {slow}'
+YZEGS.CombatActions.ResetFailed: One or more combatants could not refresh their actions for the new round.
+YZEGS.CombatActions.TakeAction: Take Action
+YZEGS.CombatActions.DialogTitle: Take an Action
+YZEGS.CombatActions.Perform: Perform Action
+YZEGS.CombatActions.Action: Action
+YZEGS.CombatActions.Target: Target
+YZEGS.CombatActions.Item: Item
+YZEGS.CombatActions.NoTarget: No target selected
+YZEGS.CombatActions.NoItem: No item selected
+YZEGS.CombatActions.Self: Self
+YZEGS.CombatActions.OutOfCombat: Outside active combat, action costs are narrative and are not deducted.
+YZEGS.CombatActions.NotTracked: No action was deducted because the character is outside active combat or this is a free action.
+YZEGS.CombatActions.ApplyOutcome: Apply Outcome
+YZEGS.CombatActions.OutcomeApplied: Outcome applied
+YZEGS.CombatActions.OutcomeUnsuccessful: Action unsuccessful — no outcome can be applied.
+YZEGS.CombatActions.Categories.general: General
+YZEGS.CombatActions.Categories.movement: Movement
+YZEGS.CombatActions.Categories.inventory: Inventory
+YZEGS.CombatActions.Categories.support: Support
+YZEGS.CombatActions.Categories.close: Close Combat
+YZEGS.CombatActions.Categories.ranged: Ranged Combat
+YZEGS.CombatActions.Categories.heavy: Heavy Weapons
+YZEGS.CombatActions.Categories.vehicle: Vehicle
+YZEGS.CombatActions.Categories.urban: Urban Operations
+YZEGS.CombatActions.Categories.hazards: Hazards
+YZEGS.CombatActions.Hints.spotShooter: Opposed Recon test. Spotting a shooter takes no action and ignores darkness; a silent or suppressed weapon does not grant the usual bonus.
+YZEGS.CombatActions.Hints.spotSilentShooter: Opposed Recon test without the loud-shot bonus. Spotting takes no action and darkness is ignored.
+YZEGS.CombatActions.Hints.blindFire: Fire into an adjacent indoor sector without exposing yourself. Only ammunition dice are rolled; ordinary shots can suppress but cannot inflict direct damage.
+YZEGS.CombatActions.Hints.hugWall: Move tight against a wall. Indoor fire coming along that wall can deny the attacker's cover until the character's next turn.
+YZEGS.CombatActions.Hints.enterBuilding: Entering through a door, window, or breach costs an additional Fast Action.
+YZEGS.CombatActions.Hints.moveSector: Move to one adjacent close-quarters sector.
+YZEGS.CombatActions.Hints.moveIndoorHex: Move one indoor hex. Indoor movement cannot be extended with a Mobility roll.
+YZEGS.CombatActions.Hints.changeFloor: Move one floor by stairs or another normal route.
+YZEGS.CombatActions.Hints.climbFloor: Climb one floor without stairs; roll Mobility.
+YZEGS.CombatActions.Hints.breachWall: An extended breaching task completed outside combat. Place the resulting aperture with a Wall or Region on the Scene.
+YZEGS.CombatActions.Hints.breachAperture: Spend one stretch and roll Stamina or Tech to breach a specific blocked door, window, wall, floor, or ceiling.
+YZEGS.CombatActions.Hints.blockAperture: Spend one stretch blocking an aperture. Mark the blocked doorway or window with a Wall or Region.
+YZEGS.CombatActions.Hints.blockIndoorHex: Spend one shift blocking an indoor hex and mark it on the Scene.
+YZEGS.CombatActions.Hints.calmCrowd: Use Command to calm or control a crowd.
+YZEGS.CombatActions.Hints.monitorRadio: Spend one shift monitoring radio traffic; the GM resolves any transmission.
+YZEGS.CombatActions.Hints.overwatchAperture: Choose the ranged weapon covering a specific door, window, or breach and mark that aperture on the Scene.
+YZEGS.CombatActions.Hints.vehicleCover: Hits on protected locations are redirected to the selected friendly Vehicle. Moving with it uses the character's normal actions but may occur outside their turn.
+YZEGS.CombatActions.Hints.searchBoobyTrap: Roll Recon before passing the suspected location. A failed roll triggers an Urban Operations booby trap automatically.
+YZEGS.CombatActions.Hints.placeBoobyTrap: Spend a stretch and roll Tech, then mark the trapped location with a hidden Region or tile.
+YZEGS.CombatActions.Hints.placeUrbanObstacle: Spend one shift placing debris or sandbags and mark the affected hex on the Scene. Sandbag cover normally has Armor Level 4.
+YZEGS.CombatActions.Hints.detectMines: Make a passive Recon test to notice mines before entering the affected area.
+YZEGS.CombatActions.Hints.cautiousMineMovement: Move one hex and roll Recon. If no mine is found, the Minefield resolver checks for a trigger.
+YZEGS.CombatActions.Hints.probeMines: Spend one stretch probing a single hex and roll Recon with a +2 modifier.
+YZEGS.CombatActions.Hints.placeMines: Spend one stretch and roll Tech, then have the GM add a Minefield behavior to the affected Region.
+YZEGS.CombatActions.Hints.clearMines: Spend one stretch clearing a hex and roll Tech. Failure can detonate a mine.
+YZEGS.CombatActions.Hints.breakFreeDebris: Spend a Slow Action and roll Stamina to escape debris pinning the character.
+YZEGS.Minefield.Actions.ClearFailed: The mine-clearing attempt failed and can detonate a mine. Resolve the Minefield hazard.
+YZEGS.CombatActions.Hints.help: Helping spends the same type of action as the action being helped. This Fast entry is a tracker; adjust it to Slow when required.
+YZEGS.CombatActions.Errors.Unknown: That action is no longer available.
+YZEGS.CombatActions.Errors.ExtendedDuringCombat: Extended tasks take a stretch or shift and cannot be started during active combat.
+YZEGS.CombatActions.Errors.CloseQuartersSceneRequired: This action is available only on a Scene configured for Close Quarters.
+YZEGS.Urban.Engagement.RestrictedAction: While engaged in close quarters, Slow Actions are restricted to close-combat attacks.
+YZEGS.Urban.Engagement.RandomTarget: 'Fire into an engagement randomly strikes: {target}.'
+YZEGS.Urban.VehicleCover.Redirected: 'The protected hit is redirected to {target}.'
+YZEGS.Urban.VehicleCover.ManualDamage: '{vehicle} takes the redirected hit for {damage} damage. Resolve its hit location, armor, and component damage using the Vehicle workflow.'
+YZEGS.Urban.HuggingWall.Exposed: '{attacker} loses cover after firing along a wall at a wall-hugging target; it returns at the start of their next turn.'
+YZEGS.Urban.BoobyTrap.Triggered: The Recon check failed; an Urban Operations booby trap at the crossed location detonates automatically.
+YZEGS.Urban.BlindFire.NoDirectHit: Blind fire cannot inflict a direct hit; ammunition-die successes can still cause suppression.
+YZEGS.Urban.BlindFire.Formula: Ammunition dice only
+YZEGS.Urban.Blast.Resolve: Resolve Blast
+YZEGS.Urban.Blast.Roll: Roll Blast
+YZEGS.Urban.Blast.RollTitle: 'Blast {blast}: {target}'
+YZEGS.Urban.Blast.Instructions: Target every token at the same effective blast power, then roll separately for each. Reduce the rating one step per sector or hex of distance and one step for a prone target.
+YZEGS.Urban.Blast.Contained: Contained within this room or sector
+YZEGS.Urban.Blast.SelectTargets: Target at least one token affected at the chosen blast power.
+YZEGS.Urban.Blast.Failed: The blast could not be resolved.
+YZEGS.Urban.CityTravel.Mode: Use urban travel
+YZEGS.Urban.CityTravel.Summary: Each stretch is 5–10 minutes. Only March, Drive, and Keep Watch are available. March 2 city hexes on a road or through open terrain, or 1 hex off road. Weather, darkness, forced march, and driving mishaps do not apply.
+YZEGS.Urban.CityTravel.BackOff: After successfully spotting an encounter, the next move must leave the encounter hex to back off without being spotted.
+YZEGS.Urban.CityTravel.FuelCalculator: City Fuel Calculator
+YZEGS.Urban.CityTravel.VehicleConsumption: Fuel consumption
+YZEGS.Urban.CityTravel.RoadHexes: Road hexes
+YZEGS.Urban.CityTravel.OffRoadHexes: Off-road hexes
+YZEGS.Urban.CityTravel.FuelMultiplier: Fuel-type multiplier
+YZEGS.Urban.CityTravel.LitresUsed: 'Litres used:'
+YZEGS.Urban.CityTravel.AdvanceStretch: 'Advance City Stretch (current: {stretch})'
+YZEGS.Urban.CityTravel.StretchReminder: 'City stretch {stretch}: resolve a city encounter or a fixed checkpoint if appropriate. City-map encounters count as on-road; record any control-zone faction substitution on the Scene.'
+YZEGS.CombatActions.Errors.ActionRequired: Choose the action being performed so its cost can be tracked.
+YZEGS.CombatActions.Errors.NotYourTurn: This action can only be performed on the character's turn.
+YZEGS.CombatActions.Errors.TargetRequired: Select a target for this action. Target the token before opening the action dialog.
+YZEGS.CombatActions.Errors.OtherTargetRequired: This action requires another character as its target.
+YZEGS.CombatActions.Errors.VehicleRequired: This action requires a targeted Vehicle.
+YZEGS.CombatActions.Errors.PersonRequired: This action requires a Character or NPC target.
+YZEGS.CombatActions.Errors.ItemRequired: Select an appropriate item for this action.
+YZEGS.CombatActions.Errors.InvalidItem: The selected item does not meet this action's prerequisite.
+YZEGS.CombatActions.Errors.SkillMissing: 'The character does not have the required skill: {skill}.'
+YZEGS.CombatActions.Errors.NotProne: The character is not prone.
+YZEGS.CombatActions.Errors.MustBeProne: The character must be prone to crawl.
+YZEGS.CombatActions.Errors.MustStand: The character must be standing to run.
+YZEGS.CombatActions.Errors.NotFullCover: The character is not in full cover.
+YZEGS.CombatActions.Errors.NotPartialCover: The character is not in partial cover.
+YZEGS.CombatActions.Errors.NotGrappled: The character is not currently grappled.
+YZEGS.CombatActions.Errors.NotPinnedByDebris: The character is not pinned by debris.
+YZEGS.CombatActions.Errors.MustBreakFree: A grappled character can only attempt to Break Free.
+YZEGS.CombatActions.Errors.MustGrappleAttack: A grappling character can only perform a Grapple Attack.
+YZEGS.CombatActions.Errors.WrongGrappleTarget: Select the opponent currently being grappled.
+YZEGS.CombatActions.Errors.TargetPermission: You do not have permission to update the target. Ask the GM to apply this outcome.
+YZEGS.CombatActions.Errors.TargetNotIncapacitatedDamage: First Aid requires a target incapacitated by damage.
+YZEGS.CombatActions.Errors.TargetNotIncapacitatedStress: Rally requires a target incapacitated by stress.
+YZEGS.CombatActions.Errors.TargetNotOnFire: The selected target is not on fire.
+YZEGS.CombatActions.Errors.AlreadyTriedFirstAid: This character has already attempted First Aid during the target's current incapacitation.
+YZEGS.CombatActions.Errors.AlreadyTriedRally: This character has already attempted to Rally the target during the current incapacitation.
+YZEGS.CombatActions.Errors.NoSuccess: The roll has no successes, so there is no successful outcome to apply.
+YZEGS.CombatActions.Errors.MoreSuccessesRequired: 'This outcome requires {required} successes.'
+YZEGS.CombatActions.Errors.StaleTarget: The action's character or target can no longer be found.
+YZEGS.CombatActions.Errors.ApplyFailed: The action outcome could not be applied. Check document ownership and try again as GM.
+YZEGS.CombatActions.Errors.BowNotPrepared: '{weapon} must be prepared with the Prepare Bow action before it can be fired.'
+YZEGS.CombatActions.Errors.GrenadeNotPrepared: The pin must be pulled from {weapon} before it can be thrown.
+YZEGS.CombatActions.Errors.HeavyWeaponNotAimed: '{weapon} must be aimed before it can be fired.'
 YZEGS.CombatModifiers.Entries.closeBlock: Blocking
 YZEGS.CombatModifiers.Entries.closeShove: Shoving
 YZEGS.CombatModifiers.Entries.closeDisarm: Disarming
@@ -659,6 +1139,8 @@ YZEGS.CombatModifiers.Entries.environmentDimLight: Dim Light
 YZEGS.CombatModifiers.Entries.environmentDarkness: Darkness
 YZEGS.CombatModifiers.Entries.environmentHeavyWeather: Heavy Rain or Wind
 YZEGS.CombatModifiers.Entries.environmentDenseSmoke: Dense Smoke
+YZEGS.CombatModifiers.Entries.urbanClutteredSector: Cluttered Close-Quarters Sector
+YZEGS.CombatModifiers.Entries.urbanIndoorTarget: Target Indoors
 SETTINGS.combatModifiers.name: Combat Roll Modifiers
 SETTINGS.combatModifiers.label: Configure Combat Roll Modifiers
 SETTINGS.combatModifiers.hint: Configure the Fast and Slow Actions and the situational and environmental modifiers offered for Close and Ranged Combat rolls.
@@ -760,3 +1242,223 @@ SETTINGS.experienceConfig.customQuestionsPlaceholder: Enter one question per lin
 SETTINGS.experienceConfig.customQuestionsHint: Each non-empty line becomes an additional 1 XP question in the award dialog.
 SETTINGS.experienceConfig.save: Save Experience Rules
 SETTINGS.experienceConfig.saved: Experience rules saved.
+YZEGS.ItemPropNames.swinging: Swinging Melee Weapon
+EFFECT.StatusSwimming: Swimming
+EFFECT.StatusSubmerged: Submerged
+EFFECT.StatusDrowning: Drowning
+EFFECT.StatusOverboard: Overboard
+EFFECT.StatusHypothermia: Hypothermia
+YZEGS.VehicleSheet.Domain: Vehicle Domain
+YZEGS.VehicleSheet.Domains.Land: Land Vehicle
+YZEGS.VehicleSheet.Domains.Watercraft: Watercraft
+YZEGS.VehicleSheet.Domains.Amphibious: Amphibious Vehicle
+YZEGS.VehicleSheet.Propulsion.Motor: Motor
+YZEGS.VehicleSheet.Propulsion.Sail: Sail
+YZEGS.VehicleSheet.Propulsion.Paddle: Paddle or Oar
+YZEGS.VehicleSheet.Propulsion.Other: Other
+YZEGS.Watercraft.Settings: Watercraft
+YZEGS.Watercraft.Size: Vessel Size (hexes)
+YZEGS.Watercraft.Propulsion.Label: Propulsion
+YZEGS.Watercraft.LandingCraft: Purpose-built Landing Craft
+YZEGS.Watercraft.UniformArmor: Use Uniform Armor
+YZEGS.Watercraft.MineDetectionEquipment: Submerged Mine Detection Equipment
+YZEGS.Watercraft.LargeVesselLos: A vessel of Size 2 or larger blocks line of sight. Use Scene Walls when exact vision blocking is needed.
+YZEGS.Watercraft.HullBreaches: Hull Breaches
+YZEGS.Watercraft.SinkingProgress: Sinking Progress
+YZEGS.Watercraft.SinkingDeadline: Sinking Deadline (world seconds)
+YZEGS.Watercraft.Crew: Crew Member
+YZEGS.Watercraft.Roll: Roll
+YZEGS.Watercraft.Resolve: Resolve
+YZEGS.Watercraft.OtherSize: Other Vessel Size
+YZEGS.Watercraft.States.Grounded: Grounded
+YZEGS.Watercraft.States.Stuck: Stuck
+YZEGS.Watercraft.States.Stopped: Stopped
+YZEGS.Watercraft.States.Sinking: Sinking
+YZEGS.Watercraft.States.Sunk: Sunk
+YZEGS.Watercraft.Components.hull: Hull
+YZEGS.Watercraft.Components.engine: Engine
+YZEGS.Watercraft.Components.fuel: Fuel
+YZEGS.Watercraft.Components.ammunition: Ammunition
+YZEGS.Watercraft.Components.cargo: Cargo
+YZEGS.Watercraft.Components.driver: Driver
+YZEGS.Watercraft.Components.passenger: Passenger
+YZEGS.Watercraft.Components.gunner: Gunner
+YZEGS.Watercraft.Components.captain: Captain
+YZEGS.Watercraft.Components.radio: Radio
+YZEGS.Watercraft.Components.weapon: Weapon
+YZEGS.Watercraft.Components.fcs: Fire-control System
+YZEGS.Watercraft.Components.antenna: Antenna
+YZEGS.Watercraft.Components.mastRigging: Mast or Rigging
+YZEGS.Watercraft.Components.externalStores: External Stores
+YZEGS.Watercraft.Components.exposedPassenger: Exposed Passenger
+YZEGS.Watercraft.Components.ricochet: Ricochet
+YZEGS.Watercraft.Actions.Turn: Turn Vessel
+YZEGS.Watercraft.Actions.Careen: Resolve Careening
+YZEGS.Watercraft.Actions.InternalExplosion: Internal Explosion
+YZEGS.Watercraft.Actions.Grounding: Resolve Grounding
+YZEGS.Watercraft.Actions.Landing: Resolve Amphibious Landing
+YZEGS.Watercraft.Actions.Collision: Resolve Collision
+YZEGS.Watercraft.Actions.Ram: Ram Vessel
+YZEGS.Watercraft.Actions.SinkingCheck: Sinking Check
+YZEGS.Watercraft.Actions.BailWater: Bail Water
+YZEGS.Watercraft.Actions.FreeVessel: Free Vessel
+YZEGS.Watercraft.Actions.RepairHull: Repair Hull
+YZEGS.Watercraft.Actions.RepairComponent: Repair Component
+YZEGS.Watercraft.RepairComponent: Component
+YZEGS.Watercraft.Results.Grounding: 'Grounding caused {damage} damage after {reductions} reductions. The vessel is grounded.'
+YZEGS.Watercraft.Results.Sinking: 'Sinking progress: {progress}/{size}.'
+YZEGS.Watercraft.Results.Sunk: 'Sinking progress: {progress}/{size}. The vessel has sunk.'
+YZEGS.Watercraft.Results.SunkNotice: '{vessel} has sunk.'
+YZEGS.Watercraft.Results.Turn: 'A 60-degree turn costs {cost} movement. If insufficient movement remains, turning requires a Slow Action.'
+YZEGS.Watercraft.Results.Careen: 'Move {speed} hexes in random direction {direction}. If this path crosses shallow water or an obstacle, resolve grounding or a collision.'
+YZEGS.Watercraft.Damage.Title: Vehicle Damage
+YZEGS.Watercraft.Damage.Instructions: 'Apply {damage} damage to {target}. Choose the facing struck.'
+YZEGS.Watercraft.Damage.Facing: Facing
+YZEGS.Watercraft.Damage.Apply: Apply Damage
+YZEGS.Watercraft.Damage.Penetrated: '{damage} damage penetrated. Component hit: {component}.'
+YZEGS.Watercraft.Damage.Stopped: 'Armor stopped the damage. Surface result: {component}.'
+YZEGS.Watercraft.Damage.CrewShock: 'Vessel Penetrated — Coolness Under Fire: {actor}'
+YZEGS.Watercraft.Damage.OccupantBlast: The penetrating water-mine blast also affects every occupant. Resolve the Blast from the minefield card.
+YZEGS.Watercraft.Errors.NoCrew: This vessel has no eligible crew member.
+YZEGS.Watercraft.Errors.SkillMissing: The selected crew member does not have the required Skill.
+YZEGS.Watercraft.Errors.HullPart: Repairing a hull breach requires a Hull or Universal Spare Part Gear Item aboard the vessel.
+YZEGS.Watercraft.Errors.RamTarget: Target exactly one other Vehicle before resolving a ram.
+YZEGS.Watercraft.Errors.ComponentPart: Repairing this component requires a matching or Universal Spare Part Gear Item aboard the vessel.
+YZEGS.SpareParts.Label: Spare Part Type
+YZEGS.SpareParts.None: Not a Spare Part
+YZEGS.SpareParts.Universal: Universal
+YZEGS.SpareParts.Hull: Hull
+YZEGS.SpareParts.Engine: Engine
+YZEGS.SpareParts.Propulsion: Propulsion
+YZEGS.SpareParts.Rigging: Mast or Rigging
+YZEGS.SpareParts.Radio: Radio
+YZEGS.SpareParts.Antenna: Antenna
+YZEGS.WaterProtection.Label: Water Protection
+YZEGS.WaterProtection.None: None
+YZEGS.WaterProtection.Wetsuit: Wetsuit or Similar Gear
+YZEGS.WaterProtection.DrySuit: Full Dry Suit
+YZEGS.WaterProtection.Modifier: Cold-water Stamina Modifier
+YZEGS.Water.Region.Label: Water
+YZEGS.Water.Region.Hint: Applies swimming and cold-water state when a token enters deep water.
+YZEGS.Water.Region.Fields.Depth: Depth
+YZEGS.Water.Region.Hints.Depth: Deep water requires swimming; shallow water does not.
+YZEGS.Water.Region.Fields.Temperature: Temperature
+YZEGS.Water.Region.Hints.Temperature: Cold water requires periodic Stamina checks unless suitable protection applies.
+YZEGS.Water.Region.Fields.Rough: Rough Water
+YZEGS.Water.Region.Hints.Rough: Mark turbulent water so the GM can increase the difficulty of swimming checks.
+YZEGS.Water.Region.Depth.Shallow: Shallow
+YZEGS.Water.Region.Depth.Deep: Deep
+YZEGS.Water.Region.Temperature.Temperate: Temperate
+YZEGS.Water.Region.Temperature.Cold: Cold
+YZEGS.Water.Region.LandVehicleWarning: '{vehicle} is a Land Vehicle and cannot normally traverse deep water.'
+YZEGS.Water.Errors.ActionUnavailable: That action cannot be performed while swimming.
+YZEGS.Water.Errors.MustBeInWater: This action requires the character to be swimming or submerged.
+YZEGS.Water.Errors.TargetNotDrowning: The selected target is not drowning.
+YZEGS.Water.Errors.WatercraftRequired: This action requires a Watercraft or Amphibious Vehicle target.
+YZEGS.Water.Errors.MustBeAboardWatercraft: The acting character must be an occupant of a Watercraft or Amphibious Vehicle.
+YZEGS.Water.Errors.NoRangedWhileSwimming: Ranged weapons cannot be fired while swimming.
+YZEGS.Water.Drowning.HoldBreath: 'Hold Breath: {actor}'
+YZEGS.Water.Drowning.DeathSave: 'Drowning Death Save: {actor}'
+YZEGS.Water.Cold.Check: 'Cold Water: {actor}'
+YZEGS.Water.Cold.ModifierReminder: 'Apply the equipment modifier ({modifier}) when judging this cold-water check.'
+YZEGS.ActionNames.swim: Swim
+YZEGS.ActionNames.stayAfloat: Stay Afloat
+YZEGS.ActionNames.submerge: Submerge
+YZEGS.ActionNames.surface: Surface
+YZEGS.ActionNames.climbAboard: Climb Aboard
+YZEGS.ActionNames.rescueDrowning: Rescue Drowning Character
+YZEGS.ActionNames.turnLargeVessel: Turn Large Vessel
+YZEGS.ActionNames.freeVessel: Free Grounded Vessel
+YZEGS.ActionNames.repairHull: Repair Hull Breach
+YZEGS.ActionNames.bailWater: Bail Water
+YZEGS.ActionNames.ramVessel: Ram Vessel
+YZEGS.ActionNames.evadeGuidedWeapon: Evade Guided Weapon
+YZEGS.CombatActions.Hints.swim: Spend a Fast Action to move one water hex. A successful Mobility roll can add no more than one extra hex. A carried backpack gives −2.
+YZEGS.CombatActions.Hints.stayAfloat: Roll Mobility when conditions require a test to remain afloat.
+YZEGS.CombatActions.Hints.climbAboard: Roll Mobility to leave deep water and climb aboard the selected vessel.
+YZEGS.CombatActions.Hints.rescueDrowning: Bring the target to the surface and roll Medical Aid as a Slow Action.
+YZEGS.CombatActions.Hints.turnLargeVessel: Large vessels pay movement equal to Size minus one for each 60-degree turn. Use a Slow Action when speed is insufficient.
+YZEGS.CombatActions.Hints.freeVessel: Spend a stretch and roll Driving with aid from another suitable vessel.
+YZEGS.CombatActions.Hints.repairHull: Spend a shift, a suitable Spare Part, and a successful Tech roll to seal hull breaches.
+YZEGS.CombatActions.Hints.bailWater: Spend a stretch and roll Stamina to reduce accumulated flooding.
+YZEGS.CombatActions.Hints.ramVessel: Roll Driving; each success increases the damage caused to the other vessel.
+YZEGS.CombatActions.Hints.evadeGuidedWeapon: An aware pilot or helmsman may spend a Slow Action and roll Driving at the configured modifier.
+YZEGS.Guidance.Label: Guided Weapon
+YZEGS.Guidance.Mode: Guidance Mode
+YZEGS.Guidance.TargetClass: Valid Target Class
+YZEGS.Guidance.DelayRounds: Impact Delay (rounds)
+YZEGS.Guidance.EvasionModifier: Evasion Modifier
+YZEGS.Guidance.FiringArc: Firing Arc
+YZEGS.Guidance.Modes.None: None
+YZEGS.Guidance.Modes.Directed: Directed
+YZEGS.Guidance.Modes.SurfaceSeeking: Surface-Seeking
+YZEGS.Guidance.Modes.AirSeeking: Air-Seeking
+YZEGS.Guidance.Modes.UnderwaterSeeking: Underwater-Seeking
+YZEGS.Guidance.Targets.Any: Any
+YZEGS.Guidance.Targets.Aircraft: Aircraft
+YZEGS.Guidance.Targets.Watercraft: Watercraft
+YZEGS.Guidance.Targets.LargeVessel: Large Vessel
+YZEGS.Guidance.Targets.GroundOrWater: Ground or Water Vehicle
+YZEGS.Guidance.Arcs.All: All Arcs
+YZEGS.Guidance.Arcs.Front: Front
+YZEGS.Guidance.Arcs.Rear: Rear
+YZEGS.Guidance.Arcs.Port: Port
+YZEGS.Guidance.Arcs.Starboard: Starboard
+YZEGS.Guidance.Schedule: Launch and Track Impact
+YZEGS.Guidance.Pending: 'Impact pending until round {round}.'
+YZEGS.Guidance.Evade: Attempt Evasion
+YZEGS.Guidance.Evaded: The guided attack was evaded.
+YZEGS.Guidance.Evasion.Title: 'Guided Weapon Evasion: {target}'
+YZEGS.Guidance.Errors.SingleTarget: Guided weapons require exactly one target.
+YZEGS.Guidance.Errors.InvalidTarget: The selected target does not match this weapon's target class.
+YZEGS.Guidance.Errors.FiringArc: The selected target is outside this weapon's configured firing arc.
+YZEGS.Guidance.Errors.NoDriver: No eligible driver or helmsman is assigned to the targeted vehicle.
+YZEGS.Minefield.Environment.Land: Land
+YZEGS.Minefield.Environment.Water: Water
+YZEGS.Minefield.WaterType.Contact: Contact
+YZEGS.Minefield.WaterType.Bottom: Bottom
+YZEGS.Minefield.WaterType.Mixed: Mixed
+YZEGS.Minefield.Region.Fields.Environment: Environment
+YZEGS.Minefield.Region.Hints.Environment: Water minefields only affect Watercraft and Amphibious Vehicles.
+YZEGS.Minefield.Region.Fields.WaterType: Water Mine Type
+YZEGS.Minefield.Region.Hints.WaterType: Bottom mines require suitable detection equipment before a passive detection attempt is possible.
+YZEGS.Minefield.Region.Fields.MaximumSafeSize: Maximum Safe Vessel Size
+YZEGS.Minefield.Region.Hints.MaximumSafeSize: Vessels at or below this Size do not trigger the minefield. Use 0 to affect every vessel.
+YZEGS.Minefield.WaterAvoidance.Title: 'Avoid Water Mine: {actor}'
+YZEGS.Minefield.WaterAvoidance.Avoided: '{actor} safely navigated the detected minefield.'
+YZEGS.WaterTravel.Mode: Use water travel
+YZEGS.WaterTravel.Title: Water Travel
+YZEGS.WaterTravel.Vessel: Vessel
+YZEGS.WaterTravel.Terrain.Label: Water Terrain
+YZEGS.WaterTravel.Terrain.River: River
+YZEGS.WaterTravel.Terrain.Coast: Coastline
+YZEGS.WaterTravel.Terrain.OpenWater: Open Water
+YZEGS.WaterTravel.Night: Travel at Night
+YZEGS.WaterTravel.RouteBranch: Route Branch Requiring Navigation
+YZEGS.WaterTravel.Navigator: Navigator
+YZEGS.WaterTravel.NavigationCheck: Water Navigation Check
+YZEGS.WaterTravel.FishingCheck: Fish from Vessel
+YZEGS.WaterTravel.Profile: 'Speed ×{speed}; Driving {driving}; Fishing {fishing}; encounter distance 2D10 × {distance}.'
+YZEGS.WaterTravel.AdvanceShift: 'Advance Water Shift (current: {shift})'
+YZEGS.WaterTravel.NoCamp: Camping requires a vessel of Size 2 or larger.
+YZEGS.WaterTravel.DrivingCheck: 'Water Travel Driving Check: {vessel}'
+YZEGS.WaterTravel.Summary: '{vessel} travels at speed ×{speed}; encounter distance is 2D10 × {distance}.'
+YZEGS.WaterTravel.Mishap: Mishap
+YZEGS.WaterTravel.Errors.Vessel: Select a Watercraft or Amphibious Vehicle for this journey.
+YZEGS.WaterTravel.Errors.Driver: 'Assign a character with {skill} to the Drive travel action.'
+YZEGS.WaterTravel.Errors.Navigator: 'Select a navigator with {skill} before resolving a route branch.'
+YZEGS.WaterTravel.Errors.Fisher: 'Assign a character with {skill} to the Fish travel action.'
+YZEGS.WaterTravel.Mishaps.engineBlown: Engine blown; the vessel stops and the engine is damaged.
+YZEGS.WaterTravel.Mishaps.mastBroken: Mast broken; the vessel stops and loses Reliability.
+YZEGS.WaterTravel.Mishaps.riggingDamaged: Rigging damaged; a suitable part and Tech work are required.
+YZEGS.WaterTravel.Mishaps.propulsionDamaged: Propulsion damaged; the vessel stops until repaired.
+YZEGS.WaterTravel.Mishaps.debrisCollision: Floating debris strikes the vessel's front.
+YZEGS.WaterTravel.Mishaps.grounding: The vessel runs aground.
+YZEGS.WaterTravel.Mishaps.largeWave: A large wave puts a random occupant overboard.
+YZEGS.WaterTravel.Mishaps.lost: The vessel moves one hex off course.
+YZEGS.WaterTravel.Mishaps.minorLeak: A minor leak reduces Reliability and starts flooding.
+YZEGS.WaterTravel.Mishaps.forcedStop: The vessel must stop for the shift.
+YZEGS.WaterTravel.Mishaps.deadCalm: Dead calm; the vessel cannot sail this shift.
+YZEGS.WaterTravel.Mishaps.contaminatedFuel: Contaminated fuel; reroll or stop to address the problem.
+YZEGS.WaterTravel.Mishaps.unfavorableWind: Unfavorable wind; reroll or wait for conditions to change.
+YZEGS.WaterTravel.Mishaps.majorLeak: A major leak starts flooding and can sink the vessel within a stretch.

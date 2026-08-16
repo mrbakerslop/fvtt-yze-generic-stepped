@@ -1,0 +1,16 @@
+<div class="yzegs chat-card twilight-action-card" data-actor-id="{{actor.id}}">
+  <div class="card-content">
+    <header class="card-header">
+      <h3>{{action.name}}</h3>
+    </header>
+    <div class="card-description">
+      <p><strong>{{action.speedName}}</strong>{{#if targetName}} — {{targetName}}{{/if}}{{#if itemName}} — {{itemName}}{{/if}}</p>
+      {{#if spend.tracked}}
+      <p>{{localize "YZEGS.CombatActions.Spent" action=spend.spentFromName fast=spend.remaining.fast slow=spend.remaining.slow}}</p>
+      {{else}}
+      <p>{{localize "YZEGS.CombatActions.NotTracked"}}</p>
+      {{/if}}
+      {{#if resultText}}<p>{{resultText}}</p>{{/if}}
+    </div>
+  </div>
+</div>

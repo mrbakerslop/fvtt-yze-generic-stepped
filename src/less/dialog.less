@@ -1,6 +1,7 @@
 .application.dialog.yzegs,
 .application.yzegs.experience-config,
 .application.yzegs.character-field-label-settings,
+.application.yzegs.token-size-defaults,
 .application.yzegs.combat-modifier-config {
   --background: #fff;
   --color-header-background: #000;
@@ -155,10 +156,18 @@
   .combat-action-selector {
     margin-bottom: 10px;
 
-    select {
+    select,
+    .rating-menu {
       flex: 1;
       min-width: 0;
     }
+  }
+
+  .combat-action-remaining {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: right;
   }
 
   .combat-modifier-group {
@@ -199,6 +208,128 @@
       text-align: right;
       font-weight: 700;
     }
+  }
+}
+
+.application.dialog.yzegs .damage-choice-dialog {
+  .damage-ammo-allocation,
+  .damage-gm-adjustment {
+    margin: 8px 0;
+    padding: 6px 8px;
+    border: 1px solid @colorTan;
+  }
+
+  .damage-gm-adjustment legend {
+    padding: 0 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .hint {
+    margin: 3px 0;
+  }
+}
+
+.application.dialog.yzegs .twilight-action-dialog {
+  min-width: 0;
+
+  .action-dialog-summary {
+    margin: 0 0 10px;
+    font-weight: 700;
+  }
+
+  .form-group {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    &[hidden] {
+      display: none;
+    }
+
+    label {
+      font-weight: 700;
+    }
+
+    select {
+      width: 100%;
+    }
+  }
+
+  .action-dialog-hint {
+    margin: 8px 0 0;
+    font-size: 11px;
+  }
+}
+
+.application.dialog.yzegs .reload-dialog-form {
+  min-width: 390px;
+
+  .reload-dialog-status {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 7px 8px;
+      border: 1px solid #000;
+      text-align: center;
+    }
+  }
+
+  .reload-dialog-field {
+    display: grid;
+    grid-template-columns: 135px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    > label {
+      font-weight: 700;
+    }
+  }
+
+  .reload-dialog-menu {
+    --option-menu-width: 100%;
+    width: 100%;
+  }
+
+  .reload-dialog-modifiers {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 12px 0 8px;
+    padding-top: 8px;
+    border-top: 1px solid #aaa;
+
+    > div,
+    > label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    input {
+      width: 62px;
+      text-align: center;
+    }
+  }
+
+  .reload-dialog-hint,
+  .reload-dialog-warning {
+    margin: 8px 0 0;
+  }
+
+  .reload-dialog-warning {
+    padding: 6px 8px;
+    border-left: 3px solid #000;
   }
 }
 

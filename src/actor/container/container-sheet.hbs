@@ -1,0 +1,109 @@
+<div class="sheet-root flexcol">
+  <header class="container-sheet-header">
+    <img class="container-profile" src="{{actor.img}}" data-edit="img" data-action="editImage" title="{{actor.name}}"/>
+    <div class="container-header-fields">
+      <label for="container-name-{{actor.id}}">{{localize "YZEGS.ActorSheet.Name"}}</label>
+      <input id="container-name-{{actor.id}}" type="text" name="name" value="{{actor.name}}"/>
+      <label for="container-type-{{actor.id}}">{{localize "YZEGS.ContainerSheet.ContainerType"}}</label>
+      <input id="container-type-{{actor.id}}" type="text" name="system.containerType" value="{{system.containerType}}"
+        placeholder="{{localize 'YZEGS.ContainerSheet.ContainerTypePlaceholder'}}"/>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="inventory">
+      {{localize "YZEGS.ContainerSheet.InventoryTab"}}
+    </a>
+    {{#if notesTabEnabled}}
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">
+      {{localize "YZEGS.ContainerSheet.DescriptionTab"}}
+    </a>
+    {{/if}}
+    {{#if isGM}}
+    <a class="item" data-action="tab" data-group="primary" data-tab="settings">
+      {{localize "YZEGS.ContainerSheet.SettingsTab"}}
+    </a>
+    {{/if}}
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab container-inventory flexcol" data-group="primary" data-tab="inventory">
+      <p class="container-drop-hint">{{localize "YZEGS.ContainerSheet.DropHint"}}</p>
+      <p class="container-transfer-hint">{{localize "YZEGS.ContainerSheet.TransferHint"}}</p>
+
+      <div class="container-item-groups">
+        {{#each containerItemGroups}}
+        <section class="container-item-group" data-item-type="{{type}}">
+          <h2 class="container-type-heading">
+            <span>{{label}}</span>
+            <span class="container-type-count">{{items.length}}</span>
+          </h2>
+          <div class="container-items-header container-item-grid">
+            <span>{{localize "YZEGS.ContainerSheet.Item"}}</span>
+            <span>{{localize "YZEGS.ItemSheet.Quantity"}}</span>
+            <span>{{localize "YZEGS.ItemSheet.Weight"}}</span>
+            <span></span>
+          </div>
+          <div class="container-item-list">
+            {{#each items}}
+            <div class="item container-item-row container-item-grid" data-item-id="{{id}}">
+              <div class="container-item-name">
+                <img class="item-edit" src="{{img}}" alt=""/>
+                <a class="item-edit">{{name}}</a>
+              </div>
+              {{#if usesQuantity}}
+              {{#if @root.editable}}
+              <input class="container-item-quantity" type="number" min="1" step="1" value="{{quantity}}"
+                aria-label="{{localize 'YZEGS.ItemSheet.Quantity'}}"/>
+              {{else}}
+              <span>{{quantity}}</span>
+              {{/if}}
+              {{else}}
+              <span>–</span>
+              {{/if}}
+              <span>{{encumbrance}}</span>
+              <div class="container-item-controls">
+                {{#if @root.editable}}
+                <a class="item-chat" title="{{localize 'YZEGS.ActorSheet.ToChat'}}">{{{@root.config.Icons.buttons.chat}}}</a>
+                <a class="item-edit" title="{{localize 'YZEGS.ActorSheet.Edit'}}">{{{@root.config.Icons.buttons.edit}}}</a>
+                <a class="item-delete" title="{{localize 'YZEGS.ActorSheet.Delete'}}">{{{@root.config.Icons.buttons.delete}}}</a>
+                {{/if}}
+              </div>
+            </div>
+            {{/each}}
+          </div>
+        </section>
+        {{else}}
+        <p class="container-empty">{{localize "YZEGS.ContainerSheet.Empty"}}</p>
+        {{/each}}
+      </div>
+      <div class="container-total">
+        <strong>{{localize "YZEGS.ContainerSheet.TotalWeight"}}:</strong>
+        <span>{{containerTotalWeight}}</span>
+      </div>
+    </div>
+
+    {{#if notesTabEnabled}}
+    <div class="tab container-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs"}}
+    </div>
+    {{/if}}
+
+    {{#if isGM}}
+    <div class="tab container-settings" data-group="primary" data-tab="settings">
+      <fieldset>
+        <legend>{{localize "YZEGS.ContainerSheet.AllowedItemTypes"}}</legend>
+        <p>{{localize "YZEGS.ContainerSheet.AllowedItemTypesHint"}}</p>
+        <div class="container-storage-types">
+          {{#each containerStorageTypes}}
+          <label class="checkbox container-storage-type">
+            {{> checkboxControl name=path value=allowed editable=@root.isGM}}
+            <span>{{label}}</span>
+          </label>
+          {{/each}}
+        </div>
+      </fieldset>
+    </div>
+    {{/if}}
+  </section>
+</div>
