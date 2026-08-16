@@ -112,6 +112,12 @@ class CharacterSystemData extends foundry.abstract.TypeDataModel {
           initial: () => [],
         }),
       }),
+      creation: schemaField({
+        archetypeUuid: stringField(),
+        archetypeName: stringField(),
+        appliedAt: numberField(),
+        selections: objectField(),
+      }),
     };
   }
 }
@@ -388,6 +394,40 @@ class InjuryData extends foundry.abstract.TypeDataModel {
   }
 }
 
+class ArchetypeData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      description: htmlField(),
+      branches: stringArrayField(),
+      rank: schemaField({
+        mode: stringField('none'),
+        formula: stringField('1d6'),
+        options: new fields.ArrayField(objectField(), {
+          required: true,
+          nullable: false,
+          initial: () => [],
+        }),
+      }),
+      keyAttribute: stringField(),
+      keySkills: stringArrayField(),
+      cuf: stringField('D'),
+      specialties: stringArrayField(),
+      prompts: schemaField({
+        appearance: stringArrayField(),
+        moralCode: stringArrayField(),
+        bigDream: stringArrayField(),
+        groupMeeting: stringArrayField(),
+        nicknames: stringArrayField(),
+      }),
+      equipment: new fields.ArrayField(objectField(), {
+        required: true,
+        nullable: false,
+        initial: () => [],
+      }),
+    };
+  }
+}
+
 export function registerDataModels() {
   Object.assign(CONFIG.Actor.dataModels, {
     character: CharacterSystemData,
@@ -406,5 +446,6 @@ export function registerDataModels() {
     skill: SkillData,
     specialty: SpecialtyData,
     injury: InjuryData,
+    archetype: ArchetypeData,
   });
 }

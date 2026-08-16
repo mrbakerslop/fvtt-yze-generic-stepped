@@ -77,8 +77,16 @@
 		"name name name name img"
 		"nation branch rank age img"
 		"hit hit stress stress img";
+
+	&.has-archetype {
+		grid-template-areas:
+			"name name archetype archetype img"
+			"nation branch rank age img"
+			"hit hit stress stress img";
+	}
 	
 	.name { grid-area: name; }
+	.archetype-header { grid-area: archetype; }
 	.img { grid-area: img; }
 	.nation { grid-area: nation; }
 	.branch { grid-area: branch; }

@@ -22,12 +22,22 @@ import {
   COMBAT_MODIFIERS_SETTING,
   CombatModifierConfig,
 } from './combat-modifiers.js';
+import {
+  PUSH_COST_MODES,
+  PUSH_COST_MODE_SETTING,
+} from './push-costs.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
 export const NOTES_TAB_SETTING = 'enableNotesTab';
+export const UNIT_MORALE_ENABLED_SETTING = 'enableUnitMorale';
 export const RADIATION_ENABLED_SETTING = 'enableRadiation';
 export const RADIATION_NAME_SETTING = 'radiationName';
+
+/** Whether the world's Unit Morale rating is enabled. */
+export function isUnitMoraleEnabled() {
+  return game.settings.get(SYSTEM_ID, UNIT_MORALE_ENABLED_SETTING);
+}
 
 /** Whether the world's Radiation rules are enabled. */
 export function isRadiationEnabled() {
@@ -193,6 +203,16 @@ export function registerSystemSettings() {
     onChange: refreshActorSheets,
   });
 
+  game.settings.register(SYSTEM_ID, UNIT_MORALE_ENABLED_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.enableUnitMorale.name',
+    hint: 'SETTINGS.enableUnitMorale.hint',
+    type: Boolean,
+    default: true,
+    onChange: refreshActorSheets,
+  });
+
   game.settings.register(SYSTEM_ID, RADIATION_ENABLED_SETTING, {
     config: true,
     scope: 'world',
@@ -211,6 +231,20 @@ export function registerSystemSettings() {
     type: String,
     default: '',
     onChange: refreshActorSheets,
+  });
+
+  game.settings.register(SYSTEM_ID, PUSH_COST_MODE_SETTING, {
+    config: true,
+    scope: 'world',
+    name: 'SETTINGS.pushCostMode.name',
+    hint: 'SETTINGS.pushCostMode.hint',
+    type: String,
+    choices: {
+      [PUSH_COST_MODES.MANUAL]: 'SETTINGS.pushCostMode.choices.manual',
+      [PUSH_COST_MODES.BUTTON]: 'SETTINGS.pushCostMode.choices.button',
+      [PUSH_COST_MODES.AUTOMATIC]: 'SETTINGS.pushCostMode.choices.automatic',
+    },
+    default: PUSH_COST_MODES.BUTTON,
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'trackPcAmmo', {

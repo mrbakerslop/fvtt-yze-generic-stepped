@@ -1,0 +1,102 @@
+<div class="archetype-builder">
+  {{#if archetype.system.description}}<div class="archetype-builder-intro">{{{archetype.system.description}}}</div>{{/if}}
+
+  {{#if hasExistingData}}
+  <div class="archetype-warning">
+    <strong>{{localize "YZEGS.Archetype.ExistingDataTitle"}}</strong>
+    <p>{{localize "YZEGS.Archetype.ExistingDataHint"}}</p>
+    {{#if existingArchetype}}<p>{{localize "YZEGS.Archetype.Current"}}: {{existingArchetype}}</p>{{/if}}
+    <label><input type="checkbox" name="allowOverwrite" /> {{localize "YZEGS.Archetype.AllowOverwrite"}}</label>
+  </div>
+  {{/if}}
+  <p class="archetype-validation" role="alert"></p>
+
+  <div class="archetype-builder-grid">
+    <fieldset class="archetype-section archetype-identity">
+      <legend>{{localize "YZEGS.Archetype.Identity"}}</legend>
+      <div class="form-group"><label>{{localize "YZEGS.ActorSheet.Name"}}</label><input type="text" name="characterName" value="{{actor.name}}" required /></div>
+      <div class="form-group"><label>{{localize "YZEGS.ActorSheet.Nationality"}}</label><input name="nationality" value="{{actor.system.bio.nationality}}" /></div>
+      <div class="form-group">
+        <label>{{localize "YZEGS.ActorSheet.Branch"}}</label>
+        {{> optionMenu name="branch" selected=actor.system.bio.branch options=branchOptions editable=true menuClass="archetype-builder-menu"}}
+      </div>
+      <div class="form-group">
+        <label>{{localize "YZEGS.ActorSheet.MilitaryRank"}}</label>
+        <div class="form-fields">
+          {{> optionMenu name="rank" selected=selectedRank options=rankOptions editable=true menuClass="archetype-builder-menu archetype-rank-menu"}}
+          {{#if (eq rank.mode "roll")}}<button type="button" data-action="roll-rank"><i class="fa-solid fa-dice"></i> {{localize "YZEGS.Archetype.Roll"}}</button>{{/if}}
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="archetype-section archetype-attributes">
+      <legend>{{localize "YZEGS.Archetype.Attributes"}}</legend>
+      <p class="archetype-section-validation" data-attribute-validation role="alert"></p>
+      <p class="hint">{{localize "YZEGS.Archetype.AttributeHint"}}</p>
+      <div class="archetype-attribute-grid">
+        {{#each attributes as |score attribute|}}
+        <div class="archetype-attribute-field"><span>{{lookup ../attributeLabels attribute}}</span>
+          {{> optionMenu name=(concat "attribute." attribute) selected=score options=@root.attributeOptions editable=true noBlank=true menuClass="archetype-builder-menu archetype-attribute-menu"}}
+        </div>
+        {{/each}}
+      </div>
+      <div class="archetype-attribute-summary">
+        <p class="archetype-attribute-budget" data-attribute-budget></p>
+        <p><strong>{{localize "YZEGS.Archetype.KeyAttribute"}}:</strong> {{lookup attributeLabels archetype.system.keyAttribute}}</p>
+        <p><strong>{{localize "YZEGS.Archetype.CuF"}}:</strong> {{archetype.system.cuf}}</p>
+      </div>
+    </fieldset>
+  </div>
+
+  <fieldset class="archetype-section archetype-skills">
+    <legend>{{localize "YZEGS.Archetype.Skills"}}</legend>
+    <p class="hint">{{localize "YZEGS.Archetype.SkillHint"}}</p>
+    <div class="archetype-skill-grid">
+      {{#each skillSlots as |slot|}}
+      <div class="archetype-skill-row">
+        <strong>{{slot.rating}}</strong>
+        {{> optionMenu name=slot.id selected=slot.selected options=slot.choices editable=true menuClass="archetype-builder-menu archetype-skill-menu"}}
+      </div>
+      {{/each}}
+    </div>
+    <div class="archetype-specialty-row">
+      <span class="archetype-specialty-label">{{localize "YZEGS.Archetype.Specialty"}}</span>
+      {{> optionMenu name="specialty" selected=selectedSpecialty options=specialtyOptions editable=true menuClass="archetype-builder-menu archetype-specialty-menu"}}
+    </div>
+  </fieldset>
+
+  <fieldset class="archetype-section archetype-background">
+    <legend>{{localize "YZEGS.Archetype.Background"}}</legend>
+    <div class="archetype-builder-grid">
+      <div class="archetype-background-field"><label>{{localize "YZEGS.ActorSheet.Appearance"}}</label>{{> comboMenu name="appearance" selected=actor.system.bio.appearance options=promptOptions.appearance editable=true menuClass="archetype-builder-menu"}}</div>
+      <div class="archetype-background-field"><label>{{localize "YZEGS.ActorSheet.MoralCode"}}</label>{{> comboMenu name="moralCode" selected=actor.system.bio.moralCode options=promptOptions.moralCode editable=true menuClass="archetype-builder-menu"}}</div>
+      <div class="archetype-background-field"><label>{{localize "YZEGS.ActorSheet.BigDream"}}</label>{{> comboMenu name="bigDream" selected=actor.system.bio.bigDream options=promptOptions.bigDream editable=true menuClass="archetype-builder-menu"}}</div>
+      <div class="archetype-background-field"><label>{{localize "YZEGS.ActorSheet.Buddy"}}</label><input name="buddy" value="{{actor.system.bio.buddy}}" /></div>
+    </div>
+    <div class="archetype-background-field archetype-background-wide"><label>{{localize "YZEGS.ActorSheet.GroupMeeting"}}</label><textarea name="groupMeeting" rows="3" placeholder="{{lookup prompts.groupMeeting 0}}">{{actor.system.bio.groupMeeting}}</textarea></div>
+  </fieldset>
+
+  {{#if hasEquipment}}
+  <fieldset class="archetype-section archetype-starting-equipment">
+    <legend>{{localize "YZEGS.Archetype.Equipment"}}</legend>
+    {{#each fixedEquipment as |entry|}}
+    <label class="form-group"><input type="checkbox" data-equipment-uuid="{{entry.uuid}}" {{#if entry.required}}checked{{/if}} {{#if entry.source.missing}}disabled{{/if}} /> <span>{{entry.source.name}} ({{entry.quantityFormula}})</span></label>
+    {{/each}}
+    {{#each groupedEquipment as |group|}}
+    <div class="form-group stacked">
+      <strong>{{group.name}}</strong>
+      {{#each group.entries as |entry|}}<label><input type="radio" name="equipment.{{group.name}}" data-equipment-uuid="{{entry.uuid}}" {{#if entry.selected}}checked{{/if}} {{#if entry.source.missing}}disabled{{/if}} /> {{entry.source.name}} ({{entry.quantityFormula}})</label>{{/each}}
+    </div>
+    {{/each}}
+  </fieldset>
+  {{/if}}
+
+  {{#if radiationEnabled}}
+  <div class="form-group"><label>{{localize "YZEGS.ActorSheet.PermanentRadiation"}}</label><div class="form-fields"><input name="rads" type="number" min="0" value="{{actor.system.rads.permanent}}" /><button type="button" data-action="roll-rads"><i class="fa-solid fa-dice"></i> {{localize "YZEGS.Archetype.Roll"}}</button></div></div>
+  {{/if}}
+
+  <div class="archetype-checklist">
+    <strong>{{localize "YZEGS.Archetype.GroupChecklist"}}</strong>
+    <p>{{localize "YZEGS.Archetype.GroupChecklistHint"}}</p>
+  </div>
+</div>

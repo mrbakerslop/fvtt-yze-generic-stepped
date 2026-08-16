@@ -1251,8 +1251,7 @@ class YearZeroRoll extends Roll {
    * @readonly
    */
   get jamCount() {
-    const n = this.count('ammo', 1);
-    return n > 0 ? n + this.attributeTrauma : 0;
+    return this.count('ammo', 1) + this.attributeTrauma;
   }
 
   /**

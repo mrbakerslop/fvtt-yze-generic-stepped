@@ -3,6 +3,7 @@
   {{! ================================================== }}
 
   {{! Unit Morale }}
+  {{#if data.unitMoraleEnabled}}
   <div class='form-group'>
     <label for='yzegs-cuf-unit-morale'>{{localize 'YZEGS.Dialog.CuF.UnitMorale'}}</label>
     <input type='hidden' name='unitMorale' value='{{data.unitMorale}}' />
@@ -11,6 +12,7 @@
   </div>
 
   <hr />
+  {{/if}}
 
   {{! Modifier }}
   <div class='form-group'>
@@ -44,16 +46,6 @@
         {{label}}
       </label>
     {{/each}}
-  </div>
-
-  {{! ================================================== }}
-
-  <hr />
-
-  {{! Max Pushes }}
-  <div class='form-group'>
-    <label>{{localize 'YZEGS.Dialog.Roll.MaxPush'}}</label>
-    <input type='number' name='maxPush' value='{{data.maxPush}}' min='0' data-dtype='Number' />
   </div>
 
   {{! ================================================== }}

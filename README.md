@@ -14,7 +14,7 @@ setting.
 
 ## Compatibility
 
-- System version: 14.0.6
+- System version: 14.0.7
 - Minimum Foundry version: 14.359
 - Verified Foundry version: 14.366
 
@@ -60,6 +60,36 @@ npm run build
 - JavaScript namespace: `game.yzegs`
 - Configuration namespace: `CONFIG.YZEGS`
 - Localization namespace: `YZEGS`
+
+## Archetypes
+
+Archetypes are reusable Item documents for guided, setting-neutral character
+creation. An Archetype can define branches and rank results, a recommended key
+attribute, key Skills, starting CUF, recommended Specialties, background
+prompts, and personal equipment with choice groups and rolled quantities.
+
+To use one:
+
+1. Create an Archetype Item in the world or a visible Item compendium.
+2. Drag Skill and Specialty Items onto the matching drop zones in its sheet.
+3. Drag physical Items onto its Equipment tab. Give alternatives the same
+   choice-group name and enter a quantity or roll formula such as `1d6`.
+4. Configure the world **Advancement Item Source** so the character builder can
+   offer at least six Skills and one Specialty.
+5. Drag the Archetype onto a Character sheet, or use **Choose Archetype** in
+   the Character sheet title bar.
+
+The builder validates the standard stepped-dice Archetype allocation: four
+attributes begin at C with three increases (and one optional reduction to D for
+an extra increase), followed by one B key Skill, two C Skills, and three D
+Skills. Applying an Archetype updates the embedded Skill ratings (unselected
+Skills become untrained), preserves unrelated Items, never reduces matching
+equipment quantities, and records the source on the Character.
+
+Unit Morale, group gear, and a starting vehicle remain group decisions and are
+shown as a completion reminder rather than applied to an individual Character.
+Published setting content is not bundled; worlds and appropriately licensed
+content modules can supply their own Archetype Items.
 
 English is the source language. The included German, Spanish, French, Russian,
 Swedish, and Ukrainian localizations are community translations and may lag

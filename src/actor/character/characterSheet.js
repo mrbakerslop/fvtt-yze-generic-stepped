@@ -14,6 +14,7 @@ import {
   setSkillExperienceEligibility,
 } from '../../system/experience.js';
 import YZEGSDialog from '../../components/dialog/dialog.js';
+import { chooseArchetype } from '../../system/archetypes.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor Sheet for Character.
@@ -26,9 +27,21 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
 
   /** @override */
   static DEFAULT_OPTIONS = {
+    actions: {
+      chooseArchetype: this.#onChooseArchetype,
+    },
     classes: ['character'],
     position: { width: 1040, height: 715 },
   };
+
+  /**
+   * Open the Archetype-driven character builder.
+   * @this {ActorSheetYZEGSCharacter}
+   * @returns {Promise<*>}
+   */
+  static #onChooseArchetype() {
+    return chooseArchetype(this.actor);
+  }
 
   static TABS = {
     ...ActorSheetYZEGS.TABS,
@@ -37,6 +50,18 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
       initial: 'skills',
     },
   };
+
+  /** @override */
+  _getFrameButtons(options) {
+    const buttons = super._getFrameButtons(options);
+    if ((this.actor.type !== 'character') || !this.isEditable) return buttons;
+    buttons.unshift({
+      action: 'chooseArchetype',
+      icon: 'fa-solid fa-person-circle-plus',
+      label: 'YZEGS.Archetype.Choose',
+    });
+    return buttons;
+  }
 
   /* ------------------------------------------- */
   /*  Sheet Data Preparation                     */
@@ -47,6 +72,10 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
     const sheetData = await super._prepareContext(options);
     sheetData.appearanceValue = this.actor.system.bio?.appearance ?? '';
     sheetData.characterFieldLabels = getCharacterFieldLabels();
+    sheetData.archetype = {
+      uuid: this.actor.system.creation?.archetypeUuid ?? '',
+      name: this.actor.system.creation?.archetypeName ?? '',
+    };
     sheetData.skillsByAttribute = Object.fromEntries(Object.keys(CONFIG.YZEGS.attributes).map(attribute => [
       attribute,
       [],

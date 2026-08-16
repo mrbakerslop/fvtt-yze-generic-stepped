@@ -2,12 +2,27 @@
 
   {{!-- Actor Sheet Header --}}
   <header class="sheet-header">
-    <div class="grid-actor-header">
+    <div class="grid-actor-header {{#if (eq actor.type 'character')}}has-archetype{{/if}}">
 
       {{!-- Actor's name --}}
-      <h1 class="name">
+      <div class="name character-header-field">
+        <h3>{{localize "YZEGS.ActorSheet.CharacterName"}}</h3>
         <input type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'YZEGS.ActorSheet.Name'}}"/>
-      </h1>
+      </div>
+
+      {{!-- Character's Archetype --}}
+      {{#if (eq actor.type 'character')}}
+      <div class="archetype-header character-header-field">
+        <h3>{{localize "YZEGS.Archetype.Label"}}</h3>
+        <div class="archetype-header-control">
+          {{#if archetype.name}}
+          <a class="content-link" data-uuid="{{archetype.uuid}}"><i class="fa-solid fa-user-tag"></i> {{archetype.name}}</a>
+          {{else}}
+          <span>–</span>
+          {{/if}}
+        </div>
+      </div>
+      {{/if}}
 
       {{!-- Nationality, Branch & Rank --}}
       <div class="nation">

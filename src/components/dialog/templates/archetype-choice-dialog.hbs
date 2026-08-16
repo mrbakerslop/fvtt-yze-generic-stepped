@@ -1,0 +1,8 @@
+<div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Archetype.Choose"}}</label>
+    <select name="archetype">
+      {{#each archetypes as |archetype|}}<option value="{{archetype.uuid}}">{{archetype.name}}</option>{{/each}}
+    </select>
+  </div>
+</div>

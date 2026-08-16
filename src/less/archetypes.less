@@ -1,0 +1,454 @@
+.archetype-editor {
+  fieldset,
+  section {
+    margin-bottom: 0.75rem;
+  }
+
+  textarea {
+    width: 100%;
+  }
+}
+
+.archetype-reference-columns {
+  align-items: start;
+  column-gap: 1rem;
+
+  > section {
+    margin: 0;
+    min-width: 0;
+  }
+
+  h3 {
+    border-bottom: 2px solid fade(@colorDark, 35%);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    margin: 0 0 0.25rem;
+    min-height: 1.7rem;
+    white-space: nowrap;
+  }
+}
+
+.archetype-reference-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.archetype-reference,
+.archetype-equipment-row {
+  align-items: center;
+  border-bottom: 1px solid fade(@colorDark, 20%);
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+
+  &.missing {
+    color: @colorTan;
+  }
+
+  > span,
+  > strong {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  button {
+    flex: 0 0 1.75rem;
+    font-size: 0.8rem;
+    height: 1.75rem;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.archetype-reference {
+  min-height: 2rem;
+  padding: 0.2rem 0;
+}
+
+.archetype-equipment-row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1.5fr) minmax(8rem, 1fr) minmax(7rem, 0.75fr) auto 2rem;
+
+  label {
+    font-size: 0.8rem;
+  }
+}
+
+.archetype-drop-zone {
+  box-sizing: border-box;
+  border: 2px dashed fade(@colorDark, 35%);
+  border-radius: 3px;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  text-align: center;
+  width: 100%;
+}
+
+.archetype-builder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+
+  .archetype-builder-intro,
+  .archetype-builder-intro > :first-child {
+    margin-top: 0;
+  }
+
+  .archetype-builder-intro,
+  .archetype-builder-intro > :last-child {
+    margin-bottom: 0;
+  }
+
+  fieldset {
+    min-width: 0;
+  }
+
+  .archetype-section {
+    border: 1px solid @colorDark;
+    margin: 0;
+    padding: 0.45rem 0.7rem 0.65rem;
+
+    > legend {
+      font-weight: bold;
+      padding: 0 0.25rem;
+      text-transform: uppercase;
+    }
+
+    > .hint {
+      margin: 0 0 0.5rem;
+    }
+  }
+
+  .rating-menu.archetype-builder-menu {
+    --option-menu-width: 100%;
+    height: 1.8rem;
+    min-width: 0;
+    width: 100%;
+
+    .rating-menu-trigger {
+      justify-items: start;
+      text-align: left;
+    }
+  }
+
+  .rating-menu.archetype-attribute-menu {
+    .rating-menu-trigger,
+    .rating-menu-option {
+      justify-items: center;
+      text-align: center;
+    }
+  }
+
+  .archetype-identity,
+  .archetype-attributes {
+    gap: 0.35rem;
+    padding: 0.3rem 0.5rem 0.45rem;
+  }
+
+  .archetype-builder-grid {
+    display: grid;
+    gap: 0.65rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .archetype-identity {
+    .form-group {
+      align-items: center;
+      display: grid;
+      gap: 0.4rem;
+      grid-template-columns: 6.75rem minmax(0, 1fr);
+      margin: 0;
+
+      > label {
+        font-weight: bold;
+      }
+
+      > input,
+      > select,
+      > .rating-menu,
+      > .form-fields {
+        box-sizing: border-box;
+        min-width: 0;
+        width: 100%;
+      }
+
+      > input {
+        height: 1.8rem;
+        margin: 0;
+      }
+
+      .form-fields {
+        align-items: stretch;
+        display: grid;
+        gap: 0.4rem;
+        grid-template-columns: minmax(0, 1fr) auto;
+
+        .rating-menu {
+          min-width: 0;
+          width: 100%;
+        }
+
+        button {
+          height: 1.8rem;
+          margin: 0;
+          padding: 0 0.65rem;
+        }
+      }
+    }
+
+    [data-action='roll-rank'] {
+      color: @colorDark;
+
+      i {
+        color: inherit;
+      }
+
+      &:disabled {
+        color: @colorDark;
+        opacity: 1;
+      }
+    }
+  }
+
+  .archetype-attribute-grid {
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    .archetype-attribute-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+      text-align: center;
+    }
+
+    span {
+      font-size: 0.8rem;
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    select {
+      width: 100%;
+    }
+  }
+
+  .archetype-section-validation {
+    color: @colorRed;
+    font-weight: bold;
+    line-height: 1.15;
+    margin: 0;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .archetype-attribute-summary {
+    border-top: 1px solid fade(@colorDark, 25%);
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.35rem;
+    padding-top: 0.3rem;
+
+    p {
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .archetype-attribute-budget {
+      font-weight: bold;
+    }
+  }
+
+  .archetype-skill-grid {
+    display: grid;
+    gap: 0.4rem 0.75rem;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, auto);
+  }
+
+  .archetype-skill-row {
+    align-items: center;
+    display: grid;
+    gap: 0.4rem;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    min-width: 0;
+
+    strong {
+      text-align: center;
+    }
+
+    select {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+
+  .archetype-specialty-row {
+    align-items: center;
+    border-top: 1px solid fade(@colorDark, 25%);
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+
+    .archetype-specialty-label {
+      font-weight: bold;
+    }
+
+    select {
+      min-width: 0;
+      width: 100%;
+    }
+  }
+
+  .archetype-background {
+    .archetype-builder-grid {
+      gap: 0.55rem 0.75rem;
+    }
+
+    .archetype-background-field {
+      display: grid;
+      gap: 0.2rem;
+      grid-template-columns: minmax(0, 1fr);
+      margin: 0;
+      min-width: 0;
+
+      label {
+        display: block;
+        flex: none;
+        font-weight: bold;
+        margin: 0;
+        width: 100%;
+      }
+
+      input,
+      textarea {
+        box-sizing: border-box;
+        display: block;
+        flex: none;
+        margin: 0;
+        max-width: none;
+        min-width: 0;
+        width: 100%;
+      }
+    }
+
+    > .archetype-background-wide {
+      margin-top: 0.6rem;
+    }
+  }
+
+  .archetype-warning,
+  .archetype-checklist {
+    border-left: 4px solid @colorTan;
+    padding: 0.5rem 0.75rem;
+
+    p {
+      margin: 0.25rem 0;
+    }
+  }
+
+  .archetype-validation {
+    color: @colorRed;
+    font-weight: bold;
+    margin: 0;
+
+    &:empty {
+      display: none;
+    }
+  }
+}
+
+.application.dialog.yzegs.archetype-builder-dialog .dialog-content {
+  .rating-menu.archetype-builder-menu {
+    .rating-menu-trigger,
+    .rating-menu-option {
+      justify-items: start;
+      text-align: left;
+    }
+
+    &.combo-menu .combo-menu-input {
+      text-align: left;
+    }
+  }
+
+  .rating-menu.archetype-attribute-menu {
+    .rating-menu-trigger,
+    .rating-menu-option {
+      justify-items: center;
+      text-align: center;
+    }
+  }
+}
+
+.application.dialog.yzegs.archetype-builder-dialog {
+  .window-content,
+  .dialog-form {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .dialog-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .dialog-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 0.35rem;
+    scrollbar-gutter: stable;
+  }
+
+  .form-footer {
+    flex: 0 0 auto;
+  }
+}
+
+.character-header-field {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0 0.25rem 0.35rem;
+
+  h3 {
+    line-height: 1;
+    margin: 0 0 0.2rem;
+  }
+}
+
+.archetype-header {
+  border-bottom: @borderSheetBold;
+  border-left: @borderSheet;
+
+  .archetype-header-control {
+    align-items: center;
+    border: 1px solid @colorTan;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: flex;
+    font-size: 1.4rem;
+    gap: 0.5rem;
+    min-height: 2.2rem;
+    padding: 0 0.5rem;
+
+    > a,
+    > span {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

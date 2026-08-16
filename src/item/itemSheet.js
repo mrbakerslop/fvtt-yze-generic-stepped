@@ -4,15 +4,21 @@ import { activateRatingMenus } from '../components/rating-menu.js';
 import { activateCheckboxControls } from '../components/checkbox-control.js';
 import { getAdvancementSourceItems } from '../system/experience.js';
 import { COMBAT_TYPES } from '../system/combat-modifiers.js';
+import { linesFromText, parseRankOptions } from '../system/archetype-rules.js';
 
 const ITEM_SHEET_HEIGHTS = {
   ammunition: 480,
+  archetype: 760,
   armor: 390,
   gear: 370,
   grenade: 430,
   injury: 360,
   skill: 320,
   weapon: 625,
+};
+
+const ITEM_SHEET_WIDTHS = {
+  archetype: 600,
 };
 
 /**
@@ -40,7 +46,13 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
 
   static TABS = {
     primary: {
-      tabs: [{ id: 'features' }, { id: 'modifiers' }, { id: 'description' }],
+      tabs: [
+        { id: 'features' },
+        { id: 'modifiers' },
+        { id: 'background' },
+        { id: 'equipment' },
+        { id: 'description' },
+      ],
       initial: 'features',
     },
   };
@@ -48,8 +60,13 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
   /** @override */
   _initializeApplicationOptions(options) {
     const applicationOptions = super._initializeApplicationOptions(options);
+    const hasCustomWidth = Object.hasOwn(options.position ?? {}, 'width');
     const hasCustomHeight = Object.hasOwn(options.position ?? {}, 'height');
+    const defaultWidth = ITEM_SHEET_WIDTHS[options.document?.type];
     const defaultHeight = ITEM_SHEET_HEIGHTS[options.document?.type];
+    if (defaultWidth && !hasCustomWidth) {
+      applicationOptions.position.width = defaultWidth;
+    }
     if (defaultHeight && !hasCustomHeight) {
       applicationOptions.position.height = defaultHeight;
     }
@@ -131,6 +148,8 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
       sheetData.tabs = this._prepareTabs('primary');
     }
 
+    if (this.item.type === 'archetype') await this._prepareArchetypeContext(sheetData);
+
     await enrichTextFields(sheetData, ['system.description']);
 
     if (['weapon', 'ammunition'].includes(this.item.type)) {
@@ -147,6 +166,40 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
     return sheetData;
   }
 
+  async _prepareArchetypeContext(sheetData) {
+    const resolveReference = async uuid => {
+      try {
+        const source = await fromUuid(uuid);
+        return { uuid, name: source?.name ?? uuid, missing: !source };
+      }
+      catch (_error) {
+        return { uuid, name: uuid, missing: true };
+      }
+    };
+    sheetData.archetype = {
+      branches: this.item.system.branches.join('\n'),
+      rankOptions: this.item.system.rank.options.map(option => (
+        `${option.min ?? ''}-${option.max ?? ''} | ${option.label ?? ''}`
+      )).join('\n'),
+      prompts: Object.fromEntries(Object.entries(this.item.system.prompts).map(([key, values]) => [
+        key,
+        values.join('\n'),
+      ])),
+      keySkills: await Promise.all(this.item.system.keySkills.map(resolveReference)),
+      specialties: await Promise.all(this.item.system.specialties.map(resolveReference)),
+      equipment: await Promise.all(this.item.system.equipment.map(async (entry, index) => ({
+        ...entry,
+        index,
+        source: await resolveReference(entry.uuid),
+      }))),
+    };
+    sheetData.rankModeChoices = {
+      none: 'YZEGS.Archetype.RankModes.none',
+      choose: 'YZEGS.Archetype.RankModes.choose',
+      roll: 'YZEGS.Archetype.RankModes.roll',
+    };
+  }
+
   /* ------------------------------------------- */
 
   _getAvailableAmmoTypes() {
@@ -156,6 +209,89 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
       ammoTypes = this._extractAmmoTypes(actor.items.contents, ammoTypes);
     }
     return [...ammoTypes].sort();
+  }
+
+  /* ------------------------------------------- */
+
+  _activateArchetypeListeners() {
+    const updateArrayField = event => {
+      const field = event.currentTarget.dataset.archetypeArray;
+      if (!field) return;
+      return this.item.update({ [`system.${field}`]: linesFromText(event.currentTarget.value) });
+    };
+    this.element.querySelectorAll('[data-archetype-array]').forEach(input => {
+      input.addEventListener('change', updateArrayField);
+    });
+    this.element.querySelector('[data-archetype-ranks]')?.addEventListener('change', event => (
+      this.item.update({ 'system.rank.options': parseRankOptions(event.currentTarget.value) })
+    ));
+    this.element.querySelectorAll('[data-archetype-remove]').forEach(button => {
+      button.addEventListener('click', event => this._onArchetypeReferenceRemove(event));
+    });
+    this.element.querySelectorAll('.archetype-equipment-input').forEach(input => {
+      input.addEventListener('change', event => this._onArchetypeEquipmentChange(event));
+    });
+    this.element.querySelectorAll('[data-archetype-drop]').forEach(zone => {
+      zone.addEventListener('dragover', event => event.preventDefault());
+      zone.addEventListener('drop', event => this._onArchetypeReferenceDrop(event));
+    });
+  }
+
+  async _onArchetypeReferenceDrop(event) {
+    event.preventDefault();
+    const field = event.currentTarget.dataset.archetypeDrop;
+    const dropData = TextEditor.getDragEventData(event);
+    const item = await Item.implementation.fromDropData(dropData);
+    if (!item) return;
+    if (item.actor) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Archetype.Errors.EmbeddedSource'));
+    }
+    if (field === 'keySkills' && item.type !== 'skill') {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Archetype.Errors.DropSkill'));
+    }
+    if (field === 'specialties' && item.type !== 'specialty') {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Archetype.Errors.DropSpecialty'));
+    }
+    if (field === 'equipment' && !CONFIG.YZEGS.physicalItems.includes(item.type)) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Archetype.Errors.DropEquipment'));
+    }
+    if (field === 'equipment') {
+      const equipment = foundry.utils.deepClone(this.item.system.equipment);
+      if (equipment.some(entry => entry.uuid === item.uuid)) return null;
+      equipment.push({
+        uuid: item.uuid,
+        name: item.name,
+        group: '',
+        quantityFormula: '1',
+        required: true,
+      });
+      return this.item.update({ 'system.equipment': equipment });
+    }
+    const references = [...this.item.system[field]];
+    if (!references.includes(item.uuid)) references.push(item.uuid);
+    return this.item.update({ [`system.${field}`]: references });
+  }
+
+  _onArchetypeReferenceRemove(event) {
+    event.preventDefault();
+    const field = event.currentTarget.dataset.archetypeRemove;
+    const index = Number(event.currentTarget.dataset.index);
+    if (!Number.isInteger(index)) return null;
+    const values = foundry.utils.deepClone(this.item.system[field]);
+    values.splice(index, 1);
+    return this.item.update({ [`system.${field}`]: values });
+  }
+
+  _onArchetypeEquipmentChange(event) {
+    const index = Number(event.currentTarget.dataset.index);
+    const property = event.currentTarget.dataset.property;
+    if (!Number.isInteger(index) || !property) return null;
+    const equipment = foundry.utils.deepClone(this.item.system.equipment);
+    if (!equipment[index]) return null;
+    equipment[index][property] = event.currentTarget.type === 'checkbox'
+      ? event.currentTarget.checked
+      : event.currentTarget.value;
+    return this.item.update({ 'system.equipment': equipment });
   }
 
   /* ------------------------------------------- */
@@ -218,6 +354,8 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
     const html = $(this.element);
     activateRatingMenus(this.element);
     activateCheckboxControls(this.element, (path, value) => this.item.update({ [path]: value }));
+
+    if (this.item.type === 'archetype' && this.isEditable) this._activateArchetypeListeners();
     const activeTab = this.element.querySelector(
       `.tabs [data-group="primary"][data-tab="${this.tabGroups.primary}"]`,
     );

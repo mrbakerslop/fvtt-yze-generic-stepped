@@ -7,6 +7,14 @@ import {
   getCombatModifierGroups,
   getSkillCombatType,
 } from '../../system/combat-modifiers.js';
+import {
+  applyRollPushCosts,
+  getPushCostMode,
+  prepareRollPushCosts,
+  PUSH_COST_MODES,
+  resolvePushCostDocuments,
+} from '../../system/push-costs.js';
+import { isUnitMoraleEnabled } from '../../system/settings.js';
 
 /* -------------------------------------------- */
 /*  Custom Dice Roller Interface                */
@@ -32,6 +40,7 @@ export class YZEGSRoller {
    * @param {string?}  attributeName        The name of the attribute used (important for modifiers)
    * @param {string?}  skillName            The Skill Item ID used (important for modifiers)
    * @param {string?}  combatType           Whether this is a Close or Ranged Combat roll
+   * @param {string?}  checkType            A special roll type used to render check-specific results
    * @param {number}  [attribute=0]         The attribute's size
    * @param {number}  [skill=0]             The skill's size
    * @param {number}  [rof=0]               The RoF's value
@@ -54,6 +63,7 @@ export class YZEGSRoller {
     attributeName = null,
     skillName = null,
     combatType = null,
+    checkType = null,
     attribute = 0,
     skill = 0,
     rof = 0,
@@ -125,10 +135,12 @@ export class YZEGSRoller {
     let roll = YearZeroRoll.forge(dice, { maxPush });
     roll.name = title;
     roll.options.combatType = combatType;
+    roll.options.checkType = checkType;
     roll.options.combatAction = combatAction;
     roll.options.situationalModifiers = situationalModifiers;
     roll.options.modifier = modifier;
     roll.options.signedModifier = modifier >= 0 ? `+${modifier}` : `−${Math.abs(modifier)}`;
+    roll.options.attributeName = attributeName;
 
     // 5 — Modifies the roll.
     if (modifier) {
@@ -139,6 +151,7 @@ export class YZEGSRoller {
     // These are added to `roll.options` which is conserved.
     if (actor) {
       roll.options.actorId = actor.id;
+      roll.options.actorUuid = actor.uuid;
       const token = actor.token;
       if (token) {
         roll.options.sceneId = token.parent.id;
@@ -148,6 +161,7 @@ export class YZEGSRoller {
     }
     if (item) {
       roll.options.itemId = item.id;
+      roll.options.itemUuid = item.uuid;
     }
 
     // 7 — Evaluates the roll.
@@ -172,23 +186,25 @@ export class YZEGSRoller {
     actor = null,
     unitMorale = false,
     modifier = 0,
-    maxPush = 1,
     messageMode = null,
     sendMessage = true,
   } = {}) {
     if (!actor) return;
     messageMode = messageMode ?? game.settings.get('core', 'messageMode');
+    const unitMoraleEnabled = isUnitMoraleEnabled();
+    if (!unitMoraleEnabled) unitMorale = false;
     const modifiers = actor.getRollModifiers().filter(m => m.target === 'cuf');
-    const opts = await YZEGSDialog.askCuFOptions({ title, unitMorale, modifier, modifiers, maxPush, messageMode });
+    const opts = await YZEGSDialog.askCuFOptions({
+      title, unitMorale, unitMoraleEnabled, modifier, modifiers, messageMode,
+    });
 
     // Exits early if the dialog was cancelled.
     if (opts.cancelled) return null;
 
     // Uses options from the CuF dialog.
-    unitMorale = opts.unitMorale;
+    unitMorale = unitMoraleEnabled && opts.unitMorale;
     messageMode = opts.messageMode;
     modifier = opts.modifier;
-    maxPush = opts.maxPush;
 
     // Gets attributes' values.
     const cuf = actor.system.cuf.value;
@@ -196,11 +212,12 @@ export class YZEGSRoller {
 
     return this.taskCheck({
       title,
+      checkType: 'cuf',
       // actor,
       // attributeName: 'cuf',
       attribute: cuf,
       skill: unitMorale ? um : 0,
-      modifier, maxPush, messageMode,
+      modifier, maxPush: 0, messageMode,
       skipDialog: true,
       sendMessage,
     });
@@ -227,44 +244,37 @@ export async function rollPush(roll, { message } = {}) {
   // Pushes the roll.
   await roll.push({ async: true });
 
-  // Returns the pushed roll if there is no message.
-  if (!message) return roll.toMessage();
+  // Creates a pushed message even when no prior chat message was supplied.
+  if (!message) {
+    const { actor: rollActor, item: rollItem } = resolvePushCostDocuments(roll);
+    prepareRollPushCosts(roll, { actor: rollActor, item: rollItem });
+    if (getPushCostMode() === PUSH_COST_MODES.AUTOMATIC) {
+      await applyRollPushCosts(roll, { actor: rollActor, item: rollItem });
+    }
+    return roll.toMessage();
+  }
 
   // Gets all the message's flags.
   const flags = message.getFlag('fvtt-yze-generic-stepped', 'data') ?? {};
   const oldAmmoSpent = flags.ammoSpent || 0;
   let newAmmoSpent = -Math.max(1, roll.ammoSpent); // why roll.ammoSpent + 1 here
-  const actorId = roll.options.actorId;
-  const tokenKey = roll.options.tokenKey;
-  const actor = getRollingActor({ actorId, tokenKey });
-  const itemId = roll.options.itemId;
-  const item = actor ? actor.items.get(itemId) : game.items.get(itemId);
+  const { actor, item } = resolvePushCostDocuments(roll);
   const ammoId = flags.ammo ?? (item ? item.system.mag?.target : '');
-  const ammo = actor ? actor.items.get(ammoId) : game.items.get(ammoId);
+  const ammoOwner = item?.actor ?? actor;
+  const ammo = ammoOwner?.items.get(ammoId) ?? game.items.get(ammoId);
+  let flagData = { ...flags };
 
-  // No need to await the deletion.
-  message.delete();
-
-  const m = await roll.toMessage();
-
-  const flagData = {};
-
-  // Updates the reliability.
-  if (item?.hasReliability && roll.jamCount) {
-    const oldJam = flags.reliabilityChange ?? 0;
-    const newJam = -roll.jamCount;
-
-    if (oldJam !== newJam) {
-      const relChange = await item.updateReliability(newJam - oldJam);
-      flagData.reliabilityChange = oldJam + relChange;
-    }
+  prepareRollPushCosts(roll, { flags, actor, item });
+  if (getPushCostMode() === PUSH_COST_MODES.AUTOMATIC) {
+    const result = await applyRollPushCosts(roll, { flags, actor, item });
+    flagData = result.flags;
   }
 
   // Updates the ammunition.
   if (ammo) {
-    const track = (actor.type === 'character' && game.settings.get('fvtt-yze-generic-stepped', 'trackPcAmmo'))
-      || (actor.type === 'npc' && game.settings.get('fvtt-yze-generic-stepped', 'trackNpcAmmo'))
-      || (actor.type === 'vehicle' && game.settings.get('fvtt-yze-generic-stepped', 'trackVehicleAmmo'));
+    const track = (ammoOwner.type === 'character' && game.settings.get('fvtt-yze-generic-stepped', 'trackPcAmmo'))
+      || (ammoOwner.type === 'npc' && game.settings.get('fvtt-yze-generic-stepped', 'trackNpcAmmo'))
+      || (ammoOwner.type === 'vehicle' && game.settings.get('fvtt-yze-generic-stepped', 'trackVehicleAmmo'));
 
     if (track) {
       flagData.ammoSpent = oldAmmoSpent;
@@ -277,10 +287,12 @@ export async function rollPush(roll, { message } = {}) {
     }
   }
 
-  // Updates message's flags.
-  if (!foundry.utils.isEmpty(flagData)) {
-    await m.setFlag('fvtt-yze-generic-stepped', 'data', flagData);
-  }
+  // Replace the previous result only after all document updates have completed.
+  await message.delete();
+  const messageData = foundry.utils.isEmpty(flagData) ? {} : {
+    flags: { 'fvtt-yze-generic-stepped': { data: flagData } },
+  };
+  const m = await roll.toMessage(messageData);
 
   return m;
 }

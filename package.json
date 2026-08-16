@@ -1,6 +1,6 @@
 {
   "name": "fvtt-yze-generic-stepped",
-  "version": "14.0.6",
+  "version": "14.0.7",
   "private": true,
   "description": "A generic Foundry VTT system for Year Zero Engine games using stepped dice",
   "author": {
@@ -46,7 +46,8 @@
     "format:hbs": "prettier-eslint **/*.hbs --write --parser=glimmer",
     "postinstall": "husky install && patch-package",
     "upd": "npm list -g --depth=0 & npm outdated & npx npm-check -u",
-    "test": "npm run lint && npm run build"
+    "test": "npm run test:unit && npm run lint && npm run build",
+    "test:unit": "node --test test/*.test.js"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.34",

@@ -560,6 +560,7 @@ export default class ActorYZEGS extends Actor {
     const rollConfig = foundry.utils.mergeObject(
       {
         title: getRadiationLabel({ roll: true }),
+        attributeName: 'str',
         attribute: system.attributes.str.value,
         skill: this.getSkill('stamina')?.system.value ?? 0,
         modifier: YZEGS.radiationVirulence - sievert,

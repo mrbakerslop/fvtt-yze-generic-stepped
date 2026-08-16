@@ -7,8 +7,10 @@ import { activateCheckboxControls } from '../components/checkbox-control.js';
 import {
   getRadiationLabel,
   isRadiationEnabled,
+  isUnitMoraleEnabled,
   NOTES_TAB_SETTING,
 } from '../system/settings.js';
+import { openArchetypeBuilder } from '../system/archetypes.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor Sheet.
@@ -84,6 +86,7 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
       documentUuid: this.actor.uuid,
       config: YZEGS,
       notesTabEnabled,
+      unitMoraleEnabled: isUnitMoraleEnabled(),
       radiation: {
         enabled: isRadiationEnabled(),
         name: getRadiationLabel(),
@@ -103,6 +106,13 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
     const item = await Item.implementation.fromDropData(data);
     if (!item) return false;
     const type = item.type;
+    if (type === 'archetype') {
+      if (this.actor.type !== 'character') {
+        ui.notifications.warn(game.i18n.localize('YZEGS.Archetype.Errors.InvalidTarget'));
+        return null;
+      }
+      return openArchetypeBuilder(this.actor, item);
+    }
     const alwaysAllowedItems = YZEGS.physicalItems;
     const allowedItems = {
       character: ['skill', 'specialty', 'injury'],

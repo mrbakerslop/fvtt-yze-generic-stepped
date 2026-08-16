@@ -1,0 +1,116 @@
+<div class="sheet-root flexcol">
+  {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-header.hbs"}}
+
+  <nav class="sheet-tabs tabs slanted-tabs flexrow" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="background">{{localize "YZEGS.Archetype.Background"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="equipment">{{localize "YZEGS.Archetype.Equipment"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab tab-features archetype-editor" data-group="primary" data-tab="features">
+      <div class="grid grid-2col item-features">
+        <div class="flexcol">
+          <label>{{localize "YZEGS.Archetype.KeyAttribute"}}</label>
+          {{> optionMenu name="system.keyAttribute" selected=system.keyAttribute options=attributeChoices
+            editable=@root.editable menuClass="item-field-menu"}}
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.Archetype.CuF"}}</label>
+          {{> scoreSelector name="system.cuf" selected=system.cuf editable=@root.editable}}
+        </div>
+      </div>
+
+      <div class="form-group stacked">
+        <label>{{localize "YZEGS.Archetype.Branches"}}</label>
+        <textarea rows="3" data-archetype-array="branches" {{#unless editable}}disabled{{/unless}}>{{archetype.branches}}</textarea>
+        <p class="hint">{{localize "YZEGS.Archetype.OnePerLine"}}</p>
+      </div>
+
+      <fieldset>
+        <legend>{{localize "YZEGS.Archetype.Rank"}}</legend>
+        <div class="grid grid-2col">
+          <div class="form-group">
+            <label>{{localize "YZEGS.Archetype.RankMode"}}</label>
+            <select name="system.rank.mode" {{#unless editable}}disabled{{/unless}}>
+              {{#each rankModeChoices as |label value|}}
+              <option value="{{value}}" {{#if (eq value ../system.rank.mode)}}selected{{/if}}>{{localize label}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{localize "YZEGS.Archetype.RankFormula"}}</label>
+            <input type="text" name="system.rank.formula" value="{{system.rank.formula}}" {{#unless editable}}disabled{{/unless}} />
+          </div>
+        </div>
+        <div class="form-group stacked">
+          <label>{{localize "YZEGS.Archetype.RankOptions"}}</label>
+          <textarea rows="4" data-archetype-ranks {{#unless editable}}disabled{{/unless}}>{{archetype.rankOptions}}</textarea>
+          <p class="hint">{{localize "YZEGS.Archetype.RankOptionsHint"}}</p>
+        </div>
+      </fieldset>
+
+      <div class="grid grid-2col archetype-reference-columns">
+        <section>
+          <h3>{{localize "YZEGS.Archetype.KeySkills"}}</h3>
+          <div class="archetype-reference-list">
+            {{#each archetype.keySkills as |reference|}}
+            <div class="archetype-reference {{#if reference.missing}}missing{{/if}}">
+              <span>{{reference.name}}</span>
+              {{#if @root.editable}}<button type="button" data-archetype-remove="keySkills" data-index="{{@index}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+            </div>
+            {{/each}}
+          </div>
+          <div class="archetype-drop-zone" data-archetype-drop="keySkills">{{localize "YZEGS.Archetype.DropSkills"}}</div>
+        </section>
+        <section>
+          <h3>{{localize "YZEGS.Archetype.Specialties"}}</h3>
+          <div class="archetype-reference-list">
+            {{#each archetype.specialties as |reference|}}
+            <div class="archetype-reference {{#if reference.missing}}missing{{/if}}">
+              <span>{{reference.name}}</span>
+              {{#if @root.editable}}<button type="button" data-archetype-remove="specialties" data-index="{{@index}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+            </div>
+            {{/each}}
+          </div>
+          <div class="archetype-drop-zone" data-archetype-drop="specialties">{{localize "YZEGS.Archetype.DropSpecialties"}}</div>
+        </section>
+      </div>
+    </div>
+
+    <div class="tab tab-background archetype-editor" data-group="primary" data-tab="background">
+      {{#each archetype.prompts as |value field|}}
+      <div class="form-group stacked">
+        <label>{{localize (concat "YZEGS.Archetype.Prompts." field)}}</label>
+        <textarea rows="4" data-archetype-array="prompts.{{field}}" {{#unless @root.editable}}disabled{{/unless}}>{{value}}</textarea>
+        <p class="hint">{{localize "YZEGS.Archetype.OnePerLine"}}</p>
+      </div>
+      {{/each}}
+    </div>
+
+    <div class="tab tab-equipment archetype-editor" data-group="primary" data-tab="equipment">
+      <p class="hint">{{localize "YZEGS.Archetype.EquipmentHint"}}</p>
+      <div class="archetype-equipment-list">
+        {{#each archetype.equipment as |entry|}}
+        <div class="archetype-equipment-row {{#if entry.source.missing}}missing{{/if}}">
+          <strong>{{entry.source.name}}</strong>
+          <label>{{localize "YZEGS.Archetype.ChoiceGroup"}}
+            <input class="archetype-equipment-input" data-index="{{entry.index}}" data-property="group" type="text" value="{{entry.group}}" {{#unless @root.editable}}disabled{{/unless}} />
+          </label>
+          <label>{{localize "YZEGS.Archetype.QuantityFormula"}}
+            <input class="archetype-equipment-input" data-index="{{entry.index}}" data-property="quantityFormula" type="text" value="{{entry.quantityFormula}}" {{#unless @root.editable}}disabled{{/unless}} />
+          </label>
+          <label class="archetype-required"><input class="archetype-equipment-input" data-index="{{entry.index}}" data-property="required" type="checkbox" {{#if entry.required}}checked{{/if}} {{#unless @root.editable}}disabled{{/unless}} /> {{localize "YZEGS.Archetype.Required"}}</label>
+          {{#if @root.editable}}<button type="button" data-archetype-remove="equipment" data-index="{{entry.index}}"><i class="fa-solid fa-trash"></i></button>{{/if}}
+        </div>
+        {{/each}}
+      </div>
+      <div class="archetype-drop-zone" data-archetype-drop="equipment">{{localize "YZEGS.Archetype.DropEquipment"}}</div>
+    </div>
+
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-description.hbs"}}
+    </div>
+  </section>
+</div>

@@ -4,6 +4,13 @@ import ItemYZEGS from '../../item/item.js';
 import YZEGSDialog from '../dialog/dialog.js';
 import { getRollingActor, rollPush } from '../roll/dice.js';
 import { YZEGS } from '../../system/config.js';
+import {
+  applyRollPushCosts,
+  getPushCostMode,
+  PUSH_COST_MODES,
+  resolvePushCostDocuments,
+  SYSTEM_ID,
+} from '../../system/push-costs.js';
 
 export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
   prepareData() {
@@ -25,6 +32,10 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
     const buttonsApply = html.querySelectorAll('.dice-button.accept');
     for (let i = 0; i < buttonsApply.length; i++) {
       buttonsApply[i].addEventListener('click', _onRollAccept);
+    }
+    const buttonsPushCosts = html.querySelectorAll('.dice-button.apply-push-costs');
+    for (let i = 0; i < buttonsPushCosts.length; i++) {
+      buttonsPushCosts[i].addEventListener('click', _onApplyPushCosts);
     }
   }
 
@@ -105,6 +116,44 @@ function _onRollAccept(event) {
 }
 
 /* ------------------------------------------- */
+/*  Push Costs                                 */
+/* ------------------------------------------- */
+
+/** Apply a pushed roll's Damage, Stress, and/or Reliability cost. */
+async function _onApplyPushCosts(event) {
+  event.preventDefault();
+
+  const button = event.currentTarget;
+  button.disabled = true;
+
+  try {
+    if (getPushCostMode() !== PUSH_COST_MODES.BUTTON) return;
+
+    const chatCard = button.closest('.chat-message');
+    const message = game.messages.get(chatCard.dataset.messageId);
+    const roll = message?.rolls[0];
+    if (!message || !roll) return;
+
+    const flags = message.getFlag(SYSTEM_ID, 'data') ?? {};
+    const { actor, item } = resolvePushCostDocuments(roll);
+    const result = await applyRollPushCosts(roll, { flags, actor, item });
+    if (!result.applied) {
+      ui.notifications.warn(game.i18n.localize('YZEGS.PushCosts.Notifications.NothingToApply'));
+      return;
+    }
+
+    await message.setFlag(SYSTEM_ID, 'data', result.flags);
+    const content = await roll.render();
+    await message.update({ content, rolls: [JSON.stringify(roll)] });
+  }
+  catch (error) {
+    console.error('yzegs | Failed to apply pushed roll costs.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.PushCosts.Notifications.Failed'));
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+/* ------------------------------------------- */
 /*  Utility Methods                            */
 /* ------------------------------------------- */
 
@@ -153,7 +202,7 @@ export function addChatMessageContextOptions(options = []) {
   options.push({
     name: game.i18n.localize('YZEGS.Chat.Actions.ApplyDamage'),
     icon: YZEGS.Icons.buttons.attack,
-    condition: canDefend,
+    visible: canDefend,
     callback: li => _applyDamage(li),
   });
   return options;

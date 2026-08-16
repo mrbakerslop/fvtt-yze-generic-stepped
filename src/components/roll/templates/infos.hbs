@@ -20,6 +20,22 @@
 
   {{! YEAR ZERO ENGINE - GENERIC STEPPED DICE }}
   {{#if (eq roll.game 'yzegs')}}
+    {{! YZEGS: Coolness Under Fire result and consequences }}
+    {{#if (eq roll.options.checkType 'cuf')}}
+      <div class='dice-info roll-cuf-result'>
+        <span class='label'>{{localize 'YZEGS.CuF.Result'}}</span>
+        <span class='result'>
+          {{#if (gt roll.baseSuccessQty 0)}}
+            <span class='cuf-success'>{{localize 'YZEGS.CuF.Success'}}</span>
+          {{else}}
+            <span class='cuf-failure'>{{localize 'YZEGS.CuF.Failure'}}</span>
+            <br />{{localize 'YZEGS.CuF.FailureEffects'}}
+            <br />{{localize 'YZEGS.CuF.PanicSpreads'}}
+          {{/if}}
+        </span>
+      </div>
+    {{/if}}
+
     {{! YZEGS: Selected combat action }}
     {{#if roll.options.combatAction}}
       <div class="dice-info roll-combat-action">
@@ -75,12 +91,31 @@
       </div>
     {{/if}}
 
-    {{! YZEGS: Damage/Stress }}
-    {{#if (and roll.pushed roll.attributeTrauma)}}
-      <div class='dice-info roll-trauma'>
-        <span class='label'>{{localize 'YZUR.CHAT.ROLL.DamageOrStress'}}</span>
-        <span class='result'>{{roll.attributeTrauma}}</span>
+    {{! YZEGS: Push Damage, Stress, and Reliability }}
+    {{#if roll.options.hasPushCosts}}
+      <div class='dice-info roll-push-costs'>
+        <span class='label'>{{localize 'YZEGS.PushCosts.Label'}}</span>
+        <span class='result'>
+          {{#each roll.options.pushCosts as |cost|}}
+            {{localize cost.label}}: {{cost.amount}}{{#if cost.targetName}} — {{cost.targetName}}{{/if}}
+            {{#if cost.applied}}
+              <span class='push-cost-status applied'>{{localize 'YZEGS.PushCosts.Applied'}}</span>
+            {{else}}
+              {{#unless cost.canApply}}
+                <span class='push-cost-status manual'>{{localize 'YZEGS.PushCosts.Manual'}}</span>
+              {{/unless}}
+            {{/if}}
+            {{#unless @last}}<br />{{/unless}}
+          {{/each}}
+        </span>
       </div>
+      {{#if roll.options.canApplyPushCosts}}
+        <div class='dice-buttons push-cost-buttons'>
+          <button class='dice-button apply-push-costs' data-action='apply-push-costs'>
+            {{localize 'YZEGS.PushCosts.Apply'}}
+          </button>
+        </div>
+      {{/if}}
     {{/if}}
 
     {{! YZEGS: Ammo Spent }}
@@ -90,18 +125,13 @@
         <span class='result'>{{add roll.ammoSpent 0}}</span>
       </div>
 
-      {{! YZEGS: Jamming }}
-      {{#if (and roll.pushed roll.jamCount)}}
-        <div class='dice-info roll-jam-count'>
-          <span class='label'>{{localize 'YZUR.CHAT.ROLL.JamCount'}}</span>
-          <span class='result'>&minus;{{roll.jamCount}}</span>
-        </div>
-      {{/if}}
-      {{#if roll.jammed}}
-        <div class='dice-info roll-jammed'>
-          <span class='label'>{{localize 'YZUR.CHAT.ROLL.Jammed'}}</span>
-        </div>
-      {{/if}}
+    {{/if}}
+
+    {{! YZEGS: Jamming can be caused by base and/or ammo dice. }}
+    {{#if roll.options.weaponJammed}}
+      <div class='dice-info roll-jammed'>
+        <span class='label'>{{localize 'YZUR.CHAT.ROLL.Jammed'}}</span>
+      </div>
     {{/if}}
 
   {{/if}}

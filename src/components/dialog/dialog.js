@@ -192,7 +192,6 @@ export default class YZEGSDialog {
     return {
       unitMorale: form.elements.namedItem('unitMorale')?.value === 'true',
       modifier: parseInt(form.modifier.value) || 0,
-      maxPush: parseInt(form.maxPush.value) || 1,
       messageMode: form.messageMode.value,
     };
   }

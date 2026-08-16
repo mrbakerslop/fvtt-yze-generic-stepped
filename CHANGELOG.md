@@ -1,5 +1,37 @@
 # Changelog
 
+## 14.0.7 - 2026-08-16 — Archetypes and Push Costs
+
+### Added
+
+- Added reusable Archetype Items and a guided Character builder for attributes,
+  starting Skills and Specialty, background details, rank, CUF, radiation, and
+  personal equipment choices.
+- Added validation for Archetype attribute and Skill budgets, source references,
+  required equipment, permissions, and explicit updates to existing Characters.
+- Added Archetype provenance to Character data and a Character-sheet title-bar
+  chooser that discovers Archetypes in the world and visible Item compendiums.
+- Added configurable manual, chat-button, or automatic application of pushed-roll
+  Damage, Stress, and item Reliability loss.
+- Added CUF success or suppression results and consequences to roll chat cards.
+- Added a world setting for showing or hiding Unit Morale and its CUF option.
+
+### Changed
+
+- Split the Character header between the Character Name and applied Archetype,
+  with character creation available from the window title bar.
+- CUF checks can no longer be pushed, and hidden Unit Morale ratings are excluded
+  from CUF rolls.
+- Weapon jams now consider the combined banes from base and Ammo dice.
+
+### Fixed
+
+- Closing or cancelling character creation no longer attempts to validate and
+  apply a cancelled Archetype selection.
+- Prevented pushed-roll consequences from being applied more than once while
+  preserving ammunition and push-cost state when replacing chat messages.
+- Updated the Apply Damage chat context action to Foundry VTT 14's visibility API.
+
 ## 14.0.6 - 2026-08-15 — Combat Actions and Modifiers
 
 ### Added

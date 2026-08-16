@@ -3,7 +3,7 @@
   "title": "Year Zero Engine - Generic Stepped Dice",
   "description": "A generic Foundry VTT game system for Year Zero Engine games using stepped dice.",
   "readme": "README.md",
-  "version": "14.0.6",
+  "version": "14.0.7",
   "authors": [
     {
       "name": "MrBaker",
@@ -12,7 +12,7 @@
   ],
   "url": "https://github.com/mrbakerslop/fvtt-yze-generic-stepped",
   "manifest": "https://github.com/mrbakerslop/fvtt-yze-generic-stepped/releases/latest/download/system.json",
-  "download": "https://github.com/mrbakerslop/fvtt-yze-generic-stepped/releases/download/v14.0.6/fvtt-yze-generic-stepped-fvtt_v14.0.6.zip",
+  "download": "https://github.com/mrbakerslop/fvtt-yze-generic-stepped/releases/download/v14.0.7/fvtt-yze-generic-stepped-fvtt_v14.0.7.zip",
   "compatibility": {
     "minimum": "14.359",
     "verified": "14.366"
@@ -102,6 +102,9 @@
         "htmlFields": ["description"]
       },
       "injury": {
+        "htmlFields": ["description"]
+      },
+      "archetype": {
         "htmlFields": ["description"]
       }
     }

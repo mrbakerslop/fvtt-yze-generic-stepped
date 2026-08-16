@@ -108,6 +108,7 @@ YZEGS.ActorTypes.character: Player Character (PC)
 YZEGS.ActorTypes.npc: Non-Player Character (NPC)
 YZEGS.ActorTypes.vehicle: Vehicle
 YZEGS.ActorSheet.Name: Name
+YZEGS.ActorSheet.CharacterName: Character Name
 YZEGS.ActorSheet.MainTab: Stats
 YZEGS.ActorSheet.CombatTab: Combat
 YZEGS.ActorSheet.EquipmentTab: Gear
@@ -353,6 +354,11 @@ YZEGS.Dialog.Roll.MaxPush: Max Pushes
 YZEGS.Dialog.Roll.RollMode: Roll Mode
 YZEGS.Dialog.CuF.CoolnessUnderFire: Coolness Under Fire (CUF)
 YZEGS.Dialog.CuF.UnitMorale: Add the Unit Morale?
+YZEGS.CuF.Result: 'CUF Result:'
+YZEGS.CuF.Success: Success — You keep your cool and are not suppressed.
+YZEGS.CuF.Failure: Failure — You are suppressed.
+YZEGS.CuF.FailureEffects: Drop prone, suffer 1 Stress, and lose both actions on your next turn.
+YZEGS.CuF.PanicSpreads: Friendly fighters in the same hex must immediately make CUF rolls.
 YZEGS.Dialog.Actor.ChooseActor: Choose an Actor
 YZEGS.Dialog.Damage.ChooseDamage: Amount of Damage
 YZEGS.Dialog.Damage.Description: Choose how much damage to inflict to <b>{target}</b>.
@@ -496,12 +502,105 @@ SETTINGS.characterFieldLabels.save: Save Labels
 SETTINGS.characterFieldLabels.saved: Character field labels saved.
 SETTINGS.enableNotesTab.name: Enable Notes Tab
 SETTINGS.enableNotesTab.hint: Show the Notes tab on Actor sheets.
+SETTINGS.enableUnitMorale.name: Enable Unit Morale Rating
+SETTINGS.enableUnitMorale.hint: Show the Unit Morale rating on character and NPC sheets and allow it to be added to Coolness Under Fire rolls.
 SETTINGS.enableRadiation.name: Enable Radiation
 SETTINGS.enableRadiation.hint: Show Radiation tracking and rolls on character sheets.
 SETTINGS.radiationName.name: Radiation Name
 SETTINGS.radiationName.hint: Rename Radiation throughout the system. Leave blank to use the translated default.
+SETTINGS.pushCostMode.name: Push Roll Damage and Stress
+SETTINGS.pushCostMode.hint: Choose whether pushed-roll Damage, Stress, and item Reliability loss are handled manually, with a chat-card button, or automatically.
+SETTINGS.pushCostMode.choices.manual: Manual
+SETTINGS.pushCostMode.choices.button: Apply Button
+SETTINGS.pushCostMode.choices.automatic: Automatic
+YZEGS.PushCosts.Label: 'Push Cost:'
+YZEGS.PushCosts.Types.damage: Damage
+YZEGS.PushCosts.Types.stress: Stress
+YZEGS.PushCosts.Types.reliability: Reliability Loss
+YZEGS.PushCosts.Types.damageOrStress: Damage/Stress
+YZEGS.PushCosts.Apply: Apply Push Costs
+YZEGS.PushCosts.Applied: (applied)
+YZEGS.PushCosts.Manual: (manual)
+YZEGS.PushCosts.Notifications.NothingToApply: There are no outstanding push costs that you can apply.
+YZEGS.PushCosts.Notifications.Failed: The push cost could not be applied. See the console for details.
+YZEGS.PushCosts.Notifications.Incapacitated: '{name} has been incapacitated by the pushed roll.'
+YZEGS.PushCosts.Notifications.Broken: '{name} has reached Reliability 0.'
 YZEGS.ItemTypes.skill: Skill
 TYPES.Item.skill: Skill
+YZEGS.ItemTypes.archetype: Archetype
+TYPES.Item.archetype: Archetype
+YZEGS.ActorSheet.NewItem.archetype: New Archetype
+YZEGS.Archetype.Label: Archetype
+YZEGS.Archetype.Choose: Choose Archetype
+YZEGS.Archetype.Apply: Apply Archetype
+YZEGS.Archetype.Applied: '{archetype} was applied to {actor}.'
+YZEGS.Archetype.BuilderTitle: 'Create Character: {name}'
+YZEGS.Archetype.Background: Background
+YZEGS.Archetype.Equipment: Equipment
+YZEGS.Archetype.EquipmentHint: Drop physical Items below. Items sharing a choice-group name become alternatives; blank groups are independent entries.
+YZEGS.Archetype.KeyAttribute: Key Attribute
+YZEGS.Archetype.KeySkills: Key Skills
+YZEGS.Archetype.Specialties: Recommended Specialties
+YZEGS.Archetype.Specialty: Starting Specialty
+YZEGS.Archetype.CuF: Coolness Under Fire
+YZEGS.Archetype.Branches: Branches
+YZEGS.Archetype.Rank: Rank
+YZEGS.Archetype.RankMode: Rank Selection
+YZEGS.Archetype.RankFormula: Rank Roll Formula
+YZEGS.Archetype.RankOptions: Rank Results
+YZEGS.Archetype.RankOptionsHint: 'One result per line, formatted as range | label (for example: 1-2 | Private).'
+YZEGS.Archetype.RankModes.none: None
+YZEGS.Archetype.RankModes.choose: Choose
+YZEGS.Archetype.RankModes.roll: Choose or Roll
+YZEGS.Archetype.RankRolled: 'Rank roll {total}: {rank}'
+YZEGS.Archetype.OnePerLine: Enter one option per line.
+YZEGS.Archetype.DropSkills: Drop Skill Items here
+YZEGS.Archetype.DropSpecialties: Drop Specialty Items here
+YZEGS.Archetype.DropEquipment: Drop weapons, armor, ammunition, explosives, or gear here
+YZEGS.Archetype.ChoiceGroup: Choice Group
+YZEGS.Archetype.QuantityFormula: Quantity
+YZEGS.Archetype.Required: Required
+YZEGS.Archetype.Roll: Roll
+YZEGS.Archetype.Identity: Identity
+YZEGS.Archetype.Attributes: Attributes
+YZEGS.Archetype.AttributeHint: Start at C in every attribute and spend three one-step increases. You may reduce one C to D to gain a fourth increase. No attribute may exceed A.
+YZEGS.Archetype.AttributeBudgetRemaining: 'Attribute increases remaining: {remaining}'
+YZEGS.Archetype.Skills: Starting Skills
+YZEGS.Archetype.SkillHint: Choose one B key skill, two different C skills, and three different D skills.
+YZEGS.Archetype.ExistingDataTitle: This character already contains data.
+YZEGS.Archetype.ExistingDataHint: Applying will update creation fields and starting Skill ratings. Unselected Skills become untrained. Unrelated Items are not deleted, and matching equipment is retained at its current or rolled quantity, whichever is higher.
+YZEGS.Archetype.Current: Current Archetype
+YZEGS.Archetype.AllowOverwrite: Allow existing creation data to be updated
+YZEGS.Archetype.GroupChecklist: Finish creation with the group
+YZEGS.Archetype.GroupChecklistHint: Determine shared Unit Morale from the highest Command rating, then choose group gear and any starting vehicle together.
+YZEGS.Archetype.Prompts.appearance: Appearance Suggestions
+YZEGS.Archetype.Prompts.moralCode: Moral Code Suggestions
+YZEGS.Archetype.Prompts.bigDream: Big Dream Suggestions
+YZEGS.Archetype.Prompts.groupMeeting: Group Meeting Suggestions
+YZEGS.Archetype.Prompts.nicknames: Nickname Suggestions
+YZEGS.Archetype.Errors.InvalidAttributes: Choose a valid A-D rating for all four attributes.
+YZEGS.Archetype.Errors.TooManyReducedAttributes: Only one attribute may be reduced to D.
+YZEGS.Archetype.Errors.AttributeBudget: The attribute allocation must use exactly three increases, with one extra increase only when an attribute is reduced to D.
+YZEGS.Archetype.Errors.SkillBudget: Choose exactly one B skill, two C skills, and three D skills.
+YZEGS.Archetype.Errors.DuplicateSkills: Each starting skill must be different.
+YZEGS.Archetype.Errors.KeySkill: The B skill must be one of the Archetype's key skills.
+YZEGS.Archetype.Errors.AlreadyApplied: Confirm that existing creation data may be updated.
+YZEGS.Archetype.Errors.CharacterName: Enter a character name.
+YZEGS.Archetype.Errors.SpecialtyRequired: Choose a starting Specialty.
+YZEGS.Archetype.Errors.RequiredEquipment: Select every required equipment entry or choice group.
+YZEGS.Archetype.Errors.InvalidTarget: Archetypes can only be applied to Character Actors.
+YZEGS.Archetype.Errors.NotPermitted: You do not have permission to apply an Archetype to this character.
+YZEGS.Archetype.Errors.InsufficientSkills: This Archetype needs at least one valid key Skill and six available Skills in total.
+YZEGS.Archetype.Errors.InsufficientSpecialties: The configured advancement Item source does not contain any Specialties.
+YZEGS.Archetype.Errors.InvalidRankFormula: The rank formula could not be rolled.
+YZEGS.Archetype.Errors.InvalidSkillReference: One or more selected Skills could not be found.
+YZEGS.Archetype.Errors.InvalidSpecialtyReference: The selected Specialty could not be found.
+YZEGS.Archetype.Errors.InvalidEquipmentReference: One or more selected equipment Items could not be found.
+YZEGS.Archetype.Errors.NoArchetypes: No Archetype Items were found in the world or visible Item compendiums. You can also drag an Archetype directly onto a Character sheet.
+YZEGS.Archetype.Errors.DropSkill: Only Skill Items can be added as key Skills.
+YZEGS.Archetype.Errors.DropSpecialty: Only Specialty Items can be added as recommended Specialties.
+YZEGS.Archetype.Errors.DropEquipment: Only physical Items can be added as starting equipment.
+YZEGS.Archetype.Errors.EmbeddedSource: Use a world or compendium Item as an Archetype reference, not an Item embedded in an Actor.
 YZEGS.ItemSheet.ParentAttribute: Parent Attribute
 YZEGS.ItemSheet.SkillRating: Rating
 YZEGS.ItemSheet.CombatType: Combat Category

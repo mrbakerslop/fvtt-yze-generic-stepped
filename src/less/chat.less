@@ -178,7 +178,9 @@
         }
 
         &.roll-combat-action,
-        &.roll-situational-modifiers {
+        &.roll-situational-modifiers,
+        &.roll-push-costs,
+        &.roll-cuf-result {
           align-items: flex-start;
 
           .label {
@@ -193,12 +195,34 @@
           }
         }
 
+        .cuf-success {
+          color: @colorGreen;
+        }
+
+        .cuf-failure {
+          color: @colorRed;
+        }
+
+        .push-cost-status {
+          font-size: .75rem;
+          font-weight: normal;
+          white-space: nowrap;
+
+          &.applied {
+            color: @colorGreen;
+          }
+        }
+
         &.roll-jammed {
           .label {
             font-weight: bold;
             color: @colorRed;
           }
         }
+      }
+
+      .push-cost-buttons {
+        margin-top: @gap;
       }
     }
 
