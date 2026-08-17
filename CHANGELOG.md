@@ -1,5 +1,57 @@
 # Changelog
 
+## 14.0.11 — 2026-08-17
+
+### Added
+
+- Added automated critical injuries, incapacitation, death saves,
+  stabilization, treatment, recovery deadlines, and lasting impairment states.
+- Added Diseases as configurable Items with incubation, virulence checks,
+  treatment, antibiotics, recovery, and progression automation.
+- Added environmental hazard automation for fire, chemical exposure,
+  radiation, hypothermia, and related survival conditions.
+- Added initiative card drawing and assignment, initiative exchanges, ambushes,
+  Waylays, conflicts, and automatic combat setup.
+- Added rules handling for close-combat engagements, Block reactions, grapples,
+  shoves, disarms, break-free attempts, ranged target conditions, firing
+  positions, called shots, and other combat edge cases.
+- Added complete land-vehicle component damage, penetrating hits, crew shock,
+  called component attacks, secondary component damage, fuel fires, and vehicle
+  destruction.
+- Added heavy-weapon setup and firing requirements, deviation, direct and
+  indirect explosions, blast resolution, indoor effects, and target handling.
+- Added optional Tactical Terrain Regions with standard and custom terrain
+  profiles, movement allowances, backpack penalties, ranged modifiers, cover
+  suggestions, infiltration assistance, blocking terrain, and elevation.
+- Added nine System Guides covering Critical Injuries, Diseases and Conditions,
+  Environmental Hazards, Initiative and Ambushes, Close Combat, Ranged Combat,
+  Land Vehicles, Heavy Weapons and Explosions, and Tactical Movement and
+  Terrain. The System Guides compendium now contains sixteen Journals.
+- Added a regression test which verifies that every path-based Handlebars
+  partial used by a template is registered for preloading.
+
+### Changed
+
+- Consolidated the system's simple world options into a categorized **World
+  Rules and Display** panel while preserving all existing setting identifiers
+  and saved values.
+- Moved Character and NPC Specialties from the Stats tab to a dedicated
+  Specialties tab with the existing creation and Item controls.
+- Reorganized the Combat tab into aligned two-column sections, placing Critical
+  Injuries beside Diseases and removing the obsolete legacy disease notes.
+- Expanded Action Skill mappings, roll dialogs, chat cards, status effects, and
+  outcome controls to support the new combat, medical, environmental, and
+  vehicle workflows.
+- Changed release automation so pushing a version tag creates the GitHub release
+  and attaches the versioned system manifest and ZIP automatically.
+
+### Fixed
+
+- Registered the new Specialty sheet partial in Foundry's preload list so
+  Character and NPC sheets open correctly after the tab was introduced.
+- Corrected several damage, defense, reload, suppression, blast, and vehicle
+  edge cases uncovered while integrating the expanded automation.
+
 ## 14.0.10 — 2026-08-17
 
 ### Added

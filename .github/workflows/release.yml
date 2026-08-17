@@ -25,7 +25,14 @@ jobs:
           persist-credentials: false
 
       - name: 🏷️ Create GitHub Release
-        run: gh release create "$RELEASE_TAG" --title "$RELEASE_TAG" --generate-notes --verify-tag
+        id: release
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            gh release create "$RELEASE_TAG" --title "$RELEASE_TAG" --generate-notes --verify-tag
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -83,7 +90,7 @@ jobs:
         run: echo "COMPATIBILITY=$(jq -c '.compatibility' dist/${{ env.TYPE }}.json)" >> "$GITHUB_ENV"
 
       - name: 🚩 Publish System to Foundry VTT Website
-        if: ${{ vars.PUBLISH_TO_FOUNDRY == 'true' }}
+        if: ${{ vars.PUBLISH_TO_FOUNDRY == 'true' && steps.release.outputs.created == 'true' }}
         run: |
           REQUEST_BODY=$(jq -n \
             --arg id "$PACKAGE_ID" \
