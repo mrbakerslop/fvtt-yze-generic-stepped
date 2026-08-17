@@ -3,6 +3,11 @@ import YZEGSDialog from '../components/dialog/dialog.js';
 import { getWatercraftComponent } from './water-rules.js';
 import { YZEGSRoller } from '../components/roll/dice.js';
 import { applySuppressionFailure } from './suppression-workflows.js';
+import {
+  resolveLandVehicleComponentDamage,
+  resolveLandVehicleCrewShock,
+  resolvePenetratingVehicleBlast,
+} from './land-vehicle-damage.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -75,6 +80,9 @@ async function chooseFacing(actor, damage, initial = 'front') {
       data: {
         target: actor.name,
         damage,
+        instructions: game.i18n.format(actor.system.domain === 'land'
+          ? 'YZEGS.LandVehicle.Damage.Instructions'
+          : 'YZEGS.Watercraft.Damage.Instructions', { target: actor.name, damage }),
         facing: initial,
         facingChoices: {
           front: game.i18n.localize('YZEGS.VehicleSheet.FrontArmor'),
@@ -86,7 +94,9 @@ async function chooseFacing(actor, damage, initial = 'front') {
     },
   );
   return YZEGSDialog._wait({
-    title: game.i18n.localize('YZEGS.Watercraft.Damage.Title'),
+    title: game.i18n.localize(actor.system.domain === 'land'
+      ? 'YZEGS.LandVehicle.Damage.Title'
+      : 'YZEGS.Watercraft.Damage.Title'),
     content,
     actionLabel: game.i18n.localize('YZEGS.Watercraft.Damage.Apply'),
     processForm: form => ({ facing: form.elements.namedItem('facing')?.value ?? 'front' }),
@@ -106,8 +116,10 @@ export async function applyVehicleDamage(actor, amount = 0, attackData = {}, sen
   }
   const armorRating = Number(actor.system.armor?.[facing]?.value) || 0;
   const armor = new Armor(armorRating, game.i18n.localize('YZEGS.VehicleSheet.Armor'));
-  let applied = initialAmount;
-  if (!attackData.ignoreVehicleArmor) {
+  const landVehicle = actor.system.domain === 'land';
+  const calledComponent = landVehicle ? String(attackData.calledVehicleComponent ?? '') : '';
+  let applied = calledComponent ? 0 : initialAmount;
+  if (!calledComponent && !attackData.ignoreVehicleArmor) {
     applied = await armor.penetration(
       initialAmount,
       Number(attackData.damage) || initialAmount,
@@ -115,36 +127,78 @@ export async function applyVehicleDamage(actor, amount = 0, attackData = {}, sen
     );
   }
   const penetrated = applied > 0;
-  const componentRoll = await new Roll('1d10').evaluate();
-  const component = getWatercraftComponent(activeResults(componentRoll)[0], penetrated);
-  const updates = componentUpdate(
-    actor,
-    component,
-    penetrated,
-    applied,
-    Boolean(attackData.forceHullBreachOnPenetration),
-  );
+  let component;
+  let componentRolls = [];
+  let componentEvents = [];
+  const updates = {};
+  if (landVehicle) {
+    const result = await resolveLandVehicleComponentDamage(actor, {
+      damage: penetrated ? applied : initialAmount,
+      penetrated,
+      facing,
+      attackData,
+      calledComponent,
+    });
+    component = result.component;
+    componentRolls = result.rolls;
+    componentEvents = result.events;
+  }
+  else {
+    const componentRoll = await new Roll('1d10').evaluate();
+    componentRolls = [componentRoll];
+    component = getWatercraftComponent(activeResults(componentRoll)[0], penetrated);
+    Object.assign(updates, componentUpdate(
+      actor,
+      component,
+      penetrated,
+      applied,
+      Boolean(attackData.forceHullBreachOnPenetration),
+    ));
+  }
   if (armor.damaged) {
     updates[`system.armor.${facing}.value`] = Math.max(0, armor.value);
   }
   if (!foundry.utils.isEmpty(updates)) await actor.update(updates);
-  if (penetrated && ['watercraft', 'amphibious'].includes(actor.system.domain)) await resolveCrewShock(actor);
+  if (penetrated) {
+    if (landVehicle) await resolveLandVehicleCrewShock(actor, 'penetration');
+    else await resolveCrewShock(actor);
+    if (['A', 'B', 'C', 'D'].includes(String(attackData.blast).toLocaleUpperCase())) {
+      await resolvePenetratingVehicleBlast(actor, attackData.blast, attackData.sourceName ?? '');
+    }
+  }
 
   if (sendMessage) {
-    const componentName = game.i18n.localize(`YZEGS.Watercraft.Components.${component}`);
+    const componentName = game.i18n.localize(landVehicle
+      ? `YZEGS.LandVehicle.Components.${component}`
+      : `YZEGS.Watercraft.Components.${component}`);
+    let stoppedResultKey = 'YZEGS.Watercraft.Damage.Stopped';
+    if (landVehicle) {
+      stoppedResultKey = calledComponent
+        ? 'YZEGS.LandVehicle.Damage.CalledShot'
+        : 'YZEGS.LandVehicle.Damage.Stopped';
+    }
     const result = penetrated
-      ? game.i18n.format('YZEGS.Watercraft.Damage.Penetrated', { damage: applied, component: componentName })
-      : game.i18n.format('YZEGS.Watercraft.Damage.Stopped', { component: componentName });
+      ? game.i18n.format(landVehicle
+        ? 'YZEGS.LandVehicle.Damage.Penetrated'
+        : 'YZEGS.Watercraft.Damage.Penetrated', { damage: applied, component: componentName })
+      : game.i18n.format(stoppedResultKey, { component: componentName });
     const occupantBlast = penetrated && attackData.waterMine && ['A', 'B', 'C', 'D'].includes(attackData.blast)
       ? `<p><strong>${escapeHTML(game.i18n.localize('YZEGS.Watercraft.Damage.OccupantBlast'))}</strong></p>`
       : '';
+    const eventList = componentEvents.length
+      ? `<ul>${componentEvents.map(event => `<li>${escapeHTML(event)}</li>`).join('')}</ul>`
+      : '';
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor }),
-      rolls: [componentRoll],
-      content: `<div class="yzegs chat-card vehicle-damage-card"><h3><i class="fas fa-ship"></i> ${
-        escapeHTML(game.i18n.localize('YZEGS.Watercraft.Damage.Title'))
-      }</h3><p>${escapeHTML(actor.name)} — ${escapeHTML(result)}</p>${occupantBlast}</div>`,
-      flags: { [SYSTEM_ID]: { vehicleDamage: { facing, initialAmount, applied, component, penetrated } } },
+      rolls: componentRolls,
+      content: `<div class="yzegs chat-card vehicle-damage-card"><h3><i class="fas fa-car-side"></i> ${
+        escapeHTML(game.i18n.localize(landVehicle
+          ? 'YZEGS.LandVehicle.Damage.Title'
+          : 'YZEGS.Watercraft.Damage.Title'))
+      }</h3><p>${escapeHTML(actor.name)} — ${escapeHTML(result)}</p>${eventList}${occupantBlast}</div>`,
+      flags: { [SYSTEM_ID]: { vehicleDamage: {
+        facing, initialAmount, applied, component, penetrated, calledComponent,
+      } } },
     });
   }
   return -applied;

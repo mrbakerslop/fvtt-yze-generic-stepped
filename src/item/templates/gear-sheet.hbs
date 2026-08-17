@@ -57,6 +57,16 @@
                     <input type="number" name="system.coldWaterModifier" value="{{system.coldWaterModifier}}">
                 </div>
                 {{/if}}
+                <div class="form-group">
+                    <label>{{localize "YZEGS.ChemicalProtection.Label"}}</label>
+                    {{> optionMenu name="system.chemicalProtection" selected=system.chemicalProtection options=chemicalProtectionChoices
+                      editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+                </div>
+                <div class="form-group">
+                    <label>{{localize "YZEGS.MedicalTreatment.Label"}}</label>
+                    {{> optionMenu name="system.medicalTreatment" selected=system.medicalTreatment options=medicalTreatmentChoices
+                      editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+                </div>
 
                 {{!-- Properties --}}
                 <div class="form-group-stacked item-properties">

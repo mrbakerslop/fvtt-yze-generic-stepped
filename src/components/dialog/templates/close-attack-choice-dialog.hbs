@@ -1,0 +1,8 @@
+<div class="yzegs dialog close-attack-choice-dialog">
+  <p>{{localize "YZEGS.CombatEdges.RetreatFreeAttackHint"}}</p>
+  <div class="form-group">
+    <label>{{localize "YZEGS.CombatEdges.AttackWith"}}</label>
+    {{> dialogChoiceMenu name="itemUuid" selected="" choices=data.choices
+      placeholder=(localize "YZEGS.Defense.Unarmed") editable=true}}
+  </div>
+</div>

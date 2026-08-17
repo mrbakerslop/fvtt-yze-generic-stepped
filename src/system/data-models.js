@@ -184,6 +184,15 @@ class VehicleData extends foundry.abstract.TypeDataModel {
         antenna: componentField(),
         mastRigging: componentField(),
       }),
+      landVehicle: schemaField({
+        inoperable: booleanField(),
+        destroyed: booleanField(),
+        destroyedReason: stringField(),
+        fuelLeak: booleanField(),
+        fuelFire: booleanField(),
+        fuelFireDeadline: numberField(),
+        originalFuelMax: numberField(),
+      }),
       watercraft: schemaField({
         size: numberField(1),
         propulsion: stringField('motor'),
@@ -321,6 +330,10 @@ class WeaponData extends foundry.abstract.TypeDataModel {
         tripod: booleanField(),
         mounted: booleanField(),
         armored: booleanField(),
+        artillery: booleanField(),
+        indirectFire: booleanField(),
+        airburst: booleanField(),
+        directional: booleanField(),
       }),
       featuresForVehicle: schemaField({
         p: booleanField(),
@@ -407,6 +420,8 @@ class GearData extends foundry.abstract.TypeDataModel {
       sparePartType: stringField('none'),
       waterProtection: stringField('none'),
       coldWaterModifier: numberField(),
+      chemicalProtection: stringField('none'),
+      medicalTreatment: stringField('none'),
       props: schemaField({
         twoHanded: booleanField(),
         mounted: booleanField(),
@@ -447,8 +462,76 @@ class InjuryData extends foundry.abstract.TypeDataModel {
       category: stringField('physical'),
       location: stringField(),
       lethal: booleanField(),
+      instantDeath: booleanField(),
       timeLimit: stringField('Shift'),
       healTime: stringField(),
+      effects: stringArrayField(),
+      state: schemaField({
+        active: booleanField(),
+        severityDice: numberField(),
+        rolledResult: numberField(),
+        stage: stringField(),
+        stabilized: booleanField(),
+        stabilizationLocked: booleanField(),
+        deathSaveCount: numberField(),
+        due: booleanField(),
+        dueWorldTime: numberField(),
+        combatId: stringField(),
+        combatantId: stringField(),
+        scheduledRound: numberField(),
+        scheduledTurn: numberField(),
+        healingDays: numberField(),
+        treatment: schemaField({
+          healerUuid: stringField(),
+          healerName: stringField(),
+          dueWorldTime: numberField(),
+          ready: booleanField(),
+        }),
+      }),
+    };
+  }
+}
+
+class DiseaseData extends foundry.abstract.TypeDataModel {
+  static defineSchema() {
+    return {
+      description: htmlField(),
+      category: stringField('disease'),
+      virulence: numberField(),
+      incubation: schemaField({
+        formula: stringField('1'),
+        unit: stringField('shift'),
+      }),
+      interval: schemaField({
+        formula: stringField('1'),
+        unit: stringField('day'),
+      }),
+      harm: schemaField({
+        damage: numberField(1),
+        stress: numberField(),
+      }),
+      recovery: schemaField({
+        blocksDamage: booleanField(true),
+        blocksStress: booleanField(),
+      }),
+      treatment: schemaField({
+        antibioticsEffective: booleanField(true),
+        antibioticsModifier: numberField(3),
+        notes: stringField(),
+      }),
+      lethalWhenIncapacitated: booleanField(true),
+      state: schemaField({
+        phase: stringField(),
+        exposedAt: numberField(),
+        dueWorldTime: numberField(),
+        due: booleanField(),
+        failedChecks: numberField(),
+        antibioticsUsed: booleanField(),
+        caregiverUuid: stringField(),
+        caregiverName: stringField(),
+        incapacitatedAt: numberField(),
+        deathDeadline: numberField(),
+      }),
     };
   }
 }
@@ -506,6 +589,7 @@ export function registerDataModels() {
     skill: SkillData,
     specialty: SpecialtyData,
     injury: InjuryData,
+    disease: DiseaseData,
     archetype: ArchetypeData,
   });
 }

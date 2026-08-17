@@ -75,6 +75,21 @@
       </div>
     {{/if}}
 
+    {{#if roll.options.actionData.tacticalMovement}}
+      <div class="dice-info roll-tactical-movement">
+        <span class="label">{{localize "YZEGS.TacticalTerrain.MovementAllowance"}}</span>
+        <span class="result">
+          {{localize "YZEGS.TacticalTerrain.Hexes"
+            count=(tacticalMovementHexes roll)}}
+          — {{localize (concat "YZEGS.TacticalTerrain.Modes." (tacticalMovementMode roll))}}
+          <br />{{roll.options.actionData.tacticalMovement.terrain.label}}
+          {{#if roll.options.actionData.tacticalMovement.terrain.elevated}}
+            — {{localize "YZEGS.TacticalTerrain.Elevated"}}
+          {{/if}}
+        </span>
+      </div>
+    {{/if}}
+
     {{! YZEGS: Selected situational combat modifiers }}
     {{#if roll.options.situationalModifiers.length}}
       <div class="dice-info roll-situational-modifiers">
@@ -88,8 +103,96 @@
       </div>
     {{/if}}
 
+    {{#if roll.options.attackData.rangeBand}}
+      <div class="dice-info roll-range-band">
+        <span class="label">{{localize "YZEGS.CombatEdges.Range"}}</span>
+        <span class="result">{{localize (concat "YZEGS.CombatEdges.RangeBands."
+          roll.options.attackData.rangeBand)}}</span>
+      </div>
+    {{/if}}
+    {{#if (eq roll.options.actionData.workflow "breakFree")}}
+      <div class="dice-info roll-opposed-resistance">
+        <span class="label">{{localize "YZEGS.CombatEdges.BreakFreeResistance"
+          actor=roll.options.actionData.opposedTargetName}}</span>
+        <span class="result">{{roll.options.actionData.passiveSuccesses}}</span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.shotgunDamageReduction}}
+      <div class="dice-info roll-shotgun-falloff">
+        <span class="label">{{localize "YZEGS.CombatEdges.ShotgunFalloff"}}</span>
+        <span class="result">−{{roll.options.attackData.shotgunDamageReduction}}
+          {{localize "YZEGS.CombatEdges.Damage"}}</span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.firedOneHanded}}
+      <div class="dice-info roll-one-handed">
+        <span class="label">{{localize "YZEGS.CombatEdges.OneHanded"}}</span>
+        <span class="result"><i class="fas fa-check"></i></span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.machineGunAgility}}
+      <div class="dice-info roll-supported-machine-gun">
+        <span class="label">{{localize "YZEGS.CombatEdges.MachineGunAttribute"}}</span>
+        <span class="result">{{localize "YZEGS.AttributeNames.agl"}}</span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.targetPoint}}
+      <div class="dice-info roll-heavy-target">
+        <span class="label">{{localize "YZEGS.Heavy.Target"}}</span>
+        <span class="result">{{localize (concat "YZEGS.Heavy.TargetModes." roll.options.attackData.targetMode)}}</span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.indirectFire}}
+      <div class="dice-info roll-indirect-fire">
+        <span class="label">{{localize "YZEGS.Heavy.IndirectFire.Label"}}</span>
+        <span class="result">
+          {{#if roll.options.attackData.automaticDeviation}}
+            {{localize "YZEGS.Heavy.IndirectFire.Unobserved"}}
+          {{else}}
+            {{localize "YZEGS.Heavy.IndirectFire.Observed"}}
+          {{/if}}
+        </span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.correctionBonus}}
+      <div class="dice-info roll-artillery-correction">
+        <span class="label">{{localize "YZEGS.Heavy.Modifiers.Correction"}}</span>
+        <span class="result">+{{roll.options.attackData.correctionBonus}}</span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.deviation.resolved}}
+      <div class="dice-info roll-deviation">
+        <span class="label">{{localize "YZEGS.Heavy.Deviation.Label"}}</span>
+        <span class="result">{{localize (concat "YZEGS.Heavy.Deviation.Directions."
+          roll.options.attackData.deviation.direction)}} — {{roll.options.attackData.deviation.distance}}</span>
+      </div>
+    {{/if}}
+    {{#if roll.options.attackData.fireControlRange}}
+      <div class="dice-info roll-fire-control-range">
+        <span class="label">{{localize "YZEGS.LandVehicle.FireControl.Range"}}</span>
+        <span class="result">{{localize "YZEGS.LandVehicle.FireControl.ShortRange"}}</span>
+      </div>
+    {{/if}}
+
     {{! YZEGS: Hit Location }}
-    {{#if roll.bestHitLocation}}
+    {{#if roll.options.attackData.calledVehicleComponent}}
+      <div class='dice-info roll-hit-location'>
+        <span class='label'>{{localize 'YZEGS.LandVehicle.CalledShot.Label'}}</span>
+        <span class='result'>{{localize (concat 'YZEGS.LandVehicle.Components.'
+          roll.options.attackData.calledVehicleComponent)}}</span>
+      </div>
+    {{else if (or roll.options.attackData.calledLocation roll.options.attackData.forcedLocation)}}
+      <div class='dice-info roll-hit-location'>
+        <span class='label'>{{localize 'YZUR.CHAT.ROLL.HitLocation'}}</span>
+        <span class='result'>
+          {{#if roll.options.attackData.calledLocation}}
+            {{localize (concat 'YZUR.CHAT.ROLL.Locations.' roll.options.attackData.calledLocation)}}
+          {{else}}
+            {{localize (concat 'YZUR.CHAT.ROLL.Locations.' roll.options.attackData.forcedLocation)}}
+          {{/if}}
+        </span>
+      </div>
+    {{else if roll.bestHitLocation}}
       <div class='dice-info roll-hit-location'>
         {{#if (gt (lookup roll.hitLocations 'length') 1)}}
           <span class='label'>{{localize 'YZUR.CHAT.ROLL.HitLocations'}}</span>

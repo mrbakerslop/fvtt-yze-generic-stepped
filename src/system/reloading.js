@@ -1,4 +1,5 @@
 import { isCompatibleWeaponAmmunition, weaponUsesInternalMagazine } from './ammunition-compatibility.js';
+import { isMachineGun, usesHeavyWeaponRules } from './heavy-weapons.js';
 
 export const INTERNAL_RELOAD_MODE_SETTING = 'internalMagazineReloadMode';
 
@@ -73,7 +74,8 @@ export function getInternalReloadAmount({ loaded = 0, capacity = 0, available = 
 /** Whether a weapon follows the heavy-weapon reload rule. */
 export function isHeavyWeapon(weapon, skill = null) {
   if (weapon?.type !== 'weapon') return false;
-  if (weapon.system?.props?.heavyWeapon) return true;
+  if (usesHeavyWeaponRules(weapon)) return true;
+  if (isMachineGun(weapon.system?.itemType)) return false;
   const legacyKey = skill?.getFlag?.('fvtt-yze-generic-stepped', 'legacySkillKey');
   if (legacyKey === 'heavyWeapons') return true;
   return String(skill?.name ?? '').trim().toLocaleLowerCase() === 'heavy weapons';

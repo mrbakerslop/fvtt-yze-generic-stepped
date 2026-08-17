@@ -46,6 +46,8 @@ test('manual edge cases use the correct speed and skill', () => {
   assert.equal(getTwilightAction('firstAid').skill, 'medicalAid');
   assert.equal(getTwilightAction('rally').skill, 'command');
   assert.equal(getTwilightAction('diveFromGrenade').workflow, 'diveFromGrenade');
+  assert.equal(getTwilightAction('divingBlow').modifier, 2);
+  assert.equal(getTwilightAction('divingBlow').workflow, 'divingBlow');
   assert.equal(getTwilightAction('seekPartialCover').target, 'optional');
 });
 
@@ -55,6 +57,14 @@ test('social actions use the staged social-conflict workflow', () => {
     assert.equal(getTwilightAction(id).workflow, 'socialConflict');
     assert.equal(getTwilightAction(id).target, 'other');
   }
+});
+
+test('critical care actions expose their required timing and workflows', () => {
+  assert.equal(getTwilightAction('killingBlow').speed, 'slow');
+  assert.equal(getTwilightAction('killingBlow').workflow, 'killingBlow');
+  assert.equal(getTwilightAction('moveWounded').speed, 'free');
+  assert.equal(getTwilightAction('moveWounded').skill, 'medicalAid');
+  assert.equal(getTwilightAction('moveWounded').workflow, 'moveWounded');
 });
 
 test('action item prerequisites distinguish backpack, ready, and weapon items', () => {

@@ -15,6 +15,21 @@ import {
 } from '../../system/experience.js';
 import YZEGSDialog from '../../components/dialog/dialog.js';
 import { chooseArchetype } from '../../system/archetypes.js';
+import {
+  beginStabilization,
+  getActorImpairment,
+  rollDeathSave,
+  rollStabilization,
+} from '../../system/critical-injuries.js';
+import {
+  drawActorInitiative,
+  exchangeActorInitiative,
+} from '../../system/initiative-workflows.js';
+import {
+  chooseDiseaseCaregiver,
+  resolveDiseaseCheck,
+} from '../../system/disease-workflows.js';
+import { resolveHypothermiaCheck } from '../../system/environmental-hazards.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor Sheet for Character.
@@ -29,6 +44,8 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
   static DEFAULT_OPTIONS = {
     actions: {
       chooseArchetype: this.#onChooseArchetype,
+      drawInitiative: this.#onDrawInitiative,
+      exchangeInitiative: this.#onExchangeInitiative,
     },
     classes: ['character'],
     position: { width: 1040, height: 715 },
@@ -43,6 +60,14 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
     return chooseArchetype(this.actor);
   }
 
+  static #onDrawInitiative() {
+    return drawActorInitiative(this.actor);
+  }
+
+  static #onExchangeInitiative() {
+    return exchangeActorInitiative(this.actor);
+  }
+
   static TABS = {
     ...ActorSheetYZEGS.TABS,
     experience: {
@@ -54,12 +79,26 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
   /** @override */
   _getFrameButtons(options) {
     const buttons = super._getFrameButtons(options);
-    if ((this.actor.type !== 'character') || !this.isEditable) return buttons;
-    buttons.unshift({
-      action: 'chooseArchetype',
-      icon: 'fa-solid fa-person-circle-plus',
-      label: 'YZEGS.Archetype.Choose',
-    });
+    if (!this.isEditable) return buttons;
+    buttons.unshift(
+      {
+        action: 'exchangeInitiative',
+        icon: 'fa-solid fa-right-left',
+        label: 'YZEGS.Initiative.Exchange',
+      },
+      {
+        action: 'drawInitiative',
+        icon: 'fa-solid fa-list-ol',
+        label: 'YZEGS.Initiative.Draw',
+      },
+    );
+    if (this.actor.type === 'character') {
+      buttons.unshift({
+        action: 'chooseArchetype',
+        icon: 'fa-solid fa-person-circle-plus',
+        label: 'YZEGS.Archetype.Choose',
+      });
+    }
     return buttons;
   }
 
@@ -99,6 +138,51 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
       await enrichTextFields(sheetData, ['system.bio.appearance']);
       this._prepareExperience(sheetData);
     }
+    const impairment = getActorImpairment(this.actor);
+    let impairmentLabel = '';
+    if (impairment.dead) impairmentLabel = game.i18n.localize('YZEGS.Critical.Dead');
+    else if (impairment.damage) impairmentLabel = game.i18n.localize('YZEGS.Critical.IncapacitatedDamage');
+    else if (impairment.stress) impairmentLabel = game.i18n.localize('YZEGS.Critical.IncapacitatedStress');
+    sheetData.impairment = {
+      ...impairment,
+      label: impairmentLabel,
+    };
+    sheetData.criticalInjuries = (this.actor.itemTypes.injury ?? []).map(injury => {
+      const state = injury.system.state ?? {};
+      const treatment = state.treatment ?? {};
+      const stage = state.stage || '';
+      let deadline = '';
+      if (state.due) deadline = game.i18n.localize('YZEGS.Critical.DeathSaveDue');
+      else if (stage && stage !== 'stabilized') {
+        deadline = game.i18n.localize(`YZEGS.Critical.Stage.${stage}`);
+      }
+      return {
+        id: injury.id,
+        name: injury.name,
+        lethal: injury.system.lethal,
+        instantDeath: injury.system.instantDeath || state.instantDeath,
+        stage,
+        stabilized: state.stabilized || stage === 'stabilized',
+        due: state.due,
+        deadline,
+        healingDays: state.healingDays,
+        stabilizationLocked: state.stabilizationLocked,
+        treatmentActive: Boolean(treatment.healerUuid),
+        treatmentReady: Boolean(treatment.ready),
+        canResolveTreatment: Boolean(treatment.healerUuid) && (Boolean(treatment.ready) || game.user.isGM),
+        treatmentHealer: treatment.healerName ?? '',
+      };
+    });
+    sheetData.diseaseItems = (this.actor.itemTypes.disease ?? []).map(disease => ({
+      id: disease.id,
+      name: disease.name,
+      phase: disease.system.state?.phase || 'incubating',
+      phaseLabel: game.i18n.localize(`YZEGS.Disease.Phases.${disease.system.state?.phase || 'incubating'}`),
+      due: Boolean(disease.system.state?.due),
+      antibioticsUsed: Boolean(disease.system.state?.antibioticsUsed),
+      caregiverName: disease.system.state?.caregiverName ?? '',
+      recovered: disease.system.state?.phase === 'recovered',
+    }));
     return sheetData;
   }
 
@@ -228,6 +312,12 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
     html.find('.experience-skill-eligibility').on('change', this._onExperienceEligibility.bind(this));
     html.find('.experience-advance-skill').click(this._onAdvanceSkill.bind(this));
     html.find('.experience-learn-specialty').click(this._onLearnSpecialty.bind(this));
+    html.find('.critical-death-save').click(this._onCriticalDeathSave.bind(this));
+    html.find('.critical-stabilize').click(this._onCriticalStabilize.bind(this));
+    html.find('.critical-resolve-treatment').click(this._onCriticalResolveTreatment.bind(this));
+    html.find('.disease-check').click(this._onDiseaseCheck.bind(this));
+    html.find('.disease-treat').click(this._onDiseaseTreat.bind(this));
+    html.find('.hypothermia-check').click(this._onHypothermiaCheck.bind(this));
 
     if (game.user.isGM) html.find('.experience-award').click(this._onAwardExperience.bind(this));
 
@@ -239,6 +329,46 @@ export default class ActorSheetYZEGSCharacter extends ActorSheetYZEGS {
       html.find('.unit-morale-roll').click(this._onUnitMoraleRoll.bind(this));
       html.find('.radiation-roll').click(this._onRadiationRoll.bind(this));
     }
+  }
+
+  _criticalInjuryFromEvent(event) {
+    const id = event.currentTarget.closest('.item')?.dataset.itemId;
+    return this.actor.items.get(id);
+  }
+
+  _onCriticalDeathSave(event) {
+    event.preventDefault();
+    return rollDeathSave(this.actor, this._criticalInjuryFromEvent(event));
+  }
+
+  _onCriticalStabilize(event) {
+    event.preventDefault();
+    return beginStabilization(this.actor, this._criticalInjuryFromEvent(event));
+  }
+
+  _onCriticalResolveTreatment(event) {
+    event.preventDefault();
+    return rollStabilization(this.actor, this._criticalInjuryFromEvent(event));
+  }
+
+  _diseaseFromEvent(event) {
+    const id = event.currentTarget.closest('.item')?.dataset.itemId;
+    return this.actor.items.get(id);
+  }
+
+  _onDiseaseCheck(event) {
+    event.preventDefault();
+    return resolveDiseaseCheck(this.actor, this._diseaseFromEvent(event));
+  }
+
+  _onDiseaseTreat(event) {
+    event.preventDefault();
+    return chooseDiseaseCaregiver(this.actor, this._diseaseFromEvent(event));
+  }
+
+  _onHypothermiaCheck(event) {
+    event.preventDefault();
+    return resolveHypothermiaCheck(this.actor);
   }
 
   async _onExperienceEligibility(event) {

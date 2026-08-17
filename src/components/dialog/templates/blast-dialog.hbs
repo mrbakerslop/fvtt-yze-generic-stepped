@@ -1,5 +1,8 @@
 <div class="yzegs dialog blast-dialog">
   <p>{{localize "YZEGS.Urban.Blast.Instructions"}}</p>
+  {{#if data.automatic}}
+    <p class="notification info">{{localize "YZEGS.Heavy.Blast.AutomaticHint"}}</p>
+  {{/if}}
   {{#if data.airburst}}
     <p class="notification warning">{{localize "YZEGS.ConfinedSpace.Blast.AirburstHint"}}</p>
   {{/if}}

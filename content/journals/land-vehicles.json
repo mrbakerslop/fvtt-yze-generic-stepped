@@ -1,0 +1,66 @@
+{
+  "entry": {
+    "_id": "YZELandVehGuide1",
+    "name": "Using Land Vehicles",
+    "categories": [],
+    "folder": null,
+    "sort": 1200000,
+    "ownership": { "default": 2 },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "land-vehicles"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZELandVehQuick1",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Land Vehicles</h1><ol><li>Create a Vehicle Actor and set its <strong>Domain</strong> to <strong>Land Vehicle</strong>.</li><li>Enter reliability, movement, fuel, directional armor, crew capacity, and passenger capacity.</li><li>On <strong>Components</strong>, leave only components actually present on the vehicle enabled.</li><li>Drag crew onto the Crew tab and assign Driver, Gunner, Commander, or Passenger positions. Mark anyone outside a hatch or otherwise exposed as <strong>Exposed</strong>.</li><li>Drag weapons and equipment into the vehicle. Equip and mount vehicle weapons.</li><li>Place the vehicle token in a Scene. Attacks and Apply Damage then use directional armor and the land-vehicle component tables automatically.</li></ol><p>Component results, damage cascades, ammunition loss, occupant tests, and persistent vehicle states are reported in chat.</p>"
+    },
+    {
+      "_id": "YZELandVehSetup1",
+      "name": "Vehicle and Cargo Setup",
+      "sort": 200000,
+      "content": "<h1>Setup Details</h1><h2>Components</h2><p>The checkbox beside a component means that component exists. Disable components the vehicle does not have. Enter the radio's own Reliability and configure the fire-control system where appropriate.</p><h2>Weapons</h2><p>A mounted weapon must be both <strong>Equipped</strong> and marked <strong>Mounted</strong>. Its Reliability is reduced by weapon-component hits. Mark an armored weapon with the <strong>Armored</strong> property. Stabilized weapons ignore the moving-vehicle penalty. An operational advanced fire-control system also ignores that penalty and treats all attacks through Extreme range as Short range.</p><h2>Cargo and External Stores</h2><p>Unequipped, non-mounted physical Items are treated as internal cargo. Equipped, non-mounted physical Items are treated as external stores. Damage selects a random eligible Item. Items with Reliability lose Reliability; other Items record damage internally and the chat result states whether damage was applied.</p>"
+    },
+    {
+      "_id": "YZELandVehArmor1",
+      "name": "Armor, Facing, and Called Shots",
+      "sort": 300000,
+      "content": "<h1>Resolving a Hit</h1><p>When damage is applied to a Vehicle, choose the struck facing: Front, Left, Right, or Rear. The system tests the attack's base damage against the modified armor, subtracts armor from a penetrating hit, and rolls armor ablation only when armor is penetrated.</p><h2>Stopped Hits</h2><p>If armor stops the attack, the full incoming damage is applied to the randomly rolled external result. Stopped hits never cascade into another component. Tracks or wheels are rerolled for front and rear hits.</p><h2>Called Shots</h2><p>When a weapon targets one land-vehicle token, the roll dialog offers a <strong>Called Vehicle Component</strong>. Selecting one applies −2, skips the random external-component roll, and can never penetrate armor. Tracks or wheels can only be called from a side facing. Leave the choice blank for an ordinary attack.</p><p>The +2 large-target modifier applies to small-arms weapon attacks against ordinary vehicles, but not heavy weapons, grenades, motorcycles, motorbikes, or bicycles.</p>"
+    },
+    {
+      "_id": "YZELandVehTable1",
+      "name": "Component Tables and Cascades",
+      "sort": 400000,
+      "content": "<h1>Automatic D10 Component Roll</h1><table><thead><tr><th>D10</th><th>Penetrating Hit</th><th>Stopped Hit</th></tr></thead><tbody><tr><td>1</td><td>Fuel</td><td>Tracks or wheels</td></tr><tr><td>2</td><td>Engine</td><td>Mounted weapon</td></tr><tr><td>3</td><td>Suspension</td><td>Fire-control system</td></tr><tr><td>4</td><td>Ammunition store</td><td>Antenna</td></tr><tr><td>5</td><td>Cargo</td><td>External stores</td></tr><tr><td>6</td><td>Driver</td><td>External stores</td></tr><tr><td>7</td><td>Passenger</td><td>Exposed passenger</td></tr><tr><td>8</td><td>Gunner</td><td>Exposed passenger</td></tr><tr><td>9</td><td>Commander</td><td>Ricochet</td></tr><tr><td>10</td><td>Radio</td><td>Ricochet</td></tr></tbody></table><h2>Penetrating Cascades</h2><p>If a penetrating result names an absent or already disabled component, resolution moves upward toward row 1. Damage beyond the component's capacity continues in the same direction until it is allocated. The engine always stops remaining damage. A stopped hit against an absent or disabled external component simply has no effect.</p>"
+    },
+    {
+      "_id": "YZELandVehInner1",
+      "name": "Internal Component Effects",
+      "sort": 500000,
+      "content": "<h1>Internal Components</h1><ul><li><strong>Fuel:</strong> one damage starts a leak, halves maximum fuel, and loses fuel above the new maximum. An explosive hit also rolls its Blast to test ignition.</li><li><strong>Engine:</strong> each damage reduces vehicle Reliability. Reliability 0 makes the vehicle inoperable. The engine stops all excess damage.</li><li><strong>Suspension:</strong> each damage reduces vehicle Reliability. Reliability 0 makes the vehicle inoperable; excess continues.</li><li><strong>Ammunition:</strong> one cumulative damage destroys half the ammunition and two destroys all. Heavy ammunition has a 50% explosion risk at one damage and explodes automatically at two. An explosion destroys the vehicle and attacks occupants with Blast one step above the strongest stored ammunition, to a maximum of A.</li><li><strong>Cargo:</strong> a random internal Item is damaged. Excess continues if that Item is destroyed.</li><li><strong>Driver, Passenger, Gunner, or Commander:</strong> a matching occupant takes an ordinary hit, including random hit location, body armor, and critical injury. Damage beyond the weapon's Crit rating continues.</li><li><strong>Radio:</strong> damage reduces radio Reliability; excess continues after it reaches 0.</li></ul>"
+    },
+    {
+      "_id": "YZELandVehOuter1",
+      "name": "External Component Effects",
+      "sort": 600000,
+      "content": "<h1>External Components</h1><ul><li><strong>Tracks or wheels:</strong> side hits subtract half side armor, rounded up and adjusted by the attack's armor modifier. Remaining damage reduces vehicle Reliability.</li><li><strong>Mounted weapon:</strong> damage reduces a random operational mounted weapon's Reliability. Armored weapons subtract half front armor, rounded up and adjusted by the armor modifier.</li><li><strong>Fire-control system:</strong> one damage disables its stabilization and range benefits.</li><li><strong>Antenna:</strong> one damage disables the antenna and sets radio Reliability to 0.</li><li><strong>External stores:</strong> a random equipped, non-mounted physical Item is damaged.</li><li><strong>Exposed passenger:</strong> a random exposed occupant takes an ordinary direct hit.</li><li><strong>Ricochet:</strong> exposed occupants and characters or NPCs on foot in the same grid space make immediate Coolness Under Fire checks; failures use the normal suppression outcome.</li></ul>"
+    },
+    {
+      "_id": "YZELandVehCrew01",
+      "name": "Crew, Explosions, and Bailout",
+      "sort": 700000,
+      "content": "<h1>Occupants of a Penetrated Vehicle</h1><p>Every character or NPC assigned to the vehicle immediately makes a Coolness Under Fire test. A failure records <strong>Must bail out</strong> on that Actor and displays a running-person warning beside them on the Crew tab. This replaces the ordinary suppression consequence of that particular test.</p><p>On the affected character's next turn, choose <strong>Bail out</strong> from an action-enabled roll dialog and apply the outcome. This spends the listed action during active combat and clears the stored bailout requirement.</p><h2>Explosive Penetration</h2><p>If the penetrating attack has Blast power, every occupant receives a separate, unpushable Blast damage roll at the full rating. Vehicle armor does not reduce that internal explosion. Use each generated attack card's Apply Damage control to resolve personal armor, injury, and incapacitation normally.</p>"
+    },
+    {
+      "_id": "YZELandVehState1",
+      "name": "Damage States, Fire, and Repairs",
+      "sort": 800000,
+      "content": "<h1>Persistent Land-Vehicle State</h1><p>The Components tab shows <strong>Inoperable</strong>, <strong>Permanently Destroyed</strong>, <strong>Fuel Tank Leaking</strong>, and <strong>Fuel Fire</strong>. Reliability reaching 0 through engine, suspension, or track damage sets Inoperable. A permanently destroyed vehicle cannot fire mounted weapons.</p><h2>Fuel Fire</h2><p>Ignition marks the vehicle and every occupant as on fire, notes Intensity C in chat, starts a one-Stretch deadline, and causes an additional occupant bailout check. If world time reaches the displayed deadline while the fire remains active, the vehicle becomes permanently destroyed. Applying a successful <strong>Extinguish fire</strong> outcome to the Vehicle clears its fire status and deadline.</p><h2>Repair and Adjudication</h2><p>Component damage fields and state controls remain editable for GM repair work and exceptional rulings. Restore repaired Reliability and component values as appropriate, clear Inoperable when mobility is restored, and restore a leaking tank's fuel maximum from its recorded original capacity when the leak is repaired. Permanently Destroyed represents destruction beyond repair.</p><h2>Troubleshooting</h2><ul><li><strong>No suitable component is hit:</strong> verify the component checkbox, crew assignment, mounted weapons, and cargo state.</li><li><strong>Wrong cargo pool:</strong> Equipped means external; unequipped means internal.</li><li><strong>No called-shot menu:</strong> target exactly one land-vehicle token with a Weapon Item.</li><li><strong>No fire-control benefit:</strong> the mounted weapon needs its fire-control feature and the vehicle's fire-control component must be enabled and undamaged.</li><li><strong>Fuel fire does not expire:</strong> advance Foundry world time beyond the shown deadline while a GM is connected.</li></ul>"
+    }
+  ]
+}

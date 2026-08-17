@@ -7,6 +7,7 @@ import {
   guidedImpactIsPending,
   guidedImpactWasEvaded,
 } from './guided-weapons.js';
+import { tacticalMovementAllowance } from './tactical-terrain-rules.js';
 
 /**
  * Defines a set of template paths to pre-load.
@@ -25,6 +26,7 @@ export async function preloadHandlebarsTemplates() {
 
     // Actor Sheet Partials
     'systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-stats.hbs',
+    'systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-specialties.hbs',
     'systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-combat.hbs',
     'systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-equipment.hbs',
     'systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-description.hbs',
@@ -67,6 +69,24 @@ export async function preloadHandlebarsTemplates() {
  * Defines Handlebars custom Helpers and Partials.
  */
 export function registerHandlebars() {
+  Handlebars.registerHelper('tacticalMovementHexes', roll => {
+    const movement = roll?.options?.actionData?.tacticalMovement;
+    if (!movement) return '';
+    return tacticalMovementAllowance(
+      movement.actionId,
+      Number(roll.baseSuccessQty) || 0,
+      movement.terrain,
+    ).hexes;
+  });
+  Handlebars.registerHelper('tacticalMovementMode', roll => {
+    const movement = roll?.options?.actionData?.tacticalMovement;
+    if (!movement) return '';
+    return tacticalMovementAllowance(
+      movement.actionId,
+      Number(roll.baseSuccessQty) || 0,
+      movement.terrain,
+    ).mode;
+  });
   Handlebars.registerHelper('guidedImpactCanApply', guidedImpactCanApply);
   Handlebars.registerHelper('guidedImpactCanSchedule', guidedImpactCanSchedule);
   Handlebars.registerHelper('guidedImpactIsPending', guidedImpactIsPending);
@@ -78,13 +98,66 @@ export function registerHandlebars() {
       ? Math.max(0, Number(defense.remainingSuccesses) || 0)
       : Math.max(0, Number(roll?.baseSuccessQty) || 0);
   });
+  Handlebars.registerHelper('directAttackHit', roll => {
+    const defense = roll?.options?.defense;
+    const successes = defense?.status === 'resolved'
+      ? Number(defense.remainingSuccesses) || 0
+      : Number(roll?.baseSuccessQty) || 0;
+    return successes > 0 && !roll?.options?.attackData?.automaticDeviation;
+  });
+  Handlebars.registerHelper('explosiveDeviationRequired', roll => {
+    const attack = roll?.options?.attackData;
+    const defense = roll?.options?.defense;
+    const successes = defense?.status === 'resolved'
+      ? Number(defense.remainingSuccesses) || 0
+      : Number(roll?.baseSuccessQty) || 0;
+    return Boolean(
+      attack?.targetPoint
+      && ['A', 'B', 'C', 'D'].includes(String(attack.blast ?? '').toLocaleUpperCase())
+      && !attack.blastResolution
+      && !attack.deviation?.resolved
+      && attack.guidance?.mode === 'none'
+      && !attack.automaticHexHit
+      && (attack.automaticDeviation || successes < 1),
+    );
+  });
 
   Handlebars.registerHelper('defensePending', roll => (
     roll?.options?.defense?.status === 'awaitingBlockRoll'
   ));
 
+  Handlebars.registerHelper('actionOutcomeSuccessful', roll => {
+    const successes = roll?.options?.defense?.status === 'resolved'
+      ? Number(roll.options.defense.remainingSuccesses) || 0
+      : Number(roll?.baseSuccessQty) || 0;
+    const actionData = roll?.options?.actionData;
+    if (actionData?.workflow === 'breakFree') {
+      return successes > (Number(actionData.passiveSuccesses) || 0);
+    }
+    return successes > 0;
+  });
+
   Handlebars.registerHelper('suppressionRequired', roll => (
-    Boolean(roll?.options?.suppression) && (roll.options.suppression.force || attackCausesSuppression({
+    Boolean(roll?.options?.suppression) && (roll.options.suppression.force
+      || roll.options.suppression.targets?.some(target => target.force)
+      || attackCausesSuppression({
+        attackSuccesses: roll?.options?.defense?.status === 'resolved'
+          ? roll.options.defense.remainingSuccesses
+          : roll?.baseSuccessQty,
+        ammoSuccesses: roll?.hitCount,
+      }))
+  ));
+
+  Handlebars.registerHelper('friendlyFireRequired', roll => (
+    Boolean(
+      roll?.options?.attackData?.friendlyFireTargets?.length
+      && !roll.options.attackData.friendlyFireResolved
+      && Number(roll.baseSuccessQty) < 1,
+    )
+  ));
+
+  Handlebars.registerHelper('suppressionTargetRequired', (roll, target) => (
+    Boolean(target?.force || attackCausesSuppression({
       attackSuccesses: roll?.options?.defense?.status === 'resolved'
         ? roll.options.defense.remainingSuccesses
         : roll?.baseSuccessQty,

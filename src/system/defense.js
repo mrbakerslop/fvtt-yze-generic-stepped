@@ -6,6 +6,7 @@ export const BLOCKABLE_ACTIONS = new Set([
   'shove',
   'disarm',
   'grapple',
+  'divingBlow',
 ]);
 
 /** Whether the declared close-combat action permits a Block reaction. */

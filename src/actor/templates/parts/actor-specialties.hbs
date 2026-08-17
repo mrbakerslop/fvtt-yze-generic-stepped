@@ -1,0 +1,30 @@
+<div class="specialty-title flexrow">
+  <h2>{{localize "YZEGS.ActorSheet.Specialties"}}</h2>
+  <a class="button item-create" data-type="specialty" title="{{localize "YZEGS.ActorSheet.AddSpecialty"}}">
+    <i class="fas fa-plus"></i>
+  </a>
+</div>
+
+<div class="specialties-slots">
+  {{#each actor.itemTypes.specialty as |specialty|}}
+  <div class="item item-slot slot-specialty flexrow" data-item-id="{{specialty.id}}">
+    {{#with specialty}}
+    <div class="specialty-content">
+      <strong class="specialty-name">{{name}}</strong>
+      {{#if system.description}}
+      <span class="specialty-separator">:</span>
+      <div class="specialty-description">{{{system.description}}}</div>
+      {{else}}
+        {{#if hasModifier}}
+        <span class="specialty-separator">:</span>
+        <div class="specialty-description">{{modifiersDescription}}</div>
+        {{/if}}
+      {{/if}}
+    </div>
+    {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/slots/slot-buttons.hbs"}}
+    {{/with}}
+  </div>
+  {{else}}
+  <p class="no-specialty">{{localize "YZEGS.ActorSheet.NoSpecialty"}}</p>
+  {{/each}}
+</div>

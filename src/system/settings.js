@@ -47,6 +47,13 @@ import {
   SOCIAL_CONFLICT_SETTING,
 } from './social-conflict.js';
 import { SocialConflictConfig } from './social-conflict-config.js';
+import {
+  CRITICAL_INJURIES_ENABLED_SETTING,
+  CRITICAL_INJURY_TABLE_DEFAULTS,
+  CRITICAL_INJURY_TABLE_SETTINGS,
+} from './critical-injuries.js';
+import { TACTICAL_TERRAIN_SETTING } from './tactical-terrain.js';
+import { WorldSettingsConfig } from './world-settings-config.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -91,6 +98,53 @@ function refreshActorSheets() {
  * Registers system settings.
  */
 export function registerSystemSettings() {
+  game.settings.registerMenu(SYSTEM_ID, 'worldSettings', {
+    name: 'SETTINGS.worldSettings.name',
+    label: 'SETTINGS.worldSettings.label',
+    hint: 'SETTINGS.worldSettings.hint',
+    icon: 'fa-solid fa-sliders',
+    type: WorldSettingsConfig,
+    restricted: true,
+  });
+
+  game.settings.register(SYSTEM_ID, TACTICAL_TERRAIN_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.tacticalTerrainAssistance.name',
+    hint: 'SETTINGS.tacticalTerrainAssistance.hint',
+    type: Boolean,
+    default: false,
+  });
+
+  game.settings.register(SYSTEM_ID, CRITICAL_INJURIES_ENABLED_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.criticalInjuriesEnabled.name',
+    hint: 'SETTINGS.criticalInjuriesEnabled.hint',
+    type: Boolean,
+    default: true,
+  });
+
+  for (const [hitLocation, setting] of Object.entries(CRITICAL_INJURY_TABLE_SETTINGS)) {
+    game.settings.register(SYSTEM_ID, setting, {
+      config: false,
+      scope: 'world',
+      name: `SETTINGS.criticalInjuryTable.${hitLocation}.name`,
+      hint: 'SETTINGS.criticalInjuryTable.hint',
+      type: String,
+      default: CRITICAL_INJURY_TABLE_DEFAULTS[hitLocation],
+    });
+  }
+
+  game.settings.register(SYSTEM_ID, 'killingBlowSpecialty', {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.killingBlowSpecialty.name',
+    hint: 'SETTINGS.killingBlowSpecialty.hint',
+    type: String,
+    default: '',
+  });
+
   game.settings.register(SYSTEM_ID, ACTION_SKILLS_SETTING, {
     config: false,
     scope: 'world',
@@ -144,7 +198,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, ADVANCEMENT_ITEM_SOURCE_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.advancementItemSource.name',
     hint: 'SETTINGS.advancementItemSource.hint',
@@ -248,7 +302,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'hideCapacitiesButtons', {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.hideCapacitiesButtons.name',
     hint: 'SETTINGS.hideCapacitiesButtons.label',
@@ -257,7 +311,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'hideWeaponProps', {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.hideWeaponProps.name',
     hint: 'SETTINGS.hideWeaponProps.label',
@@ -266,7 +320,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, NOTES_TAB_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.enableNotesTab.name',
     hint: 'SETTINGS.enableNotesTab.hint',
@@ -276,7 +330,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, UNIT_MORALE_ENABLED_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.enableUnitMorale.name',
     hint: 'SETTINGS.enableUnitMorale.hint',
@@ -286,7 +340,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, RADIATION_ENABLED_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.enableRadiation.name',
     hint: 'SETTINGS.enableRadiation.hint',
@@ -296,7 +350,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, RADIATION_NAME_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.radiationName.name',
     hint: 'SETTINGS.radiationName.hint',
@@ -306,7 +360,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, PUSH_COST_MODE_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.pushCostMode.name',
     hint: 'SETTINGS.pushCostMode.hint',
@@ -320,7 +374,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, INTERNAL_RELOAD_MODE_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.internalMagazineReloadMode.name',
     hint: 'SETTINGS.internalMagazineReloadMode.hint',
@@ -333,7 +387,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register(SYSTEM_ID, SCENE_GRID_PRESET_SETTING, {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.defaultSceneGridPreset.name',
     hint: 'SETTINGS.defaultSceneGridPreset.hint',
@@ -349,7 +403,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'trackPcAmmo', {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.trackPcAmmo.name',
     hint: 'SETTINGS.trackPcAmmo.label',
@@ -358,7 +412,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'trackNpcAmmo', {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.trackNpcAmmo.name',
     hint: 'SETTINGS.trackNpcAmmo.label',
@@ -367,7 +421,7 @@ export function registerSystemSettings() {
   });
 
   game.settings.register('fvtt-yze-generic-stepped', 'trackVehicleAmmo', {
-    config: true,
+    config: false,
     scope: 'world',
     name: 'SETTINGS.trackVehicleAmmo.name',
     hint: 'SETTINGS.trackVehicleAmmo.label',

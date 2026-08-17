@@ -1,0 +1,130 @@
+.application.yzegs.world-settings-config {
+  .window-content {
+    overflow-y: auto;
+  }
+
+  .world-settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #000;
+
+    .world-settings-intro {
+      margin: 0;
+    }
+
+    fieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 8px 12px 10px;
+      border: 1px solid #000;
+    }
+
+    legend {
+      padding: 0 5px;
+      color: #000;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .form-group {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, 42%);
+      align-items: center;
+      gap: 12px;
+      margin: 0;
+      padding: 7px 0;
+      border-bottom: 1px solid #bbb;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    .world-setting-copy {
+      min-width: 0;
+
+      > label {
+        display: block;
+        color: #000;
+        font-weight: 700;
+      }
+
+      > .hint {
+        margin: 2px 0 0;
+        color: #000;
+        line-height: 1.25;
+        opacity: 1;
+      }
+    }
+
+    .form-fields {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+    }
+
+    .wide-field input,
+    .menu-field,
+    .menu-field .rating-menu,
+    .menu-field .rating-menu-trigger {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .menu-field .rating-menu-trigger {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .section-hint {
+      margin: 5px 0 7px;
+      color: #000;
+      opacity: 1;
+    }
+
+    .critical-table-grid {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.3fr);
+      align-items: center;
+      gap: 6px 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #bbb;
+
+      label {
+        color: #000;
+        font-weight: 700;
+      }
+
+      input {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+
+    .ammo-settings-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 30px;
+      align-items: center;
+      gap: 6px 12px;
+
+      > label {
+        color: #000;
+        font-weight: 700;
+      }
+
+      .checkbox-control {
+        justify-self: center;
+      }
+    }
+
+    .form-footer {
+      position: sticky;
+      bottom: 0;
+      padding-top: 4px;
+      background: #fff;
+    }
+  }
+}

@@ -1,0 +1,77 @@
+<div class="yzegs chat-card initiative-conflict" data-actor-id="{{data.leadAttackerUuid}}">
+  <div class="card-content">
+    <h3>
+      <i class="fa-solid fa-user-secret"></i>
+      {{#if (eq data.mode "waylay")}}{{localize "YZEGS.Initiative.Waylay"}}
+      {{else}}{{localize "YZEGS.Initiative.Ambush"}}{{/if}}
+    </h3>
+    <p><strong>{{localize "YZEGS.Initiative.Attackers"}}:</strong>
+      {{#each data.attackers}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+    {{#if data.targets.length}}
+    <p><strong>{{localize "YZEGS.Initiative.Targets"}}:</strong>
+      {{#each data.targets}}{{name}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+    {{/if}}
+
+    {{#if (eq data.status "setupFailed")}}
+      <p class="action-outcome-unsuccessful"><i class="fa-solid fa-xmark"></i>
+        {{localize "YZEGS.Initiative.WaylaySetupFailed"}}</p>
+    {{else}}
+      <dl class="initiative-results">
+        <dt>{{localize "YZEGS.Initiative.AttackerSuccesses"}}</dt>
+        <dd>{{#if (eq data.attackerSuccesses null)}}—{{else}}{{data.attackerSuccesses}}{{/if}}</dd>
+        <dt>{{localize "YZEGS.Initiative.TargetSuccesses"}}</dt>
+        <dd>{{#if (eq data.targetSuccesses null)}}—{{else}}{{data.targetSuccesses}}{{/if}}</dd>
+      </dl>
+    {{/if}}
+
+    {{#unless data.attackerFinal}}
+      {{#unless data.attackerRollMessageId}}
+      <button class="dice-button roll-initiative-attacker" data-owner-uuid="{{data.leadAttackerUuid}}">
+        <i class="fa-solid fa-dice"></i> {{localize "YZEGS.Initiative.RollAttackers"}}
+      </button>
+      {{else}}<p>{{localize "YZEGS.Initiative.FinishAttackerRoll"}}</p>{{/unless}}
+    {{/unless}}
+
+    {{#if (eq data.mode "ambush")}}
+      {{#unless data.targetFinal}}
+        {{#unless data.targetRollMessageId}}
+        <button class="dice-button roll-initiative-target" data-owner-uuid="{{data.leadTargetUuid}}">
+          <i class="fa-solid fa-dice"></i> {{localize "YZEGS.Initiative.RollTargets"}}
+        </button>
+        {{else}}<p>{{localize "YZEGS.Initiative.FinishTargetRoll"}}</p>{{/unless}}
+      {{/unless}}
+    {{else}}
+      {{#if (eq data.status "awaitingTargets")}}
+        <button class="dice-button select-waylay-targets" data-gm-only="true">
+          <i class="fa-solid fa-crosshairs"></i> {{localize "YZEGS.Initiative.ResolveWaylay"}}
+        </button>
+      {{/if}}
+      {{#if (eq data.status "awaitingTargetRoll")}}
+        {{#unless data.targetFinal}}
+          {{#unless data.targetRollMessageId}}
+          <button class="dice-button roll-initiative-target" data-owner-uuid="{{data.leadTargetUuid}}">
+            <i class="fa-solid fa-dice"></i> {{localize "YZEGS.Initiative.RollPassiveDetection"}}
+          </button>
+          {{else}}<p>{{localize "YZEGS.Initiative.FinishTargetRoll"}}</p>{{/unless}}
+        {{/unless}}
+      {{/if}}
+    {{/if}}
+
+    {{#if (eq data.status "ready")}}
+      {{#unless data.applied}}
+        <p>{{#if data.resolution.success}}
+          <i class="fa-solid fa-check"></i> {{localize "YZEGS.Initiative.AmbushWon"}}
+          {{else}}<i class="fa-solid fa-xmark"></i> {{localize "YZEGS.Initiative.AmbushLost"}}{{/if}}</p>
+        <button class="dice-button apply-initiative-conflict" data-gm-only="true">
+          <i class="fa-solid fa-list-ol"></i> {{localize "YZEGS.Initiative.ApplyInitiative"}}
+        </button>
+      {{/unless}}
+    {{/if}}
+    {{#if (eq data.status "ambushSucceeded")}}
+      <p><i class="fa-solid fa-check"></i> {{localize "YZEGS.Initiative.AmbushApplied"}}</p>
+    {{/if}}
+    {{#if (eq data.status "ambushFailed")}}
+      <p><i class="fa-solid fa-eye"></i> {{localize "YZEGS.Initiative.NormalInitiativeApplied"}}</p>
+    {{/if}}
+  </div>
+</div>

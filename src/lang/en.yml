@@ -27,6 +27,7 @@ YZEGS.SkillNames.medicalAid: Medical Aid
 YZEGS.Action: Action
 YZEGS.Actions: Actions
 YZEGS.ActionNames.unarmedAttack: Unarmed attack
+YZEGS.ActionNames.divingBlow: Diving blow
 YZEGS.ActionNames.meleeAttack: Melee attack
 YZEGS.ActionNames.grapple: Grapple
 YZEGS.ActionNames.breakFree: Break free
@@ -49,6 +50,8 @@ YZEGS.ActionNames.aimMortar: Aim mortar or howitzer
 YZEGS.ActionNames.shootHeavyWeapon: Fire heavy weapon
 YZEGS.ActionNames.firstAid: First aid
 YZEGS.ActionNames.rally: Rally
+YZEGS.ActionNames.killingBlow: Killing blow
+YZEGS.ActionNames.moveWounded: Move wounded character
 YZEGS.ActionNames.directFire: Direct indirect fire
 YZEGS.ActionNames.seekCover: Seek cover
 YZEGS.ActionNames.run: Run
@@ -200,6 +203,147 @@ YZEGS.ItemTypes.armor: Armor
 YZEGS.ItemTypes.gear: Gear
 YZEGS.ItemTypes.grenade: Explosive
 YZEGS.ItemTypes.injury: Injury
+YZEGS.ItemTypes.disease: Disease
+YZEGS.Disease.CategoryLabel: Category
+YZEGS.Disease.Category.Disease: Disease
+YZEGS.Disease.Category.WoundInfection: Wound infection
+YZEGS.Disease.Category.BlisterAgent: Blister agent
+YZEGS.Disease.Category.NerveAgent: Nerve agent
+YZEGS.Disease.Category.Radiation: Radiation sickness
+YZEGS.Disease.Category.Custom: Custom affliction
+YZEGS.Disease.Virulence: Virulence modifier
+YZEGS.Disease.Timing: Timing
+YZEGS.Disease.Incubation: Incubation
+YZEGS.Disease.CheckInterval: Check interval
+YZEGS.Disease.FailedCheck: Failed check
+YZEGS.Disease.Damage: Damage
+YZEGS.Disease.Stress: Stress
+YZEGS.Disease.BlocksDamageRecovery: Blocks damage recovery
+YZEGS.Disease.BlocksStressRecovery: Blocks stress recovery
+YZEGS.Disease.LethalWhenIncapacitated: Death after one day while incapacitated
+YZEGS.Disease.Treatment: Treatment
+YZEGS.Disease.AntibioticsEffective: Antibiotics are effective
+YZEGS.Disease.AntibioticsModifier: Antibiotics modifier
+YZEGS.Disease.TreatmentNotes: Treatment notes
+YZEGS.Disease.PatientState: Patient state
+YZEGS.Disease.Phase: Phase
+YZEGS.Disease.FailedChecks: Failed checks
+YZEGS.Disease.AntibioticsUsed: Antibiotics administered
+YZEGS.Disease.Patient: Patient
+YZEGS.Disease.Caregiver: Caregiver
+YZEGS.Disease.Successes: Successes
+YZEGS.Disease.RecoveredResult: The affliction has ended and no longer blocks recovery.
+YZEGS.Disease.FailedResult: 'The affliction progresses: {damage} damage and {stress} stress.'
+YZEGS.Disease.MissingSkill: The Actor does not have the configured Skill for this check.
+YZEGS.Disease.CheckTitle: '{disease} check — {patient}'
+YZEGS.Disease.NoCaregiver: No available Character or NPC can act as caregiver.
+YZEGS.Disease.CheckDue: '{actor} must make a {disease} check.'
+YZEGS.Disease.Add: Add disease or affliction
+YZEGS.Disease.RollCheck: Resolve resistance check
+YZEGS.Disease.Treat: Resolve caregiver treatment
+YZEGS.Disease.TreatedBy: 'Last treated by {name}'
+YZEGS.Disease.Phases.incubating: Incubating
+YZEGS.Disease.Phases.active: Active
+YZEGS.Disease.Phases.recovered: Recovered
+YZEGS.ActionSkillConfig.DiseaseCheck: Resist disease or affliction
+YZEGS.ActionSkillConfig.DiseaseTreatment: Treat disease or affliction
+YZEGS.Hazards.Time.Round: Round
+YZEGS.Hazards.Time.Stretch: Stretch
+YZEGS.Hazards.Time.Shift: Shift
+YZEGS.Hazards.Time.Day: Day
+YZEGS.Hazards.EnvironmentalHarm: Environmental harm
+YZEGS.Hazards.HarmApplied: '{damage} damage and {stress} stress applied.'
+YZEGS.Hazards.Fire: Fire
+YZEGS.Hazards.FireAttack: 'Fire attack against {actor} — Intensity {intensity}'
+YZEGS.Hazards.FireWentOut: The flames went out after causing no damage.
+YZEGS.Hazards.SevereBurns: Severe burns
+YZEGS.Hazards.SevereBurnsEffect: '−2 to Stamina and Mobility; lethal; healing time 2d6 days.'
+YZEGS.Hazards.RollHypothermia: Resolve hypothermia check
+YZEGS.Hazards.HypothermiaCheck: 'Hypothermia check — {actor}'
+YZEGS.Hazards.InvalidDiseaseSource: The Hazard Zone does not reference a valid Disease Item UUID.
+YZEGS.Hazards.Types.Fire: Fire
+YZEGS.Hazards.Types.Disease: Disease or chemical affliction
+YZEGS.Hazards.Types.Radiation: Radiation
+YZEGS.Hazards.Types.Cold: Severe cold
+YZEGS.Hazards.Region.Label: Hazard Zone
+YZEGS.Hazards.Region.Hint: Applies a configured environmental hazard when a token enters this Region.
+YZEGS.Hazards.Region.Fields.Type: Hazard type
+YZEGS.Hazards.Region.Hints.Type: The effect applied when an eligible token enters.
+YZEGS.Hazards.Region.Fields.Intensity: Fire intensity
+YZEGS.Hazards.Region.Hints.Intensity: The stepped die used by a fire attack.
+YZEGS.Hazards.Region.Fields.Source: Disease Item UUID
+YZEGS.Hazards.Region.Hints.Source: A world or compendium Disease Item copied to an exposed Actor.
+YZEGS.Hazards.Region.Fields.Radiation: Radiation gained
+YZEGS.Hazards.Region.Hints.Radiation: Temporary radiation points applied on entry.
+YZEGS.Hazards.Errors.DamageRecoveryBlocked: This Actor cannot recover damage while the current condition or affliction remains active.
+YZEGS.Hazards.Errors.StressRecoveryBlocked: This Actor cannot recover stress while the current condition or affliction remains active.
+YZEGS.ChemicalProtection.Label: Chemical protection
+YZEGS.ChemicalProtection.None: None
+YZEGS.ChemicalProtection.Mask: Protective mask
+YZEGS.ChemicalProtection.Clothing: Protective clothing
+YZEGS.ChemicalProtection.Hazmat: Fully enclosed protective suit
+YZEGS.MedicalTreatment.Label: Medical treatment
+YZEGS.MedicalTreatment.None: None
+YZEGS.MedicalTreatment.Atropine: Nerve-agent antidote
+YZEGS.MedicalTreatment.Antibiotics: Antibiotics
+YZEGS.MedicalTreatment.Decontamination: Decontamination supplies
+YZEGS.ActorSheet.NewItem.disease: New Disease
+SETTINGS.tacticalTerrainAssistance.name: Enable tactical movement and terrain assistance
+SETTINGS.tacticalTerrainAssistance.hint: >-
+  Uses Tactical Terrain Regions to apply movement and ranged-attack modifiers,
+  suggest cover armor, and calculate Run or Crawl movement allowances. Disabled
+  by default so existing Scenes and manually adjudicated movement are unchanged.
+SETTINGS.worldSettings.name: World Rules and Display
+SETTINGS.worldSettings.label: Configure World Settings
+SETTINGS.worldSettings.hint: Configure character-sheet features, rules automation, ammunition tracking, and world defaults in one place.
+SETTINGS.worldSettings.sections.sheets: Character Sheets
+SETTINGS.worldSettings.sections.automation: Rules Automation
+SETTINGS.worldSettings.sections.injuries: Critical Injuries
+SETTINGS.worldSettings.sections.ammunition: Ammunition Tracking
+SETTINGS.worldSettings.sections.defaults: World Defaults
+SETTINGS.worldSettings.save: Save World Settings
+SETTINGS.worldSettings.saved: World settings saved.
+YZEGS.TacticalTerrain.Unmarked: Unmarked terrain
+YZEGS.TacticalTerrain.Types.pavement: Pavement
+YZEGS.TacticalTerrain.Types.field: Field
+YZEGS.TacticalTerrain.Types.shrubland: Shrubland
+YZEGS.TacticalTerrain.Types.debris: Debris
+YZEGS.TacticalTerrain.Types.forest: Forest
+YZEGS.TacticalTerrain.Types.foliage: Dense foliage
+YZEGS.TacticalTerrain.Types.swamp: Swamp
+YZEGS.TacticalTerrain.Types.shallows: Shallows
+YZEGS.TacticalTerrain.Types.blocking: Blocking terrain
+YZEGS.TacticalTerrain.Types.indoors: Indoors
+YZEGS.TacticalTerrain.Types.custom: Custom terrain
+YZEGS.TacticalTerrain.Region.Label: Tactical Terrain
+YZEGS.TacticalTerrain.Region.Hint: >-
+  Marks the terrain occupied by a token and supplies optional movement, cover,
+  infiltration, visibility, elevation, and ranged-attack assistance.
+YZEGS.TacticalTerrain.Region.Fields.Type: Terrain type
+YZEGS.TacticalTerrain.Region.Hints.Type: Select a built-in terrain profile or Custom Terrain.
+YZEGS.TacticalTerrain.Region.Fields.Elevated: Elevated terrain
+YZEGS.TacticalTerrain.Region.Hints.Elevated: Marks this terrain as higher ground for GM movement and line-of-sight adjudication.
+YZEGS.TacticalTerrain.Region.Fields.CustomName: Custom terrain name
+YZEGS.TacticalTerrain.Region.Fields.Movement: Custom movement modifier
+YZEGS.TacticalTerrain.Region.Fields.Ranged: Custom ranged-attack modifier
+YZEGS.TacticalTerrain.Region.Fields.Cover: Custom cover armor
+YZEGS.TacticalTerrain.Region.Fields.Infiltration: Custom infiltration modifier
+YZEGS.TacticalTerrain.Region.Fields.Visibility: Custom visibility in grid spaces
+YZEGS.TacticalTerrain.Region.Fields.ForcedCrawl: Running counts as crawling
+YZEGS.TacticalTerrain.Region.Fields.Blocking: Blocks ground movement
+YZEGS.TacticalTerrain.Region.Hints.CustomOnly: Used only when Terrain Type is Custom Terrain.
+YZEGS.TacticalTerrain.Region.Hints.Visibility: Used only for Custom Terrain; zero means visibility is limited to the current grid space.
+YZEGS.TacticalTerrain.BlockingWarning: '{token} entered {terrain}, which is marked as blocking ground movement.'
+YZEGS.TacticalTerrain.MovementModifier: 'Movement in {terrain}'
+YZEGS.TacticalTerrain.BackpackModifier: Carried backpack
+YZEGS.TacticalTerrain.CoverSuggestion: '{terrain} typically provides Armor {armor} cover.'
+YZEGS.TacticalTerrain.MovementAllowance: Movement allowance
+YZEGS.TacticalTerrain.Hexes: '{count} grid spaces'
+YZEGS.TacticalTerrain.Modes.run: Running
+YZEGS.TacticalTerrain.Modes.crawl: Crawling
+YZEGS.TacticalTerrain.Modes.blocked: Ground movement blocked
+YZEGS.TacticalTerrain.Elevated: Elevated terrain
+YZEGS.CombatEdges.Modifiers.ranged-assisted-target-terrain: Target terrain
 YZEGS.ItemTypes.specialty: Specialty
 YZEGS.ItemTypes.weapon: Weapon
 YZEGS.ItemPropNames.twoHanded: Two-Handed
@@ -212,6 +356,8 @@ YZEGS.ItemPropNames.internalMagazine: Internal Magazine
 YZEGS.ItemPropNames.magazine: Is Magazine
 YZEGS.ItemPropNames.ammoBox: Is Box of Ammo
 YZEGS.ItemPropNames.heavyWeapon: Heavy Weapon
+YZEGS.ItemPropNames.artillery: Artillery
+YZEGS.ItemPropNames.indirectFire: Indirect Fire Capable
 YZEGS.ItemPropNames.shotgun: Shotgun
 YZEGS.ItemPropNames.airburst: Airburst
 YZEGS.ItemPropNames.directional: Directional
@@ -222,6 +368,37 @@ YZEGS.ItemPropNames.scope: Scope
 YZEGS.ItemPropNames.nightVision: Night Vision
 YZEGS.ItemPropNames.bayonet: Bayonet
 YZEGS.ItemPropNames.suppressor: Suppressor
+YZEGS.Heavy.Target: Target
+YZEGS.Heavy.TargetHexPrompt: Click the grid space targeted by the explosive weapon. Press Escape to cancel.
+YZEGS.Heavy.TargetModes.hex: Grid Space
+YZEGS.Heavy.TargetModes.individual: Individual
+YZEGS.Heavy.TargetModes.large: Large Target
+YZEGS.Heavy.HexHit: The targeted grid space was hit. Extra successes do not increase the blast.
+YZEGS.Heavy.Modifiers.IndividualTarget: Individual heavy-weapon target
+YZEGS.Heavy.Modifiers.Correction: Indirect-fire correction
+YZEGS.Heavy.IndirectFire.Label: Indirect Fire
+YZEGS.Heavy.IndirectFire.Hint: Select for a shot that cannot see the target. A successful Direct Indirect Fire outcome prevents automatic deviation.
+YZEGS.Heavy.IndirectFire.Observed: Observed
+YZEGS.Heavy.IndirectFire.Unobserved: Unobserved — automatically deviates
+YZEGS.Heavy.Deviation.Label: Deviation
+YZEGS.Heavy.Deviation.Resolve: Resolve Deviation
+YZEGS.Heavy.Deviation.Result: 'Deviation: {direction}; rolled {rolled}, maximum {maximum}, final distance {distance} grid spaces.'
+YZEGS.Heavy.Deviation.Directions.north: North
+YZEGS.Heavy.Deviation.Directions.northEast: North-east
+YZEGS.Heavy.Deviation.Directions.southEast: South-east
+YZEGS.Heavy.Deviation.Directions.south: South
+YZEGS.Heavy.Deviation.Directions.southWest: South-west
+YZEGS.Heavy.Deviation.Directions.northWest: North-west
+YZEGS.Heavy.Blast.AutomaticHint: Targets in range will be found automatically from the detonation point. Select tokens first only when resolving a directional or deliberately contained blast.
+YZEGS.Heavy.Blast.SummaryTitle: Explosion Resolution
+YZEGS.Heavy.Blast.Summary: '{affected} target(s) received a blast roll; {skipped} target(s) were outside the blast or fully protected.'
+YZEGS.Heavy.Blast.OutOfRange: '{target} is outside the effective blast radius.'
+YZEGS.Heavy.Blast.VehicleProtected: '{target} is protected inside {vehicle}.'
+YZEGS.Heavy.Blast.CoverProtected: '{target} is fully protected by cover the blast cannot penetrate.'
+YZEGS.Heavy.Errors.CanvasRequired: Open an active Scene with a grid before targeting an explosive grid space.
+YZEGS.Heavy.Errors.GrenadeShortRange: A hand-thrown explosive cannot be thrown beyond Short range.
+YZEGS.Heavy.Errors.DeviationFailed: The explosive deviation could not be resolved.
+YZEGS.Heavy.Errors.NoDeviationToCorrect: The selected gunner has no previous artillery deviation to correct.
 YZEGS.ActorTypes.character: Player Character (PC)
 YZEGS.ActorTypes.npc: Non-Player Character (NPC)
 YZEGS.ActorTypes.vehicle: Vehicle
@@ -653,6 +830,7 @@ YZEGS.Suppression.PanicFrom: 'panic from {source}'
 YZEGS.Suppression.Resisted: Kept cool
 YZEGS.Suppression.Applied: Suppressed
 YZEGS.Suppression.VehicleProtected: 'Protected inside {vehicle}'
+YZEGS.Suppression.NotRequired: No CUF check required
 YZEGS.Suppression.Complete: All suppression checks have been resolved.
 YZEGS.Suppression.EffectsApplied: Suppression effects applied automatically.
 YZEGS.Suppression.PanicChecksAdded: '{count} panic-spread CUF check(s) added to the attack card.'
@@ -726,16 +904,178 @@ FLPS.SETTINGS.ALLOW_PUSH_HINT: >-
   If your GM allows an unlimited number of pushed rolls. Or perhaps you are a GM
   who wants to be able to push this encounter's rolls; check this setting to
   display a push button on almost any roll.
-SETTINGS.trackPcAmmo.name: Track Player Characters' Ammunitions
+SETTINGS.trackPcAmmo.name: Track Player Character Ammunition
 SETTINGS.trackPcAmmo.label: Whether the ammo consumption should be tracked for PCs.
-SETTINGS.trackNpcAmmo.name: Track NPCs' Ammunitions
+SETTINGS.trackNpcAmmo.name: Track NPC Ammunition
 SETTINGS.trackNpcAmmo.label: Whether the ammo consumption should be tracked for NPCs.
-SETTINGS.trackVehicleAmmo.name: Track Vehicles' Ammunitions
+SETTINGS.trackVehicleAmmo.name: Track Vehicle Ammunition
 SETTINGS.trackVehicleAmmo.label: Whether the ammo consumption should be tracked for weaponized vehicles.
 SETTINGS.internalMagazineReloadMode.name: Internal Magazine Reloading
 SETTINGS.internalMagazineReloadMode.hint: Choose the rules-as-written full reload or the optional granular rule which loads one round per reload action.
 SETTINGS.internalMagazineReloadMode.choices.full: Full Reload (Rules as Written)
 SETTINGS.internalMagazineReloadMode.choices.perRound: Load One Round per Action (Optional)
+SETTINGS.criticalInjuriesEnabled.name: Automate Critical Injuries
+SETTINGS.criticalInjuriesEnabled.hint: Automatically roll location-specific critical injuries when final damage reaches a weapon's Critical rating.
+SETTINGS.criticalInjuryTable.head.name: Critical Injury Table — Head
+SETTINGS.criticalInjuryTable.arms.name: Critical Injury Table — Arms
+SETTINGS.criticalInjuryTable.torso.name: Critical Injury Table — Torso
+SETTINGS.criticalInjuryTable.legs.name: Critical Injury Table — Legs
+SETTINGS.criticalInjuryTable.hint: Enter the UUID of the RollTable used for this hit location. Results must link to Injury Items.
+SETTINGS.killingBlowSpecialty.name: Killing Blow Specialty
+SETTINGS.killingBlowSpecialty.hint: Optional Specialty Item UUID or exact name which allows a killing blow without the Empathy test.
+YZEGS.Critical.Title: Critical Injury
+YZEGS.Critical.Lethal: Lethal
+YZEGS.Critical.InstantDeath: Instant death
+YZEGS.Critical.Death: Death
+YZEGS.Critical.Dead: Dead
+YZEGS.Critical.DeathSave: Death save
+YZEGS.Critical.DeathSaveTitle: 'Death Save: {name}'
+YZEGS.Critical.DeathSaveDue: Death save due now
+YZEGS.Critical.RollDeathSave: Roll Death Save
+YZEGS.Critical.Stabilize: Stabilize critical injury
+YZEGS.Critical.StabilizeTitle: 'Stabilize: {name}'
+YZEGS.Critical.BeginTreatment: Begin Treatment
+YZEGS.Critical.ResolveTreatment: Resolve Treatment
+YZEGS.Critical.Healer: Healer
+YZEGS.Critical.MoveWounded: Move wounded character
+YZEGS.Critical.ApplyResult: Apply Result
+YZEGS.Critical.ResultApplied: Critical result applied.
+YZEGS.Critical.IncapacitatedDamage: Incapacitated by damage
+YZEGS.Critical.IncapacitatedStress: Incapacitated by stress
+YZEGS.Critical.IncapacitatedMovement: Incapacitated movement is automatic; no Skill roll is made.
+YZEGS.Critical.KillingBlowApplied: The target was killed.
+YZEGS.Critical.KillingBlowRefused: The Empathy test succeeded; the attacker could not carry out the killing blow.
+YZEGS.Critical.RollSummary: 'Final damage {damage}; Critical {criticalRating}; rolled {dice}D10 and kept {result}.'
+YZEGS.Critical.HealingDays: 'Healing time: {days} days'
+YZEGS.Critical.TreatmentBy: 'Treatment by {name}'
+YZEGS.Critical.TreatmentStarted: 'Treatment of {name} has begun. Advance world time to its deadline.'
+YZEGS.Critical.TreatmentReady: 'Treatment of {name} is ready to resolve.'
+YZEGS.Critical.Stage.round: Next turn
+YZEGS.Critical.Stage.stretch: One stretch
+YZEGS.Critical.Stage.shift: One shift
+YZEGS.Critical.Stage.stabilized: Stabilized
+YZEGS.Critical.Stage.dead: Dead
+YZEGS.Critical.Errors.TableMissing: 'No valid critical injury table is configured for {location}.'
+YZEGS.Critical.Errors.ResultMissing: 'Critical injury result {result} does not link to an Injury Item.'
+YZEGS.Critical.Errors.DeadCannotAct: Dead actors cannot take actions.
+YZEGS.Critical.Errors.DeadCannotRoll: Dead actors cannot make rolls.
+YZEGS.Critical.Errors.IncapacitatedCannotAct: This actor is incapacitated and cannot take that action.
+YZEGS.Critical.Errors.IncapacitatedCannotRoll: This actor is incapacitated and cannot make ordinary Skill rolls.
+YZEGS.Critical.Errors.CannotTreatSelf: An incapacitated character cannot stabilize their own injury.
+YZEGS.Critical.Errors.TreatmentNotReady: The required treatment time has not passed.
+YZEGS.Critical.Errors.Immobile: This critical injury prevents the actor from moving.
+YZEGS.Critical.Errors.CannotRun: This critical injury prevents the actor from running.
+YZEGS.Critical.Errors.CannotUseTwoHanded: This critical injury prevents use of two-handed weapons.
+YZEGS.Critical.Errors.TargetNotIncapacitated: A killing blow can only target an incapacitated character.
+YZEGS.Critical.Errors.TargetNotLethallyInjured: Select a character with an unstable lethal injury.
+EFFECT.StatusIncapacitatedDamage: Incapacitated by Damage
+EFFECT.StatusIncapacitatedStress: Incapacitated by Stress
+EFFECT.StatusImmobile: Immobile
+YZEGS.Initiative.Draw: Draw initiative
+YZEGS.Initiative.Deal: Deal Initiative
+YZEGS.Initiative.Exchange: Exchange initiative
+YZEGS.Initiative.Surprise: Surprise
+YZEGS.Initiative.Ambush: Ambush
+YZEGS.Initiative.Waylay: Waylay
+YZEGS.Initiative.AmbushSetup: Ambush setup
+YZEGS.Initiative.AmbushDetection: Detect ambush
+YZEGS.Initiative.WaylaySetup: Waylay setup
+YZEGS.Initiative.WaylayDetection: Detect waylay
+YZEGS.Initiative.Drawn: '{actor} drew initiative card #{card}.'
+YZEGS.Initiative.SurpriseAssigned: '{actor} was fully surprising and receives initiative card #1.'
+YZEGS.Initiative.AmbushAssigned: '{actor} receives ambush initiative card #{card}.'
+YZEGS.Initiative.ChooseTitle: 'Choose Initiative: {actor}'
+YZEGS.Initiative.ChooseHint: Choose one card to keep. The other cards return to the available deck.
+YZEGS.Initiative.RedrawTitle: Redraw Initiative?
+YZEGS.Initiative.RedrawHint: '{actor} already has an initiative card. Draw again?'
+YZEGS.Initiative.Redraw: Redraw
+YZEGS.Initiative.AssignTitle: Assign Ambush Initiative
+YZEGS.Initiative.AssignHint: Assign each of the top initiative cards to one attacker. Each card can only be assigned once.
+YZEGS.Initiative.AssignCards: Assign Cards
+YZEGS.Initiative.CreateAmbush: Create Ambush
+YZEGS.Initiative.SetWaylay: Set Waylay
+YZEGS.Initiative.AmbushDialogHint: Controlled tokens are the attackers and targeted tokens are the defenders. The lowest attacker Skill and highest defender Skill are selected automatically.
+YZEGS.Initiative.WaylayDialogHint: Controlled tokens form the waylay group. Longer setup times improve the setup roll.
+YZEGS.Initiative.Range.Label: Intended Ambush Range
+YZEGS.Initiative.Range.Same: Same hex (−2)
+YZEGS.Initiative.Range.One: 1 hex (−1)
+YZEGS.Initiative.Range.TwoToFive: 2–5 hexes (0)
+YZEGS.Initiative.Range.SixToTwenty: 6–20 hexes (+1)
+YZEGS.Initiative.Range.TwentyOnePlus: 21+ hexes (+2)
+YZEGS.Initiative.TerrainModifier: Attacker terrain modifier
+YZEGS.Initiative.DarknessModifier: Target darkness modifier
+YZEGS.Initiative.SetupTime: Setup time
+YZEGS.Initiative.WaylayDuration.Action: Slow Action (0)
+YZEGS.Initiative.WaylayDuration.Stretch: At least one Stretch (+2)
+YZEGS.Initiative.WaylayDuration.Shift: At least one Shift (+3)
+YZEGS.Initiative.Attackers: Attackers
+YZEGS.Initiative.Targets: Targets
+YZEGS.Initiative.AttackerSuccesses: Attacker successes
+YZEGS.Initiative.TargetSuccesses: Target successes
+YZEGS.Initiative.RollAttackers: Roll Attacker Recon
+YZEGS.Initiative.RollTargets: Roll Target Recon
+YZEGS.Initiative.RollPassiveDetection: Roll Passive Detection
+YZEGS.Initiative.FinishAttackerRoll: Finish pushing or accept the linked attacker roll.
+YZEGS.Initiative.FinishTargetRoll: Finish pushing or accept the linked target roll.
+YZEGS.Initiative.ResolveWaylay: Resolve Against Targeted Tokens
+YZEGS.Initiative.ApplyInitiative: Apply Initiative
+YZEGS.Initiative.AttackerRollTitle: 'Ambush Recon: {actor}'
+YZEGS.Initiative.TargetRollTitle: 'Detect Ambush: {actor}'
+YZEGS.Initiative.AmbushWon: The attackers have more successes and remain undetected.
+YZEGS.Initiative.AmbushLost: The defenders spotted the attackers. Ties favour the defenders.
+YZEGS.Initiative.AmbushApplied: Ambush initiative was applied. Each attacker's first ambush attack cannot be Blocked; attacks from the same hex also gain +3.
+YZEGS.Initiative.NormalInitiativeApplied: The ambush failed and normal initiative was dealt.
+YZEGS.Initiative.WaylaySetupFailed: The setup roll failed. The attackers must choose a different position or will be spotted automatically.
+YZEGS.Initiative.Exchanged: '{actor} exchanged initiative with {target}.'
+YZEGS.Initiative.Errors.NotCombatant: Add this Actor to the active Combat encounter first.
+YZEGS.Initiative.Errors.NoCards: No unique initiative cards remain. Group identical NPCs or reduce the encounter to ten initiative entries.
+YZEGS.Initiative.Errors.SelectGroups: Control every attacking token and target every defending token first.
+YZEGS.Initiative.Errors.SelectAttackers: Control every token participating in the waylay first.
+YZEGS.Initiative.Errors.TargetDefenders: Target every defending token before resolving the waylay.
+YZEGS.Initiative.Errors.AllMustBeCombatants: Add every attacker and defender to the active Combat encounter before applying initiative.
+YZEGS.Initiative.Errors.SelectOne: Control exactly one surprising combatant.
+YZEGS.Initiative.Errors.SelectOwned: Select one token you control before drawing initiative.
+YZEGS.Initiative.Errors.StartCombat: Start a Combat encounter before drawing initiative.
+YZEGS.Initiative.Errors.ExchangeTurn: Initiative can only be exchanged on this Actor's own turn.
+YZEGS.Initiative.Errors.ExchangeBeforeActions: Exchange initiative before spending any Fast or Slow Action this turn.
+YZEGS.Initiative.Errors.NoExchangeTarget: No willing combatant with a later turn is available.
+YZEGS.Initiative.Errors.DuplicateCard: That initiative card is already assigned to another combatant.
+YZEGS.Initiative.Errors.InvalidCard: Initiative must be a whole-number card from 1 to 10.
+YZEGS.Initiative.Errors.UniqueAssignments: Assign each available initiative card to exactly one attacker.
+YZEGS.CombatEdges.AutomaticModifiers: Automatic Rules Modifiers
+YZEGS.CombatEdges.HitLocation: Aimed or Called Hit Location
+YZEGS.CombatEdges.RandomLocation: Random location
+YZEGS.CombatEdges.OneHanded: Fire one-handed
+YZEGS.CombatEdges.MachineGunAttribute: Supported machine-gun attribute
+YZEGS.CombatEdges.Range: Range band
+YZEGS.CombatEdges.Damage: Damage
+YZEGS.CombatEdges.ShotgunFalloff: Shotgun range reduction
+YZEGS.CombatEdges.ResolveFriendlyFire: Resolve Friendly Fire
+YZEGS.CombatEdges.BreakFreeResistanceTitle: 'Grapple resistance: {actor}'
+YZEGS.CombatEdges.BreakFreeResistance: '{actor} resistance successes'
+YZEGS.CombatEdges.RetreatFreeAttackHint: Choose the melee attack gained against the retreating opponent. This attack does not spend an action and cannot be blocked.
+YZEGS.CombatEdges.AttackWith: Attack with
+YZEGS.CombatEdges.RollFreeAttack: Roll Free Attack
+YZEGS.CombatEdges.FreeAttackResolved: The free attack has been resolved.
+YZEGS.CombatEdges.FriendlyFireHit: 'Friendly fire hit {target} for {damage} base damage before armor.'
+YZEGS.CombatEdges.FriendlyFireMiss: The missed shot did not hit a friendly fighter.
+YZEGS.CombatEdges.FriendlyFireResolvedHit: Friendly fire was resolved and hit a friendly fighter.
+YZEGS.CombatEdges.FriendlyFireResolvedMiss: Friendly fire was resolved without a hit.
+YZEGS.CombatEdges.RangeBands.sameHex: Same hex
+YZEGS.CombatEdges.RangeBands.short: Short
+YZEGS.CombatEdges.RangeBands.medium: Medium
+YZEGS.CombatEdges.RangeBands.long: Long
+YZEGS.CombatEdges.RangeBands.extreme: Extreme
+YZEGS.CombatEdges.RangeBands.outOfRange: Out of range
+YZEGS.CombatEdges.Modifiers.ranged-one-handed: Fire one-handed
+YZEGS.CombatEdges.Modifiers.ranged-unsupported-lmg: Unsupported light machine gun
+YZEGS.CombatEdges.Modifiers.ranged-unsupported-gpmg: Unsupported general-purpose machine gun
+YZEGS.CombatEdges.Errors.CloseSameHex: Close-combat attacks require the attacker and target to occupy the same grid space.
+YZEGS.CombatEdges.Errors.OutOfRange: The target is beyond this weapon's Extreme range.
+YZEGS.CombatEdges.Errors.OneHandedUnavailable: This weapon cannot be fired one-handed.
+YZEGS.CombatEdges.Errors.OneHandedShortOnly: This weapon can only be fired one-handed at Short range or closer.
+YZEGS.CombatEdges.Errors.DivingBlowRequiresRun: A diving blow requires a Run earlier in the same combat round.
+YZEGS.CombatEdges.Errors.HeavyMachineGunSupport: A heavy machine gun must be fired from a tripod or vehicle mount.
 SETTINGS.defaultSceneGridPreset.name: Default Scene Grid
 SETTINGS.defaultSceneGridPreset.hint: Choose the grid automatically applied to newly created Scenes. Imported Scenes retain their existing grid configuration.
 SETTINGS.defaultSceneGridPreset.choices.closeQuarters: 'Close Quarters — Approximate Flat-Top Hexes, 2.5 m'
@@ -1398,6 +1738,66 @@ YZEGS.Watercraft.Damage.Penetrated: '{damage} damage penetrated. Component hit: 
 YZEGS.Watercraft.Damage.Stopped: 'Armor stopped the damage. Surface result: {component}.'
 YZEGS.Watercraft.Damage.CrewShock: 'Vessel Penetrated — Coolness Under Fire: {actor}'
 YZEGS.Watercraft.Damage.OccupantBlast: The penetrating water-mine blast also affects every occupant. Resolve the Blast from the minefield card.
+YZEGS.LandVehicle.State.Title: Land Vehicle State
+YZEGS.LandVehicle.State.Inoperable: Inoperable
+YZEGS.LandVehicle.State.Destroyed: Permanently Destroyed
+YZEGS.LandVehicle.State.FuelLeak: Fuel Tank Leaking
+YZEGS.LandVehicle.State.FuelFire: Fuel Fire
+YZEGS.LandVehicle.State.OriginalFuelMax: Original Fuel Capacity
+YZEGS.LandVehicle.State.FireDeadline: Fire Deadline (world seconds)
+YZEGS.LandVehicle.State.MustBailOut: Must bail out on their next turn
+YZEGS.LandVehicle.Components.fuel: Fuel
+YZEGS.LandVehicle.Components.engine: Engine
+YZEGS.LandVehicle.Components.suspension: Suspension
+YZEGS.LandVehicle.Components.ammunition: Ammunition Store
+YZEGS.LandVehicle.Components.cargo: Cargo
+YZEGS.LandVehicle.Components.driver: Driver
+YZEGS.LandVehicle.Components.passenger: Passenger
+YZEGS.LandVehicle.Components.gunner: Gunner
+YZEGS.LandVehicle.Components.commander: Commander
+YZEGS.LandVehicle.Components.radio: Radio
+YZEGS.LandVehicle.Components.trackWheel: Tracks or Wheels
+YZEGS.LandVehicle.Components.weapon: Mounted Weapon
+YZEGS.LandVehicle.Components.fcs: Fire-control System
+YZEGS.LandVehicle.Components.antenna: Antenna
+YZEGS.LandVehicle.Components.externalStores: External Stores
+YZEGS.LandVehicle.Components.exposedPassenger: Exposed Passenger
+YZEGS.LandVehicle.Components.ricochet: Ricochet
+YZEGS.LandVehicle.CalledShot.Label: Called Vehicle Component
+YZEGS.LandVehicle.FireControl.Range: Fire-control Range
+YZEGS.LandVehicle.FireControl.ShortRange: Treated as Short
+YZEGS.LandVehicle.Damage.Title: Land Vehicle Damage
+YZEGS.LandVehicle.Damage.Instructions: 'Apply {damage} damage to {target}. Choose the facing struck.'
+YZEGS.LandVehicle.Damage.Penetrated: '{damage} damage penetrated. First component: {component}.'
+YZEGS.LandVehicle.Damage.Stopped: 'Armor stopped the damage. External result: {component}.'
+YZEGS.LandVehicle.Damage.CalledShot: 'The called shot struck: {component}.'
+YZEGS.LandVehicle.Damage.CrewShock: 'Vehicle Penetrated — Coolness Under Fire: {actor}'
+YZEGS.LandVehicle.Damage.InternalBlast: 'Internal Blast {blast}: {actor}'
+YZEGS.LandVehicle.Damage.None: none
+YZEGS.LandVehicle.Damage.FuelLeak: The fuel tank is leaking; maximum fuel capacity is halved.
+YZEGS.LandVehicle.Damage.FuelFire: 'The fuel tank ignites. Occupants are exposed to Intensity C fire. Bailout required: {failures}.'
+YZEGS.LandVehicle.Damage.ReliabilityLoss: '{component} reduces vehicle reliability by {damage}.'
+YZEGS.LandVehicle.Damage.HalfAmmunitionLost: Half of the vehicle ammunition is destroyed.
+YZEGS.LandVehicle.Damage.AllAmmunitionLost: All vehicle ammunition is destroyed.
+YZEGS.LandVehicle.Damage.AmmunitionExplosion: 'Heavy ammunition explodes at Blast {blast}; the vehicle is permanently destroyed.'
+YZEGS.LandVehicle.Damage.ItemHit: '{component}: {item} suffers {damage} damage.'
+YZEGS.LandVehicle.Damage.ItemDestroyed: '{component}: {item} suffers {damage} damage and is destroyed.'
+YZEGS.LandVehicle.Damage.RadioHit: 'Radio reliability is reduced by {damage}.'
+YZEGS.LandVehicle.Damage.TrackHit: 'Tracks or wheels reduce vehicle reliability by {damage}.'
+YZEGS.LandVehicle.Damage.TrackStopped: Side armor prevents damage to the tracks or wheels.
+YZEGS.LandVehicle.Damage.WeaponHit: 'Mounted weapon {weapon} suffers {damage} reliability damage.'
+YZEGS.LandVehicle.Damage.FcsHit: The fire-control system is disabled.
+YZEGS.LandVehicle.Damage.AntennaHit: The antenna and radio are disabled.
+YZEGS.LandVehicle.Damage.ExposedPassengerHit: '{actor} is struck for {damage} damage before personal protection.'
+YZEGS.LandVehicle.Damage.RicochetCheck: 'Vehicle Ricochet — Coolness Under Fire: {actor}'
+YZEGS.LandVehicle.Damage.Ricochet: '{count} exposed or nearby people make Coolness Under Fire checks.'
+YZEGS.LandVehicle.Damage.CrewHit: '{component}: {actor} is struck for {damage} damage before personal protection.'
+YZEGS.LandVehicle.Damage.CalledShotUnavailable: That component cannot be struck from the selected facing.
+YZEGS.LandVehicle.Damage.ComponentUnavailable: '{component} is absent or already disabled; the stopped hit has no effect.'
+YZEGS.LandVehicle.Damage.Unallocated: '{damage} secondary damage remains after every available internal component.'
+YZEGS.LandVehicle.Damage.DestroyedTitle: Vehicle Destroyed
+YZEGS.LandVehicle.Damage.DestroyedByFuelFire: '{vehicle} is permanently destroyed after its fuel fire burns for one Stretch.'
+YZEGS.LandVehicle.Errors.Destroyed: '{vehicle} is permanently destroyed and its mounted weapons cannot be fired.'
 YZEGS.Watercraft.Errors.NoCrew: This vessel has no eligible crew member.
 YZEGS.Watercraft.Errors.SkillMissing: The selected crew member does not have the required Skill.
 YZEGS.Watercraft.Errors.HullPart: Repairing a hull breach requires a Hull or Universal Spare Part Gear Item aboard the vessel.

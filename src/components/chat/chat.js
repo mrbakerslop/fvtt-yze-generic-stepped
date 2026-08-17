@@ -12,7 +12,10 @@ import {
   resolvePushCostDocuments,
   SYSTEM_ID,
 } from '../../system/push-costs.js';
-import { applyTwilightActionOutcome } from '../../system/twilight-action-workflows.js';
+import {
+  applyTwilightActionOutcome,
+  resolveFailedRetreat,
+} from '../../system/twilight-action-workflows.js';
 import { resolveDamageAllocation } from '../../system/damage-allocation.js';
 import {
   coverAppliesAgainst,
@@ -33,7 +36,7 @@ import {
   assignSuppressionTarget,
   rollSuppressionCheck,
 } from '../../system/suppression-workflows.js';
-import { resolveBlastTargets } from '../../system/blast-workflows.js';
+import { resolveBlastTargets, resolveExplosiveDeviation } from '../../system/blast-workflows.js';
 import {
   applyCollapse,
   applyRicochetHit,
@@ -53,6 +56,12 @@ import {
   rollSocialResistance,
   syncSocialConflictRoll,
 } from '../../system/social-conflict-workflows.js';
+import { handleCriticalChatButton } from '../../system/critical-injuries.js';
+import {
+  handleInitiativeChatButton,
+  syncInitiativeConflictRoll,
+} from '../../system/initiative-workflows.js';
+import { resolveFriendlyFire } from '../../system/combat-edge-workflows.js';
 
 export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
   prepareData() {
@@ -87,6 +96,9 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
     for (let i = 0; i < buttonsApplyAction.length; i++) {
       buttonsApplyAction[i].addEventListener('click', _onApplyActionOutcome);
     }
+    for (const button of html.querySelectorAll('.dice-button.resolve-failed-retreat')) {
+      button.addEventListener('click', _onResolveFailedRetreat);
+    }
     for (const button of html.querySelectorAll('.dice-button.declare-block')) {
       button.addEventListener('click', _onDeclareBlock);
     }
@@ -110,6 +122,9 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
     }
     for (const button of html.querySelectorAll('.dice-button.resolve-blast')) {
       button.addEventListener('click', _onResolveBlast);
+    }
+    for (const button of html.querySelectorAll('.dice-button.resolve-deviation')) {
+      button.addEventListener('click', _onResolveDeviation);
     }
     for (const button of html.querySelectorAll('.dice-button.resolve-ricochet')) {
       button.addEventListener('click', _onResolveRicochet);
@@ -152,6 +167,25 @@ export default class ChatMessageYZEGS extends foundry.documents.ChatMessage {
     }
     for (const button of html.querySelectorAll('.dice-button.social-agreement-response')) {
       button.addEventListener('click', _onSocialAgreementResponse);
+    }
+    const criticalButtons = html.querySelectorAll(
+      '.dice-button.critical-death-save, .dice-button.resolve-critical-roll',
+    );
+    for (const button of criticalButtons) {
+      button.addEventListener('click', handleCriticalChatButton);
+    }
+    const initiativeButtons = html.querySelectorAll(
+      '.roll-initiative-attacker, .roll-initiative-target, .select-waylay-targets, .apply-initiative-conflict',
+    );
+    for (const button of initiativeButtons) button.addEventListener('click', handleInitiativeChatButton);
+    for (const button of html.querySelectorAll('.dice-button.resolve-friendly-fire')) {
+      button.addEventListener('click', async event => {
+        event.preventDefault();
+        const target = event.currentTarget;
+        target.disabled = true;
+        try { await resolveFriendlyFire(getMessageFromButton(target)); }
+        finally { if (target.isConnected) target.disabled = false; }
+      });
     }
   }
 
@@ -267,16 +301,28 @@ async function _onResolveBlast(event) {
   const button = event.currentTarget;
   button.disabled = true;
   try {
-    if (!game.user.targets.size) {
-      ui.notifications.warn(game.i18n.localize('YZEGS.Urban.Blast.SelectTargets'));
-      return;
-    }
     const message = getMessageFromButton(button);
     await resolveBlastTargets(message?.rolls?.[0], game.user.targets);
   }
   catch (error) {
     console.error('yzegs | Failed to resolve blast.', error);
     ui.notifications.error(game.i18n.localize('YZEGS.Urban.Blast.Failed'));
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
+async function _onResolveDeviation(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    await resolveExplosiveDeviation(getMessageFromButton(button));
+  }
+  catch (error) {
+    console.error('yzegs | Failed to resolve explosive deviation.', error);
+    ui.notifications.error(game.i18n.localize('YZEGS.Heavy.Errors.DeviationFailed'));
   }
   finally {
     if (button.isConnected) button.disabled = false;
@@ -539,6 +585,22 @@ async function _onApplyActionOutcome(event) {
   }
 }
 
+async function _onResolveFailedRetreat(event) {
+  event.preventDefault();
+  const button = event.currentTarget;
+  button.disabled = true;
+  try {
+    const message = getMessageFromButton(button);
+    const roll = message?.rolls?.[0];
+    if (!message || !roll || !await resolveFailedRetreat(roll)) return;
+    const content = await roll.render();
+    await message.update({ content, rolls: [JSON.stringify(roll)] });
+  }
+  finally {
+    if (button.isConnected) button.disabled = false;
+  }
+}
+
 /* ------------------------------------------- */
 /*  Apply Damage Button                        */
 /* ------------------------------------------- */
@@ -592,6 +654,9 @@ async function _onRollPush(event) {
   if (result?.rolls?.[0]?.options?.actionData?.workflow === 'socialConflict') {
     await syncSocialConflictRoll(result);
   }
+  if (result?.rolls?.[0]?.options?.actionData?.workflow === 'initiativeConflict') {
+    await syncInitiativeConflictRoll(result);
+  }
   return result;
 }
 
@@ -622,6 +687,9 @@ async function _onRollAccept(event) {
   const result = await message.update({ content, rolls: [JSON.stringify(roll)] });
   if (roll.options?.actionData?.workflow === 'socialConflict') {
     await syncSocialConflictRoll(message, { final: true });
+  }
+  if (roll.options?.actionData?.workflow === 'initiativeConflict') {
+    await syncInitiativeConflictRoll(message, { final: true });
   }
   return result;
 }
@@ -757,7 +825,8 @@ async function _applyDamage(messageElem) {
     attackSnapshot ?? getEffectiveWeaponProfile(item, loadedAmmunition),
   );
   const loc = roll.bestHitLocation;
-  if (loc > 0) attackData.location = YZEGS.hitLocs[loc - 1];
+  attackData.location = attackData.calledLocation || attackData.forcedLocation
+    || (loc > 0 ? YZEGS.hitLocs[loc - 1] : attackData.location);
 
   const state = roll.options.damageApplication ?? {
     primaryApplied: false,
@@ -806,7 +875,11 @@ async function _applyDamage(messageElem) {
 
   const storedCover = defender.actor.coverDetails;
   const attackSourceUuid = attackData.sourceActorUuid || actor?.uuid || '';
-  const cover = coverAppliesAgainst(storedCover, attackSourceUuid) ? storedCover : null;
+  let cover = null;
+  if (!attackData.ignoreCover && attackData.blastResolution) cover = attackData.blastCover ?? null;
+  else if (!attackData.ignoreCover && coverAppliesAgainst(storedCover, attackSourceUuid)) {
+    cover = storedCover;
+  }
   attackData.cover = cover?.type ?? null;
   const barrier = (!primary || coverProtectsLocation(cover?.type, attackData.location))
     ? cover?.armor ?? 0

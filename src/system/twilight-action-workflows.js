@@ -38,6 +38,27 @@ import {
 } from './watercraft-workflows.js';
 import { getEnclosingVehicle } from './suppression.js';
 import { getActionSkillName, getActorActionSkill } from './action-skills.js';
+import {
+  actorHasCriticalEffect,
+  canActorAttemptAction,
+  checkLethalMovement,
+  getActorImpairment,
+  getUnstableLethalInjuries,
+  killActor,
+} from './critical-injuries.js';
+import { actorRecoveryBlocked } from './disease-workflows.js';
+import { clearActorFire } from './environmental-hazards.js';
+import { getTacticalMovementData, getTerrainCover } from './tactical-terrain.js';
+import {
+  ambushPreventsBlock,
+  consumeAmbushOpening,
+  getAmbushAttackModifier,
+} from './initiative-workflows.js';
+import {
+  isDefenseless,
+  prepareCloseCombatEdges,
+  sumEdgeModifiers,
+} from './combat-edge-workflows.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -89,8 +110,8 @@ function actionData(action, actor, target, item) {
   const outcomeWorkflows = new Set([
     'breakFree', 'disarm', 'diveFromGrenade', 'extinguishFire', 'firstAid', 'grapple', 'rally',
     'retrieveItem', 'retreat', 'shove', 'breakFreeDebris', 'climbAboard',
-    'rescueDrowning', 'grappleAttack',
-    'freeVessel', 'repairHull', 'bailWater', 'ramVessel',
+    'rescueDrowning', 'grappleAttack', 'divingBlow',
+    'freeVessel', 'repairHull', 'bailWater', 'ramVessel', 'directIndirectFire',
   ]);
   const failureMessages = {
     searchBoobyTrap: localize('YZEGS.Urban.BoobyTrap.Triggered'),
@@ -110,6 +131,33 @@ function actionData(action, actor, target, item) {
     failureMessage: failureMessages[action.id] ?? '',
     applied: false,
   };
+}
+
+function prepareMovementAssistance(actor, action, data) {
+  const movement = getTacticalMovementData(actor, action.id);
+  if (!movement) return { modifiers: [], total: 0 };
+  data.tacticalMovement = movement;
+  const modifiers = [];
+  const terrainValue = Number(movement.terrain.movement) || 0;
+  if (terrainValue) {
+    modifiers.push({
+      id: 'tactical-terrain-movement',
+      label: game.i18n.format('YZEGS.TacticalTerrain.MovementModifier', {
+        terrain: movement.terrain.label,
+      }),
+      value: terrainValue,
+      displayValue: terrainValue > 0 ? `+${terrainValue}` : `−${Math.abs(terrainValue)}`,
+    });
+  }
+  if (movement.backpack) {
+    modifiers.push({
+      id: 'tactical-movement-backpack',
+      label: game.i18n.localize('YZEGS.TacticalTerrain.BackpackModifier'),
+      value: -2,
+      displayValue: '−2',
+    });
+  }
+  return { modifiers, total: movement.modifier };
 }
 
 function uniqueTargets(actor) {
@@ -202,6 +250,17 @@ export async function prepareTwilightRollAction(actor, selection = {}) {
   );
   if (valid !== true) return null;
   const { target, item } = documents;
+  const ambushOpening = isBlockableAction(action.id) && ambushPreventsBlock(actor, target);
+  if (isBlockableAction(action.id) && !ambushOpening && !isDefenseless(target)) {
+    await createCloseAttackDeclaration({
+      attacker: actor,
+      defender: target,
+      item,
+      actionId: action.id,
+      selection,
+    });
+    return null;
+  }
   let socialSetup = null;
   if (action.workflow === 'socialConflict') {
     const { prepareSocialConflictSetup } = await import('./social-conflict-workflows.js');
@@ -210,15 +269,76 @@ export async function prepareTwilightRollAction(actor, selection = {}) {
   }
   await preparePersistentActionStates(actor, action, target, item);
   const preparedData = actionData(action, actor, target, item);
+  const movementAssistance = prepareMovementAssistance(actor, action, preparedData);
   if (socialSetup) preparedData.socialSetup = socialSetup;
+  const closeEdges = isBlockableAction(action.id)
+    ? prepareCloseCombatEdges(actor, target)
+    : { modifiers: [], forcedLocation: '' };
+  const unarmedDamage = ['unarmedAttack', 'divingBlow'].includes(action.id);
   return {
     combatAction: actionDisplay(action),
     actionData: preparedData,
+    automaticModifiers: [...closeEdges.modifiers, ...movementAssistance.modifiers],
+    automaticModifier: sumEdgeModifiers(closeEdges.modifiers) + movementAssistance.total,
+    attackData: unarmedDamage ? {
+      damage: 1,
+      crit: 4,
+      armorModifier: 3,
+      blast: 0,
+      range: 0,
+      forcedLocation: closeEdges.forcedLocation,
+      ignoreCover: true,
+      primaryTargetUuid: target?.uuid ?? '',
+      sourceActorUuid: actor.uuid,
+    } : null,
+    locate: unarmedDamage,
   };
 }
 
-/** Record one-character treatment attempts after a First Aid or Rally roll is made. */
-export async function recordTwilightActionAttempt(data) {
+/** Record persistent consequences which begin as soon as an action roll is made. */
+export async function recordTwilightActionAttempt(data, result = null) {
+  if (data?.actionId === 'run') {
+    const actingActor = await resolveUuid(data.actorUuid);
+    if (!actingActor || (!game.user.isGM && !actingActor.isOwner)) return false;
+    await actingActor.setFlag(SYSTEM_ID, 'actionRan', {
+      combatId: game.combat?.id ?? '',
+      round: game.combat?.round ?? 0,
+    });
+    return true;
+  }
+  if (data?.workflow === 'divingBlow') {
+    const actingActor = await resolveUuid(data.actorUuid);
+    if (!actingActor || (!game.user.isGM && !actingActor.isOwner)) return false;
+    await setStatus(actingActor, 'prone', true);
+    return true;
+  }
+  if (data?.workflow === 'breakFree') {
+    const actingActor = await resolveUuid(data.actorUuid);
+    const grappler = await resolveUuid(actingActor?.getFlag(SYSTEM_ID, 'actionGrappledBy'));
+    if (!actingActor || !grappler || (!game.user.isGM && !actingActor.isOwner)) return false;
+    const resistanceSkill = getActorActionSkill(grappler, 'breakFree', 'closeCombat');
+    if (!resistanceSkill) return false;
+    const resistanceResult = await YZEGSRoller.taskCheck({
+      ...getAttributeAndSkill(resistanceSkill, grappler),
+      title: game.i18n.format('YZEGS.CombatEdges.BreakFreeResistanceTitle', { actor: grappler.name }),
+      actor: grappler,
+      maxPush: 0,
+      skipDialog: true,
+      hideCombatActions: true,
+    });
+    const resistanceRoll = resistanceResult?.rolls?.[0] ?? resistanceResult;
+    const activeRoll = result?.rolls?.[0] ?? result;
+    if (!activeRoll) return false;
+    activeRoll.options.actionData = {
+      ...(activeRoll.options.actionData ?? data),
+      passiveSuccesses: Number(resistanceRoll?.baseSuccessQty) || 0,
+      opposedTargetName: grappler.name,
+    };
+    if (result?.update) {
+      await result.update({ content: await activeRoll.render(), rolls: [JSON.stringify(activeRoll)] });
+    }
+    return true;
+  }
   if (!['firstAid', 'rally'].includes(data?.workflow)) return false;
   const actor = await resolveUuid(data.actorUuid);
   const target = await resolveUuid(data.targetUuid);
@@ -248,6 +368,18 @@ function getSelectedDocuments(actor, action, { targetUuid = '', itemId = '' } = 
 
 async function validateAction(actor, action, target, item, missingTarget, missingItem) {
   if (!action) return notifyActionError('YZEGS.CombatActions.Errors.Unknown');
+  if (!canActorAttemptAction(actor, action.id)) {
+    const state = getActorImpairment(actor);
+    return notifyActionError(state.dead
+      ? 'YZEGS.Critical.Errors.DeadCannotAct'
+      : 'YZEGS.Critical.Errors.IncapacitatedCannotAct');
+  }
+  if (actorHasCriticalEffect(actor, 'immobile') && [
+    'run', 'crawl', 'retreat', 'crossLowBarrier', 'crossHighBarrier', 'moveThroughDoor',
+  ].includes(action.id)) return notifyActionError('YZEGS.Critical.Errors.Immobile');
+  if (action.id === 'run' && actorHasCriticalEffect(actor, 'noRun')) {
+    return notifyActionError('YZEGS.Critical.Errors.CannotRun');
+  }
   if (missingTarget) return notifyActionError('YZEGS.CombatActions.Errors.TargetRequired');
   if (missingItem) return notifyActionError('YZEGS.CombatActions.Errors.ItemRequired');
   const inCombat = isActorInActiveCombat(actor, game.combat);
@@ -270,13 +402,18 @@ async function validateAction(actor, action, target, item, missingTarget, missin
     }
   }
   if (item && !itemMatchesAction(item, action)) return notifyActionError('YZEGS.CombatActions.Errors.InvalidItem');
+  if (item?.system?.twoHanded && actorHasCriticalEffect(actor, 'noTwoHanded')) {
+    return notifyActionError('YZEGS.Critical.Errors.CannotUseTwoHanded');
+  }
   if (action.target === 'vehicle' && target?.type !== 'vehicle') {
     return notifyActionError('YZEGS.CombatActions.Errors.VehicleRequired');
   }
   const personTargetActions = new Set([
     'persuade', 'interrogate', 'barter', 'grapple', 'firstAid', 'rally', 'shove', 'disarm', 'grappleAttack',
+    'divingBlow',
     'helpFast', 'helpSlow',
     'rescueDrowning',
+    'moveWounded', 'killingBlow',
   ]);
   if (target && personTargetActions.has(action.id) && !['character', 'npc'].includes(target.type)) {
     return notifyActionError('YZEGS.CombatActions.Errors.PersonRequired');
@@ -294,6 +431,16 @@ async function validateAction(actor, action, target, item, missingTarget, missin
   }
   if (action.id === 'grappleAttack' && target?.uuid !== grappling) {
     return notifyActionError('YZEGS.CombatActions.Errors.WrongGrappleTarget');
+  }
+  if (isBlockableAction(action.id)) {
+    const edge = prepareCloseCombatEdges(actor, target);
+    if (edge.differentHex) return notifyActionError('YZEGS.CombatEdges.Errors.CloseSameHex');
+  }
+  if (action.id === 'divingBlow') {
+    const run = actor.getFlag(SYSTEM_ID, 'actionRan');
+    if (!run || run.combatId !== game.combat?.id || Number(run.round) !== Number(game.combat?.round)) {
+      return notifyActionError('YZEGS.CombatEdges.Errors.DivingBlowRequiresRun');
+    }
   }
   if (action.id === 'getUp' && !hasStatus(actor, 'prone')) {
     return notifyActionError('YZEGS.CombatActions.Errors.NotProne');
@@ -319,6 +466,9 @@ async function validateAction(actor, action, target, item, missingTarget, missin
   if (action.id === 'firstAid' && Number(target?.system.health?.value) > 0) {
     return notifyActionError('YZEGS.CombatActions.Errors.TargetNotIncapacitatedDamage');
   }
+  if (action.id === 'firstAid' && actorRecoveryBlocked(target, 'damage')) {
+    return notifyActionError('YZEGS.Hazards.Errors.DamageRecoveryBlocked');
+  }
   if (action.id === 'firstAid') {
     const attempts = target.getFlag(SYSTEM_ID, 'actionFirstAidAttempts') ?? [];
     if (attempts.includes(actor.uuid) && !item) {
@@ -328,12 +478,24 @@ async function validateAction(actor, action, target, item, missingTarget, missin
   if (action.id === 'rally' && Number(target?.system.sanity?.value) > 0) {
     return notifyActionError('YZEGS.CombatActions.Errors.TargetNotIncapacitatedStress');
   }
+  if (action.id === 'rally' && actorRecoveryBlocked(target, 'stress')) {
+    return notifyActionError('YZEGS.Hazards.Errors.StressRecoveryBlocked');
+  }
   if (action.id === 'rally') {
     const attempts = target.getFlag(SYSTEM_ID, 'actionRallyAttempts') ?? [];
     if (attempts.includes(actor.uuid)) return notifyActionError('YZEGS.CombatActions.Errors.AlreadyTriedRally');
   }
   if (action.id === 'extinguishFire' && !hasStatus(target ?? actor, 'fire')) {
     return notifyActionError('YZEGS.CombatActions.Errors.TargetNotOnFire');
+  }
+  if (action.id === 'killingBlow' && !getActorImpairment(target).incapacitated) {
+    return notifyActionError('YZEGS.Critical.Errors.TargetNotIncapacitated');
+  }
+  if (action.id === 'correctIndirectFire' && !target?.getFlag(SYSTEM_ID, 'artilleryDeviation')) {
+    return notifyActionError('YZEGS.Heavy.Errors.NoDeviationToCorrect');
+  }
+  if (action.id === 'moveWounded' && !getUnstableLethalInjuries(target).length) {
+    return notifyActionError('YZEGS.Critical.Errors.TargetNotLethallyInjured');
   }
   const inWater = hasStatus(actor, 'swimming') || hasStatus(actor, 'submerged');
   if (inWater && ['shove', 'diveFromGrenade', 'dropProne', 'getUp', 'crawl'].includes(action.id)) {
@@ -436,11 +598,28 @@ async function applyImmediateWorkflow(action, actor, target, item, workflowOptio
     case 'turnLargeVessel': await runWatercraftSheetAction(target, 'turn'); break;
     case 'ramVessel': await runWatercraftSheetAction(target, 'ram'); break;
     case 'bailOut':
+      await actor.unsetFlag(SYSTEM_ID, 'vehicleBailOut');
       if (['watercraft', 'amphibious'].includes(target?.system?.domain)) {
         await enterDeepWater(actor, { cold: false });
         await setStatus(actor, 'overboard', true);
       }
       break;
+    case 'correctIndirectFire': {
+      const deviation = target.getFlag(SYSTEM_ID, 'artilleryDeviation');
+      const prior = target.getFlag(SYSTEM_ID, 'artilleryCorrection');
+      const sameTarget = prior?.itemUuid === deviation?.itemUuid
+        && prior?.targetPoint?.sceneId === deviation?.targetPoint?.sceneId
+        && prior?.targetPoint?.i === deviation?.targetPoint?.i
+        && prior?.targetPoint?.j === deviation?.targetPoint?.j;
+      await target.setFlag(SYSTEM_ID, 'artilleryCorrection', {
+        itemUuid: deviation.itemUuid,
+        targetPoint: deviation.targetPoint,
+        bonus: Math.min(3, (sameTarget ? Number(prior.bonus) || 0 : 0) + 1),
+        spotterUuid: actor.uuid,
+        spotterName: actor.name,
+      });
+      break;
+    }
   }
 }
 
@@ -514,9 +693,12 @@ export async function executeTwilightAction(actor, selection = {}) {
   );
   if (valid !== true) return null;
   const { target, item } = documents;
+  const ambushOpening = isBlockableAction(action.id) && ambushPreventsBlock(actor, target);
   if (
     isBlockableAction(action.id)
     && !selection.skipDefenseDeclaration
+    && !ambushOpening
+    && !isDefenseless(target)
   ) {
     return createCloseAttackDeclaration({
       attacker: actor,
@@ -533,6 +715,46 @@ export async function executeTwilightAction(actor, selection = {}) {
 
   const display = actionDisplay(action);
   const workflowData = actionData(action, actor, target, item);
+  const movementAssistance = prepareMovementAssistance(actor, action, workflowData);
+  const movementInjury = getUnstableLethalInjuries(actor)[0];
+  if (movementInjury && [
+    'run', 'crawl', 'retreat', 'crossLowBarrier', 'crossHighBarrier', 'moveThroughDoor',
+    'enterBuilding', 'moveSector', 'moveIndoorHex', 'changeFloor', 'climbFloor', 'swim',
+  ].includes(action.id) && action.skill) {
+    Object.assign(workflowData, {
+      criticalOutcome: 'selfMovement',
+      injuryId: movementInjury.id,
+    });
+  }
+  if (action.workflow === 'killingBlow') {
+    const configured = String(game.settings.get(SYSTEM_ID, 'killingBlowSpecialty') ?? '').trim();
+    const bypass = configured && actor.itemTypes.specialty.some(specialty => (
+      [specialty.uuid, specialty.id, specialty.getFlag('core', 'sourceId'), specialty.name].includes(configured)
+    ));
+    if (bypass) {
+      const bypassSpend = await spendImmediateAction(actor, action);
+      if (!bypassSpend) return null;
+      await killActor(target, { reason: localize('YZEGS.ActionNames.killingBlow') });
+      return postActionCard(
+        actor, action, target, item, bypassSpend, localize('YZEGS.Critical.KillingBlowApplied'),
+      );
+    }
+    return YZEGSRoller.taskCheck({
+      title: `${localize(action.label)}: ${actor.name}`,
+      actor,
+      attributeName: 'emp',
+      attribute: actor.system.attributes.emp.value,
+      skill: 0,
+      combatAction: display,
+      actionData: {
+        ...workflowData,
+        criticalOutcome: 'killingBlow',
+        targetUuid: target.uuid,
+      },
+      hideCombatActions: true,
+      skipDialog: false,
+    });
+  }
   if (action.workflow === 'socialConflict') {
     const { createSocialConflict, prepareSocialConflictSetup } = await import('./social-conflict-workflows.js');
     const setup = await prepareSocialConflictSetup(actor, action, target);
@@ -560,6 +782,19 @@ export async function executeTwilightAction(actor, selection = {}) {
   }
 
   if (action.skill) {
+    const impairment = getActorImpairment(actor);
+    const automaticIncapacitatedMovement = (impairment.damage && action.id === 'crawl')
+      || (impairment.stress && ['run', 'seekPartialCover', 'seekFullCover'].includes(action.id));
+    if (automaticIncapacitatedMovement) {
+      const movementSpend = await spendImmediateAction(actor, action);
+      if (!movementSpend) return null;
+      await applyImmediateWorkflow(action, actor, target, item);
+      const movementCard = await postActionCard(
+        actor, action, target, item, movementSpend, localize('YZEGS.Critical.IncapacitatedMovement'),
+      );
+      await checkLethalMovement(actor, action.id);
+      return movementCard;
+    }
     const skill = getActorActionSkill(actor, action.id, action.skill);
     if (!skill) {
       return notifyActionError('YZEGS.CombatActions.Errors.SkillMissing', {
@@ -567,6 +802,10 @@ export async function executeTwilightAction(actor, selection = {}) {
       });
     }
     const stats = getAttributeAndSkill(skill, actor);
+    const closeEdges = isBlockableAction(action.id)
+      ? prepareCloseCombatEdges(actor, target)
+      : { modifiers: [], forcedLocation: '' };
+    const unarmedDamage = ['unarmedAttack', 'divingBlow'].includes(action.id);
     const result = await YZEGSRoller.taskCheck({
       ...stats,
       title: `${localize(action.label)}: ${actor.name}`,
@@ -576,30 +815,64 @@ export async function executeTwilightAction(actor, selection = {}) {
       actionData: workflowData,
       defense: selection.defense ?? null,
       messageMode: selection.messageMode ?? null,
-      attackData: action.id === 'unarmedAttack' ? {
+      attackData: unarmedDamage ? {
         damage: 1,
         crit: 4,
         armorModifier: 3,
         blast: 0,
         range: 0,
+        forcedLocation: closeEdges.forcedLocation,
+        ignoreCover: true,
+        primaryTargetUuid: target?.uuid ?? '',
+        sourceActorUuid: actor.uuid,
       } : null,
-      locate: action.id === 'unarmedAttack',
-      modifier: action.modifier + (
+      locate: unarmedDamage,
+      automaticModifiers: [...closeEdges.modifiers, ...movementAssistance.modifiers],
+      modifier: action.modifier
+        + sumEdgeModifiers(closeEdges.modifiers)
+        + movementAssistance.total
+        + (ambushOpening ? getAmbushAttackModifier(actor, target) : 0) + (
         ['swim', 'stayAfloat'].includes(action.id)
         && Number(actor.system.encumbrance?.backpack?.value) > 0
         && !actor.getFlag(SYSTEM_ID, 'actionBackpackDropped') ? -2 : 0
       ),
       hideCombatActions: true,
     });
-    if (result && action.id === 'unarmedAttack') await beginCloseQuartersEngagement(actor, target);
+    if (result && ambushOpening) await consumeAmbushOpening(actor);
+    if (result && action.id === 'run') {
+      await actor.setFlag(SYSTEM_ID, 'actionRan', {
+        combatId: game.combat?.id ?? '',
+        round: game.combat?.round ?? 0,
+      });
+    }
+    if (result && action.id === 'divingBlow') await setStatus(actor, 'prone', true);
+    if (result && unarmedDamage) await beginCloseQuartersEngagement(actor, target);
+    if (result && action.workflow === 'moveWounded') {
+      const injury = getUnstableLethalInjuries(target)[0];
+      if (injury) {
+        const roll = result.rolls?.[0] ?? result;
+        roll.options.actionData = {
+          ...(roll.options.actionData ?? {}),
+          criticalOutcome: 'moveWounded',
+          actorUuid: target.uuid,
+          injuryId: injury.id,
+          applied: false,
+        };
+        if (result.update) {
+          await result.update({ content: await roll.render(), rolls: [JSON.stringify(roll)] });
+        }
+      }
+    }
     return result;
   }
 
   let workflowOptions = {};
   if (['seekPartialCover', 'seekFullCover'].includes(action.id)) {
+    const terrainCover = getTerrainCover(actor);
     const cover = await YZEGSDialog.chooseCover({
-      armor: actor.coverDetails?.armor ?? 1,
+      armor: actor.coverDetails?.armor ?? terrainCover?.armor ?? 1,
       againstName: target?.name ?? '',
+      terrainName: terrainCover?.label ?? '',
     });
     if (cover.cancelled) return null;
     workflowOptions = {
@@ -613,7 +886,9 @@ export async function executeTwilightAction(actor, selection = {}) {
   const spend = await spendImmediateAction(actor, action);
   if (!spend) return null;
   await applyImmediateWorkflow(action, actor, target, item, workflowOptions);
-  return postActionCard(actor, action, target, item, spend);
+  const card = await postActionCard(actor, action, target, item, spend);
+  await checkLethalMovement(actor, action.id);
+  return card;
 }
 
 async function chooseDisarmedItem(target) {
@@ -653,7 +928,10 @@ export async function applyTwilightActionOutcome(roll) {
   const data = roll?.options?.actionData;
   if (!data?.canApplyOutcome || data.applied) return false;
   const successes = getEffectiveAttackSuccesses(roll);
-  if (!successes) return notifyActionError('YZEGS.CombatActions.Errors.NoSuccess');
+  const outcomeSucceeded = data.workflow === 'breakFree'
+    ? successes > (Number(data.passiveSuccesses) || 0)
+    : successes > 0;
+  if (!outcomeSucceeded) return notifyActionError('YZEGS.CombatActions.Errors.NoSuccess');
   const actor = await resolveUuid(data.actorUuid);
   const target = (await resolveUuid(data.targetUuid)) ?? actor;
   const item = await resolveUuid(data.itemUuid);
@@ -664,6 +942,9 @@ export async function applyTwilightActionOutcome(roll) {
 
   switch (data.workflow) {
     case 'firstAid': {
+      if (actorRecoveryBlocked(target, 'damage')) {
+        return notifyActionError('YZEGS.Hazards.Errors.DamageRecoveryBlocked');
+      }
       const maximum = Number(target.system.health?.max) || 0;
       const current = Number(target.system.health?.value) || 0;
       await target.update({ 'system.health.value': Math.min(maximum, current + successes) });
@@ -671,12 +952,22 @@ export async function applyTwilightActionOutcome(roll) {
       break;
     }
     case 'rally': {
+      if (actorRecoveryBlocked(target, 'stress')) {
+        return notifyActionError('YZEGS.Hazards.Errors.StressRecoveryBlocked');
+      }
       const maximum = Number(target.system.sanity?.max) || 0;
       const current = Number(target.system.sanity?.value) || 0;
       await target.update({ 'system.sanity.value': Math.min(maximum, current + successes) });
       await target.unsetFlag(SYSTEM_ID, 'actionRallyAttempts');
       break;
     }
+    case 'directIndirectFire':
+      await target.setFlag(SYSTEM_ID, 'indirectFireObservation', {
+        ready: true,
+        spotterUuid: actor.uuid,
+        spotterName: actor.name,
+      });
+      break;
     case 'shove': {
       const required = Number(target.system.attributes?.str?.value) > Number(actor.system.attributes?.str?.value)
         ? 2
@@ -705,11 +996,40 @@ export async function applyTwilightActionOutcome(roll) {
       await actor.setFlag(SYSTEM_ID, 'actionGrappling', target.uuid);
       await target.setFlag(SYSTEM_ID, 'actionGrappledBy', actor.uuid);
       break;
+    case 'divingBlow':
+      await setStatus(target, 'prone', true);
+      break;
     case 'breakFree': await clearGrapple(actor); break;
     case 'breakFreeDebris': await setStatus(actor, 'pinnedByDebris', false); break;
     case 'retreat': await clearCloseQuartersEngagement(actor); break;
     case 'retrieveItem': await item?.update({ 'system.backpack': false, 'system.equipped': false }); break;
-    case 'extinguishFire': await setStatus(target, 'fire', false); break;
+    case 'extinguishFire':
+      await clearActorFire(target);
+      if (target?.type === 'vehicle' && target.system.domain === 'land') {
+        await target.update({
+          'system.landVehicle.fuelFire': false,
+          'system.landVehicle.fuelFireDeadline': 0,
+        });
+      }
+      break;
+    case 'putOnMask':
+      await actor.setFlag(SYSTEM_ID, 'chemicalProtection', 'mask');
+      await item?.update({ 'system.equipped': true, 'system.backpack': false });
+      break;
+    case 'injectAtropine': {
+      const nerveAgents = (target?.itemTypes?.disease ?? []).filter(disease => (
+        disease.system.category === 'nerveAgent'
+        && ['incubating', 'active'].includes(disease.system.state?.phase)
+      ));
+      await Promise.all(nerveAgents.map(disease => disease.update({
+        'system.state.phase': 'recovered',
+        'system.state.due': false,
+        'system.state.dueWorldTime': 0,
+        'system.state.deathDeadline': 0,
+      })));
+      if (item?.system.props?.disposable) await item.delete();
+      break;
+    }
     case 'diveFromGrenade': await setStatus(actor, 'prone', true); break;
     case 'climbAboard': await surfaceActor(actor); break;
     case 'rescueDrowning': await rescueDrowningActor(target); break;
@@ -761,5 +1081,73 @@ export async function applyTwilightActionOutcome(roll) {
     default: return false;
   }
   data.applied = true;
+  return true;
+}
+
+/** Resolve the immediate, unblockable attack granted by a failed Retreat. */
+export async function resolveFailedRetreat(roll) {
+  const data = roll?.options?.actionData;
+  if (data?.workflow !== 'retreat' || data.freeAttackResolved || getEffectiveAttackSuccesses(roll) > 0) {
+    return false;
+  }
+  const retreatingActor = await resolveUuid(data.actorUuid);
+  const attacker = await resolveUuid(data.targetUuid);
+  if (!retreatingActor || !attacker || (!game.user.isGM && !attacker.isOwner)) return false;
+  const action = getTwilightAction('retreatFreeAttack');
+  const choices = [...attacker.items].filter(candidate => (
+    candidate.type === 'weapon' && candidate.system.equipped && itemMatchesAction(candidate, action)
+  )).map(candidate => ({ value: candidate.uuid, label: candidate.name }));
+  const method = await YZEGSDialog.chooseCloseAttackMethod({ choices });
+  if (method.cancelled) return false;
+  const chosenItem = await resolveUuid(method.itemUuid);
+  if (method.itemUuid && (
+    chosenItem?.actor?.uuid !== attacker.uuid
+    || !chosenItem.system?.equipped
+    || !itemMatchesAction(chosenItem, action)
+  )) return false;
+  let result;
+  if (chosenItem) {
+    result = await chosenItem.rollAttack({
+      combatAction: actionDisplay(action),
+      actionData: actionData(action, attacker, retreatingActor, chosenItem),
+      targetActorUuid: retreatingActor.uuid,
+      skipDefenseDeclaration: true,
+      hideCombatActions: true,
+    }, attacker);
+  }
+  else {
+    const skill = getActorActionSkill(attacker, 'retreatFreeAttack', 'closeCombat');
+    if (!skill) {
+      return notifyActionError('YZEGS.CombatActions.Errors.SkillMissing', {
+        skill: getActionSkillName('retreatFreeAttack', 'closeCombat'),
+      });
+    }
+    const edges = prepareCloseCombatEdges(attacker, retreatingActor);
+    result = await YZEGSRoller.taskCheck({
+      ...getAttributeAndSkill(skill, attacker),
+      title: `${localize(action.label)}: ${attacker.name}`,
+      actor: attacker,
+      combatAction: actionDisplay(action),
+      actionData: actionData(action, attacker, retreatingActor, null),
+      attackData: {
+        damage: 1,
+        crit: 4,
+        armorModifier: 3,
+        blast: 0,
+        range: 0,
+        forcedLocation: edges.forcedLocation,
+        ignoreCover: true,
+        primaryTargetUuid: retreatingActor.uuid,
+        sourceActorUuid: attacker.uuid,
+      },
+      locate: true,
+      automaticModifiers: edges.modifiers,
+      modifier: sumEdgeModifiers(edges.modifiers),
+      hideCombatActions: true,
+    });
+  }
+  if (!result) return false;
+  await clearCloseQuartersEngagement(retreatingActor);
+  data.freeAttackResolved = true;
   return true;
 }

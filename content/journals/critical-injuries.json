@@ -1,0 +1,66 @@
+{
+  "entry": {
+    "_id": "YZECritGuide0001",
+    "name": "Using Critical Injuries and Death Saves",
+    "categories": [],
+    "folder": null,
+    "sort": 800000,
+    "ownership": { "default": 2 },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "critical-injuries"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZECritQuick001X",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Critical Injuries and Death Saves</h1><p>The system can automatically create a Critical Injury when damage remaining after cover and armor equals or exceeds a Weapon's <strong>Critical</strong> rating. The injury is rolled from the table for the final hit location and added to the target Actor.</p><h2>GM Quick Start</h2><ol><li>Open <strong>Game Settings → Configure Settings → System Settings</strong>.</li><li>Leave <strong>Automate Critical Injuries</strong> enabled.</li><li>Use the bundled location tables, or replace any table UUID with a world RollTable whose results link to Injury Items.</li><li>Set each Weapon's Critical rating correctly.</li><li>Apply attack damage from its chat card as normal.</li></ol><p>When a lethal injury reaches its deadline, the system posts a Death Save prompt and also shows a die button beside the injury on the Actor's Combat tab.</p>"
+    },
+    {
+      "_id": "YZECritTrigger01",
+      "name": "When a Critical Injury Occurs",
+      "sort": 200000,
+      "content": "<h1>Trigger and Severity</h1><p>Protection is resolved before the critical check. A hit causes a Critical Injury only when its <strong>final damage</strong> is at least the Weapon's Critical rating. Health remaining does not change this test.</p><h2>Severity Dice</h2><ul><li>Damage equal to Critical, or Critical +1: roll 1D10.</li><li>Damage at Critical +2 or +3: roll 2D10 and keep the highest.</li><li>Damage at Critical +4 or +5: roll 3D10 and keep the highest.</li><li>Continue adding one die for every further two damage.</li></ul><p>The linked Injury Item is copied into the target Actor. Its healing formula is rolled once and the number of healing days is stored on that copy.</p><h2>Immediate Effects</h2><p>Location-table effects are applied immediately. Arm injuries make the target drop held equipment and may prevent two-handed weapon use. Leg injuries make the target prone and may prevent running. Immobilizing injuries block movement. Instant-death results mark the Actor dead immediately.</p>"
+    },
+    {
+      "_id": "YZECritIncap001X",
+      "name": "Incapacitation",
+      "sort": 300000,
+      "content": "<h1>Incapacitation</h1><p>An Actor at zero Health is incapacitated by damage. An Actor at zero Stress Capacity is incapacitated by stress. The Combat tab displays the current state and the token receives a matching status effect.</p><h2>Damage Incapacitation</h2><p>The Actor cannot make ordinary Skill rolls or take normal actions. Crawling remains available and is resolved automatically without a Mobility roll.</p><h2>Stress Incapacitation</h2><p>The Actor cannot make ordinary Skill rolls. They may Run or seek cover, and those permitted movements are resolved automatically without a Skill roll.</p><h2>Dead Actors</h2><p>A dead Actor cannot take actions or make rolls. A GM can still edit the Actor or remove the status manually when correcting world state.</p><p>First Aid remains the workflow for restoring Health to an Actor at zero Health. Stabilization is separate: it changes the deadline of a lethal injury but does not restore Health.</p>"
+    },
+    {
+      "_id": "YZECritSave0001X",
+      "name": "Lethal Injuries and Death Saves",
+      "sort": 400000,
+      "content": "<h1>Lethal Injuries</h1><p>A lethal Injury Item carries a time limit of <strong>Round</strong>, <strong>Stretch</strong>, or <strong>Shift</strong>.</p><ul><li><strong>Round:</strong> the save becomes due on the patient's next turn in active combat. Outside combat it uses a short world-time deadline.</li><li><strong>Stretch:</strong> the deadline is ten minutes of world time.</li><li><strong>Shift:</strong> the deadline is six hours of world time.</li></ul><p>The GM should advance Foundry world time for stretch and shift deadlines. When a deadline passes, the system posts a prompt.</p><h2>Making the Save</h2><p>Click <strong>Roll Death Save</strong> in chat or the die icon beside the injury. The save uses the world-configured Death Save Skill, with Stamina as its default. It costs no action.</p><ul><li>An Actor who is not incapacitated may push once.</li><li>An incapacitated Actor may still make the save but cannot push it.</li><li>Success reschedules the same deadline.</li><li>Failure marks the Actor dead.</li></ul><p>After all allowed pushes, click <strong>Apply Result</strong> on the roll card.</p>"
+    },
+    {
+      "_id": "YZECritStab0001X",
+      "name": "Stabilization",
+      "sort": 500000,
+      "content": "<h1>Stabilizing a Lethal Injury</h1><p>On the patient's Combat tab, click the medical-kit button beside an unstable lethal injury and choose the healer. The roll uses the world-configured Stabilize Critical Injury Skill, with Medical Aid as its default.</p><h2>Time and Actions</h2><ul><li>A Round-stage injury takes a Slow Action when the healer is in active combat, then rolls immediately.</li><li>A Stretch- or Shift-stage injury starts timed treatment. Advance world time until the treatment is ready, then click the notes-medical button to resolve it.</li><li>A conscious patient may treat themselves at −2.</li><li>An incapacitated patient cannot treat themselves.</li></ul><h2>Results</h2><ul><li>Success advances Round to Stretch, Stretch to Shift, or Shift to Stabilized.</li><li>A stabilized injury requires no more Death Saves.</li><li>Failure locks out another stabilization attempt until the patient has made another Death Save.</li></ul><p>After all desired pushes, click <strong>Apply Result</strong> on the roll card. Stabilization does not heal Health and does not remove the Injury Item.</p>"
+    },
+    {
+      "_id": "YZECritMove0001X",
+      "name": "Moving the Wounded",
+      "sort": 600000,
+      "content": "<h1>Movement with a Lethal Injury</h1><h2>The Patient Moves</h2><p>When an Actor with an unstable lethal injury performs a movement action, the completed action card asks for its critical result to be applied. Applying it starts an immediate Death Save. Automatic incapacitated movement follows the same rule.</p><h2>Someone Else Moves the Patient</h2><ol><li>Target the patient.</li><li>Open <strong>Take Action</strong> and choose <strong>Move wounded character</strong>.</li><li>Make the configured Medical Aid check. This check itself costs no action; the GM handles the carrier's actual movement normally.</li><li>After pushing or accepting, click <strong>Apply Result</strong>.</li></ol><p>On success the patient is moved without an extra save. On failure the patient must immediately make a Death Save.</p>"
+    },
+    {
+      "_id": "YZECritKill0001X",
+      "name": "Killing Blows",
+      "sort": 700000,
+      "content": "<h1>Killing Blow</h1><p>A killing blow can target only an incapacitated Character or NPC.</p><ol><li>Target the incapacitated Actor.</li><li>Choose <strong>Killing blow</strong> from Take Action.</li><li>Spend the Slow Action and make the base Empathy test.</li><li>After pushing or accepting, click <strong>Apply Result</strong>.</li></ol><ul><li><strong>Success:</strong> the attacker cannot carry out the killing blow.</li><li><strong>Failure:</strong> the target is marked dead and the attacker suffers one Stress.</li></ul><h2>Specialty Bypass</h2><p>The GM may enter a Specialty Item UUID or exact Item name in the <strong>Killing Blow Specialty</strong> world setting. An Actor who owns that Specialty bypasses the Empathy test, although the Slow Action is still spent.</p>"
+    },
+    {
+      "_id": "YZECritConfig01X",
+      "name": "Configuration and Troubleshooting",
+      "sort": 800000,
+      "content": "<h1>Configuration</h1><h2>Action Skills</h2><p>Open the <strong>Action Skills</strong> system menu to select world-specific Skill Items for <strong>Death save</strong>, <strong>Stabilize critical injury</strong>, and <strong>Move wounded character</strong>. This keeps the automation usable in worlds with renamed or custom Skills.</p><h2>Custom Critical Tables</h2><p>Each location setting accepts a RollTable UUID. Every numbered result must link to an Injury Item. Configure the Injury's location, lethal flag, time limit, healing formula, roll modifiers, and Instant death option as needed.</p><h2>Troubleshooting</h2><ul><li><strong>No critical appears:</strong> confirm automation is enabled, final damage reached Critical, a valid hit location was rolled, and the configured table result links to an Injury Item.</li><li><strong>A deadline does not advance:</strong> start and advance Combat for Round limits, or advance world time for Stretch and Shift limits.</li><li><strong>No stabilization Skill:</strong> configure the action in Action Skills and make sure the healer owns a matching embedded Skill Item.</li><li><strong>Cannot retry stabilization:</strong> a failed attempt intentionally remains locked until the next Death Save.</li><li><strong>Incorrect state:</strong> a GM can edit or delete the Injury Item and can add or remove token statuses manually.</li></ul>"
+    }
+  ]
+}

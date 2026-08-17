@@ -44,6 +44,7 @@ export default class ActorSheetYZEGSVehicle extends ActorSheetYZEGS {
       sheetData.inVehicle = true;
       sheetData.isWatercraft = ['watercraft', 'amphibious'].includes(sheetData.system.domain);
       sheetData.isLargeWatercraft = sheetData.isWatercraft && Number(sheetData.system.watercraft?.size) >= 2;
+      sheetData.isLandVehicle = sheetData.system.domain === 'land';
     }
 
     return sheetData;
@@ -61,6 +62,11 @@ export default class ActorSheetYZEGSVehicle extends ActorSheetYZEGS {
           data: { data: { health: { value: 0, max: 0 } } },
           isCrewDeleted: true,
         };
+      }
+      else {
+        o.bailOutRequired = Boolean(o.actor.getFlag(
+          'fvtt-yze-generic-stepped', 'vehicleBailOut',
+        )?.required);
       }
       arr.push(o);
       return arr;

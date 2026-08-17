@@ -244,20 +244,20 @@ export async function drawTableCard(tableName) {
 /* ------------------------------------------ */
 
 /**
- * Draws one or more results from the Initiative RollTable for the selected token.
- * @param {string} [tableName='Initiative']
+ * Draws one or more unique initiative cards for the selected token.
+ * @param {string} [_tableName='Initiative'] Retained for backward-compatible macros.
  */
-export async function drawInitiative(tableName = 'Initiative') {
+export async function drawInitiative(_tableName = 'Initiative') {
   const token = canvas.tokens.controlled[0];
   if (!token || !token.isOwner) {
-    return ui.notifications.error('Select a token you control before drawing initiative.');
+    return ui.notifications.error(game.i18n.localize('YZEGS.Initiative.Errors.SelectOwned'));
   }
 
   let combat = game.combat;
   if (!combat) {
-    if (!game.user.isGM) return ui.notifications.error('Start a combat encounter first.');
-    const initiativeTable = game.tables.getName(tableName);
-    await initiativeTable?.resetResults();
+    if (!game.user.isGM) {
+      return ui.notifications.error(game.i18n.localize('YZEGS.Initiative.Errors.StartCombat'));
+    }
     await token.document.toggleCombatant();
     combat = game.combat;
   }
@@ -265,91 +265,8 @@ export async function drawInitiative(tableName = 'Initiative') {
     await token.document.toggleCombatant();
   }
 
-  const combatant = combat?.getCombatantByToken(token.id);
-  if (!combatant) return ui.notifications.error('Could not add the selected token to combat.');
-
-  if (combatant.initiative !== null) {
-    const redraw = await foundry.applications.api.DialogV2.confirm({
-      window: { title: 'Redraw Initiative?' },
-      content: '<p>This combatant already has an Initiative value. Draw again?</p>',
-      yes: { default: true },
-      no: { default: false },
-    });
-    if (!redraw) return null;
-  }
-
-  const choice = await foundry.applications.api.DialogV2.input({
-    window: { title: 'Draw Initiative' },
-    content: `
-      <div class="form-group">
-        <label>Number of cards</label>
-        <select name="count">
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-      </div>
-    `,
-    ok: { label: 'Draw' },
-  });
-  if (!choice) return null;
-
-  const table = game.tables.getName(tableName);
-  if (!table) return ui.notifications.error(`Could not find the "${tableName}" Initiative table.`);
-  const count = Math.clamp(Math.floor(Number(choice.count) || 1), 1, 3);
-  if (table.results.filter(result => !result.drawn).length < count) {
-    ui.notifications.warn('There are not enough Initiative cards left. The deck has been reset.');
-    await table.resetResults();
-  }
-
-  const { results } = await table.drawMany(count, { displayChat: false });
-  if (!results.length) return ui.notifications.error('No Initiative card could be drawn.');
-
-  let selected = results[0];
-  if (results.length > 1) {
-    const selectedId = await foundry.applications.api.DialogV2.wait({
-      window: { title: 'Choose Initiative' },
-      content: '<p>Choose the Initiative card to keep.</p>',
-      buttons: results.map(result => ({
-        action: result.id,
-        label: result.text,
-        callback: () => result.id,
-      })),
-    });
-    selected = results.find(result => result.id === selectedId);
-    if (!selected) {
-      await table.updateEmbeddedDocuments('TableResult', results.map(result => ({
-        _id: result.id,
-        drawn: false,
-      })), { diff: false });
-      return null;
-    }
-
-    const returned = results.filter(result => result.id !== selected.id);
-    await table.updateEmbeddedDocuments('TableResult', returned.map(result => ({
-      _id: result.id,
-      drawn: false,
-    })), { diff: false });
-  }
-
-  const initiative = selected.range[0];
-  await combat.setInitiative(combatant.id, initiative);
-  const images = results.map(result => {
-    const chosen = result.id === selected.id ? ' style="outline: 3px solid #000"' : '';
-    const text = foundry.utils.escapeHTML(String(result.text));
-    const img = result.img ? foundry.utils.escapeHTML(result.img) : null;
-    if (img) return `<img src="${img}" alt="${text}" width="65"${chosen}>`;
-    return `<strong${chosen}>${text}</strong>`;
-  }).join(' ');
-  const selectedText = foundry.utils.escapeHTML(String(selected.text));
-  return ChatMessage.create({
-    flavor: results.length > 1
-      ? `Drew ${results.length} Initiative cards and chose ${selectedText}.`
-      : `Drew Initiative ${selectedText}.`,
-    content: `<p style="text-align:center">${images}</p>`,
-    speaker: ChatMessage.getSpeaker({ token: token.document }),
-    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-  });
+  const { drawActorInitiative } = await import('./initiative-workflows.js');
+  return drawActorInitiative(token.actor);
 }
 
 /* ------------------------------------------ */

@@ -1,4 +1,5 @@
 import { closeQuartersCombatEnabled, urbanCombatEnabled } from './urban-operations.js';
+import { isArtilleryWeapon } from './heavy-weapons.js';
 
 /**
  * Canonical Twilight: 2000 4e combat actions.
@@ -43,6 +44,9 @@ export const TWILIGHT_ACTIONS = Object.freeze([
     category: 'social', target: 'other', workflow: 'socialConflict',
   }),
   defineAction('unarmedAttack', 'slow', 'closeCombat', { category: 'close', target: 'other' }),
+  defineAction('divingBlow', 'slow', 'closeCombat', {
+    category: 'close', target: 'other', workflow: 'divingBlow', modifier: 2,
+  }),
   defineAction('meleeAttack', 'slow', 'closeCombat', {
     category: 'close', target: 'other', item: 'meleeWeapon', workflow: 'attack',
   }),
@@ -65,11 +69,14 @@ export const TWILIGHT_ACTIONS = Object.freeze([
   defineAction('shootHeavyWeapon', 'slow', 'heavyWeapons', {
     category: 'heavy', target: 'optional', item: 'heavyWeapon', workflow: 'attack',
   }),
-  defineAction('directFire', 'slow', 'recon', { category: 'heavy', target: 'other' }),
+  defineAction('directFire', 'slow', 'recon', {
+    category: 'heavy', target: 'other', workflow: 'directIndirectFire',
+  }),
   defineAction('firstAid', 'slow', 'medicalAid', {
     category: 'support', target: 'other', item: 'medicalGearOptional', workflow: 'firstAid',
   }),
   defineAction('rally', 'slow', 'command', { category: 'support', target: 'other', workflow: 'rally' }),
+  defineAction('killingBlow', 'slow', '', { category: 'close', target: 'other', workflow: 'killingBlow' }),
   defineAction('enterExitVehicle', 'slow', '', { category: 'vehicle', target: 'vehicle' }),
 
   // Fast actions — Players' Manual, page 56.
@@ -123,6 +130,9 @@ export const TWILIGHT_ACTIONS = Object.freeze([
   defineAction('dropHeldItem', 'free', '', { category: 'inventory', item: 'equipped', workflow: 'dropItem' }),
   defineAction('partialToFullCover', 'free', '', { category: 'movement', workflow: 'fullCover' }),
   defineAction('shout', 'free', '', { category: 'general' }),
+  defineAction('moveWounded', 'free', 'medicalAid', {
+    category: 'support', target: 'other', workflow: 'moveWounded', reactive: true,
+  }),
 
   // Explicit variants and special combat actions described later in the chapter.
   defineAction('crossHighBarrier', 'slow', 'mobility', { category: 'movement' }),
@@ -131,13 +141,19 @@ export const TWILIGHT_ACTIONS = Object.freeze([
   defineAction('extinguishFire', 'slow', 'mobility', {
     category: 'support', target: 'optional', workflow: 'extinguishFire',
   }),
-  defineAction('putOnMask', 'fast', '', { category: 'inventory', item: 'any' }),
-  defineAction('injectAtropine', 'fast', '', { category: 'support', target: 'optional', item: 'any' }),
+  defineAction('putOnMask', 'fast', '', {
+    category: 'inventory', item: 'protectiveMask', workflow: 'putOnMask',
+  }),
+  defineAction('injectAtropine', 'fast', '', {
+    category: 'support', target: 'optional', item: 'atropine', workflow: 'injectAtropine',
+  }),
   defineAction('getVehicleUnstuck', 'slow', 'driving', { category: 'vehicle', target: 'vehicle' }),
   defineAction('bailOut', 'slow', '', { category: 'vehicle', target: 'vehicle', workflow: 'bailOut' }),
   defineAction('takeDriverControl', 'fast', '', { category: 'vehicle', target: 'vehicle' }),
   defineAction('fireSmokeLauncher', 'slow', '', { category: 'vehicle', target: 'vehicle' }),
-  defineAction('correctIndirectFire', 'slow', '', { category: 'heavy', target: 'other' }),
+  defineAction('correctIndirectFire', 'slow', '', {
+    category: 'heavy', target: 'other', workflow: 'correctIndirectFire',
+  }),
   defineAction('guideMissile', 'slow', 'heavyWeapons', { category: 'heavy', target: 'other', item: 'heavyWeapon' }),
   defineAction('block', 'fast', 'closeCombat', {
     category: 'close', target: 'other', reactive: true, launcher: false,
@@ -333,7 +349,7 @@ export function itemMatchesAction(item, action) {
     case 'bow': return item.type === 'weapon' && /bow/.test(itemType) && !/crossbow/.test(itemType);
     case 'bowOrCrossbow': return item.type === 'weapon' && /bow|crossbow/.test(itemType);
     case 'thrownWeapon': return item.type === 'grenade' || (item.type === 'weapon' && /throw/.test(itemType));
-    case 'artillery': return item.type === 'weapon' && /mortar|howitzer/.test(itemType);
+    case 'artillery': return isArtilleryWeapon(item);
     case 'heavyWeapon': return item.type === 'weapon' && heavy;
     case 'jammedWeapon': return item.type === 'weapon' && Boolean(system.jammed);
     case 'reloadableWeapon': return item.type === 'weapon' && Boolean(system.ammo);
@@ -341,6 +357,8 @@ export function itemMatchesAction(item, action) {
     case 'mine': return item.type === 'grenade' && item.system.explosiveType !== 'grenade';
     case 'medicalGearOptional':
       return item.type === 'gear' && /medical|medkit|surgical|first aid/.test(`${item.name} ${itemType}`.toLowerCase());
+    case 'protectiveMask': return item.type === 'gear' && system.chemicalProtection === 'mask';
+    case 'atropine': return item.type === 'gear' && system.medicalTreatment === 'atropine';
     default: return false;
   }
 }

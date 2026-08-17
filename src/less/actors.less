@@ -439,6 +439,11 @@
         }
       }
 
+    }
+
+    .tab-specialties {
+      overflow-y: hidden;
+
       .specialty-title {
         align-items: center;
         flex: 0 0 auto;
@@ -548,11 +553,13 @@
 
       .combat-secondary-grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         align-items: stretch;
 
         &[data-actor-type="npc"] {
-          grid-template-columns: 1fr;
+          .armor {
+            grid-column: 1 / -1;
+          }
         }
 
         > div {
@@ -675,7 +682,6 @@
 
       .armor,
       .conditions,
-      .critical-injuries,
       .radiation {
         h2 + div {
           padding: 4px 0 @gap @gap;
@@ -720,34 +726,93 @@
         }
       }
 
-      .critical-injuries {
+      .disease-items {
         border-left: @borderSheetBold;
+      }
 
-        .injuries-title {
-          justify-content: space-between;
+      .critical-injuries,
+      .disease-items {
+        display: flex;
+        flex-direction: column;
+
+        > h2 {
           box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           height: 28px;
+          min-height: 28px;
           max-height: 28px;
-          padding-right: @gap;
+          padding: 4px @gap;
+        }
 
-          .item-controls {
+        .item-controls {
+          display: flex;
+          align-items: center;
+          flex: none;
+          height: 16px;
+
+          .item-create {
             display: flex;
             align-items: center;
-            flex: none;
+            justify-content: center;
+            width: 16px;
             height: 16px;
-
-            .item-create {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              width: 16px;
-              height: 16px;
-              padding: 0;
-              font-size: 10px;
-              line-height: 1;
-            }
+            padding: 0;
+            font-size: 10px;
+            line-height: 1;
           }
         }
+
+        > .injuries-list,
+        > .diseases-list {
+          box-sizing: border-box;
+          min-height: 36px;
+          padding: 4px @gap @gap;
+        }
+      }
+
+      .disease-items {
+
+        .diseases-title {
+          padding: 4px @gap;
+        }
+
+        .disease {
+          display: grid;
+          grid-template-columns: 1fr auto 22px;
+          align-items: center;
+          min-height: 28px;
+          border-bottom: @borderSheet;
+          gap: 6px;
+        }
+
+        .disease-summary {
+          display: flex;
+          align-items: baseline;
+          gap: 10px;
+          min-width: 0;
+        }
+
+        .disease-phase {
+          font-style: italic;
+        }
+
+        .disease-actions {
+          display: flex;
+          gap: 3px;
+
+          button {
+            width: 24px;
+            height: 22px;
+            padding: 0;
+          }
+
+          .due {
+            color: @colorRed;
+          }
+        }
+
       }
 
       .combat-details {
@@ -768,11 +833,13 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        margin-left: 4px;
+        align-content: flex-start;
+        gap: 4px;
 
         .injury {
-          display: inline-block;
-          margin-right: 2px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
           padding: 2px 6px 2px 8px;
           background-color: #fff;
           border: 1px solid #000;
@@ -782,6 +849,32 @@
 
           .injury-name {
             font-weight: bold;
+          }
+
+          .injury-summary {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+          }
+
+          .injury-lethal,
+          .injury-deadline,
+          .injury-healing,
+          .injury-treatment {
+            color: @colorDark;
+            font-size: 10px;
+          }
+
+          .injury-actions {
+            display: inline-flex;
+            gap: 2px;
+
+            button {
+              width: 24px;
+              min-width: 24px;
+              height: 24px;
+              padding: 0;
+            }
           }
 
           .item-delete {
@@ -799,6 +892,16 @@
             }
           }
         }
+      }
+
+      .critical-impairment-banner {
+        grid-column: 1 / -1;
+        padding: 4px 8px;
+        border: 2px solid #000;
+        background: #fff;
+        color: #000;
+        text-align: center;
+        text-transform: uppercase;
       }
     }
 

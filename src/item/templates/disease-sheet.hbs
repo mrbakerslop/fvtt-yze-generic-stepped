@@ -1,0 +1,97 @@
+<div class="sheet-root flexcol disease-sheet">
+  {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-header.hbs"}}
+
+  <nav class="sheet-tabs tabs slanted-tabs flexrow flex-center" data-group="primary">
+    <a class="item" data-action="tab" data-group="primary" data-tab="features">{{localize "YZEGS.ItemSheet.FeaturesTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="description">{{localize "YZEGS.ItemSheet.DescriptionTab"}}</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab tab-features" data-group="primary" data-tab="features">
+      <div class="grid grid-2col item-features">
+        <div class="flexcol">
+          <label>{{localize "YZEGS.Disease.CategoryLabel"}}</label>
+          {{> optionMenu name="system.category" selected=system.category options=diseaseCategoryChoices
+            editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+        </div>
+        <div class="flexcol">
+          <label>{{localize "YZEGS.Disease.Virulence"}}</label>
+          <input type="number" name="system.virulence" value="{{system.virulence}}"/>
+        </div>
+      </div>
+
+      <fieldset>
+        <legend>{{localize "YZEGS.Disease.Timing"}}</legend>
+        <div class="grid grid-2col item-features">
+          <div class="flexcol">
+            <label>{{localize "YZEGS.Disease.Incubation"}}</label>
+            <div class="flexrow">
+              <input type="text" name="system.incubation.formula" value="{{system.incubation.formula}}"/>
+              {{> optionMenu name="system.incubation.unit" selected=system.incubation.unit options=hazardTimeUnitChoices
+                editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+            </div>
+          </div>
+          <div class="flexcol">
+            <label>{{localize "YZEGS.Disease.CheckInterval"}}</label>
+            <div class="flexrow">
+              <input type="text" name="system.interval.formula" value="{{system.interval.formula}}"/>
+              {{> optionMenu name="system.interval.unit" selected=system.interval.unit options=hazardTimeUnitChoices
+                editable=@root.editable noBlank=true menuClass="item-field-menu"}}
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{{localize "YZEGS.Disease.FailedCheck"}}</legend>
+        <div class="grid grid-2col item-features">
+          <div class="flexcol">
+            <label>{{localize "YZEGS.Disease.Damage"}}</label>
+            <input type="number" name="system.harm.damage" min="0" value="{{system.harm.damage}}"/>
+          </div>
+          <div class="flexcol">
+            <label>{{localize "YZEGS.Disease.Stress"}}</label>
+            <input type="number" name="system.harm.stress" min="0" value="{{system.harm.stress}}"/>
+          </div>
+        </div>
+        <div class="form-group-stacked item-properties">
+          <label class="checkbox">{{> checkboxControl name="system.recovery.blocksDamage" value=system.recovery.blocksDamage editable=@root.editable}} {{localize "YZEGS.Disease.BlocksDamageRecovery"}}</label>
+          <label class="checkbox">{{> checkboxControl name="system.recovery.blocksStress" value=system.recovery.blocksStress editable=@root.editable}} {{localize "YZEGS.Disease.BlocksStressRecovery"}}</label>
+          <label class="checkbox">{{> checkboxControl name="system.lethalWhenIncapacitated" value=system.lethalWhenIncapacitated editable=@root.editable}} {{localize "YZEGS.Disease.LethalWhenIncapacitated"}}</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>{{localize "YZEGS.Disease.Treatment"}}</legend>
+        <div class="form-group-stacked item-properties">
+          <label class="checkbox">{{> checkboxControl name="system.treatment.antibioticsEffective" value=system.treatment.antibioticsEffective editable=@root.editable}} {{localize "YZEGS.Disease.AntibioticsEffective"}}</label>
+        </div>
+        <div class="grid grid-2col item-features">
+          <div class="flexcol">
+            <label>{{localize "YZEGS.Disease.AntibioticsModifier"}}</label>
+            <input type="number" name="system.treatment.antibioticsModifier" value="{{system.treatment.antibioticsModifier}}"/>
+          </div>
+          <div class="flexcol">
+            <label>{{localize "YZEGS.Disease.TreatmentNotes"}}</label>
+            <input type="text" name="system.treatment.notes" value="{{system.treatment.notes}}"/>
+          </div>
+        </div>
+      </fieldset>
+
+      {{#if inActor}}
+      <fieldset class="disease-patient-state">
+        <legend>{{localize "YZEGS.Disease.PatientState"}}</legend>
+        <div class="grid grid-2col item-features">
+          <div><strong>{{localize "YZEGS.Disease.Phase"}}:</strong> {{system.state.phase}}</div>
+          <div><strong>{{localize "YZEGS.Disease.FailedChecks"}}:</strong> {{system.state.failedChecks}}</div>
+        </div>
+        <label class="checkbox">{{> checkboxControl name="system.state.antibioticsUsed" value=system.state.antibioticsUsed editable=@root.editable}} {{localize "YZEGS.Disease.AntibioticsUsed"}}</label>
+      </fieldset>
+      {{/if}}
+    </div>
+
+    <div class="tab tab-description" data-group="primary" data-tab="description">
+      {{> "systems/fvtt-yze-generic-stepped/templates/item/parts/item-description.hbs"}}
+    </div>
+  </section>
+</div>

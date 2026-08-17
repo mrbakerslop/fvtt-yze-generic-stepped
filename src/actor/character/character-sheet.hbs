@@ -105,6 +105,7 @@
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs slanted-tabs flexrow flex-center" data-group="primary">
     <a class="item" data-action="tab" data-group="primary" data-tab="main">{{localize "YZEGS.ActorSheet.MainTab"}}</a>
+    <a class="item" data-action="tab" data-group="primary" data-tab="specialties">{{localize "YZEGS.ActorSheet.Specialties"}}</a>
     <a class="item" data-action="tab" data-group="primary" data-tab="combat">{{localize "YZEGS.ActorSheet.CombatTab"}}</a>
     <a class="item" data-action="tab" data-group="primary" data-tab="equipment">{{localize "YZEGS.ActorSheet.EquipmentTab"}}</a>
     {{#if (eq actor.type 'character')}}
@@ -122,6 +123,11 @@
     {{!-- Main Tab --}}
     <div class="tab tab-main flexcol" data-group="primary" data-tab="main">
       {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-stats.hbs"}}
+    </div>
+
+    {{!-- Specialties Tab --}}
+    <div class="tab tab-specialties flexcol" data-group="primary" data-tab="specialties">
+      {{> "systems/fvtt-yze-generic-stepped/templates/actor/parts/actor-specialties.hbs"}}
     </div>
 
     {{!-- Combat Tab --}}

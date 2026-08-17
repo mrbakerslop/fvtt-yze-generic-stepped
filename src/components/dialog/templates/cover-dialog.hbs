@@ -1,4 +1,7 @@
 <div class="yzegs dialog cover-dialog">
+  {{#if data.terrainName}}
+  <p>{{localize "YZEGS.TacticalTerrain.CoverSuggestion" terrain=data.terrainName armor=data.armor}}</p>
+  {{/if}}
   <p>{{localize "YZEGS.Cover.ArmorHint"}}</p>
   <div class="form-group">
     <label>{{localize "YZEGS.Cover.ArmorLevel"}}</label>

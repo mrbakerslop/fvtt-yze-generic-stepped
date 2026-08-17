@@ -1,5 +1,19 @@
 <div class="components-list">
 
+  {{#if isLandVehicle}}
+  <section class="component-section land-vehicle-state">
+    <h3>{{localize "YZEGS.LandVehicle.State.Title"}}</h3>
+    <div class="watercraft-state-grid">
+      <label class="checkbox">{{> checkboxControl name="system.landVehicle.inoperable" value=system.landVehicle.inoperable editable=@root.editable}}{{localize "YZEGS.LandVehicle.State.Inoperable"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.landVehicle.destroyed" value=system.landVehicle.destroyed editable=@root.editable}}{{localize "YZEGS.LandVehicle.State.Destroyed"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.landVehicle.fuelLeak" value=system.landVehicle.fuelLeak editable=@root.editable}}{{localize "YZEGS.LandVehicle.State.FuelLeak"}}</label>
+      <label class="checkbox">{{> checkboxControl name="system.landVehicle.fuelFire" value=system.landVehicle.fuelFire editable=@root.editable}}{{localize "YZEGS.LandVehicle.State.FuelFire"}}</label>
+      <label>{{localize "YZEGS.LandVehicle.State.OriginalFuelMax"}} <input type="number" name="system.landVehicle.originalFuelMax" min="0" value="{{system.landVehicle.originalFuelMax}}"></label>
+      <label>{{localize "YZEGS.LandVehicle.State.FireDeadline"}} <input type="number" name="system.landVehicle.fuelFireDeadline" min="0" value="{{system.landVehicle.fuelFireDeadline}}"></label>
+    </div>
+  </section>
+  {{/if}}
+
   {{#if isWatercraft}}
   <section class="component-section watercraft-settings">
     <h3>{{localize "YZEGS.Watercraft.Settings"}}</h3>

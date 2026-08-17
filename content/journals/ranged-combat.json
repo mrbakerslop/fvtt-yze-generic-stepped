@@ -1,0 +1,66 @@
+{
+  "entry": {
+    "_id": "YZERangeGuide001",
+    "name": "Using Ranged Combat",
+    "categories": [],
+    "folder": null,
+    "sort": 1100000,
+    "ownership": { "default": 2 },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "ranged-combat"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZERangeQuick01X",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Ranged Combat</h1><ol><li>Equip and load a compatible weapon.</li><li>Target exactly one token whenever the attack is directed at a specific target.</li><li>Click the weapon on the Character sheet.</li><li>Review range, stance, cover, movement, and support under <strong>Automatic Rules Modifiers</strong>.</li><li>Choose any optional called shot or one-handed firing mode.</li><li>Confirm the action, finish or push the roll, and use the chat-card controls for damage, suppression, and any friendly-fire check.</li></ol><p>Accurate automation depends on current token positions, elevations, statuses, movement, weapon properties, and Scene grid scale.</p>"
+    },
+    {
+      "_id": "YZERangeAimSht1X",
+      "name": "Aiming, Quick Shots, and Called Shots",
+      "sort": 200000,
+      "content": "<h1>Aiming</h1><p>Use the appropriate Aim action before attacking. The weapon workflow recognizes the stored aim, target, and weapon. Stable scoped aiming can improve the attack and can remove ammunition dice where required.</p><h2>Quick Shots</h2><p>Attacking without the required aim applies the weapon-class quick-shot penalty automatically through the existing preparation workflow.</p><h2>Called Shots</h2><p>Choose a location from <strong>Aimed or Called Hit Location</strong> in the attack dialog. The system applies −2 and uses that location when damage is applied. Leave it set to <strong>Random location</strong> for a normal attack.</p>"
+    },
+    {
+      "_id": "YZERangeBands01X",
+      "name": "Range Bands",
+      "sort": 300000,
+      "content": "<h1>Range Bands</h1><p>The system measures from the attacker's token to the targeted token and compares the distance with the weapon's listed Range.</p><ul><li><strong>Short:</strong> up to the listed Range, no range modifier.</li><li><strong>Medium:</strong> up to twice Range, −1.</li><li><strong>Long:</strong> up to four times Range, −2.</li><li><strong>Extreme:</strong> up to eight times Range, −3.</li><li><strong>Beyond Extreme:</strong> the attack is blocked.</li></ul><p>A 10 m battle grid is converted directly into combat hexes. Metric metre and kilometre Scene scales are also converted. If the Scene uses an unrecognized unit, the grid distance setting is used as a fallback. The calculated band appears on the roll card.</p>"
+    },
+    {
+      "_id": "YZERangeShotgn1X",
+      "name": "Shotguns and Range",
+      "sort": 400000,
+      "content": "<h1>Shotgun Falloff</h1><p>A weapon with the <strong>Shotgun</strong> property does not suffer the ordinary Medium, Long, or Extreme range roll penalties. Instead, its effective damage is reduced by range:</p><ul><li>Medium: −1 damage</li><li>Long: −2 damage</li><li>Extreme: −3 damage</li></ul><p>The attack card displays the reduction, and the reduced damage is passed to the Apply Damage workflow. Ammunition that overrides the loaded weapon profile is resolved before this reduction, so specialty ammunition remains effective.</p>"
+    },
+    {
+      "_id": "YZERangeTarget1X",
+      "name": "Target and Firing Conditions",
+      "sort": 500000,
+      "content": "<h1>Target Conditions</h1><ul><li>A prone target gives −1 unless it occupies the attacker's grid space.</li><li>A character or NPC that moved since the attacker's previous turn gives −1.</li><li>A vehicle target gives +2 for being large.</li><li>Firing from a moving vehicle gives −2.</li><li>An attacker at a higher token elevation receives +1.</li><li>Full cover gives −3 when its stored direction applies.</li></ul><h2>Same-Space Fire</h2><p>Against an active target in the same grid space, a handy weapon receives −1 and other ranged weapons receive −2. A defenseless target instead gives +3.</p><h2>Terrain Assistance</h2><p>When the optional tactical terrain setting is enabled and the target occupies a Tactical Terrain Region, its −1 or −2 ranged modifier is applied automatically unless the attacker shares that grid space. Grid-space area attacks ignore it.</p><h2>Manual Conditions</h2><p>Small targets, darkness, smoke, weather, unmarked terrain, and other circumstances still require a player or GM choice when the canvas cannot determine them reliably.</p>"
+    },
+    {
+      "_id": "YZERangeMGuns01X",
+      "name": "Machine Guns and One-Handed Fire",
+      "sort": 600000,
+      "content": "<h1>Machine-Gun Support</h1><ul><li>An unsupported light machine gun receives −2.</li><li>An unsupported general-purpose machine gun receives −3.</li><li>A heavy machine gun must have a tripod or mounted property before it can fire.</li><li>A tripod- or vehicle-mounted machine gun uses Agility instead of Strength for its attack.</li></ul><p>The Bipod, Tripod, and Mounted weapon properties are treated as active support. Keep these properties consistent with how the weapon is currently deployed.</p><h1>One-Handed Fire</h1><p>For a two-handed weapon that permits it, select <strong>Fire one-handed</strong> in the roll dialog. Pistols have no penalty, carbines and submachine guns receive −2, and rifles receive −3 and are limited to Short range or closer. Machine guns cannot use this option.</p>"
+    },
+    {
+      "_id": "YZERangeFriend1X",
+      "name": "Friendly Fire and Suppression",
+      "sort": 700000,
+      "content": "<h1>Firing Through Friendly Positions</h1><p>When the direct grid path crosses a friendly character or NPC, that Actor is added to the attack's suppression section and must make a Coolness Under Fire test. This applies even when the intended target is not suppressed.</p><p>If the attack misses, the GM sees <strong>Resolve Friendly Fire</strong>. The system rolls two six-sided dice. If either die succeeds, a random crossed friendly is hit; an additional success adds one damage. The hit uses a random location and then passes through the ordinary damage and armor workflow.</p><h2>Suppression</h2><p>Resolve each required Coolness Under Fire button on the attack card. Tokens protected inside a vehicle are shown as immune. Forced friendly-position checks are distinguished from target suppression internally so a missed attack does not remove them.</p>"
+    },
+    {
+      "_id": "YZERangeTroubl1X",
+      "name": "Setup and Troubleshooting",
+      "sort": 800000,
+      "content": "<h1>Weapon Setup</h1><p>Set an accurate weapon Type, Range, ammunition identifier, feeding method, and properties. Machine-gun support and shotgun falloff depend on the weapon's Type and properties. Loaded specialty ammunition can replace the effective damage, critical, blast, range, and armor values.</p><h2>Canvas Setup</h2><p>Use a system Scene grid preset or set meaningful metric units. Keep token position, elevation, prone status, cover status, and movement current.</p><h2>Troubleshooting</h2><ul><li><strong>Wrong range band:</strong> verify Scene grid distance and units, then check the weapon's Range.</li><li><strong>No one-handed option:</strong> the weapon must be marked Two-Handed and belong to a supported class.</li><li><strong>Heavy machine gun cannot fire:</strong> mark it Tripod or Mounted.</li><li><strong>Wrong automatic modifier:</strong> update token status or position before opening the attack dialog.</li><li><strong>No friendly-fire control:</strong> the original attack must miss and its direct grid path must cross a friendly token.</li><li><strong>No suppression controls:</strong> verify that ammunition is loaded and that the affected Actors are valid scene tokens.</li></ul>"
+    }
+  ]
+}

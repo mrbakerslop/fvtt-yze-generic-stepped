@@ -40,6 +40,29 @@ import {
 } from '../system/urban-workflows.js';
 import { isConfinedSpaceScene, isRicochetEligibleWeapon } from '../system/confined-space.js';
 import { isValidGuidedWeaponTarget, targetInFiringArc } from '../system/water-rules.js';
+import {
+  ambushPreventsBlock,
+  consumeAmbushOpening,
+  getAmbushAttackModifier,
+} from '../system/initiative-workflows.js';
+import {
+  prepareCloseCombatEdges,
+  findFriendlyFireTargets,
+  isDefenseless,
+  prepareRangedCombatEdges,
+  prepareRangedCombatPointEdges,
+  movedSincePreviousTurn,
+  sumEdgeModifiers,
+} from '../system/combat-edge-workflows.js';
+import { getMachineGunSupportRule } from '../system/combat-edge-rules.js';
+import { CALLED_VEHICLE_COMPONENTS } from '../system/land-vehicle-damage-rules.js';
+import {
+  getHeavyWeaponAttribute,
+  getHeavyWeaponTargetModifier,
+  isArtilleryWeapon,
+  usesHeavyWeaponRules,
+} from '../system/heavy-weapons.js';
+import { pickExplosionTargetPoint, snapshotCanvasPoint } from '../system/blast-workflows.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Item.
@@ -413,13 +436,12 @@ export default class ItemYZEGS extends Item {
       if (this.type === 'injury') {
         // If there is a heal time set.
         let healTime = this.system.healTime;
-        if (healTime) {
+        if (healTime && !Number(this.system.state?.healingDays)) {
           try {
             const roll = Roll.create(healTime);
             await roll.evaluate();
             healTime = roll.terms.reduce((sum, t) => sum + t.values.reduce((tot, v) => tot + v, 0), 0);
-            healTime = `${healTime} ${game.i18n.localize(`YZEGS.InjurySheet.day${healTime > 1 ? 's' : ''}`)}`;
-            await this.update({ 'system.healTime': healTime });
+            await this.update({ 'system.state.healingDays': Math.max(0, Number(healTime) || 0) });
           }
           catch (e) {
             console.warn('yzegs | Item#_onCreate | Invalid formula for Injury heal time roll.');
@@ -513,6 +535,12 @@ export default class ItemYZEGS extends Item {
       return ui.notifications.warn(game.i18n.format('YZEGS.Jam.CannotFire', { weapon: this.name }));
     }
     const bearer = actor ?? this.actor;
+    if (bearer.type === 'vehicle' && bearer.system.domain === 'land'
+      && bearer.system.landVehicle?.destroyed) {
+      return ui.notifications.warn(game.i18n.format('YZEGS.LandVehicle.Errors.Destroyed', {
+        vehicle: bearer.name,
+      }));
+    }
     const bearerInWater = bearer.statuses?.has?.('swimming') || bearer.statuses?.has?.('submerged');
     if (bearerInWater && this.type === 'weapon' && Boolean(this.system.ammo)) {
       return ui.notifications.warn(game.i18n.localize('YZEGS.Water.Errors.NoRangedWhileSwimming'));
@@ -532,15 +560,22 @@ export default class ItemYZEGS extends Item {
 
     // Prepares data.
     const itemData = this.system;
+    const heavyWeaponRules = usesHeavyWeaponRules(this);
+    const artillery = isArtilleryWeapon(this);
     let defaultActionId = 'meleeAttack';
     if (this.type === 'grenade') defaultActionId = 'throwWeapon';
     else if (/bow|crossbow/.test(itemType)) defaultActionId = 'shootBow';
-    else if (itemData.props?.heavyWeapon) defaultActionId = 'shootHeavyWeapon';
+    else if (heavyWeaponRules) defaultActionId = 'shootHeavyWeapon';
     else if (itemData.ammo) defaultActionId = 'shootFirearm';
     let title = game.i18n.format('YZEGS.Combat.Attack', { weapon: this.name });
     let qty = itemData.qty;
     const skillItem = actor?.getSkill(itemData.skill) ?? this.actor.getSkill(itemData.skill);
-    const attributeName = skillItem?.system.attribute ?? itemData.attribute;
+    let attributeName = skillItem?.system.attribute ?? itemData.attribute;
+    const machineGunSupport = getMachineGunSupportRule(itemData.itemType, itemData.props);
+    const heavyAttribute = getHeavyWeaponAttribute(this);
+    if (heavyAttribute) attributeName = heavyAttribute;
+    if (machineGunSupport.machineGun
+      && (itemData.props?.tripod || itemData.props?.mounted)) attributeName = 'agl';
     const skillName = skillItem?.id ?? itemData.skill;
     const isDisposable = itemData.props.disposable;
 
@@ -565,9 +600,21 @@ export default class ItemYZEGS extends Item {
     const actorData = actor.system;
     const attribute = actorData.attributes?.[attributeName]?.value ?? 0;
     const skill = skillItem?.system.value ?? 0;
-    let rof = itemData.rof;
+    let rof = heavyWeaponRules ? 0 : itemData.rof;
     let targetTokens = [...(game.user.targets ?? [])];
     let targetActors = targetTokens.map(token => token.actor).filter(Boolean);
+    if (options?.targetActorUuid) {
+      try {
+        // eslint-disable-next-line no-undef
+        const explicitTarget = await fromUuid(options.targetActorUuid);
+        const explicitActor = explicitTarget?.actor ?? explicitTarget;
+        if (explicitActor) {
+          targetActors = [explicitActor];
+          targetTokens = explicitActor.getActiveTokens?.(true, true) ?? [];
+        }
+      }
+      catch (_error) { /* Validation below handles a stale explicit target. */ }
+    }
     if (options?.defense?.defenderUuid) {
       try {
         // A declared attack remains tied to the defender who answered it even if
@@ -589,7 +636,84 @@ export default class ItemYZEGS extends Item {
         targetTokens = resolvedTarget.getActiveTokens?.(true, true) ?? [];
       }
     }
-    if (this.system.guidance?.mode !== 'none') {
+    const effectiveProfile = getEffectiveWeaponProfile(
+      this,
+      this.actor.items.get(this.system.mag.target),
+    );
+    const explosiveAttack = ['A', 'B', 'C', 'D'].includes(
+      String(effectiveProfile.blast ?? '').toLocaleUpperCase(),
+    );
+    const guidance = this.system.guidance ?? { mode: 'none' };
+    const guidanceMode = guidance.mode ?? 'none';
+    let targetPoint = targetTokens[0]?.center
+      ? snapshotCanvasPoint(targetTokens[0].center)
+      : null;
+    if (explosiveAttack && !targetActors.length && guidanceMode === 'none') {
+      targetPoint = await pickExplosionTargetPoint();
+      if (!targetPoint) return null;
+    }
+    let targetMode = '';
+    if (targetActors[0]) {
+      targetMode = ['character', 'npc'].includes(targetActors[0].type) ? 'individual' : 'large';
+    }
+    else if (targetPoint) targetMode = 'hex';
+    const ambushOpening = targetActors.length === 1 && ambushPreventsBlock(actor, targetActors[0]);
+    const ambushModifier = ambushOpening ? getAmbushAttackModifier(actor, targetActors[0]) : 0;
+    const isRangedAttack = defaultActionId !== 'meleeAttack';
+    let combatEdges = { modifiers: [], damageReduction: 0, band: '', forcedLocation: '' };
+    if (isRangedAttack) {
+      combatEdges = targetMode === 'hex'
+        ? prepareRangedCombatPointEdges(actor, targetPoint, this)
+        : prepareRangedCombatEdges(actor, targetActors[0] ?? null, this);
+      const heavyTargetModifier = getHeavyWeaponTargetModifier(this, targetMode);
+      if (heavyTargetModifier) {
+        combatEdges.modifiers.push({
+          id: 'heavy-individual-target',
+          label: game.i18n.localize('YZEGS.Heavy.Modifiers.IndividualTarget'),
+          value: heavyTargetModifier,
+          displayValue: `−${Math.abs(heavyTargetModifier)}`,
+        });
+      }
+      const enclosing = actor.type === 'vehicle'
+        ? { vehicle: actor }
+        : getEnclosingVehicle(actor, game.actors);
+      const stabilized = Boolean(
+        this.system.featuresForVehicle?.s
+        || (
+          this.system.featuresForVehicle?.fcs
+          && this.actor?.system.components?.fcs?.active
+          && Number(this.actor.system.components.fcs.damage) < 1
+        ),
+      );
+      if (enclosing?.vehicle && movedSincePreviousTurn(actor, enclosing.vehicle) && !stabilized) {
+        combatEdges.modifiers.push({
+          id: 'ranged-moving-vehicle',
+          label: game.i18n.localize('YZEGS.CombatModifiers.Entries.rangedMovingVehicle'),
+          value: -2,
+          displayValue: '−2',
+        });
+      }
+      if (combatEdges.unsupported) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.HeavyMachineGunSupport'));
+      }
+    }
+    else if (targetActors.length === 1) combatEdges = prepareCloseCombatEdges(actor, targetActors[0]);
+    if (targetActors.length === 1) {
+      if (!isRangedAttack && combatEdges.differentHex) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.CloseSameHex'));
+      }
+      if (isRangedAttack && combatEdges.outOfRange) {
+        return ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.OutOfRange'));
+      }
+    }
+    else if (targetMode === 'hex' && isRangedAttack && combatEdges.outOfRange) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.OutOfRange'));
+    }
+    if (this.type === 'grenade'
+      && !['', 'sameHex', 'short'].includes(combatEdges.band)) {
+      return ui.notifications.warn(game.i18n.localize('YZEGS.Heavy.Errors.GrenadeShortRange'));
+    }
+    if (guidanceMode !== 'none') {
       if (targetActors.length !== 1) {
         return ui.notifications.warn(game.i18n.localize('YZEGS.Guidance.Errors.SingleTarget'));
       }
@@ -609,6 +733,8 @@ export default class ItemYZEGS extends Item {
     if (
       isBlockableAction(defaultActionId)
       && !options?.skipDefenseDeclaration
+      && !ambushOpening
+      && !isDefenseless(targetActors[0])
     ) {
       if (targetActors.length !== 1) {
         return ui.notifications.warn(game.i18n.localize('YZEGS.Defense.SelectSingleTarget'));
@@ -725,7 +851,11 @@ export default class ItemYZEGS extends Item {
       });
     }
     rollConfig.combatActionChoices = rollConfig.hideCombatActions ? [] : actionChoices;
-    rollConfig.modifier = (Number(rollConfig.modifier) || 0) + rangedPreparation.modifier;
+    rollConfig.modifier = (Number(rollConfig.modifier) || 0)
+      + rangedPreparation.modifier
+      + ambushModifier
+      + sumEdgeModifiers(combatEdges.modifiers);
+    rollConfig.automaticModifiers = [...combatEdges.modifiers];
     if (bearerInWater && this.type === 'weapon' && this.system.props?.swinging) rollConfig.modifier -= 2;
     if (targetActors.length === 1
       && (targetActors[0].statuses?.has?.('swimming') || targetActors[0].statuses?.has?.('submerged'))
@@ -735,14 +865,50 @@ export default class ItemYZEGS extends Item {
       defaultActionId !== 'meleeAttack'
       && targetCover?.type === 'fullCover'
       && coverAppliesAgainst(targetCover, actor.uuid)
-    ) rollConfig.modifier -= 3;
+    ) {
+      rollConfig.modifier -= 3;
+      rollConfig.automaticModifiers.push({
+        id: 'ranged-full-cover',
+        label: game.i18n.localize('YZEGS.CombatModifiers.Entries.rangedFullCover'),
+        value: -3,
+        displayValue: '−3',
+      });
+    }
     // Better to not put them in a mergeObject:
     rollConfig.actor = actor;
     rollConfig.item = this;
-    rollConfig.attackData = getEffectiveWeaponProfile(
-      this,
-      this.actor.items.get(this.system.mag.target),
-    );
+    rollConfig.attackData = effectiveProfile;
+    rollConfig.attackData.machineGunAgility = attributeName === 'agl'
+      && machineGunSupport.machineGun
+      && (itemData.props?.tripod || itemData.props?.mounted);
+    rollConfig.attackData.ignoreCover = !isRangedAttack;
+    if (combatEdges.damageReduction) {
+      rollConfig.attackData.damage = Math.max(
+        0,
+        Number(rollConfig.attackData.damage) - combatEdges.damageReduction,
+      );
+      rollConfig.attackData.shotgunDamageReduction = combatEdges.damageReduction;
+    }
+    if (combatEdges.band) rollConfig.attackData.rangeBand = combatEdges.band;
+    if (combatEdges.fireControlRange) rollConfig.attackData.fireControlRange = true;
+    if (combatEdges.forcedLocation) rollConfig.attackData.forcedLocation = combatEdges.forcedLocation;
+    if (targetActors.length === 1) {
+      rollConfig.attackData.automatedModifierIds = isRangedAttack ? [
+        'ranged-short-range', 'ranged-medium-range', 'ranged-long-range', 'ranged-extreme-range',
+        'ranged-active-same-hex-handy', 'ranged-active-same-hex-other',
+        'ranged-defenseless-same-hex', 'ranged-target-prone', 'ranged-full-cover',
+        'ranged-large-target', 'ranged-moving-target', 'ranged-moving-vehicle',
+        'ranged-elevated-position',
+      ] : [
+        'close-attacker-prone', 'close-target-prone', 'close-defenseless-target',
+      ];
+    }
+    if (combatEdges.oneHanded?.allowed && this.system.props?.twoHanded) {
+      rollConfig.attackData.oneHanded = {
+        ...combatEdges.oneHanded,
+        beyondShort: combatEdges.oneHandedBeyondShort,
+      };
+    }
     rollConfig.attackData.confinedSpace = isConfinedSpaceScene();
     rollConfig.attackData.ricochetEligible = rollConfig.attackData.confinedSpace
       && this.type === 'weapon'
@@ -750,9 +916,64 @@ export default class ItemYZEGS extends Item {
     rollConfig.attackData.airburst = Boolean(this.system.props?.airburst);
     rollConfig.attackData.directional = Boolean(this.system.props?.directional);
     rollConfig.attackData.sourceActorUuid = actor.uuid;
-    rollConfig.attackData.guidance = foundry.utils.deepClone(this.system.guidance);
+    rollConfig.attackData.sourceItemUuid = this.uuid;
+    rollConfig.attackData.targetPoint = targetPoint;
+    rollConfig.attackData.targetMode = targetMode;
+    rollConfig.attackData.heavyWeaponRules = heavyWeaponRules;
+    rollConfig.attackData.artillery = artillery;
+    rollConfig.attackData.indirectFireAllowed = Boolean(
+      heavyWeaponRules && this.system.props?.indirectFire,
+    );
+    rollConfig.attackData.indirectFireObserved = Boolean(
+      actor.getFlag('fvtt-yze-generic-stepped', 'indirectFireObservation')?.ready,
+    );
+    if (artillery) {
+      const correction = actor.getFlag('fvtt-yze-generic-stepped', 'artilleryCorrection');
+      const samePoint = correction?.itemUuid === this.uuid
+        && correction?.targetPoint?.sceneId === targetPoint?.sceneId
+        && correction?.targetPoint?.i === targetPoint?.i
+        && correction?.targetPoint?.j === targetPoint?.j;
+      const correctionBonus = samePoint ? Math.min(3, Number(correction.bonus) || 0) : 0;
+      if (correctionBonus) {
+        rollConfig.modifier += correctionBonus;
+        rollConfig.automaticModifiers.push({
+          id: 'artillery-correction',
+          label: game.i18n.localize('YZEGS.Heavy.Modifiers.Correction'),
+          value: correctionBonus,
+          displayValue: `+${correctionBonus}`,
+        });
+        rollConfig.attackData.correctionBonus = correctionBonus;
+      }
+    }
+    rollConfig.attackData.guidance = foundry.utils.deepClone(guidance);
     if (targetActors.length === 1) rollConfig.attackData.primaryTargetUuid = targetActors[0].uuid;
-    const isSuppressiveFire = this.type === 'weapon' && !isBow && Boolean(itemData.ammo);
+    if (this.type === 'weapon' && targetActors.length === 1 && targetActors[0].type === 'vehicle'
+      && targetActors[0].system.domain === 'land') {
+      rollConfig.locate = false;
+      rollConfig.attackData.vehicleComponentChoices = Object.fromEntries([
+        ['none', ''],
+        ...CALLED_VEHICLE_COMPONENTS.map(component => [
+          component,
+          `YZEGS.LandVehicle.Components.${component}`,
+        ]),
+      ]);
+    }
+    const friendlyFireTargets = isRangedAttack && targetActors.length === 1 && Boolean(itemData.ammo)
+      ? findFriendlyFireTargets(actor, targetActors[0])
+      : [];
+    if (friendlyFireTargets.length) {
+      rollConfig.attackData.friendlyFireTargets = friendlyFireTargets.map(entry => ({
+        actorUuid: entry.actorUuid,
+        tokenUuid: entry.tokenUuid,
+        name: entry.name,
+      }));
+    }
+    // An explosive attack resolves its single suppression trigger with the
+    // separate blast rolls, avoiding duplicate CUF checks for a direct target.
+    const isSuppressiveFire = this.type === 'weapon'
+      && !isBow
+      && Boolean(itemData.ammo)
+      && !explosiveAttack;
     if (isSuppressiveFire) {
       const seenTargets = new Set();
       const suppressionTargets = targetActors.filter(target => {
@@ -776,6 +997,21 @@ export default class ItemYZEGS extends Item {
           vehicleName: target.type === 'vehicle' ? target.name : enclosing?.vehicle?.name ?? '',
         };
       });
+      for (const friendly of friendlyFireTargets) {
+        if (seenTargets.has(friendly.actorUuid)) continue;
+        seenTargets.add(friendly.actorUuid);
+        const enclosing = getEnclosingVehicle(friendly.actor, game.actors);
+        suppressionTargets.push({
+          actorUuid: friendly.actorUuid,
+          tokenUuid: friendly.tokenUuid,
+          name: friendly.name,
+          cause: 'friendlyFire',
+          sourceName: actor.name,
+          force: true,
+          status: enclosing ? 'immune' : 'pending',
+          vehicleName: enclosing?.vehicle?.name ?? '',
+        });
+      }
       rollConfig.suppression = {
         complete: suppressionTargets.length > 0
           && suppressionTargets.every(target => target.status !== 'pending'),
@@ -788,7 +1024,19 @@ export default class ItemYZEGS extends Item {
     if (!message) return;
     if (message instanceof YearZeroRoll) return message;
 
+    if (ambushOpening) await consumeAmbushOpening(actor);
+
     const roll = message.rolls[0];
+
+    if (roll.options.attackData?.indirectFire) {
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'indirectFireObservation');
+    }
+    const explosiveHit = Number(roll.baseSuccessQty) > 0
+      && !roll.options.attackData?.automaticDeviation;
+    if (artillery && explosiveHit) {
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'artilleryDeviation');
+      await actor.unsetFlag('fvtt-yze-generic-stepped', 'artilleryCorrection');
+    }
 
     if (defaultActionId === 'meleeAttack' && targetActors.length === 1) {
       await beginCloseQuartersEngagement(actor, targetActors[0]);
@@ -905,6 +1153,14 @@ export default class ItemYZEGS extends Item {
   /** Reload this weapon using the Twilight: 2000 action and skill procedure. */
   async reload() {
     if (this.type !== 'weapon' || !this.hasAmmo || !this.actor || !this.isOwner) return null;
+    const { canActorAttemptAction, getActorImpairment } = await import('../system/critical-injuries.js');
+    if (!canActorAttemptAction(this.actor, 'reload')) {
+      const state = getActorImpairment(this.actor);
+      ui.notifications.warn(game.i18n.localize(state.dead
+        ? 'YZEGS.Critical.Errors.DeadCannotAct'
+        : 'YZEGS.Critical.Errors.IncapacitatedCannotAct'));
+      return null;
+    }
 
     const internal = weaponUsesInternalMagazine(this);
     const loaded = internal
@@ -1070,6 +1326,14 @@ export default class ItemYZEGS extends Item {
   /** Attempt to clear this Weapon's persistent jam using its linked combat Skill. */
   async clearJam() {
     if (this.type !== 'weapon' || !this.actor || !this.isOwner) return null;
+    const { canActorAttemptAction, getActorImpairment } = await import('../system/critical-injuries.js');
+    if (!canActorAttemptAction(this.actor, 'clearJam')) {
+      const state = getActorImpairment(this.actor);
+      ui.notifications.warn(game.i18n.localize(state.dead
+        ? 'YZEGS.Critical.Errors.DeadCannotAct'
+        : 'YZEGS.Critical.Errors.IncapacitatedCannotAct'));
+      return null;
+    }
     if (!this.system.jammed) {
       ui.notifications.info(game.i18n.format('YZEGS.Jam.NotJammed', { weapon: this.name }));
       return null;

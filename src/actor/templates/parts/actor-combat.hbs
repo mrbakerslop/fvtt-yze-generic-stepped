@@ -1,5 +1,12 @@
 <div class="combat-grid">
 
+  {{#if impairment.label}}
+  <div class="critical-impairment-banner">
+    <i class="fa-solid {{#if impairment.dead}}fa-skull{{else}}fa-person-falling{{/if}}"></i>
+    <strong>{{impairment.label}}</strong>
+  </div>
+  {{/if}}
+
   {{!-- COMBAT --}}
   <div class="combat">
     <h2>{{localize "YZEGS.ActorSheet.Combat"}}</h2>
@@ -128,6 +135,11 @@
           {{!-- <h4>{{localize (concat "YZEGS.ActorSheet.ConditionNames." condition)}}</h4> --}}
           {{> checkboxControl name=(concat "system.conditions." condition) value=value editable=@root.editable}}
           <span class="condition-label">{{localize (concat "YZEGS.ConditionNames." condition)}}</span>
+          {{#if (and (eq condition "hypothermic") value)}}
+          <button type="button" class="hypothermia-check" title="{{localize 'YZEGS.Hazards.RollHypothermia'}}">
+            <i class="fa-solid fa-dice"></i>
+          </button>
+          {{/if}}
         </label>
       </div>
       {{/each}}
@@ -136,7 +148,7 @@
   {{/if}}
 
   {{!-- CRITICAL INJURIES --}}
-  {{#if (eq actor.type 'character')}}
+  {{#if (or (eq actor.type 'character') (eq actor.type 'npc'))}}
   <div class="critical-injuries">
     <h2 class="injuries-title">
       <span>{{localize "YZEGS.ActorSheet.CriticalInjuries"}}</span>
@@ -147,11 +159,40 @@
       </span>
     </h2>
     <div class="injuries-list">
-      {{#each actor.itemTypes.injury}}
+      {{#each criticalInjuries}}
       <div class="item injury" data-item-id="{{id}}">
-        <a class="item-edit">
-          <span class="injury-name">{{name}}</span>
-        </a>
+        <div class="injury-summary">
+          <a class="item-edit"><span class="injury-name">{{name}}</span></a>
+          {{#if lethal}}<span class="injury-lethal">{{localize "YZEGS.Critical.Lethal"}}</span>{{/if}}
+          {{#if deadline}}<span class="injury-deadline">{{deadline}}</span>{{/if}}
+          {{#if healingDays}}<span class="injury-healing">{{localize "YZEGS.Critical.HealingDays" days=healingDays}}</span>{{/if}}
+          {{#if treatmentActive}}<span class="injury-treatment">
+            {{localize "YZEGS.Critical.TreatmentBy" name=treatmentHealer}}</span>{{/if}}
+        </div>
+        <span class="injury-actions">
+          {{#if due}}
+          <button type="button" class="critical-death-save" title="{{localize 'YZEGS.Critical.RollDeathSave'}}">
+            <i class="fa-solid fa-dice"></i>
+          </button>
+          {{/if}}
+          {{#if lethal}}
+            {{#unless instantDeath}}{{#unless stabilized}}
+              {{#if canResolveTreatment}}
+              <button type="button" class="critical-resolve-treatment" title="{{localize 'YZEGS.Critical.ResolveTreatment'}}">
+                <i class="fa-solid fa-notes-medical"></i>
+              </button>
+              {{else}}
+                {{#unless treatmentActive}}
+                {{#unless stabilizationLocked}}
+                <button type="button" class="critical-stabilize" title="{{localize 'YZEGS.Critical.Stabilize'}}">
+                  <i class="fa-solid fa-kit-medical"></i>
+                </button>
+                {{/unless}}
+                {{/unless}}
+              {{/if}}
+            {{/unless}}{{/unless}}
+          {{/if}}
+        </span>
         <a class="btn btn-small item-delete" title="{{localize "YZEGS.ActorSheet.Delete"}}">
           {{{@root.config.Icons.buttons.delete}}}
         </a>
@@ -163,14 +204,47 @@
   </div>
   {{/if}}
 
-</div>
-
-{{#if (eq actor.type 'character')}}
-<div class="combat-details flexcol">
-  <h3 class="diseases-title">{{localize "YZEGS.ActorSheet.Diseases"}}</h3>
-  <textarea name="system.diseases" rows="2">{{system.diseases}}</textarea>
+{{#if (or (eq actor.type 'character') (eq actor.type 'npc'))}}
+<div class="disease-items">
+  <h2 class="diseases-title">
+    <span>{{localize "YZEGS.ActorSheet.Diseases"}}</span>
+    <span class="item-controls">
+      <a class="button item-create" data-type="disease" title="{{localize 'YZEGS.Disease.Add'}}">
+        {{{config.Icons.buttons.plus}}}
+      </a>
+    </span>
+  </h2>
+  <div class="diseases-list">
+    {{#each diseaseItems}}
+    <div class="item disease" data-item-id="{{id}}">
+      <div class="disease-summary">
+        <a class="item-edit"><strong>{{name}}</strong></a>
+        <span class="disease-phase">{{phaseLabel}}</span>
+        {{#if antibioticsUsed}}<span><i class="fa-solid fa-pills"></i> {{localize "YZEGS.Disease.AntibioticsUsed"}}</span>{{/if}}
+        {{#if caregiverName}}<span>{{localize "YZEGS.Disease.TreatedBy" name=caregiverName}}</span>{{/if}}
+      </div>
+      <span class="disease-actions">
+        {{#unless recovered}}
+        <button type="button" class="disease-check {{#if due}}due{{/if}}" title="{{localize 'YZEGS.Disease.RollCheck'}}">
+          <i class="fa-solid fa-dice"></i>
+        </button>
+        <button type="button" class="disease-treat" title="{{localize 'YZEGS.Disease.Treat'}}">
+          <i class="fa-solid fa-user-doctor"></i>
+        </button>
+        {{/unless}}
+      </span>
+      <a class="btn btn-small item-delete" title="{{localize 'YZEGS.ActorSheet.Delete'}}">
+        {{{@root.config.Icons.buttons.delete}}}
+      </a>
+    </div>
+    {{else}}
+    <div class="no-disease">—</div>
+    {{/each}}
+  </div>
 </div>
 {{/if}}
+
+</div>
 
 {{!-- RADIATION --}}
 {{#if (eq actor.type 'character')}}

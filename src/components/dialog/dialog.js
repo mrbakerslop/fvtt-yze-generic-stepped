@@ -80,6 +80,25 @@ export default class YZEGSDialog {
       modifierInput.value = value >= 0 ? `+${value}` : value;
     });
 
+    const calledLocation = dialog.element.querySelector('input[name="calledLocation"]');
+    if (calledLocation) {
+      calledLocation.addEventListener('change', function () {
+        const modifierInput = dialog.element.querySelector('input[name="modifier"]');
+        const previous = Number(this.dataset.currentModifier) || 0;
+        const current = this.value ? -2 : 0;
+        const value = (Number(modifierInput?.value) || 0) - previous + current;
+        if (modifierInput) modifierInput.value = value >= 0 ? `+${value}` : value;
+        this.dataset.currentModifier = String(current);
+      });
+    }
+
+    html.find('.checkbox-control-toggle.one-handed-toggle').on('change', function () {
+      const modifierInput = dialog.element.querySelector('input[name="modifier"]');
+      const penalty = Number(this.dataset.value) || 0;
+      const value = (Number(modifierInput?.value) || 0) + (this.checked ? penalty : -penalty);
+      if (modifierInput) modifierInput.value = value >= 0 ? `+${value}` : value;
+    });
+
     html.find('.checkbox-control-toggle.situational-modifier').on('change', function () {
       const exclusiveGroup = this.dataset.exclusiveGroup;
       if (!this.checked || !exclusiveGroup) return;
@@ -352,6 +371,9 @@ export default class YZEGSDialog {
       targetUuid: form.elements.namedItem('targetUuid')?.value ?? '',
       itemId: form.elements.namedItem('itemId')?.value ?? '',
       situationalModifiers,
+      calledLocation: form.elements.namedItem('calledLocation')?.value ?? '',
+      oneHanded: form.elements.namedItem('oneHanded')?.value === 'true',
+      indirectFire: form.elements.namedItem('indirectFire')?.value === 'true',
       locate: form.elements.namedItem('locate')?.value === 'true',
       maxPush: parseInt(form.maxPush.value) || 1,
       messageMode: form.messageMode.value,
@@ -373,7 +395,7 @@ export default class YZEGSDialog {
   }
 
   static async chooseBlastResolution({
-    blast = 'D', indoor = false, airburst = false, directional = false,
+    blast = 'D', indoor = false, airburst = false, directional = false, automatic = false,
   } = {}, options) {
     const content = await foundry.applications.handlebars.renderTemplate(
       'systems/fvtt-yze-generic-stepped/templates/components/dialog/blast-dialog.hbs',
@@ -383,6 +405,7 @@ export default class YZEGSDialog {
           indoor,
           airburst,
           directional,
+          automatic,
           blastChoices: { A: 'A', B: 'B', C: 'C', D: 'D' },
         },
       },
@@ -549,6 +572,20 @@ export default class YZEGSDialog {
       title: game.i18n.localize('YZEGS.Defense.Block'),
       content,
       actionLabel: game.i18n.localize('YZEGS.Defense.DeclareBlock'),
+      processForm: form => ({ itemUuid: form.elements.namedItem('itemUuid')?.value ?? '' }),
+      options,
+    });
+  }
+
+  static async chooseCloseAttackMethod(attackData, options) {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      'systems/fvtt-yze-generic-stepped/templates/components/dialog/close-attack-choice-dialog.hbs',
+      { data: attackData },
+    );
+    return this._wait({
+      title: game.i18n.localize('YZEGS.ActionNames.retreatFreeAttack'),
+      content,
+      actionLabel: game.i18n.localize('YZEGS.CombatEdges.RollFreeAttack'),
       processForm: form => ({ itemUuid: form.elements.namedItem('itemUuid')?.value ?? '' }),
       options,
     });

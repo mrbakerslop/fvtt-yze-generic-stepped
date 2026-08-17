@@ -1,0 +1,72 @@
+{
+  "entry": {
+    "_id": "YZEHeavyGuide001",
+    "name": "Using Heavy Weapons and Explosions",
+    "categories": [],
+    "folder": null,
+    "sort": 1300000,
+    "ownership": { "default": 2 },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "heavy-weapons-explosions"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZEHeavyQuick01X",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Heavy Weapons and Explosions</h1><ol><li>Configure the weapon and its Heavy Weapon, Artillery, Indirect Fire Capable, Airburst, and Directional properties as appropriate.</li><li>Equip and load the weapon.</li><li>Use an Aim action before firing a heavy weapon.</li><li>Target a token for a direct hit or clear all token targets and click the weapon, then click a grid space.</li><li>Finish the attack roll. On a miss, use <strong>Resolve Deviation</strong>.</li><li>Use <strong>Resolve Blast</strong> to create the separate explosion rolls and suppression checks.</li></ol><p>Token positions, the Scene grid, prone and cover states, loaded ammunition, and weapon properties all affect automation.</p>"
+    },
+    {
+      "_id": "YZEHeavySetup01X",
+      "name": "Weapon Setup",
+      "sort": 200000,
+      "content": "<h1>Weapon Properties</h1><ul><li><strong>Heavy Weapon:</strong> enables launcher and cannon handling, including mandatory aiming, no ammunition dice, and one round expended per attack.</li><li><strong>Artillery:</strong> uses Intelligence, requires the slow artillery Aim action, and supports correction.</li><li><strong>Indirect Fire Capable:</strong> adds an Indirect Fire checkbox to the attack dialog.</li><li><strong>Tripod or Mounted:</strong> a non-artillery heavy weapon uses Agility instead of Strength.</li><li><strong>Airburst:</strong> prevents prone from reducing the blast rating.</li><li><strong>Directional:</strong> uses slower blast falloff and requires the GM to select only tokens in the forward arc.</li></ul><h2>Machine Guns</h2><p>Machine guns use their configured skill but follow ordinary ranged-weapon preparation, ammunition-dice, and reload rules. The Heavy Weapon property does not make a machine gun use launcher rules.</p>"
+    },
+    {
+      "_id": "YZEHeavyRules01X",
+      "name": "Aiming, Attributes, and Ammunition",
+      "sort": 300000,
+      "content": "<h1>Firing Requirements</h1><p>A heavy weapon cannot fire until its current stored Aim matches that weapon and target. Ordinary heavy weapons use a Fast Aim; artillery uses <strong>Aim mortar or howitzer</strong>, which is Slow. Heavy weapons cannot make quick shots.</p><h2>Attributes</h2><ul><li>Man-portable heavy weapon: Strength</li><li>Tripod- or vehicle-mounted heavy weapon: Agility</li><li>Artillery: Intelligence</li></ul><h2>Ammunition and Reloading</h2><p>Heavy attacks add no ammunition dice and consume one round. In active combat, reloading a heavy weapon costs a Slow Action and requires no roll. Out of combat, the reload is automatic and its duration is narrative.</p>"
+    },
+    {
+      "_id": "YZEHeavyTarget1X",
+      "name": "Choosing a Target",
+      "sort": 400000,
+      "content": "<h1>Token or Grid Space</h1><p><strong>Direct target:</strong> target one token before clicking the weapon. An individual character receives the automatic −2 heavy-weapon target modifier. Large targets do not receive the usual large-target bonus. A successful direct hit can apply weapon damage and then resolves blast separately.</p><p><strong>Grid-space target:</strong> clear all token targets, click the weapon, and click the desired grid space when the crosshair appears. Escape cancels selection. Terrain in the target space does not alter this roll. A success hits that space; extra successes do not increase damage or blast.</p><p>Range is measured to the token or selected grid space. Hand-thrown explosives are limited to Short range.</p>"
+    },
+    {
+      "_id": "YZEHeavyDeviat1X",
+      "name": "Deviation",
+      "sort": 500000,
+      "content": "<h1>Resolving a Miss</h1><p>A failed explosive attack displays <strong>Resolve Deviation</strong> on its chat card. The system rolls two six-sided dice: one selects north, north-east, south-east, south, south-west, or north-west; the other gives distance. Distance cannot exceed half the range from attacker to intended grid space, rounded up.</p><p>The resulting detonation point is stored on the attack, displayed on the card, and pinged on the Scene. Resolve Blast then measures from that final point. Deviation must be resolved before the blast.</p><p>An unobserved indirect shot deviates automatically even if the attack roll has successes.</p>"
+    },
+    {
+      "_id": "YZEHeavyIndire1X",
+      "name": "Indirect Fire and Correction",
+      "sort": 600000,
+      "content": "<h1>Observed Indirect Fire</h1><ol><li>The observer selects the gunner as the action target.</li><li>The observer performs <strong>Direct indirect fire</strong> and applies its successful outcome.</li><li>The gunner aims the artillery at the intended grid space.</li><li>The gunner attacks, selects <strong>Indirect Fire</strong>, and confirms the roll.</li></ol><p>The observation is consumed by that indirect shot. Without a ready observation, the shot automatically deviates.</p><h2>Correction</h2><p>After an artillery shot deviates, an observer can target the gunner and perform <strong>Correct indirect fire</strong>. Each correction adds +1 to a later attack with the same weapon at the same grid space, to a maximum of +3. A successful hit clears stored deviation and correction. Changing the weapon or target space prevents the old correction from applying.</p>"
+    },
+    {
+      "_id": "YZEHeavyBlast01X",
+      "name": "Explosion Profiles and Falloff",
+      "sort": 700000,
+      "content": "<h1>Separate Blast Rolls</h1><p>A direct explosive hit and its explosion are separate effects. Apply the direct weapon hit when relevant, then use <strong>Resolve Blast</strong>. Each affected target receives an unpushable two-die blast roll using the effective profile below.</p><table><thead><tr><th>Blast</th><th>Dice</th><th>Damage</th><th>Critical</th><th>Armor</th></tr></thead><tbody><tr><td>A</td><td>2d12</td><td>4</td><td>3</td><td>+1</td></tr><tr><td>B</td><td>2d10</td><td>3</td><td>3</td><td>+1</td></tr><tr><td>C</td><td>2d8</td><td>2</td><td>3</td><td>+1</td></tr><tr><td>D</td><td>2d6</td><td>1</td><td>2</td><td>+1</td></tr></tbody></table><p>The detonation grid space uses the full rating. Ordinary blasts decrease one step per grid space. Directional blasts decrease one step per three grid spaces. Below D there is no blast roll.</p>"
+    },
+    {
+      "_id": "YZEHeavyProtectX",
+      "name": "Prone, Cover, Vehicles, and Suppression",
+      "sort": 800000,
+      "content": "<h1>Protection</h1><ul><li><strong>Prone:</strong> reduces the effective blast one step unless the explosion is an airburst.</li><li><strong>Same grid space:</strong> cover is ignored.</li><li><strong>Partial cover:</strong> its stored protection is passed to the damage workflow for protected hit locations.</li><li><strong>Full cover:</strong> completely blocks the explosion when the blast cannot penetrate it.</li><li><strong>Inside a vehicle:</strong> occupants are skipped; resolve any effect against the vehicle itself.</li></ul><h2>Diving from a Hand Grenade</h2><p>If a hand grenade lands in a character's grid space, use the reactive <strong>Drop prone from a grenade</strong> Mobility action before resolving the blast. Apply its successful outcome to set the Prone status; Resolve Blast then applies the one-step reduction automatically.</p><h2>Suppression</h2><p>Every affected person receives a forced suppression check even when the separate blast roll causes no damage. The suppression workflow makes every affected person prone when their check is made, and a failed check also applies normal suppression. Vehicle Actors and occupants protected inside a vehicle are immune.</p><h2>Confined Spaces</h2><p>When the Scene uses confined-space hazards, the blast rating is increased before distance and protection are resolved. Existing collapse and other confined-space chat controls remain available.</p>"
+    },
+    {
+      "_id": "YZEHeavyTroubl1X",
+      "name": "Directional Blasts and Troubleshooting",
+      "sort": 900000,
+      "content": "<h1>Directional and Contained Resolution</h1><p>The canvas cannot infer a weapon's forward blast arc reliably. Before resolving a Directional blast, select only the tokens inside its arc. The longer three-grid-space falloff is then calculated automatically. For an intentionally contained indoor blast, select only tokens inside the affected room or compartment and enable <strong>Contained</strong> in the blast dialog.</p><h2>Troubleshooting</h2><ul><li><strong>No grid crosshair:</strong> activate a gridded Scene and clear all token targets.</li><li><strong>Weapon cannot fire:</strong> use the correct Aim action and ensure the stored aim matches the weapon and target.</li><li><strong>No Indirect Fire option:</strong> enable Indirect Fire Capable on the Weapon Item.</li><li><strong>Shot automatically deviates:</strong> apply a successful Direct indirect fire outcome to the gunner before attacking.</li><li><strong>No correction bonus:</strong> target the same grid space with the same artillery Item.</li><li><strong>Wrong blast targets:</strong> check token positions, prone and cover states, Scene scale, and any manually selected directional or contained area.</li></ul>"
+    }
+  ]
+}

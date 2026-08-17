@@ -69,6 +69,8 @@ import {
 import { registerSceneGridHooks } from './system/scene-grid.js';
 import { registerMinefieldRegionBehavior } from './system/minefield-region.js';
 import { registerWaterRegionBehavior } from './system/water-region.js';
+import { registerHazardRegionBehavior } from './system/hazard-region.js';
+import { registerTacticalTerrainRegionBehavior } from './system/tactical-terrain-region.js';
 import { advanceCombatWaterHazards } from './system/water-environment.js';
 import {
   advanceCombatWatercraft,
@@ -76,6 +78,29 @@ import {
 } from './system/watercraft-workflows.js';
 import { advanceGuidedImpacts } from './system/guided-weapons.js';
 import { registerSocialConflictSocket } from './system/social-conflict-workflows.js';
+import {
+  advanceCriticalInjuryCombat,
+  advanceCriticalInjuryWorldTime,
+  handleCriticalCombatEnd,
+  initializeCriticalStates,
+  initializeOwnedInjury,
+  synchronizeCriticalEffects,
+  synchronizeIncapacitation,
+} from './system/critical-injuries.js';
+import * as Initiative from './system/initiative-workflows.js';
+import CombatYZEGS from './system/combat.js';
+import { recordCombatMovement } from './system/combat-edge-workflows.js';
+import { advanceLandVehicleWorldTime } from './system/land-vehicle-damage.js';
+import {
+  advanceDiseaseWorldTime,
+  initializeDiseaseStates,
+  initializeOwnedDisease,
+} from './system/disease-workflows.js';
+import {
+  advanceCombatFire,
+  advanceEnvironmentalWorldTime,
+  synchronizeConditionTimers,
+} from './system/environmental-hazards.js';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -122,20 +147,24 @@ Hooks.once('init', function () {
     roller: YZEGSRoller,
     experience: Experience,
     archetypes: Archetypes,
+    initiative: Initiative,
   };
 
   // Records configuration values.
   CONFIG.YZEGS = YZEGS;
   CONFIG.Actor.documentClass = ActorYZEGS;
   CONFIG.Item.documentClass = ItemYZEGS;
+  CONFIG.Combat.documentClass = CombatYZEGS;
   registerDataModels();
   registerMinefieldRegionBehavior();
   registerWaterRegionBehavior();
+  registerHazardRegionBehavior();
+  registerTacticalTerrainRegionBehavior();
 
   // Patches Core functions.
   CONFIG.Combat.initiative = {
-    formula: '1d10 + (@attributes.agl.value / 100)',
-    decimals: 2,
+    formula: '1d10',
+    decimals: 0,
   };
 
   // Registers fonts.
@@ -198,6 +227,9 @@ Hooks.once('ready', async function () {
   registerSuppressionSocket();
   registerUrbanSocket();
   registerSocialConflictSocket();
+  Initiative.registerInitiativeSocket();
+  await initializeCriticalStates();
+  await initializeDiseaseStates();
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to.
   Hooks.on('hotbarDrop', (_bar, data, slot) => createYZEGSMacro(data, slot));
 
@@ -245,8 +277,12 @@ Hooks.on('updateCombat', async (combat, changes, _options, userId) => {
     await advanceCombatSuppression(combat, changes, userId);
     await restoreHuggingWallCover(combat, changes, userId);
     await advanceCombatWaterHazards(combat, changes, userId);
+    await advanceCombatFire(combat, changes, userId);
     await advanceCombatWatercraft(combat, changes, userId);
     await advanceGuidedImpacts(combat, changes, userId);
+    if (Object.hasOwn(changes, 'turn') || Object.hasOwn(changes, 'round')) {
+      await advanceCriticalInjuryCombat(combat, changes, userId);
+    }
     if (Object.hasOwn(changes, 'turn') && game.user.isGM && userId === game.user.id) {
       const actor = combat.combatant?.actor;
       if (actor?.statuses?.has?.('overwatch')) {
@@ -265,13 +301,48 @@ Hooks.on('deleteCombat', async (combat, _options, userId) => {
   try {
     await clearCombatSuppression(combat, userId);
     await clearCombatEngagements(combat, userId);
+    await handleCriticalCombatEnd(combat, userId);
+    await Initiative.clearCombatInitiativeState(combat, userId);
   }
   catch (error) {
     console.error('yzegs | Failed to clear suppression when combat ended.', error);
   }
 });
 
+Hooks.on('renderCombatTracker', (_app, html) => {
+  Initiative.activateInitiativeTrackerControls(html instanceof HTMLElement ? html : html?.[0]);
+});
+
+Hooks.on('preUpdateCombatant', Initiative.enforceUniqueInitiative);
+Hooks.on('updateToken', recordCombatMovement);
+
+Hooks.on('createItem', async (item, _options, userId) => {
+  if (userId !== game.user.id || !item.parent) return;
+  if (item.type === 'injury') {
+    await initializeOwnedInjury(item.parent, item);
+    await synchronizeCriticalEffects(item.parent);
+  }
+  else if (item.type === 'disease') await initializeOwnedDisease(item.parent, item);
+});
+
+Hooks.on('updateItem', async (item, changes, _options, userId) => {
+  if (userId !== game.user.id || item.type !== 'injury' || !item.parent) return;
+  if (foundry.utils.getProperty(changes, 'system.effects') !== undefined
+    || foundry.utils.getProperty(changes, 'system.state.active') !== undefined) {
+    await synchronizeCriticalEffects(item.parent);
+  }
+});
+
+Hooks.on('deleteItem', async (item, _options, userId) => {
+  if (userId !== game.user.id || item.type !== 'injury' || !item.parent) return;
+  await synchronizeCriticalEffects(item.parent);
+});
+
 Hooks.on('updateWorldTime', advanceWorldTimeWatercraft);
+Hooks.on('updateWorldTime', advanceCriticalInjuryWorldTime);
+Hooks.on('updateWorldTime', advanceLandVehicleWorldTime);
+Hooks.on('updateWorldTime', advanceDiseaseWorldTime);
+Hooks.on('updateWorldTime', advanceEnvironmentalWorldTime);
 
 Hooks.on('deleteCombatant', async (combatant, _options, userId) => {
   try {
@@ -303,6 +374,7 @@ Hooks.on('updateActor', async (actor, changes, _options, userId) => {
   const health = foundry.utils.getProperty(changes, 'system.health.value');
   const sanity = foundry.utils.getProperty(changes, 'system.sanity.value');
   try {
+    await synchronizeConditionTimers(actor, changes);
     if (health !== undefined && actor.statuses?.has?.('overwatch')) {
       await actor.toggleStatusEffect('overwatch', { active: false });
       await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionOverwatch');
@@ -313,6 +385,7 @@ Hooks.on('updateActor', async (actor, changes, _options, userId) => {
     if (Number(sanity) > 0 && actor.getFlag('fvtt-yze-generic-stepped', 'actionRallyAttempts')) {
       await actor.unsetFlag('fvtt-yze-generic-stepped', 'actionRallyAttempts');
     }
+    if (health !== undefined || sanity !== undefined) await synchronizeIncapacitation(actor);
   }
   catch (error) {
     console.error('yzegs | Failed to clear recovery action history.', error);

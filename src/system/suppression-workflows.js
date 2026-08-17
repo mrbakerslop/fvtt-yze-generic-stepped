@@ -88,13 +88,14 @@ function tokenCellKey(token) {
   return `${Math.floor(center.x / size)}:${Math.floor(center.y / size)}`;
 }
 
-function targetDescriptor(actor, token = null, { cause = 'fire', sourceName = '' } = {}) {
+function targetDescriptor(actor, token = null, { cause = 'fire', sourceName = '', force = false } = {}) {
   const enclosing = getEnclosingVehicle(actor, game.actors);
   return {
     actorUuid: actor.uuid,
     tokenUuid: token?.uuid ?? token?.document?.uuid ?? actor.token?.uuid ?? '',
     name: actor.name,
     cause,
+    force,
     sourceName,
     status: actor.type === 'vehicle' || enclosing ? 'immune' : 'pending',
     vehicleName: actor.type === 'vehicle' ? actor.name : enclosing?.vehicle?.name ?? '',
@@ -194,6 +195,14 @@ async function updateAttackSuppression(message, {
   const roll = message?.rolls?.[0];
   const suppression = roll?.options?.suppression;
   if (!roll || !suppression) return false;
+  if (!attackCausesSuppression({
+    attackSuccesses: getEffectiveAttackSuccesses(roll),
+    ammoSuccesses: roll.hitCount,
+  })) {
+    for (const entry of suppression.targets ?? []) {
+      if (entry.status === 'pending' && !entry.force) entry.status = 'notRequired';
+    }
+  }
   const target = suppression.targets?.find(entry => entry.actorUuid === targetActorUuid);
   if (!target || target.status !== 'pending') return false;
   target.status = outcome;
@@ -230,7 +239,7 @@ export async function rollSuppressionCheck(message, targetActorUuid) {
   const actor = actorFromDocument(await resolveUuid(targetActorUuid));
   if (!message || !attackRoll || !targetData || targetData.status !== 'pending' || !actor) return false;
   if (!game.user.isGM && !actor.isOwner) return false;
-  if (!suppression.force && !attackCausesSuppression({
+  if (!suppression.force && !targetData.force && !attackCausesSuppression({
     attackSuccesses: getEffectiveAttackSuccesses(attackRoll),
     ammoSuccesses: attackRoll.hitCount,
   })) return false;

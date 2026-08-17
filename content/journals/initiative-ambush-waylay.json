@@ -1,0 +1,66 @@
+{
+  "entry": {
+    "_id": "YZEInitGuide0001",
+    "name": "Using Initiative, Ambushes, and Waylays",
+    "categories": [],
+    "folder": null,
+    "sort": 900000,
+    "ownership": { "default": 2 },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "initiative-ambush-waylay"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZEInitQuick001X",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Initiative, Ambushes, and Waylays</h1><p>The system uses a shared deck of ten initiative cards. Card #1 acts first and card #10 acts last. Every initiative entry receives a unique card, and the order normally remains unchanged for the entire encounter.</p><h2>Ordinary Combat</h2><ol><li>Create an encounter and add the participating tokens.</li><li>Start combat before anyone makes an action roll.</li><li>Players can click <strong>Draw initiative</strong> in their Character sheet title bar, or the GM can click <strong>Deal Initiative</strong> in the Combat Tracker.</li><li>Run each round from the lowest card to the highest. The system resets Fast and Slow Actions when a new round starts.</li></ol><h2>Special Openings</h2><p>The Combat Tracker gives the GM dedicated <strong>Surprise</strong>, <strong>Ambush</strong>, and <strong>Waylay</strong> controls. Resolve these before ordinary initiative is dealt.</p>"
+    },
+    {
+      "_id": "YZEInitCards001X",
+      "name": "Drawing Initiative",
+      "sort": 200000,
+      "content": "<h1>Drawing Initiative Cards</h1><p>Initiative values are whole numbers from 1 to 10 and cannot be duplicated within an encounter. The system rejects an invalid or already assigned card.</p><h2>Combat Awareness</h2><p>An Actor's initiative draw size is derived from its Combat Awareness modifiers. When a player draws more than one card, the player chooses which card to keep and the others return to the deck. When the GM uses <strong>Deal Initiative</strong>, the system keeps the best available card for that Actor.</p><h2>Redrawing</h2><p>Clicking <strong>Draw initiative</strong> when the Actor already has a card asks for confirmation. The old card is returned to the available deck before the replacement draw.</p><h2>Large Encounters</h2><p>The deck supports ten initiative entries. For larger forces, combine identical NPCs into one Combat Tracker entry or divide them into groups that act on shared initiative cards.</p>"
+    },
+    {
+      "_id": "YZEInitSurpr001X",
+      "name": "Full Surprise",
+      "sort": 300000,
+      "content": "<h1>Full Surprise</h1><p>Use full surprise when one combatant initiates the encounter with an attack that the GM decides is completely unexpected. This does not require the opposed Ambush workflow.</p><ol><li>Add all participants to the active encounter.</li><li>Control exactly one surprising token.</li><li>Click <strong>Surprise</strong> in the Combat Tracker. That combatant receives card #1.</li><li>Click <strong>Deal Initiative</strong> to deal unique cards from the remaining deck to everyone else.</li></ol><p>Only the selected combatant receives this benefit. Allies draw normally. Full surprise does not automatically grant the same-hex attack modifier or prevent a Block; those benefits belong to a successful Ambush.</p>"
+    },
+    {
+      "_id": "YZEInitExchg001X",
+      "name": "Exchanging Initiative",
+      "sort": 400000,
+      "content": "<h1>Exchanging Initiative</h1><p>An Actor can exchange initiative with a willing participant whose turn has not yet occurred in the current round.</p><ol><li>Wait until the Actor's own turn.</li><li>Before spending any Fast or Slow Action, agree on the exchange with a participant who can communicate with the Actor.</li><li>Click <strong>Exchange initiative</strong> in the Actor sheet title bar.</li><li>Choose the later participant from the menu and confirm.</li></ol><p>The two cards are swapped without creating a duplicate. The system only offers later combatants and blocks an exchange after the acting Actor has spent an action. Confirm the other participant's consent at the table before using the control. Reactive actions already spent remain spent.</p>"
+    },
+    {
+      "_id": "YZEInitAmbus001X",
+      "name": "Stalking Ambush",
+      "sort": 500000,
+      "content": "<h1>Creating a Stalking Ambush</h1><ol><li>Add every attacker and defender to the active encounter.</li><li>Control all attacking tokens and target all defending tokens.</li><li>Click <strong>Ambush</strong> in the Combat Tracker.</li><li>Choose the intended range. Enter any relevant terrain modifier for the attackers and darkness modifier for the defenders. Optional Tactical Terrain assistance prefills the lead attacker's current infiltration modifier.</li><li>Use the buttons on the Ambush chat card to make both opposed rolls. Each side may push its roll normally, then must accept the final result.</li><li>When both results are final, the GM clicks <strong>Apply Initiative</strong>.</li></ol><p>For a group, the system automatically selects the attacker with the lowest configured Ambush Setup Skill and the defender with the highest configured Ambush Detection Skill. The attacker must roll more successes than the defender; a tie means the attackers are spotted.</p><h2>Range Modifiers</h2><ul><li>Same hex: −2</li><li>1 hex: −1</li><li>2–5 hexes: 0</li><li>6–20 hexes: +1</li><li>21 or more hexes: +2</li></ul>"
+    },
+    {
+      "_id": "YZEInitWayly001X",
+      "name": "Waylaying",
+      "sort": 600000,
+      "content": "<h1>Setting a Waylay</h1><p>A waylay stores the attackers' setup result before a target enters visual range.</p><ol><li>Control every token in the waiting group and click <strong>Waylay</strong> in the Combat Tracker.</li><li>Choose the setup time: a Slow Action gives no modifier, at least one Stretch gives +2, and at least one Shift gives +3.</li><li>Make the setup roll, push it if desired, then accept it. The chat card records the final successes.</li><li>When targets enter visual range, target all of them and click <strong>Resolve Against Targeted Tokens</strong> on the original Waylay card.</li><li>The system rolls the highest target Skill as passive, unmodified detection. This roll cannot be pushed.</li><li>If the attackers have more successes, click <strong>Apply Initiative</strong>.</li></ol><p>If the initial setup roll has no successes, the card records failure. The group must move to another position or the approaching targets spot it automatically. A stationary vehicle can support a waylay only after at least a Stretch of setup; moving vehicles cannot be used for an ambush.</p>"
+    },
+    {
+      "_id": "YZEInitResult01X",
+      "name": "Ambush Results",
+      "sort": 700000,
+      "content": "<h1>Applying Ambush Results</h1><h2>Successful Attackers</h2><p>The attackers receive the top initiative cards, one card per attacker. For a group, the GM assigns those cards among the attackers in the assignment dialog. Everyone else draws from the remaining deck.</p><p>Each attacker receives one pending opening attack against the ambushed targets during the first round:</p><ul><li>The target cannot declare a Block against that attack.</li><li>If the selected ambush range was <strong>Same hex</strong>, the attack roll automatically gains +3.</li><li>The benefit is consumed only after the attacker actually completes the roll. Closing a roll dialog does not consume it.</li></ul><h2>Spotted Attackers</h2><p>When the defenders tie or win the opposed test, the attackers are spotted at their starting distance. Clicking <strong>Apply Initiative</strong> clears the special opening and deals ordinary initiative to everyone.</p>"
+    },
+    {
+      "_id": "YZEInitConfig01X",
+      "name": "Configuration and Troubleshooting",
+      "sort": 800000,
+      "content": "<h1>Configuration</h1><h2>Action Skills</h2><p>Open <strong>Game Settings → Configure Settings → Action Skills</strong> to choose the world-specific Skill Items used for <strong>Ambush setup</strong>, <strong>Ambush detection</strong>, <strong>Waylay setup</strong>, and <strong>Waylay detection</strong>. Recon is the system default, but the automation supports renamed or custom Skills.</p><h2>Modifier Entry</h2><p>The Ambush dialog applies the selected range modifier automatically. Enter signed terrain and darkness modifiers only when they are relevant to the situation; do not enter the range modifier a second time.</p><h2>Troubleshooting</h2><ul><li><strong>No workflow controls:</strong> only a GM sees Deal, Surprise, Ambush, and Waylay in the Combat Tracker.</li><li><strong>Cannot apply initiative:</strong> make sure every selected attacker and defender is already in the active encounter.</li><li><strong>A roll button remains unavailable:</strong> finish pushing or accept the linked roll card first.</li><li><strong>No suitable Skill:</strong> configure that action in Action Skills and ensure the lead Actor owns the selected Skill Item.</li><li><strong>No cards remain:</strong> reduce the encounter to ten initiative entries or group identical NPCs.</li><li><strong>Exchange is unavailable:</strong> it must be the Actor's turn, no action can have been spent, and a later combatant must exist.</li></ul>"
+    }
+  ]
+}

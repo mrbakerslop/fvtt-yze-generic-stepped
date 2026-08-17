@@ -1,0 +1,208 @@
+<div class="world-settings-form">
+  <p class="hint world-settings-intro">{{localize "SETTINGS.worldSettings.hint"}}</p>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.worldSettings.sections.sheets"}}</legend>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-notes-tab">{{localize "SETTINGS.enableNotesTab.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.enableNotesTab.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="enableNotesTab" value="{{values.enableNotesTab}}" />
+        {{> checkboxControl id="yzegs-world-notes-tab" name="enableNotesTab"
+          value=values.enableNotesTab editable=true ariaLabel=(localize "SETTINGS.enableNotesTab.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-unit-morale">{{localize "SETTINGS.enableUnitMorale.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.enableUnitMorale.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="enableUnitMorale" value="{{values.enableUnitMorale}}" />
+        {{> checkboxControl id="yzegs-world-unit-morale" name="enableUnitMorale"
+          value=values.enableUnitMorale editable=true ariaLabel=(localize "SETTINGS.enableUnitMorale.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-radiation">{{localize "SETTINGS.enableRadiation.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.enableRadiation.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="enableRadiation" value="{{values.enableRadiation}}" />
+        {{> checkboxControl id="yzegs-world-radiation" name="enableRadiation"
+          value=values.enableRadiation editable=true ariaLabel=(localize "SETTINGS.enableRadiation.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-radiation-name">{{localize "SETTINGS.radiationName.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.radiationName.hint"}}</p>
+      </div>
+      <div class="form-fields wide-field">
+        <input id="yzegs-world-radiation-name" type="text" name="radiationName"
+          value="{{values.radiationName}}" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-hide-capacities">{{localize "SETTINGS.hideCapacitiesButtons.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.hideCapacitiesButtons.label"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="hideCapacitiesButtons" value="{{values.hideCapacitiesButtons}}" />
+        {{> checkboxControl id="yzegs-world-hide-capacities" name="hideCapacitiesButtons"
+          value=values.hideCapacitiesButtons editable=true ariaLabel=(localize "SETTINGS.hideCapacitiesButtons.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-hide-weapon-props">{{localize "SETTINGS.hideWeaponProps.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.hideWeaponProps.label"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="hideWeaponProps" value="{{values.hideWeaponProps}}" />
+        {{> checkboxControl id="yzegs-world-hide-weapon-props" name="hideWeaponProps"
+          value=values.hideWeaponProps editable=true ariaLabel=(localize "SETTINGS.hideWeaponProps.name")}}
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.worldSettings.sections.automation"}}</legend>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-terrain">{{localize "SETTINGS.tacticalTerrainAssistance.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.tacticalTerrainAssistance.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="tacticalTerrainAssistance" value="{{values.tacticalTerrainAssistance}}" />
+        {{> checkboxControl id="yzegs-world-terrain" name="tacticalTerrainAssistance"
+          value=values.tacticalTerrainAssistance editable=true
+          ariaLabel=(localize "SETTINGS.tacticalTerrainAssistance.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label>{{localize "SETTINGS.pushCostMode.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.pushCostMode.hint"}}</p>
+      </div>
+      <div class="form-fields menu-field">
+        {{> optionMenu name="pushCostMode" selected=values.pushCostMode options=pushCostModes
+          localize=true editable=true noBlank=true menuClass="world-setting-menu"}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label>{{localize "SETTINGS.internalMagazineReloadMode.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.internalMagazineReloadMode.hint"}}</p>
+      </div>
+      <div class="form-fields menu-field">
+        {{> optionMenu name="internalMagazineReloadMode" selected=values.internalMagazineReloadMode
+          options=reloadModes localize=true editable=true noBlank=true menuClass="world-setting-menu"}}
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.worldSettings.sections.injuries"}}</legend>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-critical-injuries">{{localize "SETTINGS.criticalInjuriesEnabled.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.criticalInjuriesEnabled.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="criticalInjuriesEnabled" value="{{values.criticalInjuriesEnabled}}" />
+        {{> checkboxControl id="yzegs-world-critical-injuries" name="criticalInjuriesEnabled"
+          value=values.criticalInjuriesEnabled editable=true
+          ariaLabel=(localize "SETTINGS.criticalInjuriesEnabled.name")}}
+      </div>
+    </div>
+
+    <p class="hint section-hint">{{localize "SETTINGS.criticalInjuryTable.hint"}}</p>
+    <div class="critical-table-grid">
+      {{#each criticalTables as |table|}}
+      <label for="yzegs-world-critical-{{table.location}}">{{table.label}}</label>
+      <input id="yzegs-world-critical-{{table.location}}" type="text" name="{{table.key}}"
+        value="{{table.value}}" />
+      {{/each}}
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-killing-blow">{{localize "SETTINGS.killingBlowSpecialty.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.killingBlowSpecialty.hint"}}</p>
+      </div>
+      <div class="form-fields wide-field">
+        <input id="yzegs-world-killing-blow" type="text" name="killingBlowSpecialty"
+          value="{{values.killingBlowSpecialty}}" />
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.worldSettings.sections.ammunition"}}</legend>
+
+    <div class="ammo-settings-grid">
+      <label for="yzegs-world-track-pc">{{localize "SETTINGS.trackPcAmmo.name"}}</label>
+      <input type="hidden" name="trackPcAmmo" value="{{values.trackPcAmmo}}" />
+      {{> checkboxControl id="yzegs-world-track-pc" name="trackPcAmmo" value=values.trackPcAmmo
+        editable=true ariaLabel=(localize "SETTINGS.trackPcAmmo.name")}}
+
+      <label for="yzegs-world-track-npc">{{localize "SETTINGS.trackNpcAmmo.name"}}</label>
+      <input type="hidden" name="trackNpcAmmo" value="{{values.trackNpcAmmo}}" />
+      {{> checkboxControl id="yzegs-world-track-npc" name="trackNpcAmmo" value=values.trackNpcAmmo
+        editable=true ariaLabel=(localize "SETTINGS.trackNpcAmmo.name")}}
+
+      <label for="yzegs-world-track-vehicle">{{localize "SETTINGS.trackVehicleAmmo.name"}}</label>
+      <input type="hidden" name="trackVehicleAmmo" value="{{values.trackVehicleAmmo}}" />
+      {{> checkboxControl id="yzegs-world-track-vehicle" name="trackVehicleAmmo"
+        value=values.trackVehicleAmmo editable=true ariaLabel=(localize "SETTINGS.trackVehicleAmmo.name")}}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "SETTINGS.worldSettings.sections.defaults"}}</legend>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label>{{localize "SETTINGS.defaultSceneGridPreset.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.defaultSceneGridPreset.hint"}}</p>
+      </div>
+      <div class="form-fields menu-field">
+        {{> optionMenu name="defaultSceneGridPreset" selected=values.defaultSceneGridPreset
+          options=sceneGridPresets localize=true editable=true noBlank=true menuClass="world-setting-menu"}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label>{{localize "SETTINGS.advancementItemSource.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.advancementItemSource.hint"}}</p>
+      </div>
+      <div class="form-fields menu-field">
+        {{> optionMenu name="advancementItemSource" selected=values.advancementItemSource
+          options=advancementSources editable=true noBlank=true menuClass="world-setting-menu"}}
+      </div>
+    </div>
+  </fieldset>
+
+  <footer class="form-footer">
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "SETTINGS.worldSettings.save"}}</span>
+    </button>
+  </footer>
+</div>

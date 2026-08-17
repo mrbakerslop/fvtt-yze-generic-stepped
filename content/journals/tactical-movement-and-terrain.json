@@ -1,0 +1,55 @@
+{
+  "entry": {
+    "_id": "TERRGUID00000001",
+    "name": "Using Tactical Movement and Terrain",
+    "categories": [],
+    "folder": null,
+    "sort": 1600000,
+    "ownership": { "default": 2 },
+    "flags": { "fvtt-yze-generic-stepped": { "systemGuide": true, "guideId": "tactical-movement-and-terrain" } }
+  },
+  "pages": [
+    {
+      "_id": "TERRQUICK0000001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Tactical Movement and Terrain</h1><p>This optional assistance uses Scene Regions to tell the system which tactical terrain a token occupies. It can apply movement and target-terrain modifiers, suggest cover Armor, prefill ambush infiltration modifiers, and calculate final Run or Crawl allowances.</p><ol><li>Enable <strong>Tactical movement and terrain assistance</strong> in System Settings.</li><li>On a tactical Scene, draw Regions around areas with the same dominant terrain.</li><li>Add the <strong>Tactical Terrain</strong> behavior to each Region and choose its type.</li><li>Move test tokens into and out of each Region.</li><li>Use Run, Crawl, Seek Cover, ranged attacks, and the ambush workflow normally.</li></ol><p>The option is disabled by default and never moves a token automatically.</p>"
+    },
+    {
+      "_id": "TERRTABLE0000001",
+      "name": "Terrain Reference",
+      "sort": 200000,
+      "content": "<h1>Built-in Terrain Profiles</h1><table><thead><tr><th>Terrain</th><th>Ranged</th><th>Movement</th><th>Cover</th><th>Infiltration</th><th>Visibility</th></tr></thead><tbody><tr><td>Pavement</td><td>0</td><td>0</td><td>—</td><td>−2</td><td>Unlimited</td></tr><tr><td>Field</td><td>0</td><td>0</td><td>—</td><td>−1</td><td>Unlimited</td></tr><tr><td>Shrubland</td><td>−1</td><td>−1</td><td>—</td><td>0</td><td>Unlimited</td></tr><tr><td>Debris</td><td>−1</td><td>−2</td><td>Armor 3</td><td>+1</td><td>Unlimited</td></tr><tr><td>Forest</td><td>−1</td><td>−1</td><td>Armor 2</td><td>+1</td><td>3 spaces</td></tr><tr><td>Dense foliage</td><td>−2</td><td>−3</td><td>—</td><td>+2</td><td>1 space</td></tr><tr><td>Swamp</td><td>0</td><td>Special</td><td>—</td><td>+1</td><td>Unlimited</td></tr><tr><td>Shallows</td><td>0</td><td>Special</td><td>—</td><td>0</td><td>Unlimited</td></tr><tr><td>Blocking</td><td>—</td><td>Blocked</td><td>—</td><td>—</td><td>None</td></tr><tr><td>Indoors</td><td>−1</td><td>−2</td><td>Armor 1</td><td>+1</td><td>Current space</td></tr></tbody></table><p>Ranged modifiers do not apply to an attacker in the target's own grid space or to an area attack aimed at the space itself.</p>"
+    },
+    {
+      "_id": "TERRREGON0000001",
+      "name": "Creating Terrain Regions",
+      "sort": 300000,
+      "content": "<h1>Creating Terrain Regions</h1><ol><li>Select Foundry's Region controls and draw the area occupied by one terrain type.</li><li>Open the Region and add a <strong>Tactical Terrain</strong> behavior.</li><li>Select a built-in profile.</li><li>Tick <strong>Elevated terrain</strong> when it represents higher ground.</li><li>Repeat for the other dominant areas of the map.</li></ol><p>The terrain under the token is recorded when it crosses the Region boundary. When Regions overlap, the most recently entered Region takes precedence. A blocking Region warns the moving user after entry; it does not reverse token movement.</p><p>Walls, doors, barriers, and line-of-sight geometry should still use Foundry's normal Scene tools.</p>"
+    },
+    {
+      "_id": "TERRMOVE00000001",
+      "name": "Run, Crawl, and Elevation",
+      "sort": 400000,
+      "content": "<h1>Tactical Foot Movement</h1><p>Use the Run or Crawl action from Take Action or from the configured Mobility Skill's roll dialog. The terrain modifier and a carried-backpack modifier are applied automatically.</p><ul><li><strong>Run:</strong> two spaces plus one for each success.</li><li><strong>Crawl:</strong> one space plus at most one additional space from successes.</li><li><strong>Swamp or shallows:</strong> running uses the Crawl allowance; actual prone crawling is not available.</li><li><strong>Blocking terrain:</strong> the displayed allowance is zero.</li></ul><p>The final allowance appears on the roll card and updates after a push. The system deliberately does not move or constrain the token. Moving uphill costs two spaces per entered space; use the Region's Elevated marker and apply that cost while moving.</p>"
+    },
+    {
+      "_id": "TERRCOMB00000001",
+      "name": "Combat Assistance",
+      "sort": 500000,
+      "content": "<h1>Combat Assistance</h1><h2>Ranged Attacks</h2><p>When an attack targets a token outside the attacker's own grid space, the target's current Terrain Region adds its ranged modifier to Automatic Rules Modifiers. The ordinary manual terrain choices are removed from that roll to prevent double counting. Area attacks against a grid space do not receive this modifier. An attacker in elevated terrain gains the higher-position bonus when the target is not also in elevated terrain.</p><h2>Cover</h2><p>Seek Partial Cover and Seek Full Cover use the current terrain's typical cover Armor as the initial value and identify the terrain in the cover dialog. The player or GM can change that value for a specific barrier or unusual position.</p><h2>Ambushes</h2><p>The Ambush setup dialog starts its attacker terrain modifier with the lead attacker's infiltration value. The GM may edit it before creating the opposed roll.</p><h2>Visibility</h2><p>Visibility is presented as a terrain reference. Foundry walls, lighting, weather, and the GM remain authoritative because a Region alone cannot determine every line of sight.</p>"
+    },
+    {
+      "_id": "TERRCUST00000001",
+      "name": "Custom Terrain",
+      "sort": 600000,
+      "content": "<h1>Custom Terrain</h1><p>Select <strong>Custom terrain</strong> when a setting needs terrain not represented by the built-in profiles. Enter a name and configure movement, ranged-attack, cover Armor, infiltration, and visibility values. You can also make running count as crawling or mark ground movement as blocked.</p><p>The custom fields shown by Foundry are ignored for every built-in profile. This lets a GM change a behavior between built-in and custom terrain without destroying previously entered custom values.</p><p>Use negative values for penalties and positive values for bonuses. A cover Armor value of zero means the terrain does not normally provide solid cover.</p>"
+    },
+    {
+      "_id": "TERRTRBL00000001",
+      "name": "Troubleshooting and Boundaries",
+      "sort": 700000,
+      "content": "<h1>Troubleshooting</h1><ul><li><strong>No terrain modifier:</strong> confirm the world option is enabled, a primary GM is active, and the token crossed into the Region after it was configured.</li><li><strong>Wrong overlapping terrain:</strong> move out and enter the intended dominant Region last, or redraw the Regions so they do not overlap.</li><li><strong>Modifier counted twice:</strong> do not manually select target terrain when the same modifier already appears under Automatic Rules Modifiers.</li><li><strong>Cover value is wrong:</strong> the value is only a typical suggestion; edit it in the cover dialog.</li><li><strong>Movement was not stopped:</strong> assistance reports allowances and blocking warnings but intentionally does not force token position.</li><li><strong>Visibility was not enforced:</strong> configure Foundry walls and lighting; Region visibility is a GM reference.</li></ul><p>Disabling the world option returns all existing movement and combat workflows to manual terrain adjudication without deleting the Regions.</p>"
+    }
+  ]
+}

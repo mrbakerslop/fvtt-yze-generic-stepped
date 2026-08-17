@@ -32,6 +32,12 @@
     {{!-- Name --}}
     <div class="occupant-name" title="{{actor.name}}">{{actor.name}}</div>
 
+    {{#if bailOutRequired}}
+    <span class="vehicle-bail-out-required" title="{{localize 'YZEGS.LandVehicle.State.MustBailOut'}}">
+      <i class="fas fa-person-running"></i>
+    </span>
+    {{/if}}
+
     {{!-- Exposed checkbox --}}
     <div class="occupant-exposed">
       <label class="checkbox vehicle-checkbox">

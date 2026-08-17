@@ -63,3 +63,18 @@ test('social resistance checks have independent world mappings', () => {
   assert.equal(getActionSkillReference('resistInterrogation').legacyKey, 'stamina');
   assert.equal(getActionSkillReference('resistBarter').legacyKey, 'persuasion');
 });
+
+test('critical care checks have independent world mappings', () => {
+  mappings = {};
+  assert.equal(getActionSkillReference('deathSave').legacyKey, 'stamina');
+  assert.equal(getActionSkillReference('stabilizeCritical').legacyKey, 'medicalAid');
+  assert.equal(getActionSkillReference('moveWounded').legacyKey, 'medicalAid');
+});
+
+test('ambush and waylay checks have independent world mappings', () => {
+  mappings = {};
+  assert.equal(getActionSkillReference('ambushSetup').legacyKey, 'recon');
+  assert.equal(getActionSkillReference('ambushDetection').legacyKey, 'recon');
+  assert.equal(getActionSkillReference('waylaySetup').legacyKey, 'recon');
+  assert.equal(getActionSkillReference('waylayDetection').legacyKey, 'recon');
+});

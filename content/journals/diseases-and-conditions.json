@@ -1,0 +1,49 @@
+{
+  "entry": {
+    "_id": "DISEGUID00000001",
+    "name": "Using Diseases and Survival Conditions",
+    "categories": [],
+    "folder": null,
+    "sort": 1400000,
+    "ownership": { "default": 2 },
+    "flags": { "fvtt-yze-generic-stepped": { "systemGuide": true, "guideId": "diseases-and-conditions" } }
+  },
+  "pages": [
+    {
+      "_id": "DISEQUICK0000001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Diseases and Survival Conditions</h1><p>Diseases and other progressing afflictions are reusable <strong>Disease Items</strong>. Create them in the Items Directory, configure their rules, and drag them onto a Character or NPC. The Actor's Combat tab then shows incubation, active, due, treatment, and recovered states.</p><ol><li>Create a Disease Item or duplicate an existing one.</li><li>Set its virulence, timing, failed-check harm, treatment, and recovery restrictions.</li><li>Drag it onto the exposed Actor.</li><li>Advance world time until the system reports that a check is due.</li><li>Use the die button for the patient's resistance check or the caregiver button for treatment.</li></ol>"
+    },
+    {
+      "_id": "DISECREATE000001",
+      "name": "Creating a Disease Item",
+      "sort": 200000,
+      "content": "<h1>Creating an Affliction</h1><p>The Category is descriptive and also identifies nerve-agent treatments. <strong>Virulence modifier</strong> is added to every resistance or treatment roll, so use negative values for difficult diseases and positive values for mild ones.</p><ul><li><strong>Incubation:</strong> time from exposure to the first due check.</li><li><strong>Check interval:</strong> time between failed checks.</li><li><strong>Damage and Stress:</strong> harm applied after a failed check.</li><li><strong>Recovery blocks:</strong> prevent First Aid or Rally while the Item is incubating or active.</li><li><strong>Lethal while incapacitated:</strong> gives an incapacitated patient one day before death.</li><li><strong>Antibiotics:</strong> controls whether the patient-state checkbox adds the configured modifier.</li></ul><p>Formula fields accept fixed numbers or dice formulas such as <code>1d6</code>.</p>"
+    },
+    {
+      "_id": "DISEPROG00000001",
+      "name": "Progression and Recovery",
+      "sort": 300000,
+      "content": "<h1>Progression</h1><p>An embedded Disease starts <strong>Incubating</strong>. When its deadline passes, the system marks the check due and warns the active GM. A failed check changes it to <strong>Active</strong>, applies its Damage and Stress, and schedules the next check. A successful check changes it to <strong>Recovered</strong> and removes its recovery restrictions.</p><p>Checks use the world-configured <strong>Resist disease or affliction</strong> Skill, with Stamina as the default. They are intentionally resolved without pushing so their effect can be applied immediately and consistently.</p><p>Recovered Items remain on the Actor as a record. Delete one when that record is no longer needed.</p>"
+    },
+    {
+      "_id": "DISETREAT0000001",
+      "name": "Caregivers and Medicine",
+      "sort": 400000,
+      "content": "<h1>Treatment</h1><p>Click the caregiver button beside an embedded Disease and select a Character or NPC. The caregiver rolls the world-configured <strong>Treat disease or affliction</strong> Skill, with Medical Aid as the default, using the Disease's virulence.</p><p>If medicine applies, open the embedded Disease Item and tick <strong>Antibiotics administered</strong>. The configured medicine modifier is then included in patient and caregiver checks. Leave <strong>Antibiotics are effective</strong> unticked for viruses, radiation sickness, or any custom affliction that does not respond to antibiotics.</p><p>The last caregiver is recorded on the patient copy. The source Item in the Items Directory is never altered.</p>"
+    },
+    {
+      "_id": "DISECOND00000001",
+      "name": "Starvation, Thirst, Sleep, and Cold",
+      "sort": 500000,
+      "content": "<h1>Survival Conditions</h1><p>Use the checkboxes on the Combat tab to begin or end survival conditions. Foundry world time drives their consequences.</p><ul><li><strong>Starving:</strong> one Damage every seven days and blocks damage recovery.</li><li><strong>Dehydrated:</strong> one Damage every day and blocks damage recovery.</li><li><strong>Sleep deprived:</strong> one Stress every day and blocks stress recovery. Reaching zero Stress Capacity also applies the sleeping status.</li><li><strong>Hypothermic:</strong> blocks both recovery tracks. Resolve its periodic Stamina checks as the scene requires; the Hazard Zone can apply the condition.</li></ul><p>Untick a condition after food, water, sleep, or warmth has removed it. The timer is discarded when the box is unticked.</p>"
+    },
+    {
+      "_id": "DISECONFIG000001",
+      "name": "Configuration and Existing Worlds",
+      "sort": 600000,
+      "content": "<h1>Configuration</h1><p>Open <strong>Game Settings → Configure Settings → System Settings → Action Skills</strong> to map the disease resistance and treatment checks to the Skill Items used by this world.</p><h2>Existing Disease Notes</h2><p>Older Characters may have text in the original Diseases field. That text is preserved under <strong>Legacy disease notes</strong> on the Combat tab. Convert entries by creating Disease Items when you want automation; the system does not guess rules from prose.</p><h2>World Time</h2><p>Incubation, recurring checks, death deadlines, condition harm, and radiation decay require Foundry world time to advance. Paused real time is unrelated. A GM may always edit an embedded Disease's patient state when correcting the fiction.</p>"
+    }
+  ]
+}

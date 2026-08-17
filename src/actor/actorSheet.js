@@ -61,6 +61,7 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
     primary: {
       tabs: [
         { id: 'main' },
+        { id: 'specialties' },
         { id: 'combat' },
         { id: 'equipment' },
         { id: 'biography' },
@@ -137,8 +138,8 @@ export default class ActorSheetYZEGS extends foundry.applications.api.Handlebars
     }
     const alwaysAllowedItems = YZEGS.physicalItems;
     const allowedItems = {
-      character: ['skill', 'specialty', 'injury'],
-      npc: ['skill', 'specialty'],
+      character: ['skill', 'specialty', 'injury', 'disease'],
+      npc: ['skill', 'specialty', 'injury', 'disease'],
       vehicle: [],
     };
     let allowed = true;

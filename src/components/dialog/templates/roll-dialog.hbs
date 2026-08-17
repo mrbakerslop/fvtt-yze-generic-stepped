@@ -91,9 +91,50 @@
           </div>
         </fieldset>
       {{/each}}
+
+      {{#if data.automaticModifiers.length}}
+        <fieldset class="combat-modifier-group combat-modifier-group-automatic">
+          <legend>{{localize "YZEGS.CombatEdges.AutomaticModifiers"}}</legend>
+          <div class="combat-modifier-options automatic-combat-modifiers">
+            {{#each data.automaticModifiers as |modifier|}}
+              <span class="combat-modifier-option automatic-combat-modifier">
+                <span class="combat-modifier-name">{{modifier.label}}</span>
+                <span class="combat-modifier-value">{{modifier.displayValue}}</span>
+              </span>
+            {{/each}}
+          </div>
+        </fieldset>
+      {{/if}}
     </div>
 
     <hr />
+  {{/if}}
+
+  {{#if data.canChooseHitLocation}}
+    <div class="form-group combat-called-location">
+      <label>{{data.calledLocationLabel}}</label>
+      {{> optionMenu name="calledLocation" selected="" options=data.hitLocationChoices editable=true
+        localize=true menuClass="dialog-option-menu"}}
+    </div>
+  {{/if}}
+
+  {{#if data.oneHanded.allowed}}
+    <div class="form-group combat-one-handed">
+      <label>{{localize "YZEGS.CombatEdges.OneHanded"}}</label>
+      <input type="hidden" name="oneHanded" value="false" />
+      {{> checkboxControl name="oneHanded" value=false editable=true inputClass="one-handed-toggle"
+        dataValue=data.oneHanded.modifier ariaLabel=(localize "YZEGS.CombatEdges.OneHanded")}}
+    </div>
+  {{/if}}
+
+  {{#if data.indirectFireAllowed}}
+    <div class="form-group combat-indirect-fire">
+      <label>{{localize "YZEGS.Heavy.IndirectFire.Label"}}</label>
+      <input type="hidden" name="indirectFire" value="false" />
+      {{> checkboxControl name="indirectFire" value=false editable=true
+        ariaLabel=(localize "YZEGS.Heavy.IndirectFire.Label")}}
+    </div>
+    <p class="notes">{{localize "YZEGS.Heavy.IndirectFire.Hint"}}</p>
   {{/if}}
 
   {{! Modifier }}

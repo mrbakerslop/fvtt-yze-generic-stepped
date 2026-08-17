@@ -738,6 +738,24 @@ export default class ActorYZEGS extends Actor {
       await clearCloseQuartersEngagement(this);
     }
 
+    // Critical injury damage is the amount remaining after all protection. It
+    // is independent of how many Health points the target had left.
+    let criticalInjury = null;
+    if (amount > 0 && Number(attackData.crit) > 0) {
+      try {
+        const { applyCriticalInjury } = await import('../system/critical-injuries.js');
+        criticalInjury = await applyCriticalInjury(this, {
+          damage: amount,
+          criticalRating: attackData.crit,
+          location: attackData.location,
+        });
+      }
+      catch (error) {
+        console.error('yzegs | Failed to apply critical injury.', error);
+        ui.notifications.error(error.message);
+      }
+    }
+
     if (!sendMessage) return diff;
 
     // Prepares the chat message.
@@ -751,6 +769,7 @@ export default class ActorYZEGS extends Actor {
       signedArmorModifier: (attackData.armorModifier >= 0 ? '+' : '−') + Math.abs(attackData.armorModifier),
       data: attackData,
       config: YZEGS,
+      criticalInjury,
     };
     const chatData = {
       user: game.user.id,

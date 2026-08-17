@@ -42,6 +42,15 @@ const supportingActions = [
   actionDefinition('waterMineAvoidance', 'YZEGS.ActionSkillConfig.WaterMineAvoidance', 'driving', 'supporting'),
   actionDefinition('coldWaterCheck', 'YZEGS.ActionSkillConfig.ColdWaterCheck', 'stamina', 'supporting'),
   actionDefinition('radiationCheck', 'YZEGS.ActorSheet.RadiationRoll', 'stamina', 'supporting'),
+  actionDefinition('diseaseCheck', 'YZEGS.ActionSkillConfig.DiseaseCheck', 'stamina', 'supporting'),
+  actionDefinition('diseaseTreatment', 'YZEGS.ActionSkillConfig.DiseaseTreatment', 'medicalAid', 'supporting'),
+  actionDefinition('deathSave', 'YZEGS.Critical.DeathSave', 'stamina', 'supporting'),
+  actionDefinition('stabilizeCritical', 'YZEGS.Critical.Stabilize', 'medicalAid', 'supporting'),
+  actionDefinition('moveWounded', 'YZEGS.Critical.MoveWounded', 'medicalAid', 'supporting'),
+  actionDefinition('ambushSetup', 'YZEGS.Initiative.AmbushSetup', 'recon', 'supporting'),
+  actionDefinition('ambushDetection', 'YZEGS.Initiative.AmbushDetection', 'recon', 'supporting'),
+  actionDefinition('waylaySetup', 'YZEGS.Initiative.WaylaySetup', 'recon', 'supporting'),
+  actionDefinition('waylayDetection', 'YZEGS.Initiative.WaylayDetection', 'recon', 'supporting'),
 ];
 
 export const ACTION_SKILL_DEFINITIONS = Object.freeze([...registryActions, ...supportingActions]);

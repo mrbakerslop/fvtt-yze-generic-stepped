@@ -1,0 +1,10 @@
+<div class="yzegs dialog initiative-assignment-dialog">
+  <p>{{localize "YZEGS.Initiative.AssignHint"}}</p>
+  {{#each assignments}}
+    <div class="form-group">
+      <label>{{actor.name}}</label>
+      {{> optionMenu name=(concat "card-" index) selected=selected options=../cardOptions editable=true
+        noBlank=true menuClass="dialog-option-menu"}}
+    </div>
+  {{/each}}
+</div>

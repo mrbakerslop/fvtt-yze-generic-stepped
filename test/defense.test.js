@@ -21,7 +21,7 @@ test('each Block success cancels one attack success and excess successes are ign
 });
 
 test('only rules-defined initial close-combat attacks can be blocked', () => {
-  for (const action of ['unarmedAttack', 'meleeAttack', 'shove', 'disarm', 'grapple']) {
+  for (const action of ['unarmedAttack', 'meleeAttack', 'shove', 'disarm', 'grapple', 'divingBlow']) {
     assert.equal(isBlockableAction(action), true);
   }
   for (const action of ['shootFirearm', 'grappleAttack', 'retreatFreeAttack']) {

@@ -1,0 +1,16 @@
+<div class="yzegs dialog initiative-setup-dialog">
+  <p>{{localize "YZEGS.Initiative.AmbushDialogHint"}}</p>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Initiative.Range.Label"}}</label>
+    {{> optionMenu name="range" selected="twoToFive" options=rangeOptions editable=true noBlank=true
+      menuClass="dialog-option-menu"}}
+  </div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Initiative.TerrainModifier"}}</label>
+    <input type="number" name="terrainModifier" value="{{terrainModifier}}" step="1">
+  </div>
+  <div class="form-group">
+    <label>{{localize "YZEGS.Initiative.DarknessModifier"}}</label>
+    <input type="number" name="darknessModifier" value="0" step="1">
+  </div>
+</div>

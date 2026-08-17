@@ -47,6 +47,13 @@ test('sniper aim gives one or two dice steps and prohibits ammo dice', () => {
 });
 
 test('heavy weapons cannot fire before being aimed', () => {
-  const weapon = item('Machine Gun', { heavyWeapon: true });
+  const weapon = item('Rocket Launcher', { heavyWeapon: true });
   assert.equal(getRangedPreparation(actor(), weapon, []).blocked, true);
+});
+
+test('machine guns retain ordinary ranged preparation rules', () => {
+  const weapon = item('Machine Gun', { heavyWeapon: true });
+  const preparation = getRangedPreparation(actor(), weapon, []);
+  assert.equal(preparation.blocked, false);
+  assert.equal(preparation.modifier, -2);
 });

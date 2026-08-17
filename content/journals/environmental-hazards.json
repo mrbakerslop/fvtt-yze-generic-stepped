@@ -1,0 +1,49 @@
+{
+  "entry": {
+    "_id": "HZRDGUID00000001",
+    "name": "Using Environmental Hazards",
+    "categories": [],
+    "folder": null,
+    "sort": 1500000,
+    "ownership": { "default": 2 },
+    "flags": { "fvtt-yze-generic-stepped": { "systemGuide": true, "guideId": "environmental-hazards" } }
+  },
+  "pages": [
+    {
+      "_id": "HZRDQUICK0000001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Environmental Hazards</h1><p>Add a Region to a Scene and give it the <strong>Hazard Zone</strong> behavior. Choose Fire, Disease or chemical affliction, Radiation, or Severe cold. The primary active GM resolves the effect when a Character or NPC token enters.</p><p>Hazard Zones complement manual controls: a GM can still apply a fire status, drag a Disease Item, edit radiation boxes, or tick a survival condition directly on an Actor.</p>"
+    },
+    {
+      "_id": "HZRDFIRE00000001",
+      "name": "Fire",
+      "sort": 200000,
+      "content": "<h1>Fire</h1><p>Choose an Intensity from A to D. Entry rolls two stepped dice of that rating; every success causes one Damage and armor is ignored. Damage applies the persistent fire status. At the start of each of that Actor's later turns another fire attack is rolled. A damaging ongoing attack raises the intensity one step, to a maximum of A. An attack that causes no Damage extinguishes the flames.</p><p>Two or more fire Damage in one attack creates the fixed <strong>Severe burns</strong> Critical Injury: lethal, −2 to Stamina and Mobility, Death Saves each Stretch, and 2d6 healing days. Use <strong>Extinguish fire</strong> from Take Action for the normal Slow Action and Mobility workflow. A successful result removes both the token status and the hidden fire-intensity state.</p>"
+    },
+    {
+      "_id": "HZRDCHEM00000001",
+      "name": "Chemical and Biological Exposure",
+      "sort": 300000,
+      "content": "<h1>Chemical and Biological Exposure</h1><p>Create a Disease Item for the agent, then paste its UUID into the Hazard Zone's <strong>Disease Item UUID</strong>. Entering the Region copies that source onto the Actor and begins its incubation timer. Use zero incubation for an agent whose first check should become due immediately.</p><h2>Protective and Medical Gear</h2><p>Gear Items can be classified as a Protective mask, Protective clothing, Fully enclosed protective suit, Nerve-agent antidote, Antibiotics, or Decontamination supplies. The <strong>Put on protective mask</strong> and <strong>Inject antidote</strong> actions only offer correctly classified Gear. Injecting the antidote ends active nerve-agent Disease Items; mark single-use injectors Disposable.</p><p>The GM still judges whether a particular suit or mask protects against a specific fictional agent.</p>"
+    },
+    {
+      "_id": "HZRDRADS00000001",
+      "name": "Radiation",
+      "sort": 400000,
+      "content": "<h1>Radiation</h1><p>A Radiation Hazard Zone adds its configured number of temporary radiation points and immediately opens the Actor's configured radiation resistance check. Total temporary and permanent radiation determines that roll's modifier.</p><p>Temporary radiation decreases by one point for every full day of Foundry world time after exposure. Permanent radiation does not decay. Washing, vehicle shielding, protective-suit checks, and changing an exposure rate are situational: apply their adjustment before or after the automated entry as appropriate.</p><p>The GM may also use a Disease Item with the Radiation sickness category to automate delayed Damage, repeated checks, and blocked recovery.</p>"
+    },
+    {
+      "_id": "HZRDCOLD00000001",
+      "name": "Severe Cold",
+      "sort": 500000,
+      "content": "<h1>Severe Cold</h1><p>A Severe cold Hazard Zone ticks the Actor's Hypothermic condition and adds its token status. Hypothermia blocks both Damage and Stress recovery. The GM sets the interval demanded by the current exposure and calls for the configured cold or Stamina check. On a failed check, apply one Damage and one Stress; the condition remains until the Actor is warmed.</p><p>Cold-water Regions continue to manage swimming, drowning, and water-protection modifiers. Use a Severe cold Hazard Zone alongside one when the environment should impose hypothermia as soon as the token enters.</p>"
+    },
+    {
+      "_id": "HZRDSETUP0000001",
+      "name": "Region Setup and Troubleshooting",
+      "sort": 600000,
+      "content": "<h1>Setting Up a Hazard Zone</h1><ol><li>Open a Scene and select the Region Controls.</li><li>Draw the affected area and open its behaviors.</li><li>Add <strong>Hazard Zone</strong>.</li><li>Choose the Hazard type and fill only the fields relevant to it.</li><li>Move a test token across the boundary while a GM is active.</li></ol><p>Fire uses Intensity. Disease and chemical hazards require a valid world or compendium Disease Item UUID. Radiation uses Radiation gained. Severe cold needs no additional field.</p><h2>Troubleshooting</h2><ul><li>If nothing happens, confirm the token represents a Character or NPC and a GM is active.</li><li>If a disease source is invalid, drag the source Item into chat or use Copy UUID and paste the exact value.</li><li>Region entry triggers only when crossing into the Region, not when a token begins a session already inside it.</li></ul>"
+    }
+  ]
+}

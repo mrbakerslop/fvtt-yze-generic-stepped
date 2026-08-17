@@ -20,6 +20,7 @@ const ITEM_SHEET_HEIGHTS = {
   gear: 370,
   grenade: 500,
   injury: 360,
+  disease: 610,
   skill: 320,
   weapon: 730,
 };
@@ -195,6 +196,32 @@ export default class ItemSheetYZEGS extends foundry.applications.api.HandlebarsA
         none: game.i18n.localize('YZEGS.WaterProtection.None'),
         wetsuit: game.i18n.localize('YZEGS.WaterProtection.Wetsuit'),
         drySuit: game.i18n.localize('YZEGS.WaterProtection.DrySuit'),
+      },
+      chemicalProtectionChoices: {
+        none: game.i18n.localize('YZEGS.ChemicalProtection.None'),
+        mask: game.i18n.localize('YZEGS.ChemicalProtection.Mask'),
+        clothing: game.i18n.localize('YZEGS.ChemicalProtection.Clothing'),
+        hazmat: game.i18n.localize('YZEGS.ChemicalProtection.Hazmat'),
+      },
+      medicalTreatmentChoices: {
+        none: game.i18n.localize('YZEGS.MedicalTreatment.None'),
+        atropine: game.i18n.localize('YZEGS.MedicalTreatment.Atropine'),
+        antibiotics: game.i18n.localize('YZEGS.MedicalTreatment.Antibiotics'),
+        decontamination: game.i18n.localize('YZEGS.MedicalTreatment.Decontamination'),
+      },
+      diseaseCategoryChoices: {
+        disease: game.i18n.localize('YZEGS.Disease.Category.Disease'),
+        woundInfection: game.i18n.localize('YZEGS.Disease.Category.WoundInfection'),
+        blisterAgent: game.i18n.localize('YZEGS.Disease.Category.BlisterAgent'),
+        nerveAgent: game.i18n.localize('YZEGS.Disease.Category.NerveAgent'),
+        radiation: game.i18n.localize('YZEGS.Disease.Category.Radiation'),
+        custom: game.i18n.localize('YZEGS.Disease.Category.Custom'),
+      },
+      hazardTimeUnitChoices: {
+        round: game.i18n.localize('YZEGS.Hazards.Time.Round'),
+        stretch: game.i18n.localize('YZEGS.Hazards.Time.Stretch'),
+        shift: game.i18n.localize('YZEGS.Hazards.Time.Shift'),
+        day: game.i18n.localize('YZEGS.Hazards.Time.Day'),
       },
     });
 

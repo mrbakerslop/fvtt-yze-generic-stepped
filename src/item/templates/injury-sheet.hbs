@@ -45,6 +45,12 @@
             {{> checkboxControl name="system.lethal" value=system.lethal editable=@root.editable}}
             {{localize "YZEGS.InjurySheet.Lethal"}}
           </label>
+          {{#if system.lethal}}
+            <label class="checkbox">
+              {{> checkboxControl name="system.instantDeath" value=system.instantDeath editable=@root.editable}}
+              {{localize "YZEGS.Critical.InstantDeath"}}
+            </label>
+          {{/if}}
         </div>
         {{#if system.lethal}}
         <div class="flexrow">

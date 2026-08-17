@@ -1,3 +1,5 @@
+import { usesHeavyWeaponRules } from './heavy-weapons.js';
+
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
 export function getQuickShotModifier(item) {
@@ -13,7 +15,7 @@ export function getRangedPreparation(actor, item, targetUuids = []) {
   const targetMatches = aim.targetUuid === '*'
     || (Boolean(aim.targetUuid) && targetUuids.includes(aim.targetUuid));
   const aimed = actor.statuses?.has?.('aiming') && aim.weaponUuid === item.uuid && targetMatches;
-  const heavy = Boolean(item.system.props?.heavyWeapon);
+  const heavy = usesHeavyWeaponRules(item);
   if (heavy && !aimed) return { aimed: false, blocked: true, modifier: 0, noAmmoDice: false };
   if (!aimed) {
     return { aimed: false, blocked: false, modifier: getQuickShotModifier(item), noAmmoDice: false };

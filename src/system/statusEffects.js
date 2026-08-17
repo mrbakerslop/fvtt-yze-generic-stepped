@@ -61,6 +61,21 @@ export function registerStatusEffects() {
       name: 'EFFECT.StatusDead',
     },
     {
+      img: 'icons/svg/unconscious.svg',
+      id: 'incapacitatedDamage',
+      name: 'EFFECT.StatusIncapacitatedDamage',
+    },
+    {
+      img: 'icons/svg/terror.svg',
+      id: 'incapacitatedStress',
+      name: 'EFFECT.StatusIncapacitatedStress',
+    },
+    {
+      img: 'icons/svg/paralysis.svg',
+      id: 'immobile',
+      name: 'EFFECT.StatusImmobile',
+    },
+    {
       img: 'icons/svg/sleep.svg',
       id: 'sleep',
       name: 'EFFECT.StatusAsleep',

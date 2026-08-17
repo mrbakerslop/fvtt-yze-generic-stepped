@@ -85,6 +85,10 @@ test('heavy weapons are detected by their explicit property or legacy skill', ()
     { type: 'weapon', system: { props: {} } },
     { getFlag: () => 'heavyWeapons', name: 'Custom Skill Name' },
   ), true);
+  assert.equal(isHeavyWeapon(
+    { type: 'weapon', system: { itemType: 'Machine Gun', props: { heavyWeapon: true } } },
+    { getFlag: () => 'heavyWeapons', name: 'Heavy Weapons' },
+  ), false);
 });
 
 test('reload modifier uses configured action modifiers without double counting the specialty name', () => {

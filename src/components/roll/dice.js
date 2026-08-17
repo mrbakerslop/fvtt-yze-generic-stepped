@@ -65,7 +65,9 @@ export class YZEGSRoller {
    * @param {object?} [suppression=null]    Suppression targets or originating attack context
    * @param {object?} [combatAction=null]   Preselected action to spend and display
    * @param {object[]?} [combatActionChoices=null] Constrained action choices for an Item attack
+   * @param {object[]?} [automaticModifiers=null] Rules-derived modifiers already applied to the roll
    * @param {boolean} [hideCombatActions=false] Hide action choices while retaining modifiers
+   * @param {boolean} [allowWhileIncapacitated=false] Permit a rules workflow to roll while incapacitated
    * @param {number}  [maxPush=1]           The maximum number of pushes (default is 1)
    * @param {boolean} [lockMaxPush=false]   Prevent the options dialog from changing maxPush
    * @param {boolean} [lockMessageMode=false] Prevent the options dialog from changing visibility
@@ -98,7 +100,9 @@ export class YZEGSRoller {
     suppression = null,
     combatAction = null,
     combatActionChoices = null,
+    automaticModifiers = null,
     hideCombatActions = false,
+    allowWhileIncapacitated = false,
     maxPush = 1,
     lockMaxPush = false,
     lockMessageMode = false,
@@ -109,10 +113,30 @@ export class YZEGSRoller {
   } = {}) {
     // 1 — Prepares data.
     messageMode = messageMode ?? game.settings.get('core', 'messageMode');
+    if (actor && ['character', 'npc'].includes(actor.type)) {
+      const {
+        actorHasCriticalEffect,
+        canActorRoll,
+        getActorImpairment,
+      } = await import('../../system/critical-injuries.js');
+      if (!canActorRoll(actor, { checkType, allowWhileIncapacitated })) {
+        const state = getActorImpairment(actor);
+        const key = state.dead
+          ? 'YZEGS.Critical.Errors.DeadCannotRoll'
+          : 'YZEGS.Critical.Errors.IncapacitatedCannotRoll';
+        ui.notifications.warn(game.i18n.localize(key));
+        return null;
+      }
+      if (item?.system?.twoHanded && actorHasCriticalEffect(actor, 'noTwoHanded')) {
+        ui.notifications.warn(game.i18n.localize('YZEGS.Critical.Errors.CannotUseTwoHanded'));
+        return null;
+      }
+    }
 
     // 2 — Checks if we ask for options (roll dialog).
     const showTaskCheckOptions = game.settings.get('fvtt-yze-generic-stepped', 'showTaskCheckOptions');
     let situationalModifiers = [];
+    automaticModifiers = foundry.utils.deepClone(automaticModifiers ?? []);
     if (!skipDialog && askForOptions !== showTaskCheckOptions) {
       // 2.1 — Prepares a formula.
       const formula = YearZeroRoll.forge(
@@ -221,11 +245,35 @@ export class YZEGSRoller {
           };
         }),
       }));
-      const combatModifierGroups = getCombatModifierGroups(combatType);
+      const automaticModifierIds = new Set(automaticModifiers.map(entry => entry.id));
+      for (const id of attackData?.automatedModifierIds ?? []) automaticModifierIds.add(id);
+      if (attackData && (locate || attackData.vehicleComponentChoices)) {
+        automaticModifierIds.add('close-aimed-blow');
+        automaticModifierIds.add('ranged-called-shot');
+      }
+      const combatModifierGroups = getCombatModifierGroups(combatType).map(group => ({
+        ...group,
+        modifiers: group.modifiers.filter(entry => !automaticModifierIds.has(entry.id)),
+      })).filter(group => group.modifiers.length);
+      let calledLocationLabelKey = 'YZEGS.CombatModifiers.Entries.rangedCalledShot';
+      if (combatType === 'close') {
+        calledLocationLabelKey = 'YZEGS.CombatModifiers.Entries.closeAimedBlow';
+      }
+      else if (attackData?.vehicleComponentChoices) {
+        calledLocationLabelKey = 'YZEGS.LandVehicle.CalledShot.Label';
+      }
       const opts = await YZEGSDialog.askRollOptions({
         title, attribute, skill, rof, modifier, modifiers, locate,
         maxPush, lockMaxPush, messageMode, lockMessageMode, formula, combatType,
         combatActionGroups, combatModifierGroups,
+        automaticModifiers,
+        canChooseHitLocation: Boolean(
+          attackData && (locate || attackData.vehicleComponentChoices) && !attackData.forcedLocation,
+        ),
+        hitLocationChoices: attackData?.vehicleComponentChoices ?? CONFIG.YZEGS.hitLocations,
+        calledLocationLabel: game.i18n.localize(calledLocationLabelKey),
+        oneHanded: attackData?.oneHanded ?? null,
+        indirectFireAllowed: Boolean(attackData?.indirectFireAllowed),
         tracksCombatActions, trackedActions,
         actionHeading: skillActionDialog
           ? game.i18n.localize('YZEGS.CombatActions.DialogTitle')
@@ -258,6 +306,10 @@ export class YZEGSRoller {
         if (!preparedAction) return null;
         combatAction = preparedAction.combatAction;
         actionData = preparedAction.actionData;
+        modifier += Number(preparedAction.automaticModifier) || 0;
+        automaticModifiers.push(...(preparedAction.automaticModifiers ?? []));
+        if (preparedAction.attackData) attackData = preparedAction.attackData;
+        if (preparedAction.locate) locate = true;
         title = `${combatAction.label}: ${actor.name}`;
       }
       else if (opts.combatAction) combatAction = opts.combatAction;
@@ -282,6 +334,41 @@ export class YZEGSRoller {
         return null;
       }
       situationalModifiers = opts.situationalModifiers;
+      if (opts.calledLocation) {
+        if (attackData.vehicleComponentChoices) attackData.calledVehicleComponent = opts.calledLocation;
+        else attackData.calledLocation = opts.calledLocation;
+        situationalModifiers.push({
+          id: combatType === 'close' ? 'close-aimed-blow' : 'ranged-called-shot',
+          label: game.i18n.localize(combatType === 'close'
+            ? 'YZEGS.CombatModifiers.Entries.closeAimedBlow'
+            : 'YZEGS.CombatModifiers.Entries.rangedCalledShot'),
+          value: -2,
+          displayValue: '−2',
+        });
+      }
+      if (opts.oneHanded) {
+        if (!attackData?.oneHanded?.allowed) {
+          ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.OneHandedUnavailable'));
+          return null;
+        }
+        if (attackData.oneHanded.shortOnly && attackData.oneHanded.beyondShort) {
+          ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.OneHandedShortOnly'));
+          return null;
+        }
+        attackData.firedOneHanded = true;
+        situationalModifiers.push({
+          id: 'ranged-one-handed',
+          label: game.i18n.localize('YZEGS.CombatEdges.OneHanded'),
+          value: Number(attackData.oneHanded.modifier) || 0,
+          displayValue: Number(attackData.oneHanded.modifier)
+            ? `−${Math.abs(Number(attackData.oneHanded.modifier))}`
+            : '–',
+        });
+      }
+      if (attackData?.indirectFireAllowed && opts.indirectFire) {
+        attackData.indirectFire = true;
+        attackData.automaticDeviation = !attackData.indirectFireObserved;
+      }
       locate = opts.locate;
       if (!lockMaxPush) maxPush = opts.maxPush;
       if (!lockMessageMode) messageMode = opts.messageMode;
@@ -348,7 +435,7 @@ export class YZEGSRoller {
     if (defense) roll.options.defense = foundry.utils.deepClone(defense);
     if (defenseFor) roll.options.defenseFor = foundry.utils.deepClone(defenseFor);
     if (suppression) roll.options.suppression = foundry.utils.deepClone(suppression);
-    roll.options.situationalModifiers = situationalModifiers;
+    roll.options.situationalModifiers = [...automaticModifiers, ...situationalModifiers];
     roll.options.modifier = modifier;
     roll.options.signedModifier = modifier >= 0 ? `+${modifier}` : `−${Math.abs(modifier)}`;
     roll.options.attributeName = attributeName;
@@ -384,7 +471,7 @@ export class YZEGSRoller {
     const result = sendMessage ? await roll.toMessage({}, { messageMode }) : roll;
     if (actionData) {
       const { recordTwilightActionAttempt } = await import('../../system/twilight-action-workflows.js');
-      await recordTwilightActionAttempt(actionData);
+      await recordTwilightActionAttempt(actionData, result);
     }
     return result;
   }
@@ -405,6 +492,14 @@ export class YZEGSRoller {
     suppression = null,
   } = {}) {
     if (!actor) return;
+    const { canActorRoll, getActorImpairment } = await import('../../system/critical-injuries.js');
+    if (!canActorRoll(actor)) {
+      const state = getActorImpairment(actor);
+      ui.notifications.warn(game.i18n.localize(state.dead
+        ? 'YZEGS.Critical.Errors.DeadCannotRoll'
+        : 'YZEGS.Critical.Errors.IncapacitatedCannotRoll'));
+      return null;
+    }
     messageMode = messageMode ?? game.settings.get('core', 'messageMode');
     const unitMoraleEnabled = isUnitMoraleEnabled();
     if (!unitMoraleEnabled) unitMorale = false;
