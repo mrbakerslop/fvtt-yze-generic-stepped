@@ -1,0 +1,68 @@
+{
+  "entry": {
+    "_id": "YZEGridGuide0001",
+    "name": "Using Scene Grid Presets",
+    "categories": [],
+    "folder": null,
+    "sort": 500000,
+    "ownership": {
+      "default": 2
+    },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "scene-grid-presets"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZEGridQuick0001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Using Scene Grid Presets</h1><p>Scene Grid Presets give GMs four ready-made flat-top hex scales. They set the distance represented by each hex and record the rules mode used by Scene-aware automation.</p><h2>Set the Default for New Scenes</h2><ol><li>Open <strong>Game Settings → Configure Settings → System Settings</strong>.</li><li>Find <strong>Default Scene Grid</strong>.</li><li>Choose Close Quarters, Battle, City, Travel, or System Manifest Default.</li><li>Save the settings.</li></ol><h2>Apply a Preset to One Scene</h2><ol><li>Right-click the Scene in the navigation bar or Scenes directory and choose <strong>Configure</strong>.</li><li>Open the <strong>Grid</strong> tab.</li><li>Find the GM-only <strong>Grid Presets</strong> panel.</li><li>Click the required preset button.</li></ol><p>Clicking a preset saves an existing Scene immediately. When configuring a Scene that has not yet been created, finish by saving the Scene.</p><h2>What a Preset Does</h2><p>A preset changes the grid type, distance, and units. It deliberately preserves the grid's pixel size, offsets, and map dimensions, so the GM must still align the grid to the artwork.</p>"
+    },
+    {
+      "_id": "YZEGridWorld0001",
+      "name": "World Default",
+      "sort": 200000,
+      "content": "<h1>World Default</h1><p><strong>Default Scene Grid</strong> is a world-level GM setting. It supplies a starting grid for genuinely new Scenes created in the world.</p><h2>Available Choices</h2><ul><li><strong>Close Quarters — Approximate Flat-Top Hexes, 2.5 m:</strong> the system default, suited to rooms and detailed interiors.</li><li><strong>Battle — Flat-Top Hexes, 10 m:</strong> tactical outdoor encounters.</li><li><strong>City — Flat-Top Hexes, 200 m:</strong> movement and travel through built-up areas.</li><li><strong>Travel — Flat-Top Hexes, 10 km:</strong> regional and overland travel.</li><li><strong>System Manifest Default:</strong> leaves Foundry's core grid values untouched when the Scene is created.</li></ul><h2>What Is Not Changed</h2><p>The setting does not alter existing Scenes. Scenes imported from JSON or a compendium retain their source configuration, including their grid and stored rules mode. Apply a preset from the Scene's Grid tab when an imported or existing Scene should use one of these modes.</p><p>The chosen default also establishes the initial Scene rules mode. A new Close Quarters Scene starts with urban rules enabled; the other three presets start without that toggle.</p>"
+    },
+    {
+      "_id": "YZEGridScene0001",
+      "name": "Applying a Preset to a Scene",
+      "sort": 300000,
+      "content": "<h1>Applying a Preset to a Scene</h1><ol><li>Open <strong>Scene Configuration</strong>.</li><li>Select the <strong>Grid</strong> tab.</li><li>Under <strong>Grid Presets</strong>, click <strong>Close Quarters — 2.5 m</strong>, <strong>Battle — 10 m</strong>, <strong>City — 200 m</strong>, or <strong>Travel — 10 km</strong>.</li><li>For a newly prepared Scene, save the configuration. An existing Scene is saved as soon as the button is clicked.</li><li>Use Foundry's normal grid tools to adjust pixel size and offset until the hexes match the map.</li></ol><h2>Preset Side Effects</h2><ul><li>Applying Close Quarters enables urban rules for the Scene.</li><li>Applying Battle, City, or Travel clears the Scene's explicit urban toggle.</li><li>No preset changes <strong>Enable confined-space hazards on this Scene</strong>.</li><li>The background image, dimensions, grid pixel size, and alignment offsets are preserved.</li></ul><h2>Changing Rules Mode Later</h2><p>Use a preset button whenever the Scene should change from one rules mode to another. Manually changing only the displayed distance or units does not replace a rules mode that was explicitly recorded by an earlier preset.</p>"
+    },
+    {
+      "_id": "YZEGridScale0001",
+      "name": "Preset Reference",
+      "sort": 400000,
+      "content": "<h1>Preset Reference</h1><table><thead><tr><th>Preset</th><th>Distance per Hex</th><th>Typical Use</th></tr></thead><tbody><tr><td><strong>Close Quarters</strong></td><td>2.5 m</td><td>Rooms, buildings, tunnels, and detailed sector maps. This is an approximate hex scale for artwork that may not have been designed around a measured grid.</td></tr><tr><td><strong>Battle</strong></td><td>10 m</td><td>Tactical outdoor combat and larger sites.</td></tr><tr><td><strong>City</strong></td><td>200 m</td><td>Urban movement, city travel stretches, and district-scale maps.</td></tr><tr><td><strong>Travel</strong></td><td>10 km</td><td>Regional and overland travel maps.</td></tr></tbody></table><h2>Grid Shape</h2><p>All four presets use Foundry's flat-top, odd-column offset hex grid. If a particular map image uses the opposite column offset, select Foundry's alternative flat-top even-column Grid Type after applying the preset. Changing that visual offset does not require changing the selected scale.</p><h2>Measurement</h2><p>The distance is the real-world distance represented by one grid space. A token that moves three Battle hexes therefore moves 30 m; three City hexes represent 600 m; and three Travel hexes represent 30 km.</p>"
+    },
+    {
+      "_id": "YZEGridRules0001",
+      "name": "Urban and Confined-Space Rules",
+      "sort": 500000,
+      "content": "<h1>Urban and Confined-Space Rules</h1><p>The <strong>Grid Presets</strong> panel also contains two independent Scene rule controls.</p><h2>Urban Rules</h2><p><strong>Enable Urban Operations rules on this Scene</strong> makes the broader urban action set and supporting automation available on a Scene of any scale. Close Quarters always behaves as an urban Scene, even if its displayed checkbox is later cleared, and additionally enables its close-quarters-only sector actions, engagement rules, blind fire, and indoor handling.</p><p>Applying Close Quarters turns the urban toggle on. Applying Battle, City, or Travel turns the explicit toggle off, so re-enable it afterward when a non-Close-Quarters Scene also needs urban rules.</p><h2>Confined-Space Hazards</h2><p><strong>Enable confined-space hazards on this Scene</strong> activates the Scene-wide confined environment used by supported blast, ricochet, structural-collapse, and debris workflows. It is independent of both scale and urban rules.</p><p>A Close Quarters preset does not enable confined-space hazards automatically. Turn the setting on only for underground, enclosed, or otherwise hazardous areas where those effects belong. Applying another grid preset does not clear it.</p>"
+    },
+    {
+      "_id": "YZEGridTravel001",
+      "name": "City and Travel Integration",
+      "sort": 600000,
+      "content": "<h1>City and Travel Integration</h1><h2>City Preset</h2><p>When a City Scene is active, a Travel Party automatically uses its urban travel interface unless Water Travel is enabled on that Party. Urban travel divides play into short stretches and provides March, Drive, Keep Watch, and Other assignments together with the city movement, fuel, and GM stretch tools.</p><p>The City preset supplies the expected 200 m measurement and records City mode. The active Scene determines the automatic integration, so activate the appropriate Scene before managing the Travel Party.</p><h2>Travel Preset</h2><p>The Travel preset supplies 10 km hexes for regional movement. It does not automatically select Water Travel or another specialised Travel Party mode. The Party continues to use its standard travel workflow unless a GM enables a different mode on its sheet.</p><h2>Other Presets</h2><p>Battle and Close Quarters Scenes do not automatically select a special Travel Party interface. Use them for encounter movement and Scene-aware combat actions rather than overland progress.</p><h2>Map Choice</h2><p>A City or Travel map does not have to contain printed hexes. Set a suitable pixel size for readable tokens and use Foundry's measurement tools with the preset distance. If the artwork does contain hexes, calibrate the pixel grid and offsets to match them.</p>"
+    },
+    {
+      "_id": "YZEGridAlign0001",
+      "name": "Map Alignment and Calibration",
+      "sort": 700000,
+      "content": "<h1>Map Alignment and Calibration</h1><p>A preset provides game scale, not image calibration. It preserves the Scene's existing pixel grid size, offsets, background image, and dimensions.</p><h2>Aligning a Gridded Map</h2><ol><li>Apply the desired system preset first.</li><li>Use Foundry's Grid Configuration tools to make one virtual hex the same pixel size as one printed map hex.</li><li>Adjust the horizontal and vertical offsets until the grid intersections align.</li><li>If alternating columns lean the wrong way, choose the alternative flat-top even-column Grid Type.</li><li>Save and test measurement between several distant hexes.</li></ol><h2>Gridless Artwork</h2><p>For artwork without printed hexes, choose a pixel size that keeps tokens and labels usable. The preset's distance remains authoritative even though there is no image grid to match.</p><h2>Keep Mode and Calibration Separate</h2><p>Use preset buttons to change Scene rules mode and distance. Use pixel size, offsets, and the equivalent flat-top offset type to fit the artwork. If the distance is edited manually after a preset, the stored rules mode still takes precedence for automation.</p><h2>Imported Scenes</h2><p>Imported Scenes preserve their original grid. Inspect the scale before play, apply the intended preset if needed, and then recalibrate the artwork rather than assuming the world default was applied.</p>"
+    },
+    {
+      "_id": "YZEGridToken0001",
+      "name": "Prototype Token Sizes and Troubleshooting",
+      "sort": 800000,
+      "content": "<h1>Prototype Token Sizes</h1><p>Grid scale and token footprint are configured separately. Open <strong>Game Settings → Configure Settings → System Settings → Default Prototype Token Sizes → Configure Token Sizes</strong> to set the default width and height for newly created Characters, NPCs, Vehicles, Units, Parties, and Containers.</p><ul><li>All Actor types default to 1 × 1 grid space.</li><li>Width and height may be set independently from 0.25 to 10 grid spaces.</li><li>Rectangular footprints are useful for vehicles, large storage, and unusual units.</li><li>The same 1 × 1 token occupies one hex at every preset; only the real-world distance represented by that hex changes.</li><li>The setting affects only genuinely new Actors. Imported Actors, existing prototype tokens, and tokens already placed on a Scene are never resized.</li></ul><h1>Troubleshooting</h1><h2>The Scale Is Wrong</h2><p>Check Grid Distance and Units, then click the intended preset again. Do not rely on manually editing the distance when automation should also change modes.</p><h2>The Rules Do Not Match the Displayed Distance</h2><p>An explicitly stored Scene mode takes precedence over scale inference. Reapply the correct preset.</p><h2>The Map Art Does Not Align</h2><p>Adjust pixel grid size and horizontal or vertical offset. Distance controls measurement and will not align the artwork.</p><h2>Urban or Confined Rules Are Unexpected</h2><p>Review both Scene toggles. Close Quarters always counts as urban; confined-space hazards remain independent and persist when another preset is applied.</p><h2>An Existing Token Has the Wrong Size</h2><p>Edit that Actor's Prototype Token or the placed token directly. The world default is intentionally limited to new Actors.</p>"
+    }
+  ]
+}

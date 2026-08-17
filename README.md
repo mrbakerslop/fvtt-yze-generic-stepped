@@ -14,7 +14,7 @@ setting.
 
 ## Compatibility
 
-- System version: 14.0.8
+- System version: 14.0.10
 - Minimum Foundry version: 14.359
 - Verified Foundry version: 14.366
 
@@ -161,6 +161,10 @@ Vehicles, Units, Parties, and Containers. All types default to 1 × 1; vehicles
 and large storage can use rectangular dimensions. Existing Actor prototypes and
 placed Scene tokens are never resized by this setting.
 
+The **System Guides** Journal compendium includes **Using Scene Grid Presets**,
+an in-game reference for choosing a scale, applying it to existing Scenes,
+aligning map artwork, enabling Scene rule modes, and setting token footprints.
+
 ## Containers
 
 Containers are inventory-focused Actors for chests, crates, lockers, weapon
@@ -197,6 +201,8 @@ require a slow action and do not roll to reload. Their dialog can select another
 owned Character or NPC as loader. Internal magazines normally fill in one
 reload while consuming the required loose rounds; the **Internal Magazine
 Reloading** world setting can instead require one reload action per round.
+The complete setup and usage guide is available under **Compendium Packs → YZE
+Generic Stepped Dice System Guides → Using Internal Magazine Reloading**.
 
 ## Combat actions
 
@@ -237,6 +243,11 @@ each active social action and for resisting Persuasion, Interrogation, and
 Barter. Resistance rolls can be public or GM-only, either by world default or
 per conflict.
 
+The same instructions are available inside Foundry under **Compendium Packs →
+YZE Generic Stepped Dice System Guides → Using Social Conflict Automation**.
+System Guides can be read directly from the compendium or imported into the
+world for editing and sharing with players.
+
 Blockable close-combat attacks now begin with an attack-declaration card. The
 target's owner or the GM must choose **Block** or **Do Not Block** before the
 attack is rolled. A Block spends a Fast action immediately. After the attacker
@@ -256,6 +267,9 @@ on the relevant Actor or Item. Firearms apply the correct quick-shot penalty
 unless the attacker has aimed at that target with that weapon. Telescopic aim
 applies its normal bonus and disables ammo dice, and heavy weapons cannot fire
 until aimed. Bows must be prepared and grenade pins pulled before attacking.
+The complete player and GM workflow is available under **Compendium Packs →
+YZE Generic Stepped Dice System Guides → Using Automated Combat States and
+Outcomes**.
 
 ## Confined spaces and minefields
 
@@ -264,6 +278,8 @@ being resolved in tunnels, bunkers, basements, or similarly enclosed areas.
 The attack chat card then offers GM controls for missed-shot ricochets and
 structural-collapse checks. Collapse results can pin selected Characters or
 NPCs under debris and direct the GM to the appropriate critical-injury table.
+An eight-page walkthrough is available under **Compendium Packs → YZE Generic
+Stepped Dice System Guides → Running Underground and Confined Spaces**.
 
 Mines are configured as Explosive Items using the **Explosive Type** field.
 Create a Region and add the **Minefield** behavior to automate a hazardous
@@ -275,6 +291,8 @@ entrants. Detection, trigger, dud, direct-damage, and Blast results then appear
 in chat. Vehicle damage resolves armor and component hits automatically.
 Water minefields can additionally restrict triggering by vessel Size, require
 submerged detection equipment, and use Driving to navigate a discovered field.
+An eight-page walkthrough is available under **Compendium Packs → YZE Generic
+Stepped Dice System Guides → Setting Up and Using Minefields**.
 
 ## Water and watercraft
 
@@ -303,6 +321,10 @@ vessel and River, Coastline, or Open Water terrain, then assign Drive, Watch,
 Fish, Rest, Sleep, and other duties. The GM's shift control applies day/night
 speed, Driving and fishing modifiers, route-branch navigation, encounter
 distance, and water-travel mishaps to the selected vessel.
+
+The **System Guides** Journal compendium includes **Using Travel Modes**, which
+explains Standard, Urban, and Water Travel Party setup, mode switching,
+assignments, Scene integration, Skill configuration, and GM travel controls.
 
 English is the source language. The included German, Spanish, French, Russian,
 Swedish, and Ukrainian localizations are community translations and may lag

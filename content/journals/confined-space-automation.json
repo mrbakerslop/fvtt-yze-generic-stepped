@@ -1,0 +1,68 @@
+{
+  "entry": {
+    "_id": "YZEConfGuide0001",
+    "name": "Running Underground and Confined Spaces",
+    "categories": [],
+    "folder": null,
+    "sort": 200000,
+    "ownership": {
+      "default": 2
+    },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "confined-spaces"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZEConfQuick0001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Running Underground and Confined Spaces</h1><p>Confined-space automation adds the dangers of gunfire and explosions in tunnels, bunkers, basements, sewers, caves, and similarly enclosed structures. It provides stronger indoor blasts, missed-shot ricochets, structural-collapse checks, and a persistent Pinned by Debris condition.</p><h2>GM Quick Start</h2><ol><li>Right-click the Scene in the Scene Directory and choose <strong>Configure</strong>.</li><li>Open the <strong>Grid</strong> section and enable <strong>Enable confined-space hazards on this Scene</strong>.</li><li>Optionally apply the <strong>Close Quarters — 2.5 m</strong> grid preset for small indoor maps.</li><li>Save and activate the Scene.</li><li>Run weapon and explosive attacks normally.</li><li>After a qualifying roll is final, use the GM-only ricochet or collapse buttons on its chat card.</li><li>For blasts or collapse, target the affected tokens on the canvas before applying the result.</li></ol><p>The setting affects the entire active Scene. It does not inspect Walls, roofs, drawings, elevations, or Regions to decide whether an individual token is indoors.</p>"
+    },
+    {
+      "_id": "YZEConfScene0001",
+      "name": "Scene Setup",
+      "sort": 200000,
+      "content": "<h1>Scene Setup</h1><h2>Enable the Hazard Rules</h2><ol><li>Open the Scene's configuration.</li><li>Find the system's <strong>Grid Presets</strong> panel in the Grid section.</li><li>Tick <strong>Enable confined-space hazards on this Scene</strong>.</li><li>Save the Scene.</li></ol><p>This switch is independent of Scene scale. It can be used with any grid preset and remains off until the GM enables it.</p><h2>Choosing a Grid</h2><p>The optional <strong>Close Quarters — 2.5 m</strong> preset applies approximate flat-top 2.5-metre hexes and enables the broader urban-operation rules. It is suitable for rooms, corridors, bunkers, and tunnels. Confined-space hazards must still be enabled separately.</p><p>Use another preset when the map needs a different scale. The ricochet and collapse automation only needs the confined-space switch, not the Close Quarters preset.</p><h2>Mixed Indoor and Outdoor Maps</h2><p>Because the switch applies to the whole Scene, attacks made in an outdoor portion are also treated as confined. For a map containing both open ground and underground areas, use one of these approaches:</p><ul><li>Create separate outdoor and underground Scenes.</li><li>Enable the switch only while play is taking place in the enclosed section.</li><li>Leave it disabled and resolve the occasional enclosed attack manually.</li></ul><h2>Recommended Preparation</h2><p>Import the torso and leg Critical Injury Roll Tables into the world if you want collapse automation to draw injuries automatically. Without matching world tables, the system posts a message telling the GM to draw the appropriate critical injury manually.</p>"
+    },
+    {
+      "_id": "YZEConfBlast0001",
+      "name": "Explosions and Blast",
+      "sort": 300000,
+      "content": "<h1>Explosions and Blast</h1><p>Explosions are resolved from the original attack chat card. A confined Scene increases the effective Blast rating by one step:</p><table><thead><tr><th>Listed Blast</th><th>Confined Blast</th></tr></thead><tbody><tr><td>D</td><td>C</td></tr><tr><td>C</td><td>B</td></tr><tr><td>B</td><td>A</td></tr><tr><td>A</td><td>A</td></tr></tbody></table><h2>Resolving Blast Targets</h2><ol><li>On the canvas, target every token affected at the same effective Blast rating.</li><li>Click <strong>Resolve Blast</strong> on the attack card.</li><li>Confirm the effective rating in the dialog. Tick <strong>Contained within this room or sector</strong> when it describes the blast.</li><li>The system rolls separately for every targeted Actor.</li><li>Repeat with a reduced rating for targets at a different distance or otherwise receiving a weaker effect.</li></ol><p>The dialog begins with the confined-space increase already applied. Reduce the rating one step per appropriate hex or sector of distance and one step for a prone target. Airburst attacks do not receive the prone reduction. For directional explosives, include only targets in the directed area and reduce the rating one step for every three hexes.</p><p>Blast rolls are unpushable and create the normal damage and suppression controls. The system relies on the GM's selected targets; it does not infer blast range from Walls or token positions.</p>"
+    },
+    {
+      "_id": "YZEConfRicoc0001",
+      "name": "Ricochets",
+      "sort": 400000,
+      "content": "<h1>Ricochets</h1><p>A final missed attack with an eligible ordinary firearm offers the GM a <strong>Resolve Ricochet</strong> button. The attack must have exactly one primary target selected when it is rolled.</p><h2>Eligible Attacks</h2><ul><li>The Scene must have confined-space hazards enabled.</li><li>The attack must miss after any Block and Push are resolved.</li><li>The Weapon must use ammunition and must not have a Blast rating.</li><li>Shotguns, bows, crossbows, launchers, mortars, and howitzers are excluded.</li></ul><h2>Resolution</h2><ol><li>Click <strong>Resolve Ricochet</strong> on the missed attack card.</li><li>The system rolls one D10 for every round spent by the attack, with a minimum of one die.</li><li>Every result of 1 produces a ricochet hit.</li><li>Each hit is assigned randomly among the eligible tokens closest to the original target. The original target is excluded.</li><li>Click <strong>Apply Ricochet Damage</strong> beside each assigned hit.</li><li>Confirm or adjust its base damage in the GM dialog.</li></ol><p>Damage against Characters and NPCs is applied through the normal damage system. Vehicle ricochets post a reminder for the GM to resolve armor, hit location, and component damage manually.</p><p>The source attack card is marked once ricochets have been resolved, preventing that attack from generating another ricochet check.</p>"
+    },
+    {
+      "_id": "YZEConfCollp0001",
+      "name": "Structural Collapse",
+      "sort": 500000,
+      "content": "<h1>Structural Collapse</h1><p>An original explosive attack with Blast A–D offers the GM a <strong>Check for Collapse</strong> button after its roll is final. Secondary blast rolls do not create further collapse checks.</p><h2>The Collapse Check</h2><p>The check first increases the explosive's listed Blast by one step for the confined space, capped at A. It then rolls two dice using the resulting rating:</p><table><thead><tr><th>Effective Blast</th><th>Collapse Dice</th></tr></thead><tbody><tr><td>D</td><td>2D6</td></tr><tr><td>C</td><td>2D8</td></tr><tr><td>B</td><td>2D10</td></tr><tr><td>A</td><td>2D12</td></tr></tbody></table><p>The structure collapses if the roll produces at least two successes. Otherwise, the chat card reports that the structure holds.</p><h2>Applying a Collapse</h2><ol><li>Target every Character or NPC caught in the collapsed space.</li><li>Click <strong>Apply Collapse to Selected Tokens</strong> on the collapse card.</li><li>Each selected Actor gains the persistent <strong>Pinned by Debris</strong> condition.</li><li>Each Actor suffers a random critical injury to either the torso or legs.</li></ol><p>Vehicles are ignored by the Apply Collapse control and should be resolved narratively or with normal vehicle damage. If the required world Roll Table cannot be found, chat identifies the Actor and hit location so the GM can draw the injury manually.</p><p>Target selection is deliberate. The system does not determine the collapsing room from Walls, Regions, or the blast origin.</p>"
+    },
+    {
+      "_id": "YZEConfPinned001",
+      "name": "Pinned by Debris",
+      "sort": 600000,
+      "content": "<h1>Pinned by Debris</h1><p>Applying a successful collapse adds a persistent <strong>Pinned by Debris</strong> status to every selected Character and NPC. The condition remains until it is removed by the Break free from debris outcome or by the GM.</p><h2>Breaking Free</h2><ol><li>Open <strong>Take Action</strong> on the pinned Actor's Character sheet, or roll the relevant Skill.</li><li>Choose <strong>Break free from debris</strong>.</li><li>Make the Stamina test. In active combat this is a Slow Action; outside combat, action cost is narrative.</li><li>After a successful final roll, click <strong>Apply Outcome</strong> on the chat card.</li><li>The system removes Pinned by Debris.</li></ol><p>The action cannot be started for an Actor that is not currently pinned. If the test is unsuccessful, no successful outcome can be applied and the condition remains.</p><h2>World Skill Mapping</h2><p>In a world using custom Skill Items, open <strong>Game Settings → Configure Settings → System Settings → Action Skills</strong> and assign the Skill used for <strong>Break free from debris</strong>. The built-in fallback is Stamina. The Actor needs an embedded copy of the configured Skill.</p><h2>Manual Removal</h2><p>The GM can remove Pinned by Debris from the Actor's status effects when assistance, excavation, or a narrative event frees the character without using the automated action.</p>"
+    },
+    {
+      "_id": "YZEConfMines0001",
+      "name": "Minefields and Other Hazards",
+      "sort": 700000,
+      "content": "<h1>Minefields and Other Hazards</h1><p>Confined-space hazards also integrate with Minefield Regions. When a mine detonates on a confined Scene, its minefield chat card can provide all relevant GM controls:</p><ul><li><strong>Apply Direct Mine Damage</strong> to the triggering Actor.</li><li><strong>Resolve Blast Against Selected Tokens</strong> for nearby Actors.</li><li><strong>Check for Collapse</strong> for the surrounding underground or enclosed structure.</li></ul><p>Resolve each portion independently. Select blast targets before resolving the blast. If the collapse check succeeds, select only the tokens caught in the collapsed space before applying it.</p><h2>Workflow Order</h2><ol><li>Resolve the direct hit against the mine's triggering Actor.</li><li>Resolve the blast against the appropriate selected tokens.</li><li>Check whether the structure collapses.</li><li>If it collapses, select the affected Characters and NPCs and apply the collapse.</li><li>Resolve later attempts to break free from debris.</li></ol><p>These controls do not alter Walls, doors, lighting, terrain, or Region shapes. After a collapse, the GM should update the Scene manually if passages are blocked, cover changes, or movement is restricted.</p><h2>Narrative Hazards</h2><p>The Scene flag automates firearm ricochets and explosive collapse. Darkness, flooding, bad air, falling, unstable footing, narrow passages, and navigation remain separate conditions or narrative challenges unless another system workflow specifically supports them.</p>"
+    },
+    {
+      "_id": "YZEConfHelp00001",
+      "name": "GM Checklist and Troubleshooting",
+      "sort": 800000,
+      "content": "<h1>GM Checklist</h1><ul><li>Confined-space hazards are enabled in the active Scene configuration.</li><li>The attack was rolled after the correct target was selected.</li><li>The attack has been accepted or pushed to its final result.</li><li>Blast or collapse targets are targeted on the canvas before Apply is clicked.</li><li>Critical Injury Roll Tables are imported into the world if automatic collapse injuries are desired.</li><li>Break free from debris uses a valid world Skill mapping.</li></ul><h2>If Resolve Ricochet Is Missing</h2><ul><li>The attack must be a final miss against exactly one selected primary target.</li><li>The Weapon must be an eligible non-explosive firearm.</li><li>Shotguns and the excluded projectile or heavy-weapon types do not ricochet.</li><li>The button is GM-only.</li></ul><h2>If Check for Collapse Is Missing</h2><ul><li>The original attack needs a Blast rating from A to D.</li><li>The Scene must have confined-space hazards enabled when the attack is rolled.</li><li>A secondary blast-resolution roll cannot cause another automated collapse.</li><li>The button disappears after that source attack's collapse check is resolved.</li></ul><h2>If Apply Collapse Does Nothing</h2><ul><li>The collapse check must have produced at least two successes.</li><li>Target at least one Character or NPC on the canvas; controlling or selecting a token is not the same as targeting it.</li><li>Vehicles are not affected by the automated Apply Collapse control.</li></ul><h2>Testing Safely</h2><p>Use spare Actors and low-damage Weapons to test one missed firearm attack and one explosive attack before a session. Confirm the chat buttons, target selection, critical tables, Pinned by Debris status, and Break free outcome. Disable the Scene setting again if the location is not wholly confined.</p>"
+    }
+  ]
+}

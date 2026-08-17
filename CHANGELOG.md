@@ -1,5 +1,22 @@
 # Changelog
 
+## 14.0.10 — 2026-08-17
+
+### Added
+
+- Added a **System Guides** Journal compendium containing eight-page guides to
+  configuring and using Social Conflict automation, Minefields, and
+  underground or confined-space hazards.
+- Added a six-page System Guide explaining Internal Magazine Reloading setup,
+  both world modes, combat action costs, specialty ammunition switching, and
+  troubleshooting.
+- Added a ten-page System Guide for automated combat states, Item readiness,
+  close-combat control outcomes, First Aid, Rally, and extinguishing fire.
+- Added an eight-page System Guide for Scene grid presets, Scene rule modes,
+  map calibration, travel integration, and prototype token sizes.
+- Added an eight-page System Guide for Standard, Urban, and Water Travel Party
+  modes, assignments, Scene integration, Skill mappings, and GM controls.
+
 ## 14.0.9 — 2026-08-17
 
 ### Added

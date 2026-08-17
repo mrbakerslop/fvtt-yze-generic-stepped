@@ -1,0 +1,56 @@
+{
+  "entry": {
+    "_id": "YZEReldGuide0001",
+    "name": "Using Internal Magazine Reloading",
+    "categories": [],
+    "folder": null,
+    "sort": 300000,
+    "ownership": {
+      "default": 2
+    },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "internal-magazine-reloading"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZEReldQuick0001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Using Internal Magazine Reloading</h1><p>The <strong>Internal Magazine Reloading</strong> world setting controls whether weapons such as pump-action shotguns and tube-fed rifles fill completely with one reload or load one round for every reload action during combat.</p><h2>GM Quick Start</h2><ol><li>Open <strong>Game Settings → Configure Settings → System Settings</strong>.</li><li>Find <strong>Internal Magazine Reloading</strong>.</li><li>Choose <strong>Full Reload (Rules as Written)</strong> or <strong>Load One Round per Action (Optional)</strong>.</li><li>Save the settings.</li></ol><p>This is a world-level setting and applies to every Weapon marked <strong>Internal Magazine</strong>.</p><h2>The Important Exception</h2><p>The optional one-round rule applies only when the reloading Actor is participating in a started Combat encounter. Outside active combat, an internal magazine fills automatically without a roll or tracked action. Time taken outside combat is narrative, regardless of the selected world setting.</p><h2>Using It</h2><p>Click the square Reload button beside <strong>Ammunition Source</strong> on the Weapon sheet, or use the Weapon's Reload control on the Character sheet. The dialog shows the current load, capacity, compatible loose ammunition, and—during combat—the available actions.</p>"
+    },
+    {
+      "_id": "YZEReldSetup0001",
+      "name": "Weapon and Ammunition Setup",
+      "sort": 200000,
+      "content": "<h1>Weapon and Ammunition Setup</h1><h2>Configure the Weapon</h2><ol><li>Place the Weapon in the Character or NPC's inventory.</li><li>Open its Item sheet.</li><li>Enter an <strong>Ammo</strong> identifier, such as 12GA.</li><li>Tick <strong>Internal Magazine</strong>. The other feed-system options should not be enabled for the same Weapon.</li><li>Set <strong>Loaded / Capacity</strong>. Capacity is the maximum number of rounds the weapon can hold; Loaded is its current internal count.</li></ol><h2>Configure Loose Ammunition</h2><p>A compatible Ammunition Item must:</p><ul><li>Be owned by the same Actor as the Weapon.</li><li>Use an <strong>Ammo Identifier</strong> matching the Weapon's Ammo value.</li><li>Have a positive Item Quantity, representing available loose rounds.</li><li>Not be marked <strong>Is Magazine</strong>, <strong>Is Ammo Belt</strong>, or <strong>Is Box of Ammo</strong>.</li></ul><p>Identifiers ignore capitalization, spaces, and surrounding whitespace when compared, but using the same spelling everywhere makes a world easier to maintain.</p><h2>Generate Ammo</h2><p>The Weapon sheet's <strong>Generate Ammo</strong> control can create a compatible loose-ammunition stack. For an internal-magazine Weapon, its starting quantity equals the Weapon's capacity.</p><h2>Specialty Ammunition</h2><p>Create separate Ammunition Items for standard, slug, armor-piercing, incendiary, or other loads. Give them the same Ammo Identifier so they fit the Weapon, but use different names and feature overrides. The selected Item becomes the Weapon's loaded ammunition profile.</p>"
+    },
+    {
+      "_id": "YZEReldFull00001",
+      "name": "Full Reload Mode",
+      "sort": 300000,
+      "content": "<h1>Full Reload Mode</h1><p><strong>Full Reload (Rules as Written)</strong> is the default world setting. One completed reload fills all available empty capacity using the selected loose-ammunition stack.</p><blockquote><p>Example: a Weapon is loaded 2/8 and the selected ammunition stack contains 10 rounds. One completed reload loads 6 rounds, leaving the Weapon at 8/8 and the stack at 4.</p></blockquote><h2>In Active Combat</h2><p>An ordinary firearm reload makes an unpushable Ranged Combat test:</p><ul><li><strong>Success:</strong> the reload completes and spends a Fast Action.</li><li><strong>Failure with a Slow Action available:</strong> the reload still completes but spends a Slow Action.</li><li><strong>Failure with only a Fast Action remaining:</strong> the Fast Action is forfeited and no ammunition is loaded.</li><li><strong>No suitable action:</strong> the reload cannot begin.</li></ul><p>A Reload or Reloader Specialty modifier is applied automatically, and the dialog allows a situational modifier. A Weapon marked Heavy Weapon, or using the Heavy Weapons Skill, always spends a Slow Action and does not make the reload test.</p><h2>Limited Ammunition</h2><p>If the selected stack contains fewer rounds than the empty capacity, every available round is loaded and the Weapon remains partially full.</p>"
+    },
+    {
+      "_id": "YZEReldRound0001",
+      "name": "One Round per Action Mode",
+      "sort": 400000,
+      "content": "<h1>One Round per Action Mode</h1><p><strong>Load One Round per Action (Optional)</strong> changes completed internal-magazine reloads during active combat. Each completed reload loads exactly one compatible loose round.</p><blockquote><p>Example: a pump-action shotgun is loaded 2/8. The player must complete six separate reload actions to reach 8/8. Each attempt consumes one round from the chosen Ammunition Item.</p></blockquote><h2>Action Resolution</h2><p>Every reload attempt uses the normal combat reload procedure:</p><ul><li>A successful Ranged Combat test loads one round and spends a Fast Action.</li><li>A failed test loads one round if a Slow Action can be spent.</li><li>A failed test with only a Fast Action remaining forfeits that action and loads nothing.</li><li>Heavy weapons load one round with their required Slow Action and no reload roll.</li></ul><p>The player can stop after any round, fire a partially loaded Weapon, or continue reloading on later turns. The Weapon and Character sheets update their current ammunition count after every completed action.</p><h2>When Is Combat Active?</h2><p>The granular rule is used only when the Combat encounter has started and the reloading Actor is one of its combatants. Merely creating an encounter, or reloading with an Actor not participating in it, uses the automatic out-of-combat procedure instead.</p>"
+    },
+    {
+      "_id": "YZEReldAmmo00001",
+      "name": "Out of Combat and Switching Ammo",
+      "sort": 500000,
+      "content": "<h1>Out of Combat and Switching Ammunition</h1><h2>Outside Active Combat</h2><p>Reloading is automatic and always fills as much empty capacity as the selected stack allows. It requires no roll and consumes no Fast or Slow Action. This remains true when the optional one-round setting is selected; the time spent loading individual rounds is handled narratively.</p><h2>Switching Ammunition Types</h2><p>The Reload dialog shows the currently loaded ammunition and lists every compatible loose-ammunition source with its available round count. The player may reload solely to change ammunition type, even when the Weapon is not empty.</p><p>When a different Ammunition Item is selected:</p><ol><li>All rounds currently in the internal magazine return to the previous Ammunition Item's Quantity.</li><li>The internal loaded count resets before the new ammunition is added.</li><li>Full Reload mode fills from the new stack.</li><li>The optional rule loads one new round per completed combat reload.</li></ol><p>This means switching ammunition under the optional combat rule unloads the existing rounds and leaves the Weapon with one round of the newly selected type after the first completed reload.</p><h2>Ammunition in a Backpack</h2><p>During active combat, a source marked <strong>Stored in the backpack</strong> first requires an available Slow Action and a successful Mobility test to retrieve. That retrieval is separate from the reload action. Outside combat, the source is retrieved automatically and the time is narrative.</p><h2>Loaded Ammunition Features</h2><p>Once selected, the Weapon's effective loaded profile uses that Ammunition Item's feature overrides. This allows compatible specialty loads to change Damage, Critical Rating, Blast, Range, or Armor Modifier as configured.</p>"
+    },
+    {
+      "_id": "YZEReldHelp00001",
+      "name": "Troubleshooting",
+      "sort": 600000,
+      "content": "<h1>Troubleshooting</h1><h2>No Compatible Ammunition Appears</h2><ul><li>Confirm the Weapon and Ammunition are owned by the same Actor.</li><li>Confirm the Weapon has <strong>Internal Magazine</strong> enabled.</li><li>Match the Weapon's Ammo value to the Ammunition Item's Ammo Identifier.</li><li>Give the Ammunition Item a Quantity greater than zero.</li><li>Loose rounds must not be marked as a Magazine, Ammo Belt, or Box of Ammo.</li></ul><h2>The Optional Rule Still Fills the Weapon</h2><ul><li>Confirm the world setting is <strong>Load One Round per Action (Optional)</strong>.</li><li>Confirm the Combat encounter has actually started.</li><li>Confirm the reloading Actor is a combatant in that encounter.</li><li>Outside active combat, full automatic loading is intentional.</li></ul><h2>The Weapon Will Not Reload in Combat</h2><ul><li>The Actor needs a Ranged Combat Skill unless the Weapon follows the Heavy Weapon reload rule.</li><li>The Actor needs a suitable Fast or Slow Action remaining.</li><li>Backpack ammunition requires a Slow Action and Mobility test before the reload.</li><li>A failed reload roll with only a Fast Action remaining forfeits that action and loads nothing.</li></ul><h2>The Weapon Says It Is Already Full</h2><p>A full Weapon cannot add more of its current ammunition. Open Reload and choose a different compatible ammunition source if the intention is to exchange the loaded type.</p><h2>Testing the Setting</h2><p>Create a test Weapon with an 8-round internal capacity and two compatible loose-ammunition stacks. Try reloading outside combat, then add the Actor to a started encounter and try each world mode. Finally, switch ammunition while partially loaded and confirm that the old rounds return to their original stack.</p>"
+    }
+  ]
+}

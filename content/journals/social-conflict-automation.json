@@ -1,0 +1,68 @@
+{
+  "entry": {
+    "_id": "YZESocialGuide01",
+    "name": "Using Social Conflict Automation",
+    "categories": [],
+    "folder": null,
+    "sort": 0,
+    "ownership": {
+      "default": 2
+    },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "social-conflict"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZESocialQuick01",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<h1>Using Social Conflict Automation</h1><p>Social Conflict automation handles <strong>Persuade</strong>, <strong>Interrogate</strong>, and <strong>Barter</strong>. It records declared goals, negotiating modifiers, resistance rolls, active pushes, and the final narrative outcome.</p><h2>Starting a Social Conflict</h2><ol><li>Target the other character's token.</li><li>Open <strong>Take Action</strong> on the Character sheet, or roll the relevant social Skill.</li><li>Choose Persuade, Interrogate, or Barter.</li><li>Select the target and complete the Social Conflict setup dialog.</li></ol><p>These are Slow Actions. During active combat, only the active character spends the Slow Action. Outside combat, no tracked action is consumed and the time taken is narrative.</p><h2>Resolution at a Glance</h2><ol><li>The active character declares what they want before any dice are rolled.</li><li>The target rolls resistance first and cannot push.</li><li>The active character rolls and may push once.</li><li>Resistance successes cancel active successes.</li><li>The active character succeeds only if they have strictly more successes. A tie is a failure.</li><li>The GM records the narrative outcome and any requested return.</li></ol>"
+    },
+    {
+      "_id": "YZESocialConfig1",
+      "name": "GM Configuration",
+      "sort": 200000,
+      "content": "<h1>GM Configuration</h1><p>Open <strong>Game Settings → Configure Settings → System Settings</strong>.</p><h2>Action Skills</h2><p>Open <strong>Action Skills</strong> and choose the Skill Item used for each active and resistance check:</p><ul><li>Persuade and Resist Persuasion</li><li>Interrogate and Resist Interrogation</li><li>Barter and Resist Barter</li></ul><p>The defaults use Persuasion for most checks and Stamina for resisting Interrogation. These mappings are world-specific, allowing games with custom Skill Items to use different Skills.</p><h2>Social Conflict Settings</h2><p>Open <strong>Social Conflict</strong> to configure:</p><ul><li><strong>Ordinary influence against player characters:</strong> either the player decides without a roll, or the system uses an opposed roll.</li><li><strong>Default resistance visibility:</strong> public or GM only.</li><li><strong>Barter price change per net success:</strong> 10% by default.</li></ul><p>The default player-choice mode follows the rule that ordinary social influence does not compel another player's character. Interrogation remains opposed.</p>"
+    },
+    {
+      "_id": "YZESocialSetup01",
+      "name": "The Setup Dialog",
+      "sort": 300000,
+      "content": "<h1>The Setup Dialog</h1><h2>Stated Goal</h2><p>Enter exactly what the active character wants. This is required and is declared before seeing any dice.</p><blockquote><p>Examples: Convince the guard to let us through; learn where the prisoners were taken; buy the rifle below the asking price.</p></blockquote><h2>Offer or Concession</h2><p>Record anything being offered, such as payment, information, assistance, safe passage, or a future favour.</p><h2>Negotiating Position</h2><p>Tick every factor that applies. The available factors cover:</p><ul><li>One side having more people.</li><li>The request costing the target nothing.</li><li>The request being valuable or dangerous.</li><li>The target gaining nothing.</li><li>The target being damaged, stressed, sick, or captive.</li><li>The active character being captive.</li><li>Previous assistance or a well-presented case.</li><li>Applicable differences in rank.</li><li>Language difficulties or the parties not being nearby.</li></ul><p>Use <strong>Additional modifier</strong> for circumstances not covered by the listed factors. The automation totals selected modifiers but does not decide whether a factor applies.</p><h2>Resistance Visibility</h2><ul><li><strong>Public:</strong> everyone sees resistance successes and provisional comparisons.</li><li><strong>GM only:</strong> the resistance roll is private and its success count is hidden on the public declaration until final resolution.</li></ul>"
+    },
+    {
+      "_id": "YZESocialOppose1",
+      "name": "Opposed Resolution",
+      "sort": 400000,
+      "content": "<h1>Opposed Resolution</h1><h2>1. Resistance Rolls First</h2><p>The target's owner or the GM clicks <strong>Roll Resistance</strong> on the declaration card. Persuade and Barter are normally resisted with Persuasion; Interrogate is normally resisted with Stamina.</p><ul><li>Resistance rolls cannot be pushed.</li><li>Resistance rolls do not spend an action.</li><li>If individual group resistance is selected, every listed target must roll before the active test becomes available.</li></ul><h2>2. The Active Character Rolls</h2><p>Once all resistance rolls are complete, the active character's owner clicks <strong>Roll Active Test</strong>. The active player may click <strong>Push</strong> once or click <strong>Accept</strong> to keep the current result.</p><h2>3. Compare Successes</h2><p>Each resistance success cancels one active success. The active character succeeds only if they have strictly more successes than the resisting character.</p><table><thead><tr><th>Active</th><th>Resistance</th><th>Result</th></tr></thead><tbody><tr><td>3</td><td>1</td><td>Success with 2 net successes</td></tr><tr><td>2</td><td>2</td><td>Failure</td></tr><tr><td>1</td><td>3</td><td>Failure</td></tr></tbody></table><p><strong>Ties always favour the resisting side.</strong></p>"
+    },
+    {
+      "_id": "YZESocialPlayer1",
+      "name": "Player Characters",
+      "sort": 500000,
+      "content": "<h1>Social Actions Against Player Characters</h1><p>With the default <strong>Player decides</strong> world setting, ordinary Persuade and Barter attempts do not compel a player character with dice.</p><p>Each targeted player receives three choices:</p><ul><li><strong>Accept</strong></li><li><strong>Decline</strong></li><li><strong>Counteroffer</strong></li></ul><p>A Counteroffer requires the player to enter its terms. The active player can then Accept, Decline, or make another Counteroffer.</p><p><strong>Interrogation is always opposed</strong>, including against player characters. The GM can change the world setting if the group prefers ordinary social conflicts against player characters to use opposed rolls as well.</p>"
+    },
+    {
+      "_id": "YZESocialGroup01",
+      "name": "Groups and Spokespersons",
+      "sort": 600000,
+      "content": "<h1>Groups and Spokespersons</h1><p>Target all relevant tokens before starting the action. When multiple characters are targeted, the setup dialog offers two approaches:</p><ul><li><strong>Use selected spokesperson:</strong> only the selected target makes the resistance roll.</li><li><strong>Each target resists individually:</strong> every targeted character makes a separate resistance roll.</li></ul><p>With individual resistance, the same active roll is compared separately against every target. The active character can therefore persuade some members of the group while failing against others.</p><p>In player-choice mode, each targeted player records their own Accept, Decline, or Counteroffer response.</p><p>The automation does not apply a numerical-advantage modifier automatically. Select the appropriate negotiating-position factor when one side has more people.</p>"
+    },
+    {
+      "_id": "YZESocialBarter1",
+      "name": "Barter",
+      "sort": 700000,
+      "content": "<h1>Barter</h1><p>When using Barter, enter the <strong>starting price</strong> and whether the active character is <strong>buying</strong> or <strong>selling</strong>.</p><p>On a successful opposed result, the system calculates the adjusted price using the configured percentage for every net success.</p><h2>Example with the Default 10%</h2><ul><li>Buying an item priced at 100 with 2 net successes produces a calculated price of 80.</li><li>Selling an item priced at 100 with 2 net successes produces a calculated price of 120.</li></ul><p>The calculated price is advisory. The automation does not transfer money, change Item prices, or move Items between inventories.</p>"
+    },
+    {
+      "_id": "YZESocialOutcome",
+      "name": "Outcomes and Return Terms",
+      "sort": 800000,
+      "content": "<h1>Outcomes and Return Terms</h1><p>After an opposed roll is final, the GM clicks <strong>Record Outcome</strong>.</p><p>The GM can record:</p><ul><li>The narrative result.</li><li>Any additional benefit granted for net successes.</li><li>Conditions or consequences.</li><li>Something the target requests in return.</li></ul><p>If something is requested in return, the active player receives <strong>Accept</strong>, <strong>Decline</strong>, and <strong>Counteroffer</strong> controls.</p><h2>Narrative-Only Automation</h2><p>Social Conflict outcomes deliberately remain narrative. The automation never changes Actor statistics, inventory, currency, ownership, or other documents automatically. Apply any agreed mechanical changes manually after the participants settle the outcome.</p><h2>If a Button Is Missing</h2><ul><li>Confirm that the correct token is targeted.</li><li>Confirm that the current user owns the character expected to respond or roll.</li><li>For opposed groups, confirm that every pending target has completed their resistance roll.</li><li>During combat, confirm that the active character has a Slow Action available.</li><li>Ask the GM to check the Action Skills mappings if an expected Skill cannot be found.</li></ul>"
+    }
+  ]
+}

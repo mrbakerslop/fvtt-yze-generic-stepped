@@ -1,0 +1,68 @@
+{
+  "entry": {
+    "_id": "YZETravGuide0001",
+    "name": "Using Travel Modes",
+    "categories": [],
+    "folder": null,
+    "sort": 600000,
+    "ownership": {
+      "default": 2
+    },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "travel-modes"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZETravQuick0001",
+      "name": "Quick Start and Mode Selection",
+      "sort": 100000,
+      "content": "<h1>Using Travel Modes</h1><p>A Travel Party's <strong>Travel Actions</strong> tab supports three interfaces for different journeys.</p><table><thead><tr><th>Mode</th><th>How to Select It</th><th>Use It For</th></tr></thead><tbody><tr><td><strong>Standard Travel</strong></td><td>Clear both mode checkboxes and use a non-City active Scene.</td><td>Ordinary overland travel, survival tasks, rest, and camp duties.</td></tr><tr><td><strong>Urban Travel</strong></td><td>Tick <strong>Use urban travel</strong>, or activate a Scene configured with the City grid preset.</td><td>Short city stretches, road or off-road movement, and city fuel use.</td></tr><tr><td><strong>Water Travel</strong></td><td>Tick <strong>Use water travel</strong>.</td><td>Journeys made with a Watercraft or Amphibious Vehicle.</td></tr></tbody></table><h2>Important Mode Rules</h2><ul><li>Urban and Water travel are mutually exclusive.</li><li>Water travel takes priority while its checkbox is enabled, including on an active City Scene.</li><li>An active City Scene automatically restores Urban travel when Water travel is disabled.</li><li>Switching mode moves characters assigned to unavailable activities into <strong>Other</strong>. Their old assignments are not restored automatically when switching back.</li></ul>"
+    },
+    {
+      "_id": "YZETravSetup0001",
+      "name": "Setting Up a Travel Party",
+      "sort": 200000,
+      "content": "<h1>Setting Up a Travel Party</h1><ol><li>Create a new Actor and choose <strong>Travel Party</strong>.</li><li>Open its <strong>Party Team</strong> tab.</li><li>Drag Character Actors from the Actors directory onto the sheet to add them as members.</li><li>Open <strong>Travel Actions</strong>.</li><li>Select the required travel mode.</li><li>Drag each member's card onto an activity to assign that character.</li></ol><p>A member can have only one current travel activity. Dragging the member to another activity removes the previous assignment. Several members may share an activity; when an ordinary activity roll is clicked, one owned member rolls immediately or a picker appears when the current user owns several eligible members.</p><h2>Resetting Assignments</h2><p>Click <strong>Reset</strong> to move every Party member to Other. Reset does not remove members from the Party or change the selected travel mode.</p><h2>Activity Journal Links</h2><p>If the world contains a Journal Entry whose name matches an activity, such as Marching, Driving, Keeping Watch, or Making Camp, that activity heading becomes a link to the Journal. This is optional and lets a GM attach world-specific procedures to the Travel Party sheet.</p>"
+    },
+    {
+      "_id": "YZETravStand0001",
+      "name": "Standard Travel",
+      "sort": 300000,
+      "content": "<h1>Standard Travel</h1><p>Standard Travel is displayed when neither special mode is active and the current Scene is not configured as City. It provides the complete assignment board.</p><h2>Activities</h2><table><thead><tr><th>Activity</th><th>Available Roll Buttons</th></tr></thead><tbody><tr><td>Marching</td><td>Forced March; March in Darkness</td></tr><tr><td>Driving</td><td>Drive</td></tr><tr><td>Keeping Watch</td><td>Keep Watch</td></tr><tr><td>Resting</td><td>No automated roll</td></tr><tr><td>Sleeping</td><td>No automated roll</td></tr><tr><td>Scrounging</td><td>Scrounge</td></tr><tr><td>Foraging</td><td>Forage</td></tr><tr><td>Hunting</td><td>Find Prey; Approach Prey; Kill Prey</td></tr><tr><td>Fishing</td><td>Fish</td></tr><tr><td>Making Camp</td><td>Make Camp; Hide Camp</td></tr><tr><td>Cooking</td><td>Cook Food</td></tr><tr><td>Other</td><td>No automated roll</td></tr></tbody></table><p>The buttons open a normal task check for an assigned Character using the Skill configured for that travel action. The sheet organises assignments and launches rolls; the GM remains responsible for journey time, distance, supplies, encounters, and narrative consequences not represented by another system workflow.</p><h2>Recommended Scene</h2><p>The 10 km Travel grid preset is suitable for regional overland maps, but the Standard Travel interface does not require that preset. Selecting Travel scale controls map measurement; it does not itself change the Party's mode.</p>"
+    },
+    {
+      "_id": "YZETravUrban0001",
+      "name": "Urban Travel",
+      "sort": 400000,
+      "content": "<h1>Urban Travel</h1><p>Tick <strong>Use urban travel</strong> on the Travel Actions tab, or activate a Scene configured with the City grid preset. A City Scene automatically selects this interface unless Water travel is enabled.</p><h2>Available Assignments</h2><ul><li><strong>Marching</strong></li><li><strong>Driving</strong></li><li><strong>Keeping Watch</strong></li><li><strong>Other</strong></li></ul><p>Characters assigned to activities that are unavailable in Urban mode are moved into Other. Marching has no Forced March or March in Darkness buttons in this mode.</p><h2>Urban Movement</h2><ul><li>Each stretch represents approximately 5–10 minutes.</li><li>March 2 City hexes along a road or through open terrain.</li><li>March 1 City hex off road.</li><li>Driving uses the Vehicle's listed travel speed and halves it when leaving a main road.</li><li>After successfully spotting an encounter, the next move must leave the encounter hex to back off without being spotted.</li></ul><h2>GM Tools</h2><p><strong>Advance City Stretch</strong> increments the Party's city stretch counter and whispers a reminder to the GM to consider an encounter or fixed checkpoint. The <strong>City Fuel Calculator</strong> uses Vehicle consumption, road hexes, off-road hexes, and a fuel-type multiplier; off-road hexes count double for fuel use. Calculator entries are working values and are not a journey log.</p>"
+    },
+    {
+      "_id": "YZETravWater0001",
+      "name": "Water Travel Setup",
+      "sort": 500000,
+      "content": "<h1>Water Travel Setup</h1><ol><li>Create or choose a Vehicle whose <strong>Vehicle Domain</strong> is Watercraft or Amphibious.</li><li>Add the travellers to a Travel Party.</li><li>On <strong>Travel Actions</strong>, tick <strong>Use water travel</strong>.</li><li>Select the Vessel and Water Terrain.</li><li>Assign a Character to <strong>Drive</strong>.</li><li>Assign other members to Keeping Watch, Fishing, Resting, Sleeping, Making Camp, or Other.</li></ol><h2>Available Water Terrain</h2><table><thead><tr><th>Terrain</th><th>Speed</th><th>Driving</th><th>Fishing</th><th>Encounter Distance</th></tr></thead><tbody><tr><td>River</td><td>×1</td><td>+2</td><td>+1</td><td>2D10 × 2</td></tr><tr><td>Coastline</td><td>×1</td><td>+1</td><td>+0</td><td>2D10 × 4</td></tr><tr><td>Open Water</td><td>×1</td><td>+1</td><td>+0</td><td>2D10 × 4</td></tr></tbody></table><p><strong>Travel at Night</strong> halves the displayed speed multiplier. <strong>Route Branch Requiring Navigation</strong> adds a Navigator selector and a navigation check to shift resolution.</p><h2>Camping Aboard</h2><p>Making Camp is available only when the selected Vessel has Size 2 or larger. Smaller vessels display a reminder instead of the Camp assignment.</p>"
+    },
+    {
+      "_id": "YZETravShift0001",
+      "name": "Water Shifts, Fishing, and Mishaps",
+      "sort": 600000,
+      "content": "<h1>Water Shifts</h1><p>The GM uses <strong>Advance Water Shift</strong> after the Vessel, terrain, duties, and optional Navigator are ready.</p><ol><li>The system confirms that the selected Actor is a Watercraft or Amphibious Vehicle.</li><li>It finds the first Character assigned to Drive and checks for the world-configured Water Travel Driving Skill.</li><li>If the route branches, the chosen Navigator makes the configured Water Navigation check. Failure marks the Vessel as lost.</li><li>The Driver makes a check with the displayed terrain modifier.</li><li>On a failed Driving check, the system rolls a water mishap and applies the supported Vessel effect.</li><li>A summary is posted to chat and the Party's Water Shift counter advances.</li></ol><p>Mishaps can damage propulsion or rigging, cause a collision, ground the Vessel, put an occupant overboard, mark the Vessel lost, start a leak or sinking, or force a stop. The exact result depends on the roll, propulsion type, and terrain.</p><h2>Fishing</h2><p>Assign a Character to Fishing and click <strong>Fish from Vessel</strong>. The first assigned fisher uses the world-configured Water Travel Fishing Skill with the displayed terrain modifier. This replaces the ordinary Standard Travel Fish button while Water mode is active.</p><h2>Missing Requirements</h2><p>The shift does not advance if the Vessel is invalid, no eligible Driver is assigned, or a required Navigator is missing. Correct the selection or assignment and try again.</p>"
+    },
+    {
+      "_id": "YZETravSkill0001",
+      "name": "Scene Presets and Action Skills",
+      "sort": 700000,
+      "content": "<h1>Scene Presets</h1><ul><li><strong>Travel — 10 km:</strong> recommended measurement for regional Standard Travel.</li><li><strong>City — 200 m:</strong> automatically activates Urban Travel while that Scene is active.</li><li><strong>Battle and Close Quarters:</strong> do not automatically select a Travel Party mode.</li></ul><p>Water Travel is chosen on the Party rather than by a Scene grid preset. A Water Region describes local water hazards on a Scene but does not select the Party's Water Travel mode.</p><h1>Action Skill Configuration</h1><p>Because worlds may use custom Skill Items, the GM should open <strong>Game Settings → Configure Settings → System Settings → Action Skills</strong> and review both Travel Actions and the supporting Water Travel mappings.</p><p>Standard and Urban buttons have independent mappings for Forced March, March in Darkness, Drive, Keep Watch, Scrounge, Forage, each stage of Hunting, Fish, Make Camp, Hide Camp, and Cook Food. Water shifts have separate mappings for Water Travel Driving and Water Navigation, and the Water fishing button uses Water Travel Fishing.</p><p>Each traveller needs an embedded copy of the configured Skill. Assigning a Character to an activity does not add that Skill automatically. If the world mapping is left at its system default, the corresponding legacy Skill is used.</p>"
+    },
+    {
+      "_id": "YZETravHelp00001",
+      "name": "Switching Modes and Troubleshooting",
+      "sort": 800000,
+      "content": "<h1>Switching Modes Safely</h1><ol><li>Note the current assignments before changing mode.</li><li>Enable Urban or Water travel, or clear both for Standard Travel.</li><li>Review Other; members displaced from unavailable activities are placed there.</li><li>Drag those members into an activity offered by the new mode.</li></ol><p>Urban and Water travel cannot be enabled together. Water takes priority. On an active City Scene, clearing Water returns the Party to Urban mode automatically; activate a non-City Scene to use Standard Travel.</p><h1>Troubleshooting</h1><h2>Standard Travel Will Not Appear</h2><p>Clear both checkboxes and check the active Scene. A Scene with City mode forces Urban Travel unless Water is enabled.</p><h2>An Assignment Disappeared</h2><p>Look in Other. Mode switching preserves the member but does not restore an activity that the new mode cannot display.</p><h2>A Roll Button Does Nothing</h2><p>Assign at least one Character that the current user owns, make sure the Character contains the configured Skill, and open that Character's sheet at least once. The GM can also perform the roll.</p><h2>A Water Shift Will Not Advance</h2><p>Select a world Vehicle configured as Watercraft or Amphibious, assign a qualified Driver, and—when Route Branch is enabled—select a qualified Navigator from the Party.</p><h2>Making Camp Is Missing on Water</h2><p>The selected Vessel must have Size 2 or greater.</p><h2>The Wrong Skills Are Used</h2><p>Review the world-level Action Skills configuration. Water shift Driving, Water Navigation, and Water Fishing are separate mappings from the ordinary Travel buttons.</p>"
+    }
+  ]
+}
