@@ -298,11 +298,22 @@ SETTINGS.worldSettings.label: Configure World Settings
 SETTINGS.worldSettings.hint: Configure character-sheet features, rules automation, ammunition tracking, and world defaults in one place.
 SETTINGS.worldSettings.sections.sheets: Character Sheets
 SETTINGS.worldSettings.sections.automation: Rules Automation
+SETTINGS.worldSettings.sections.armor: Armor Protection
 SETTINGS.worldSettings.sections.injuries: Critical Injuries
 SETTINGS.worldSettings.sections.ammunition: Ammunition Tracking
 SETTINGS.worldSettings.sections.defaults: World Defaults
 SETTINGS.worldSettings.save: Save World Settings
 SETTINGS.worldSettings.saved: World settings saved.
+SETTINGS.stackBodyArmorLayers.name: Stack Body Armor Layers
+SETTINGS.stackBodyArmorLayers.hint: >-
+  Add together every equipped armor layer protecting the hit location. When disabled,
+  only the highest body armor rating counts, as in the standard rules.
+SETTINGS.separateCoverArmor.name: Resolve Cover Separately
+SETTINGS.separateCoverArmor.hint: >-
+  Resolve each cover or barrier layer before body armor, so cover reduces the damage
+  which reaches the worn armor. When disabled, cover and body armor are added together
+  and the weapon's armor modifier is applied once, as in the standard rules.
+YZEGS.Combat.CombinedProtection: Combined Protection
 YZEGS.TacticalTerrain.Unmarked: Unmarked terrain
 YZEGS.TacticalTerrain.Types.pavement: Pavement
 YZEGS.TacticalTerrain.Types.field: Field

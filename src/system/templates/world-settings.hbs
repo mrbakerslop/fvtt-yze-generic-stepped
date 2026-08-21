@@ -116,6 +116,36 @@
   </fieldset>
 
   <fieldset>
+    <legend>{{localize "SETTINGS.worldSettings.sections.armor"}}</legend>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-stack-body-armor">{{localize "SETTINGS.stackBodyArmorLayers.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.stackBodyArmorLayers.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="stackBodyArmorLayers" value="{{values.stackBodyArmorLayers}}" />
+        {{> checkboxControl id="yzegs-world-stack-body-armor" name="stackBodyArmorLayers"
+          value=values.stackBodyArmorLayers editable=true
+          ariaLabel=(localize "SETTINGS.stackBodyArmorLayers.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
+        <label for="yzegs-world-separate-cover">{{localize "SETTINGS.separateCoverArmor.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.separateCoverArmor.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="separateCoverArmor" value="{{values.separateCoverArmor}}" />
+        {{> checkboxControl id="yzegs-world-separate-cover" name="separateCoverArmor"
+          value=values.separateCoverArmor editable=true
+          ariaLabel=(localize "SETTINGS.separateCoverArmor.name")}}
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset>
     <legend>{{localize "SETTINGS.worldSettings.sections.injuries"}}</legend>
 
     <div class="form-group">

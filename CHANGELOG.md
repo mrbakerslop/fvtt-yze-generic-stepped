@@ -1,5 +1,32 @@
 # Changelog
 
+## 14.0.12 — 2026-08-21
+
+### Added
+
+- Added **Stack Body Armor Layers** and **Resolve Cover Separately** world
+  settings, allowing games to independently choose additive worn armor and
+  staged cover protection while retaining rules-as-written defaults.
+- Added focused armor-rule tests covering equipped layers, hit-location
+  protection, armor modifiers, and the penetration limit.
+
+### Changed
+
+- Changed the default body-armor calculation to combine the best applicable
+  worn armor with cover before applying the weapon's armor modifier and
+  penetration limit once.
+- Changed system migration and validation notifications to use Foundry's
+  normal automatic dismissal time instead of remaining on screen permanently.
+- Moved the Character and NPC **Take Action** button beside the Actions heading.
+
+### Fixed
+
+- Corrected armor ablation so only equipped layers which contributed to the
+  protection can be damaged, with each contributing stacked layer receiving
+  its own ablation check.
+- Corrected the Actions header height so its column divider aligns with the
+  Rating and Base Die header on the Combat tab.
+
 ## 14.0.11 — 2026-08-17
 
 ### Added

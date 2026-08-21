@@ -23,7 +23,7 @@ export function checkMigration() {
   if (currentVersion && foundry.utils.isNewerVersion(COMPATIBLE_MIGRATION_VERSION, currentVersion)) {
     const warning = 'Your YZEGS system data is from too old a Foundry version and cannot be reliably migrated to'
       + ' the latest version. The process will be attempted, but errors may occur.';
-    ui.notifications.error(warning, { permanent: true });
+    ui.notifications.error(warning);
   }
   return migrateWorld();
 }
@@ -38,7 +38,6 @@ export async function migrateWorld() {
   ui.notifications.info(
     `Applying YZEGS System Migration for version ${game.system.version}.`
     + ' Please be patient and do not close your game or shut down your server.',
-    { permanent: true },
   );
 
   // Migrates World Actors.
@@ -96,7 +95,7 @@ export async function migrateWorld() {
 
   // Sets the migration as complete.
   await game.settings.set('fvtt-yze-generic-stepped', 'systemMigrationVersion', game.system.version);
-  ui.notifications.info(`YZEGS System Migration to version ${game.system.version} completed!`, { permanent: true });
+  ui.notifications.info(`YZEGS System Migration to version ${game.system.version} completed!`);
   // migrateDialog.close();
 }
 

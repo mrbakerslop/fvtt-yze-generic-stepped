@@ -54,6 +54,10 @@ import {
 } from './critical-injuries.js';
 import { TACTICAL_TERRAIN_SETTING } from './tactical-terrain.js';
 import { WorldSettingsConfig } from './world-settings-config.js';
+import {
+  SEPARATE_COVER_ARMOR_SETTING,
+  STACK_BODY_ARMOR_SETTING,
+} from './armor-rules.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -91,6 +95,14 @@ function refreshActorSheets() {
   }
 }
 
+/** Recalculate derived armor ratings before refreshing open Actor sheets. */
+function refreshArmorSheets() {
+  for (const actor of game.actors) {
+    if (['character', 'npc'].includes(actor.type)) actor.prepareData();
+  }
+  refreshActorSheets();
+}
+
 // config: true (visible)
 // scope: world (gm), client (player)
 
@@ -112,6 +124,25 @@ export function registerSystemSettings() {
     scope: 'world',
     name: 'SETTINGS.tacticalTerrainAssistance.name',
     hint: 'SETTINGS.tacticalTerrainAssistance.hint',
+    type: Boolean,
+    default: false,
+  });
+
+  game.settings.register(SYSTEM_ID, STACK_BODY_ARMOR_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.stackBodyArmorLayers.name',
+    hint: 'SETTINGS.stackBodyArmorLayers.hint',
+    type: Boolean,
+    default: false,
+    onChange: refreshArmorSheets,
+  });
+
+  game.settings.register(SYSTEM_ID, SEPARATE_COVER_ARMOR_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.separateCoverArmor.name',
+    hint: 'SETTINGS.separateCoverArmor.hint',
     type: Boolean,
     default: false,
   });

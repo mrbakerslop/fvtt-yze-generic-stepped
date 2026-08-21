@@ -22,6 +22,10 @@ import {
   SCENE_GRID_PRESET_SETTING,
 } from './scene-grid.js';
 import { TACTICAL_TERRAIN_SETTING } from './tactical-terrain.js';
+import {
+  SEPARATE_COVER_ARMOR_SETTING,
+  STACK_BODY_ARMOR_SETTING,
+} from './armor-rules.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -32,6 +36,8 @@ const BOOLEAN_SETTINGS = [
   'hideCapacitiesButtons',
   'hideWeaponProps',
   TACTICAL_TERRAIN_SETTING,
+  STACK_BODY_ARMOR_SETTING,
+  SEPARATE_COVER_ARMOR_SETTING,
   CRITICAL_INJURIES_ENABLED_SETTING,
   'trackPcAmmo',
   'trackNpcAmmo',

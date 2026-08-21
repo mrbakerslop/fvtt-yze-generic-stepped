@@ -1,4 +1,5 @@
 import { YearZeroRoll } from '../lib/yzur.js';
+import { resolveArmorProtection } from '../system/armor-rules.js';
 
 export default class Armor {
   // eslint-disable-next-line no-shadow
@@ -9,6 +10,7 @@ export default class Armor {
     this.modifier = modifier;
     this.penetrated = false;
     this.damage = 0;
+    this.ablated = false;
   }
 
   /* ------------------------------------------- */
@@ -28,7 +30,7 @@ export default class Armor {
   }
 
   get damaged() {
-    return this.value < this.rating;
+    return this.ablated || this.value < this.rating;
   }
 
   /* ------------------------------------------- */
@@ -36,25 +38,29 @@ export default class Armor {
   /* ------------------------------------------- */
 
   modify(n) {
-    this._modifier = this.modifier;
-    this.modifier = +n;
+    this.modifier = Number(n) || 0;
   }
 
   isPenetratedByDamage(baseDamage) {
     return baseDamage > this.penetrationLimit;
   }
 
-  async penetration(amount, baseDamage, modifier) {
-    const initialAmount = amount;
-    if (modifier) this.modify(modifier);
-    if (!this.isPenetratedByDamage(baseDamage)) amount = 0;
-    else amount = Math.max(0, amount - this.level);
-    this.damage += initialAmount - amount;
-    if (amount > 0) {
+  async penetration(amount, baseDamage, modifier, { ablate = true } = {}) {
+    const previousModifier = this.modifier;
+    if (modifier !== undefined && modifier !== null) this.modify(modifier);
+    const result = resolveArmorProtection({
+      amount,
+      baseDamage,
+      rating: this.value,
+      modifier: this.modifier,
+    });
+    amount = result.remaining;
+    this.damage += result.damageDeflected;
+    if (result.penetrated) {
       this.penetrated = true;
-      await this.ablation();
+      if (ablate) await this.ablation();
     }
-    this.modify(this._modifier);
+    this.modify(previousModifier);
     return amount;
   }
 
@@ -63,6 +69,7 @@ export default class Armor {
     await roll.roll();
     if (roll.total === 1) {
       this.value = Math.max(0, this.value - 1);
+      this.ablated = true;
       return true;
     }
     return false;

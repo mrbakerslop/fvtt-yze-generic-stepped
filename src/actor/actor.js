@@ -9,6 +9,25 @@ import { getRadiationLabel, isRadiationEnabled } from '../system/settings.js';
 import { coverProtectsLocation } from '../system/defense.js';
 import { getDefaultTokenDimensions } from '../system/token-size-defaults.js';
 import { getActorActionSkill } from '../system/action-skills.js';
+import {
+  getBodyArmorRating,
+  getContributingBodyArmor,
+  SEPARATE_COVER_ARMOR_SETTING,
+  STACK_BODY_ARMOR_SETTING,
+} from '../system/armor-rules.js';
+
+const SYSTEM_ID = 'fvtt-yze-generic-stepped';
+
+async function ablateBodyArmorItems(items) {
+  let damaged = false;
+  for (const item of items) {
+    const armor = new Armor(Number(item.system.rating.value) || 0, item.name);
+    if (!await armor.ablation()) continue;
+    await item.updateArmor(-1);
+    damaged = true;
+  }
+  return damaged;
+}
 
 /**
  * Year Zero Engine - Generic Stepped Dice Actor.
@@ -336,16 +355,12 @@ export default class ActorYZEGS extends Actor {
    * @private
    */
   _prepareArmorRating(system, armors) {
-    const ratings = armors.reduce((o, i) => {
-      if (!i.system.equipped) return o;
-      for (const [loc, isProtected] of Object.entries(i.system.location)) {
-        if (!(loc in o)) o[loc] = 0;
-        if (isProtected) {
-          o[loc] = Math.max(o[loc], i.system.rating.value);
-        }
-      }
-      return o;
-    }, {});
+    const stack = game.settings.get(SYSTEM_ID, STACK_BODY_ARMOR_SETTING);
+    const locations = new Set(armors.flatMap(item => Object.keys(item.system.location ?? {})));
+    const ratings = Object.fromEntries([...locations].map(hitLocation => {
+      const contributing = getContributingBodyArmor(armors, hitLocation, { stack });
+      return [hitLocation, getBodyArmorRating(contributing)];
+    }).filter(([, rating]) => rating > 0));
     system.armorRating = ratings;
     return system;
   }
@@ -449,7 +464,7 @@ export default class ActorYZEGS extends Actor {
             mod = new Modifier(m.name, m.value, i);
           }
           catch (error) {
-            ui.notifications.error(error.message, { permanent: true });
+            ui.notifications.error(error.message);
             console.error(error);
           }
           modifiers.push(mod);
@@ -682,50 +697,73 @@ export default class ActorYZEGS extends Actor {
       attackData.location = YZEGS.hitLocs[loc - 1];
     }
 
-    // 2 — Directional cover protects every location when full, but only
-    // torso and legs when partial. Other explicit barriers remain independent.
+    // 2 — Gather directional cover and any additional explicit barriers.
     const armors = [];
+    const coverLayers = [];
     if (coverProtectsLocation(attackData.coverType, attackData.location)) {
       for (let i = 0; i < (attackData.coverBarriers ?? []).length; i++) {
         const barrierRating = +attackData.coverBarriers[i];
         if (!barrierRating) continue;
         const barrierName = `${game.i18n.localize('YZEGS.Combat.Barrier')} #${i + 1}`;
-        const barrier = new Armor(barrierRating, barrierName);
-        amount = await barrier.penetration(amount, baseDamage, armorModifier);
-        armors.push(barrier);
+        coverLayers.push({ name: barrierName, rating: barrierRating });
       }
     }
     for (let i = 0; i < (attackData.barriers ?? []).length; i++) {
       const barrierRating = +attackData.barriers[i];
       if (!barrierRating) continue;
       const barrierName = `${game.i18n.localize('YZEGS.Combat.Barrier')} #${i + 1}`;
-      const barrier = new Armor(barrierRating, barrierName);
-      amount = await barrier.penetration(amount, baseDamage, armorModifier);
-      // TODO barrier ablation
-      armors.push(barrier);
+      coverLayers.push({ name: barrierName, rating: barrierRating });
     }
 
-    // 3 — Body Armor
-    const armorRating = this.system.armorRating[attackData.location] || 0;
-    const bodyArmor = new Armor(armorRating, game.i18n.localize('YZEGS.Combat.BodyArmor'));
-    amount = await bodyArmor.penetration(amount, baseDamage, armorModifier);
+    // 3 — Resolve body armor and cover using the configured world rule.
+    const stackBodyArmor = game.settings.get(SYSTEM_ID, STACK_BODY_ARMOR_SETTING);
+    const separateCover = game.settings.get(SYSTEM_ID, SEPARATE_COVER_ARMOR_SETTING);
+    const bodyArmorItems = getContributingBodyArmor(
+      this.items,
+      attackData.location,
+      { stack: stackBodyArmor },
+    );
+    const bodyArmorRating = getBodyArmorRating(bodyArmorItems);
 
-    // 3.1 — Body Armor Ablation
-    if (bodyArmor.damaged) {
-      // 3.1.1 — Finds the affected armor.
-      const armorItems = this.items.filter(i => i.type === 'armor' && i.system.location[attackData.location]);
-
-      // 3.1.2 — Takes the best.
-      const armorItem = armorItems.sort((a, b) => b.system.rating.value - a.system.rating.value)[0];
-
-      // 3.1.3 — Decreases the armor rating.
-      if (armorItem) {
-        let rating = armorItem.system.rating.value;
-        rating = Math.max(0, rating - 1);
-        armorItem.update({ 'system.rating.value': rating });
+    if (separateCover) {
+      for (const layer of coverLayers) {
+        if (amount <= 0) break;
+        const barrier = new Armor(layer.rating, layer.name);
+        amount = await barrier.penetration(amount, baseDamage, armorModifier);
+        armors.push(barrier);
+      }
+      if (amount > 0 && bodyArmorRating > 0) {
+        const bodyArmor = new Armor(
+          bodyArmorRating,
+          game.i18n.localize('YZEGS.Combat.BodyArmor'),
+        );
+        amount = await bodyArmor.penetration(amount, baseDamage, armorModifier, { ablate: false });
+        if (bodyArmor.penetrated) {
+          bodyArmor.ablated = await ablateBodyArmorItems(bodyArmorItems);
+        }
+        armors.push(bodyArmor);
       }
     }
-    armors.push(bodyArmor);
+    else {
+      const combinedRating = bodyArmorRating
+        + coverLayers.reduce((total, layer) => total + layer.rating, 0);
+      if (combinedRating > 0) {
+        let protectionName = game.i18n.localize('YZEGS.Combat.CombinedProtection');
+        if (!coverLayers.length) protectionName = game.i18n.localize('YZEGS.Combat.BodyArmor');
+        else if (!bodyArmorRating && coverLayers.length === 1) protectionName = coverLayers[0].name;
+        const protection = new Armor(combinedRating, protectionName);
+        amount = await protection.penetration(amount, baseDamage, armorModifier, { ablate: false });
+        if (protection.penetrated) {
+          let ablated = await ablateBodyArmorItems(bodyArmorItems);
+          for (const layer of coverLayers) {
+            const barrier = new Armor(layer.rating, layer.name);
+            if (await barrier.ablation()) ablated = true;
+          }
+          protection.ablated = ablated;
+        }
+        armors.push(protection);
+      }
+    }
 
     // 4 — Damage & Health Change
     const oldVal = system.health.value;

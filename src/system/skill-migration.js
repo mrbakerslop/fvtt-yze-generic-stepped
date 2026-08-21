@@ -36,7 +36,7 @@ export async function migrateLegacySkills() {
   }
   catch (error) {
     console.error('YZEGS | Skill Item migration failed.', error);
-    ui.notifications.error('Skill Item migration failed. Check the console for details.', { permanent: true });
+    ui.notifications.error('Skill Item migration failed. Check the console for details.');
   }
 }
 
@@ -167,6 +167,6 @@ export async function removeMigratedWorldSkills() {
   }
   catch (error) {
     console.error('YZEGS | World Skill Item cleanup failed.', error);
-    ui.notifications.error('World Skill Item cleanup failed. Check the console for details.', { permanent: true });
+    ui.notifications.error('World Skill Item cleanup failed. Check the console for details.');
   }
 }
