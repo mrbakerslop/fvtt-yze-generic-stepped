@@ -1,0 +1,38 @@
+name: Release Notes
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - CHANGELOG.md
+      - package.json
+      - tools/release-notes.js
+      - .github/workflows/release-notes.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Update Published Release Notes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📡 Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: 📝 Update Existing Release
+        run: |
+          RELEASE_TAG="v$(node -p "require('./package.json').version")"
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release $RELEASE_TAG does not exist yet; nothing to update."
+            exit 0
+          fi
+          node tools/release-notes.js "$RELEASE_TAG" > release-notes.md
+          gh release edit "$RELEASE_TAG" --title "$RELEASE_TAG" --notes-file release-notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
