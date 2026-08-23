@@ -2,6 +2,57 @@
  * Registers Status Effect Icons.
  * @see https://foundryvtt.wiki/en/development/guides/active-effects
  */
+export const ENGAGED_STATUS_ICON = 'icons/svg/sword.svg';
+export const HUGGING_WALL_STATUS_ICON = 'icons/svg/castle.svg';
+
+const STATUS_ICON_REPAIRS = Object.freeze({
+  engaged: {
+    icon: ENGAGED_STATUS_ICON,
+    legacyIcons: new Set(['icons/svg/swords.svg', 'icons/svg/sworlds.svg']),
+  },
+  huggingWall: {
+    icon: HUGGING_WALL_STATUS_ICON,
+    legacyIcons: new Set(['icons/svg/brick-wall.svg']),
+  },
+});
+
+/** Return an embedded-document update for a system status with a broken legacy icon. */
+export function getStatusIconUpdate(effect) {
+  const icon = effect.img ?? effect.icon ?? '';
+  for (const [statusId, repair] of Object.entries(STATUS_ICON_REPAIRS)) {
+    if (effect?.statuses?.has?.(statusId) && repair.legacyIcons.has(icon)) {
+      return { _id: effect.id, img: repair.icon };
+    }
+  }
+  return null;
+}
+
+/** Repair existing world and synthetic-token status effects created with an invalid icon path. */
+export async function repairStatusEffectIcons() {
+  if (!game.user.isGM) return 0;
+
+  const actors = new Map(game.actors.map(actor => [actor.uuid, actor]));
+  for (const scene of game.scenes) {
+    for (const token of scene.tokens) {
+      if (token.actor) actors.set(token.actor.uuid, token.actor);
+    }
+  }
+
+  let repaired = 0;
+  for (const actor of actors.values()) {
+    const updates = actor.effects.map(getStatusIconUpdate).filter(Boolean);
+    if (!updates.length) continue;
+    try {
+      await actor.updateEmbeddedDocuments('ActiveEffect', updates);
+      repaired += updates.length;
+    }
+    catch (error) {
+      console.error(`YZEGS | Failed to repair status icons for ${actor.name}.`, error);
+    }
+  }
+  return repaired;
+}
+
 export function registerStatusEffects() {
   const path = 'systems/fvtt-yze-generic-stepped/assets/icons/';
   CONFIG.statusEffects = [
@@ -23,12 +74,12 @@ export function registerStatusEffects() {
     {
       id: 'huggingWall',
       name: 'EFFECT.StatusHuggingWall',
-      img: 'icons/svg/brick-wall.svg',
+      img: HUGGING_WALL_STATUS_ICON,
     },
     {
       id: 'engaged',
       name: 'EFFECT.StatusEngaged',
-      img: 'icons/svg/swords.svg',
+      img: ENGAGED_STATUS_ICON,
     },
     {
       id: 'aiming',

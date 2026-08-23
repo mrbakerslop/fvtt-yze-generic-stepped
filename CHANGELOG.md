@@ -1,5 +1,31 @@
 # Changelog
 
+## 14.0.14 — 2026-08-23
+
+### Headline Changes
+
+- Updated roll dialogs for Foundry v14 message-mode labels and placed pushed
+  roll outcomes before their push-cost controls.
+- Repaired the Close Quarters Engaged and Hugging Wall status icons, including
+  existing active effects stored with obsolete icon paths.
+
+### Changed
+
+- Moved **Apply Push Costs** to the end of pushed-roll chat cards so Block,
+  damage, action outcomes, critical results, blasts, suppression, and related
+  resolutions are presented first.
+
+### Fixed
+
+- Replaced removed Foundry chat localization keys so Roll Mode menus display
+  human-readable visibility labels instead of internal key names.
+- Replaced invalid Engaged and Hugging Wall SVG paths with icons supplied by
+  Foundry v14.
+- Added a GM startup repair for existing Actor and scene-token status effects
+  using the obsolete `swords.svg`, `sworlds.svg`, or `brick-wall.svg` paths.
+- Added regression coverage for roll-mode labels, pushed-roll control ordering,
+  and legacy status-icon repairs.
+
 ## 14.0.13 — 2026-08-23
 
 ### Headline Changes

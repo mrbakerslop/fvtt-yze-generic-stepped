@@ -292,5 +292,16 @@
         {{/unless}}
       {{/unless}}
     {{/if}}
+
+    {{! Push costs are applied after the action and all of its outcomes are resolved. }}
+    {{#if showInfos}}
+      {{#if roll.options.canApplyPushCosts}}
+        <div class='dice-buttons push-cost-buttons'>
+          <button class='dice-button apply-push-costs' data-action='apply-push-costs'>
+            {{localize 'YZEGS.PushCosts.Apply'}}
+          </button>
+        </div>
+      {{/if}}
+    {{/if}}
   </div>
 </div>

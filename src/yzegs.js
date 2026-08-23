@@ -16,7 +16,7 @@
 import { YZEGS } from './system/config.js';
 import { registerDsN, YZEGSRoller } from './components/roll/dice.js';
 import { registerSystemSettings } from './system/settings.js';
-import { registerStatusEffects } from './system/statusEffects.js';
+import { registerStatusEffects, repairStatusEffectIcons } from './system/statusEffects.js';
 import { registerDataModels } from './system/data-models.js';
 import { enrichTextEditors } from './system/enricher.js';
 import { preloadHandlebarsTemplates, registerHandlebars } from './system/handlebars.js';
@@ -228,6 +228,7 @@ Hooks.once('ready', async function () {
   registerUrbanSocket();
   registerSocialConflictSocket();
   Initiative.registerInitiativeSocket();
+  await repairStatusEffectIcons();
   await initializeCriticalStates();
   await initializeDiseaseStates();
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to.

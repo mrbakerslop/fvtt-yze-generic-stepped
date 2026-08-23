@@ -215,10 +215,10 @@ YZEGS.ranges = [
 ];
 
 YZEGS.messageModes = {
-  public: 'CHAT.RollPublic',
-  gm: 'CHAT.RollPrivate',
-  blind: 'CHAT.RollBlind',
-  self: 'CHAT.RollSelf',
+  public: 'CHAT.MODES.public',
+  gm: 'CHAT.MODES.gm',
+  blind: 'CHAT.MODES.blind',
+  self: 'CHAT.MODES.self',
 };
 
 // YZEGS.unarmedData = {
