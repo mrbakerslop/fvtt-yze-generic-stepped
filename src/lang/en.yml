@@ -293,6 +293,11 @@ SETTINGS.tacticalTerrainAssistance.hint: >-
   Uses Tactical Terrain Regions to apply movement and ranged-attack modifiers,
   suggest cover armor, and calculate Run or Crawl movement allowances. Disabled
   by default so existing Scenes and manually adjudicated movement are unchanged.
+SETTINGS.requireCloseCombatSameGridSpace.name: Require Same Grid Space for Close Combat
+SETTINGS.requireCloseCombatSameGridSpace.hint: >-
+  Require attacker and target tokens to occupy the same hex or square for close-combat
+  attacks and maneuvers. Disable this for abstract maps or games where token position
+  should not restrict close combat. Enabled by default.
 SETTINGS.worldSettings.name: World Rules and Display
 SETTINGS.worldSettings.label: Configure World Settings
 SETTINGS.worldSettings.hint: Configure character-sheet features, rules automation, ammunition tracking, and world defaults in one place.
@@ -1090,16 +1095,24 @@ YZEGS.CombatEdges.Errors.HeavyMachineGunSupport: A heavy machine gun must be fir
 SETTINGS.defaultSceneGridPreset.name: Default Scene Grid
 SETTINGS.defaultSceneGridPreset.hint: Choose the grid automatically applied to newly created Scenes. Imported Scenes retain their existing grid configuration.
 SETTINGS.defaultSceneGridPreset.choices.closeQuarters: 'Close Quarters — Approximate Flat-Top Hexes, 2.5 m'
+SETTINGS.defaultSceneGridPreset.choices.closeQuartersSquare: 'Close Quarters — Squares, 2.5 m'
 SETTINGS.defaultSceneGridPreset.choices.battle: 'Battle — Flat-Top Hexes, 10 m'
+SETTINGS.defaultSceneGridPreset.choices.battleSquare: 'Battle — Squares, 10 m'
 SETTINGS.defaultSceneGridPreset.choices.city: 'City — Flat-Top Hexes, 200 m'
+SETTINGS.defaultSceneGridPreset.choices.citySquare: 'City — Squares, 200 m'
 SETTINGS.defaultSceneGridPreset.choices.travel: 'Travel — Flat-Top Hexes, 10 km'
+SETTINGS.defaultSceneGridPreset.choices.travelSquare: 'Travel — Squares, 10 km'
 SETTINGS.defaultSceneGridPreset.choices.system: System Manifest Default
 YZEGS.SceneGrid.Presets: Grid Presets
-YZEGS.SceneGrid.PresetsHint: Applies the selected scale and flat-top hex type while preserving grid pixel size and map alignment. The 2.5 m Close Quarters grid approximates the book's gridless 1:125 sector maps. Existing Scene changes are saved immediately.
-YZEGS.SceneGrid.CloseQuarters: Close Quarters — 2.5 m
-YZEGS.SceneGrid.Battle: Battle — 10 m
-YZEGS.SceneGrid.City: City — 200 m
-YZEGS.SceneGrid.Travel: Travel — 10 km
+YZEGS.SceneGrid.PresetsHint: Applies the selected scale and grid shape while preserving grid pixel size and map alignment. The 2.5 m Close Quarters scale is an estimate for detailed indoor maps. Existing Scene changes are saved immediately.
+YZEGS.SceneGrid.CloseQuartersHex: Close Quarters — Hex, 2.5 m
+YZEGS.SceneGrid.CloseQuartersSquare: Close Quarters — Square, 2.5 m
+YZEGS.SceneGrid.BattleHex: Battle — Hex, 10 m
+YZEGS.SceneGrid.BattleSquare: Battle — Square, 10 m
+YZEGS.SceneGrid.CityHex: City — Hex, 200 m
+YZEGS.SceneGrid.CitySquare: City — Square, 200 m
+YZEGS.SceneGrid.TravelHex: Travel — Hex, 10 km
+YZEGS.SceneGrid.TravelSquare: Travel — Square, 10 km
 YZEGS.SceneGrid.UrbanOperations: Enable Urban Operations rules on this Scene
 YZEGS.SceneGrid.ConfinedSpace: Enable confined-space hazards on this Scene
 YZEGS.SceneGrid.Applied: Scene grid preset applied.

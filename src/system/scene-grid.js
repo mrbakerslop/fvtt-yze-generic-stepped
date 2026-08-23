@@ -7,15 +7,20 @@ const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 export const SCENE_GRID_PRESET_IDS = Object.freeze({
   SYSTEM: 'system',
   CLOSE_QUARTERS: 'twilightCloseQuarters',
+  CLOSE_QUARTERS_SQUARE: 'squareCloseQuarters',
   BATTLE: 'twilightBattle',
+  BATTLE_SQUARE: 'squareBattle',
   CITY: 'twilightCity',
+  CITY_SQUARE: 'squareCity',
   TRAVEL: 'twilightTravel',
+  TRAVEL_SQUARE: 'squareTravel',
 });
 
 // The supported printed maps use flat-topped hexes. Odd-column offset is
 // the most useful default; the Scene's core Grid Type control remains editable
 // for images which begin on the opposite offset.
-export const TWILIGHT_HEX_GRID_TYPE = 4;
+export const FLAT_TOP_HEX_GRID_TYPE = 4;
+export const SQUARE_GRID_TYPE = 1;
 
 export const SCENE_GRID_PRESETS = Object.freeze({
   // Urban Operations uses gridless sectors at roughly 1:125 scale. A 2.5 m
@@ -23,25 +28,57 @@ export const SCENE_GRID_PRESETS = Object.freeze({
   // maps, while keeping ordinary token movement and measurement available.
   [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS]: Object.freeze({
     id: SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
-    type: TWILIGHT_HEX_GRID_TYPE,
+    mode: SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
+    type: FLAT_TOP_HEX_GRID_TYPE,
+    distance: 2.5,
+    units: 'm',
+  }),
+  [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS_SQUARE]: Object.freeze({
+    id: SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS_SQUARE,
+    mode: SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
+    type: SQUARE_GRID_TYPE,
     distance: 2.5,
     units: 'm',
   }),
   [SCENE_GRID_PRESET_IDS.BATTLE]: Object.freeze({
     id: SCENE_GRID_PRESET_IDS.BATTLE,
-    type: TWILIGHT_HEX_GRID_TYPE,
+    mode: SCENE_GRID_PRESET_IDS.BATTLE,
+    type: FLAT_TOP_HEX_GRID_TYPE,
+    distance: 10,
+    units: 'm',
+  }),
+  [SCENE_GRID_PRESET_IDS.BATTLE_SQUARE]: Object.freeze({
+    id: SCENE_GRID_PRESET_IDS.BATTLE_SQUARE,
+    mode: SCENE_GRID_PRESET_IDS.BATTLE,
+    type: SQUARE_GRID_TYPE,
     distance: 10,
     units: 'm',
   }),
   [SCENE_GRID_PRESET_IDS.CITY]: Object.freeze({
     id: SCENE_GRID_PRESET_IDS.CITY,
-    type: TWILIGHT_HEX_GRID_TYPE,
+    mode: SCENE_GRID_PRESET_IDS.CITY,
+    type: FLAT_TOP_HEX_GRID_TYPE,
+    distance: 200,
+    units: 'm',
+  }),
+  [SCENE_GRID_PRESET_IDS.CITY_SQUARE]: Object.freeze({
+    id: SCENE_GRID_PRESET_IDS.CITY_SQUARE,
+    mode: SCENE_GRID_PRESET_IDS.CITY,
+    type: SQUARE_GRID_TYPE,
     distance: 200,
     units: 'm',
   }),
   [SCENE_GRID_PRESET_IDS.TRAVEL]: Object.freeze({
     id: SCENE_GRID_PRESET_IDS.TRAVEL,
-    type: TWILIGHT_HEX_GRID_TYPE,
+    mode: SCENE_GRID_PRESET_IDS.TRAVEL,
+    type: FLAT_TOP_HEX_GRID_TYPE,
+    distance: 10,
+    units: 'km',
+  }),
+  [SCENE_GRID_PRESET_IDS.TRAVEL_SQUARE]: Object.freeze({
+    id: SCENE_GRID_PRESET_IDS.TRAVEL_SQUARE,
+    mode: SCENE_GRID_PRESET_IDS.TRAVEL,
+    type: SQUARE_GRID_TYPE,
     distance: 10,
     units: 'km',
   }),
@@ -56,14 +93,15 @@ export function getSceneGridPreset(presetId) {
 
 /** Apply a preset to a pending Scene without changing its pixel size or alignment. */
 export function applySceneGridPresetSource(scene, presetId) {
+  const preset = SCENE_GRID_PRESETS[presetId];
   const grid = getSceneGridPreset(presetId);
-  if (!scene?.updateSource || !grid) return false;
+  if (!scene?.updateSource || !preset || !grid) return false;
   scene.updateSource({
     grid,
     flags: {
       [SYSTEM_ID]: {
-        [SCENE_MODE_FLAG]: presetId,
-        [URBAN_OPERATIONS_FLAG]: presetId === SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
+        [SCENE_MODE_FLAG]: preset.mode,
+        [URBAN_OPERATIONS_FLAG]: preset.mode === SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
       },
     },
   });
@@ -80,7 +118,8 @@ export function getSceneMode(scene = null) {
   if (!scene) return SCENE_GRID_PRESET_IDS.SYSTEM;
   const explicit = scene.getFlag?.(SYSTEM_ID, SCENE_MODE_FLAG)
     ?? scene.flags?.[SYSTEM_ID]?.[SCENE_MODE_FLAG];
-  if (Object.values(SCENE_GRID_PRESET_IDS).includes(explicit)) return explicit;
+  if (explicit === SCENE_GRID_PRESET_IDS.SYSTEM) return explicit;
+  if (SCENE_GRID_PRESETS[explicit]) return SCENE_GRID_PRESETS[explicit].mode;
   const distance = Number(scene.grid?.distance);
   const units = String(scene.grid?.units ?? '').toLocaleLowerCase();
   if (units === 'm' && distance === 2.5) return SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS;
@@ -137,8 +176,9 @@ function setFormValue(form, fieldName, value) {
 
 /** Fill the native Scene configuration fields while preserving size and offsets. */
 export function applySceneGridPresetForm(form, presetId) {
+  const preset = SCENE_GRID_PRESETS[presetId];
   const grid = getSceneGridPreset(presetId);
-  if (!form || !grid) return false;
+  if (!form || !preset || !grid) return false;
   const type = setFormValue(form, 'grid.type', grid.type);
   setFormValue(form, 'grid.distance', grid.distance);
   setFormValue(form, 'grid.units', grid.units);
@@ -149,7 +189,7 @@ export function applySceneGridPresetForm(form, presetId) {
     mode.name = `flags.${SYSTEM_ID}.${SCENE_MODE_FLAG}`;
     form.append(mode);
   }
-  mode.value = presetId;
+  mode.value = preset.mode;
   let urban = form.elements.namedItem(`flags.${SYSTEM_ID}.${URBAN_OPERATIONS_FLAG}`);
   if (!urban) {
     urban = document.createElement('input');
@@ -158,7 +198,7 @@ export function applySceneGridPresetForm(form, presetId) {
     urban.dataset.dtype = 'Boolean';
     form.append(urban);
   }
-  const urbanEnabled = presetId === SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS;
+  const urbanEnabled = preset.mode === SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS;
   urban.value = String(urbanEnabled);
   if (urban.type === 'checkbox') urban.checked = urbanEnabled;
   const urbanToggle = form.querySelector('.scene-urban-operations input[type="checkbox"]');
@@ -255,27 +295,18 @@ export function addSceneGridPresetControls(app, element) {
 
   const buttons = document.createElement('div');
   buttons.className = 'scene-grid-preset-buttons';
-  const closeQuarters = createPresetButton(
-    SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,
-    game.i18n.localize('YZEGS.SceneGrid.CloseQuarters'),
-    'fas fa-warehouse',
-  );
-  const battle = createPresetButton(
-    SCENE_GRID_PRESET_IDS.BATTLE,
-    game.i18n.localize('YZEGS.SceneGrid.Battle'),
-    'fas fa-person-rifle',
-  );
-  const city = createPresetButton(
-    SCENE_GRID_PRESET_IDS.CITY,
-    game.i18n.localize('YZEGS.SceneGrid.City'),
-    'fas fa-city',
-  );
-  const travel = createPresetButton(
-    SCENE_GRID_PRESET_IDS.TRAVEL,
-    game.i18n.localize('YZEGS.SceneGrid.Travel'),
-    'fas fa-map-location-dot',
-  );
-  for (const button of [closeQuarters, battle, city, travel]) {
+  const presetButtons = [
+    [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS, 'YZEGS.SceneGrid.CloseQuartersHex', 'fas fa-warehouse'],
+    [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS_SQUARE, 'YZEGS.SceneGrid.CloseQuartersSquare', 'fas fa-warehouse'],
+    [SCENE_GRID_PRESET_IDS.BATTLE, 'YZEGS.SceneGrid.BattleHex', 'fas fa-person-rifle'],
+    [SCENE_GRID_PRESET_IDS.BATTLE_SQUARE, 'YZEGS.SceneGrid.BattleSquare', 'fas fa-person-rifle'],
+    [SCENE_GRID_PRESET_IDS.CITY, 'YZEGS.SceneGrid.CityHex', 'fas fa-city'],
+    [SCENE_GRID_PRESET_IDS.CITY_SQUARE, 'YZEGS.SceneGrid.CitySquare', 'fas fa-city'],
+    [SCENE_GRID_PRESET_IDS.TRAVEL, 'YZEGS.SceneGrid.TravelHex', 'fas fa-map-location-dot'],
+    [SCENE_GRID_PRESET_IDS.TRAVEL_SQUARE, 'YZEGS.SceneGrid.TravelSquare', 'fas fa-map-location-dot'],
+  ];
+  for (const [presetId, labelKey, icon] of presetButtons) {
+    const button = createPresetButton(presetId, game.i18n.localize(labelKey), icon);
     button.addEventListener('click', () => onPresetButton(app, form, button));
     buttons.append(button);
   }

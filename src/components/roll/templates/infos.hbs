@@ -186,9 +186,9 @@
         <span class='label'>{{localize 'YZUR.CHAT.ROLL.HitLocation'}}</span>
         <span class='result'>
           {{#if roll.options.attackData.calledLocation}}
-            {{localize (concat 'YZUR.CHAT.ROLL.Locations.' roll.options.attackData.calledLocation)}}
+            {{hitLocationLabel roll.options.attackData.calledLocation}}
           {{else}}
-            {{localize (concat 'YZUR.CHAT.ROLL.Locations.' roll.options.attackData.forcedLocation)}}
+            {{hitLocationLabel roll.options.attackData.forcedLocation}}
           {{/if}}
         </span>
       </div>
@@ -200,7 +200,7 @@
           <span class='label'>{{localize 'YZUR.CHAT.ROLL.HitLocation'}}</span>
         {{/if}}
         {{#each roll.hitLocations as |loc|}}
-          <span class='result'>{{localize (concat 'YZUR.CHAT.ROLL.Locations.' loc)}}</span>
+          <span class='result'>{{hitLocationLabel loc}}</span>
         {{/each}}
       </div>
     {{/if}}

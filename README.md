@@ -104,18 +104,22 @@ selected on the individual Weapon Item.
 ## Scene grids
 
 New Scenes default to an approximate Close Quarters flat-top grid with 2.5
-metres per hex. *Urban Operations* defines its 1:125 Close Quarters maps using
-gridless room-sized sectors; 2.5 metres is the proportional Foundry estimate
-from the standard 1:500, 10-metre battle scale. The **Default Scene Grid** world
-setting can instead select Battle (10 m), City (200 m), Travel (10 km), or the
-system manifest default. The core Scene configuration window provides all four
-scale preset buttons for existing Scenes.
+metres per hex. The **Default Scene Grid** world setting provides Close Quarters
+(2.5 m), Battle (10 m), City (200 m), and Travel (10 km) scales in both
+flat-top hex and square versions, plus the system manifest default. The core
+Scene configuration window provides all eight scale-and-shape preset buttons
+for existing Scenes.
 
 Each preset records a rules mode on the Scene. Close Quarters enables Urban
 Operations automatically; on a normal Battle Scene, use **Enable Urban
 Operations rules on this Scene** when the map depicts built-up terrain. This
 keeps indoor modifiers and urban actions off wilderness battle maps that happen
 to use the same 10-metre scale.
+
+Close-combat attacks and maneuvers require attacker and target tokens to share
+one grid space by default. A GM using abstract maps can disable **Require Same
+Grid Space for Close Combat** under **World Rules and Display → Rules
+Automation** without disabling the remaining close-combat automation.
 
 ## Urban Operations
 
@@ -150,10 +154,11 @@ but does not redistribute published Archetype, Specialty, encounter, or site
 text. Those Items can be created locally from material the world owner has the
 right to use.
 
-The presets change only grid type, distance, and units. Grid pixel size and map
-alignment remain under the GM's control so importing a map does not disturb its
-artwork. The alternative even-column hex type remains available through
-Foundry's normal Grid Type control when a particular image uses that offset.
+The presets change only grid type, distance, and units. Hex and square versions
+of a scale use the same Scene rules mode. Grid pixel size and map alignment
+remain under the GM's control so importing a map does not disturb its artwork.
+The alternative even-column hex type remains available through Foundry's normal
+Grid Type control when a particular image uses that offset.
 
 The **Default Prototype Token Sizes** world configuration sets independent
 width and height values, in grid spaces, for newly created Characters, NPCs,

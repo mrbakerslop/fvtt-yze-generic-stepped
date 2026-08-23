@@ -129,7 +129,9 @@ test('the Scene Grid Presets guide documents scale, rules modes, and token defau
   assert.equal(sceneGridGuide.pages.length, 8);
   assertValidGuide(sceneGridGuide);
   assert.match(sceneGridGuide.pages[0].content, /Default Scene Grid/);
+  assert.match(sceneGridGuide.pages[0].content, /flat-top hex grid or a square grid/);
   assert.match(sceneGridGuide.pages[3].content, /10 km/);
+  assert.match(sceneGridGuide.pages[3].content, /Hex or Square/);
   assert.match(sceneGridGuide.pages[4].content, /confined-space hazards/);
   assert.match(sceneGridGuide.pages[7].content, /Default Prototype Token Sizes/);
   assert.doesNotMatch(JSON.stringify(sceneGridGuide), /Twilight 2000/i);
@@ -176,6 +178,7 @@ test('the Close Combat guide documents automatic edges and staged defenses', () 
   assert.equal(closeCombatGuide.pages.length, 8);
   assertValidGuide(closeCombatGuide);
   assert.match(closeCombatGuide.pages[1].content, /prone attacker receives an automatic −2/);
+  assert.match(closeCombatGuide.pages[1].content, /Require Same Grid Space for Close Combat/);
   assert.match(closeCombatGuide.pages[3].content, /Each Block success cancels one attack success/);
   assert.match(closeCombatGuide.pages[4].content, /Run<\/strong> earlier in the current combat round/);
   assert.match(closeCombatGuide.pages[6].content, /Break Free/);

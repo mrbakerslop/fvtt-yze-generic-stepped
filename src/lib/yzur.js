@@ -28,6 +28,9 @@
  * ===============================================================================
  */
 
+import { getRollSpeakerData } from '../components/roll/chat-speaker.js';
+import { normalizeHitLocationResults } from '../components/roll/hit-location.js';
+
 /* -------------------------------------------- */
 /*  Custom Dice classes                         */
 /* -------------------------------------------- */
@@ -1280,7 +1283,9 @@ class YearZeroRoll extends Roll {
   get hitLocations() {
     const lt = this.getTerms('loc');
     if (!lt.length) return [];
-    return lt.reduce((tot, t) => tot.concat(t.values), []);
+    const values = lt.reduce((tot, t) => tot.concat(t.values), []);
+    const labels = CONFIG.YZUR?.Icons?.[CONFIG.YZUR.game]?.loc;
+    return normalizeHitLocationResults(values, labels);
   }
 
   /**
@@ -1951,9 +1956,10 @@ class YearZeroRoll extends Roll {
    * @override
    */
   async toMessage(messageData = {}, { messageMode = null, create = true } = {}) {
+    const rollSpeaker = getRollSpeakerData(this.options);
     messageData = foundry.utils.mergeObject({
       user: game.user.id,
-      speaker: ChatMessage.getSpeaker(),
+      speaker: rollSpeaker ?? ChatMessage.getSpeaker(),
       // "content" is overwritten by ChatMessage.create() (called in super)
       // with the HTML returned by roll.render(), but only if content is left unchanged.
       // So you can overwrite it here with a custom content in messageData.

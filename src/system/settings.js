@@ -58,6 +58,7 @@ import {
   SEPARATE_COVER_ARMOR_SETTING,
   STACK_BODY_ARMOR_SETTING,
 } from './armor-rules.js';
+import { CLOSE_COMBAT_POSITION_SETTING } from './close-combat-positioning.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -126,6 +127,15 @@ export function registerSystemSettings() {
     hint: 'SETTINGS.tacticalTerrainAssistance.hint',
     type: Boolean,
     default: false,
+  });
+
+  game.settings.register(SYSTEM_ID, CLOSE_COMBAT_POSITION_SETTING, {
+    config: false,
+    scope: 'world',
+    name: 'SETTINGS.requireCloseCombatSameGridSpace.name',
+    hint: 'SETTINGS.requireCloseCombatSameGridSpace.hint',
+    type: Boolean,
+    default: true,
   });
 
   game.settings.register(SYSTEM_ID, STACK_BODY_ARMOR_SETTING, {
@@ -425,9 +435,13 @@ export function registerSystemSettings() {
     type: String,
     choices: {
       [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS]: 'SETTINGS.defaultSceneGridPreset.choices.closeQuarters',
+      [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.closeQuartersSquare',
       [SCENE_GRID_PRESET_IDS.BATTLE]: 'SETTINGS.defaultSceneGridPreset.choices.battle',
+      [SCENE_GRID_PRESET_IDS.BATTLE_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.battleSquare',
       [SCENE_GRID_PRESET_IDS.CITY]: 'SETTINGS.defaultSceneGridPreset.choices.city',
+      [SCENE_GRID_PRESET_IDS.CITY_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.citySquare',
       [SCENE_GRID_PRESET_IDS.TRAVEL]: 'SETTINGS.defaultSceneGridPreset.choices.travel',
+      [SCENE_GRID_PRESET_IDS.TRAVEL_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.travelSquare',
       [SCENE_GRID_PRESET_IDS.SYSTEM]: 'SETTINGS.defaultSceneGridPreset.choices.system',
     },
     default: SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS,

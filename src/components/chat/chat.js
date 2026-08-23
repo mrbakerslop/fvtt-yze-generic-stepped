@@ -28,6 +28,7 @@ import { getActionSkillName, getActorActionSkill } from '../../system/action-ski
 import { isActorInActiveCombat } from '../../system/reloading.js';
 import {
   completeDefenseDeclaration,
+  resolveDefenseActor,
   submitBlockResolution,
   submitDefenseDeclaration,
 } from '../../system/defense-workflows.js';
@@ -391,7 +392,10 @@ async function _onDeclareBlock(event) {
   try {
     const message = getMessageFromButton(button);
     const declaration = message?.getFlag(SYSTEM_ID, 'defenseDeclaration');
-    const defender = await resolveUuid(declaration?.defenderUuid);
+    const defender = await resolveDefenseActor(
+      declaration?.defenderUuid,
+      declaration?.defenderTokenUuid,
+    );
     if (!message || !declaration || !defender || (!game.user.isGM && !defender.isOwner)) return;
 
     const choices = [...defender.items].filter(item => (
@@ -416,17 +420,22 @@ async function _onDeclareBlock(event) {
       ui.notifications.warn(game.i18n.localize('YZEGS.CombatActions.NoFastAction'));
       return;
     }
+    let remaining = spend.remaining;
     if (spend.tracked) {
       await defender.update({
         [`system.actions.${spend.spentFrom}.value`]: spend.remaining[spend.spentFrom],
       });
+      remaining = {
+        fast: Number(defender.system.actions?.fast?.value) || 0,
+        slow: Number(defender.system.actions?.slow?.value) || 0,
+      };
     }
     await submitDefenseDeclaration(message, {
       response: 'block',
       blockItemUuid: blockItem?.uuid ?? '',
       blockItemName: blockItem?.name ?? game.i18n.localize('YZEGS.Defense.Unarmed'),
       spentFrom: spend.spentFrom ?? '',
-      remaining: spend.remaining,
+      remaining,
     });
     submitted = true;
   }
@@ -443,7 +452,10 @@ async function _onDeclineBlock(event) {
   try {
     const message = getMessageFromButton(button);
     const declaration = message?.getFlag(SYSTEM_ID, 'defenseDeclaration');
-    const defender = await resolveUuid(declaration?.defenderUuid);
+    const defender = await resolveDefenseActor(
+      declaration?.defenderUuid,
+      declaration?.defenderTokenUuid,
+    );
     if (!message || !defender || (!game.user.isGM && !defender.isOwner)) return;
     await submitDefenseDeclaration(message, { response: 'decline' });
     submitted = true;
@@ -460,7 +472,10 @@ async function _onContinueDeclaredAttack(event) {
   try {
     const message = getMessageFromButton(button);
     const declaration = message?.getFlag(SYSTEM_ID, 'defenseDeclaration');
-    const attacker = await resolveUuid(declaration?.attackerUuid);
+    const attacker = await resolveDefenseActor(
+      declaration?.attackerUuid,
+      declaration?.attackerTokenUuid,
+    );
     const item = await resolveUuid(declaration?.itemUuid);
     if (!message || declaration?.status !== 'responded' || !attacker) return;
     if (!game.user.isGM && !attacker.isOwner) return;
@@ -468,6 +483,7 @@ async function _onContinueDeclaredAttack(event) {
       status: declaration.response === 'block' ? 'awaitingBlockRoll' : 'declined',
       declared: declaration.response === 'block',
       defenderUuid: declaration.defenderUuid,
+      defenderTokenUuid: declaration.defenderTokenUuid ?? '',
       defenderName: declaration.defenderName,
       blockItemUuid: declaration.blockItemUuid ?? '',
       blockItemName: declaration.blockItemName ?? '',
@@ -505,7 +521,7 @@ async function _onRollBlock(event) {
     const attackMessage = getMessageFromButton(button);
     const attackRoll = attackMessage?.rolls?.[0];
     const defense = attackRoll?.options?.defense;
-    const defender = await resolveUuid(defense?.defenderUuid);
+    const defender = await resolveDefenseActor(defense?.defenderUuid, defense?.defenderTokenUuid);
     const blockItem = await resolveUuid(defense?.blockItemUuid);
     if (!attackMessage || defense?.status !== 'awaitingBlockRoll' || !defender) return;
     if (!game.user.isGM && !defender.isOwner) return;

@@ -26,6 +26,7 @@ import {
   SEPARATE_COVER_ARMOR_SETTING,
   STACK_BODY_ARMOR_SETTING,
 } from './armor-rules.js';
+import { CLOSE_COMBAT_POSITION_SETTING } from './close-combat-positioning.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -36,6 +37,7 @@ const BOOLEAN_SETTINGS = [
   'hideCapacitiesButtons',
   'hideWeaponProps',
   TACTICAL_TERRAIN_SETTING,
+  CLOSE_COMBAT_POSITION_SETTING,
   STACK_BODY_ARMOR_SETTING,
   SEPARATE_COVER_ARMOR_SETTING,
   CRITICAL_INJURIES_ENABLED_SETTING,
@@ -108,9 +110,13 @@ export class WorldSettingsConfig extends foundry.applications.api.HandlebarsAppl
     };
     context.sceneGridPresets = {
       [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS]: 'SETTINGS.defaultSceneGridPreset.choices.closeQuarters',
+      [SCENE_GRID_PRESET_IDS.CLOSE_QUARTERS_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.closeQuartersSquare',
       [SCENE_GRID_PRESET_IDS.BATTLE]: 'SETTINGS.defaultSceneGridPreset.choices.battle',
+      [SCENE_GRID_PRESET_IDS.BATTLE_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.battleSquare',
       [SCENE_GRID_PRESET_IDS.CITY]: 'SETTINGS.defaultSceneGridPreset.choices.city',
+      [SCENE_GRID_PRESET_IDS.CITY_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.citySquare',
       [SCENE_GRID_PRESET_IDS.TRAVEL]: 'SETTINGS.defaultSceneGridPreset.choices.travel',
+      [SCENE_GRID_PRESET_IDS.TRAVEL_SQUARE]: 'SETTINGS.defaultSceneGridPreset.choices.travelSquare',
       [SCENE_GRID_PRESET_IDS.SYSTEM]: 'SETTINGS.defaultSceneGridPreset.choices.system',
     };
     context.advancementSources = advancementSources;

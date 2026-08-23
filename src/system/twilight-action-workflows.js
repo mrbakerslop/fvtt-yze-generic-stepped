@@ -59,6 +59,10 @@ import {
   prepareCloseCombatEdges,
   sumEdgeModifiers,
 } from './combat-edge-workflows.js';
+import {
+  isCloseCombatPositionAllowed,
+  requiresCloseCombatSameGridSpace,
+} from './close-combat-positioning.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -434,7 +438,9 @@ async function validateAction(actor, action, target, item, missingTarget, missin
   }
   if (isBlockableAction(action.id)) {
     const edge = prepareCloseCombatEdges(actor, target);
-    if (edge.differentHex) return notifyActionError('YZEGS.CombatEdges.Errors.CloseSameHex');
+    if (!isCloseCombatPositionAllowed(edge.differentHex, requiresCloseCombatSameGridSpace())) {
+      return notifyActionError('YZEGS.CombatEdges.Errors.CloseSameHex');
+    }
   }
   if (action.id === 'divingBlow') {
     const run = actor.getFlag(SYSTEM_ID, 'actionRan');

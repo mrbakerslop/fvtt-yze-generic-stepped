@@ -1,5 +1,50 @@
 # Changelog
 
+## 14.0.13 — 2026-08-23
+
+### Headline Changes
+
+- Added square-grid versions of every Scene scale and an optional world rule
+  for close combat on abstract or non-co-located token maps.
+- Fixed staged Block workflows so attack cards retain the correct attacker and
+  the defending scene token spends the declared Fast Action.
+- Fixed pushed, aimed, and forced hit locations so chat cards consistently show
+  human-readable location names.
+
+### Added
+
+- Added square-grid presets for Close Quarters (2.5 m), Battle (10 m), City
+  (200 m), and Travel (10 km) alongside the existing flat-top hex presets.
+- Added **Require Same Grid Space for Close Combat**, enabled by default, to the
+  world Rules Automation settings. Disabling it permits melee attacks, unarmed
+  attacks, shoves, disarms, grapples, and diving blows across grid spaces while
+  retaining all other close-combat automation.
+- Added regression coverage for chat speakers, synthetic-token defense
+  resolution, hit-location normalization, square Scene grids, and optional
+  close-combat positioning.
+
+### Changed
+
+- Separated Scene grid shape from Scene rules mode so square and hex versions
+  of a scale activate identical Close Quarters, Battle, City, or Travel logic.
+- Updated and rebuilt the **Using Scene Grid Presets** and **Using Close
+  Combat** System Guide Journals for the new world options.
+- Updated the release workflow to generate GitHub release descriptions from
+  the matching changelog entry, including headline changes and comparison
+  links.
+- Verified the system against Foundry Virtual Tabletop 14.367.
+
+### Fixed
+
+- Corrected staged attack chat speakers so they use the stored attacking Actor
+  rather than whichever token is controlled when the roll is sent to chat.
+- Preserved scene-token references throughout defense declarations so unlinked
+  NPC tokens spend Block actions on the correct synthetic Actor.
+- Corrected Block action summaries to read the remaining Fast and Slow Actions
+  back from the updated defender.
+- Normalized pushed hit-die results and corrected rolled, aimed, and forced hit
+  locations so localization keys no longer appear in chat.
+
 ## 14.0.12 — 2026-08-21
 
 ### Added

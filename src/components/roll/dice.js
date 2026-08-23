@@ -451,6 +451,7 @@ export class YZEGSRoller {
     if (actor) {
       roll.options.actorId = actor.id;
       roll.options.actorUuid = actor.uuid;
+      roll.options.actorName = actor.name;
       const token = actor.token;
       if (token) {
         roll.options.sceneId = token.parent.id;

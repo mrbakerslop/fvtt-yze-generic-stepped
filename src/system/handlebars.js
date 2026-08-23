@@ -8,6 +8,7 @@ import {
   guidedImpactWasEvaded,
 } from './guided-weapons.js';
 import { tacticalMovementAllowance } from './tactical-terrain-rules.js';
+import { getHitLocationLocalizationKey } from '../components/roll/hit-location.js';
 
 /**
  * Defines a set of template paths to pre-load.
@@ -69,6 +70,12 @@ export async function preloadHandlebarsTemplates() {
  * Defines Handlebars custom Helpers and Partials.
  */
 export function registerHandlebars() {
+  Handlebars.registerHelper('hitLocationLabel', value => {
+    const labels = CONFIG.YZUR?.Icons?.[CONFIG.YZUR.game]?.loc;
+    const key = getHitLocationLocalizationKey(value, labels);
+    return key ? game.i18n.localize(key) : String(value ?? '');
+  });
+
   Handlebars.registerHelper('tacticalMovementHexes', roll => {
     const movement = roll?.options?.actionData?.tacticalMovement;
     if (!movement) return '';

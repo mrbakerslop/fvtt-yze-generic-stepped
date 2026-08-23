@@ -14,6 +14,25 @@ async function resolveUuid(uuid) {
   }
 }
 
+/** Return a Token's synthetic Actor when available, otherwise its document. */
+function actorFromDocument(resolved) {
+  return resolved?.actor ?? resolved;
+}
+
+/** Preserve the scene Token behind a synthetic Actor for staged defense rolls. */
+export function getActorTokenUuid(actor) {
+  return actor?.token?.document?.uuid ?? actor?.token?.uuid ?? '';
+}
+
+/** Resolve a staged participant back to the same scene Actor that declared it. */
+export async function resolveDefenseActor(actorUuid, tokenUuid = '') {
+  const tokenActor = actorFromDocument(await resolveUuid(tokenUuid));
+  if (tokenActor?.documentName === 'Actor' || ['character', 'npc', 'vehicle'].includes(tokenActor?.type)) {
+    return tokenActor;
+  }
+  return actorFromDocument(await resolveUuid(actorUuid));
+}
+
 function messageAuthorId(message) {
   return message?.author?.id ?? message?.user?.id ?? message?.user ?? '';
 }
@@ -61,8 +80,10 @@ export async function createCloseAttackDeclaration({
     status: 'pending',
     response: '',
     attackerUuid: attacker.uuid,
+    attackerTokenUuid: getActorTokenUuid(attacker),
     attackerName: attacker.name,
     defenderUuid: defender.uuid,
+    defenderTokenUuid: getActorTokenUuid(defender),
     defenderName: defender.name,
     itemUuid: item?.uuid ?? '',
     itemName: item?.name ?? '',
@@ -154,7 +175,7 @@ async function handleDefenseDeclarationSocket(payload) {
   const message = game.messages.get(payload.messageId);
   if (!message || !isResponsibleUpdater(message)) return;
   const data = message.getFlag(DEFENSE_SYSTEM_ID, 'defenseDeclaration');
-  const defender = await resolveUuid(data?.defenderUuid);
+  const defender = await resolveDefenseActor(data?.defenderUuid, data?.defenderTokenUuid);
   const responder = game.users.get(payload.responderId);
   if (!data || data.status !== 'pending' || !ownsActor(responder, defender)) return;
   if (payload.response?.response === 'block' && payload.response.blockItemUuid) {
@@ -172,7 +193,8 @@ async function handleBlockResolutionSocket(payload) {
   const attackMessage = game.messages.get(payload.attackMessageId);
   const blockMessage = game.messages.get(payload.blockMessageId);
   if (!attackMessage || !blockMessage || !isResponsibleUpdater(attackMessage, { preferGM: true })) return;
-  const defender = await resolveUuid(attackMessage.rolls?.[0]?.options?.defense?.defenderUuid);
+  const defense = attackMessage.rolls?.[0]?.options?.defense;
+  const defender = await resolveDefenseActor(defense?.defenderUuid, defense?.defenderTokenUuid);
   const responder = game.users.get(payload.responderId);
   if (!ownsActor(responder, defender)) return;
   await updateAttackWithBlock(attackMessage, blockMessage);

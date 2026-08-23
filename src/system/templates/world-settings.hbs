@@ -94,6 +94,20 @@
 
     <div class="form-group">
       <div class="world-setting-copy">
+        <label for="yzegs-world-close-position">{{localize "SETTINGS.requireCloseCombatSameGridSpace.name"}}</label>
+        <p class="hint">{{localize "SETTINGS.requireCloseCombatSameGridSpace.hint"}}</p>
+      </div>
+      <div class="form-fields">
+        <input type="hidden" name="requireCloseCombatSameGridSpace"
+          value="{{values.requireCloseCombatSameGridSpace}}" />
+        {{> checkboxControl id="yzegs-world-close-position" name="requireCloseCombatSameGridSpace"
+          value=values.requireCloseCombatSameGridSpace editable=true
+          ariaLabel=(localize "SETTINGS.requireCloseCombatSameGridSpace.name")}}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="world-setting-copy">
         <label>{{localize "SETTINGS.pushCostMode.name"}}</label>
         <p class="hint">{{localize "SETTINGS.pushCostMode.hint"}}</p>
       </div>

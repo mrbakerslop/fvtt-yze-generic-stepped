@@ -57,6 +57,10 @@ import {
 import { getMachineGunSupportRule } from '../system/combat-edge-rules.js';
 import { CALLED_VEHICLE_COMPONENTS } from '../system/land-vehicle-damage-rules.js';
 import {
+  isCloseCombatPositionAllowed,
+  requiresCloseCombatSameGridSpace,
+} from '../system/close-combat-positioning.js';
+import {
   getHeavyWeaponAttribute,
   getHeavyWeaponTargetModifier,
   isArtilleryWeapon,
@@ -699,7 +703,10 @@ export default class ItemYZEGS extends Item {
     }
     else if (targetActors.length === 1) combatEdges = prepareCloseCombatEdges(actor, targetActors[0]);
     if (targetActors.length === 1) {
-      if (!isRangedAttack && combatEdges.differentHex) {
+      if (!isRangedAttack && !isCloseCombatPositionAllowed(
+        combatEdges.differentHex,
+        requiresCloseCombatSameGridSpace(),
+      )) {
         return ui.notifications.warn(game.i18n.localize('YZEGS.CombatEdges.Errors.CloseSameHex'));
       }
       if (isRangedAttack && combatEdges.outOfRange) {
