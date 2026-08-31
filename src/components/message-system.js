@@ -1,7 +1,7 @@
 /* -------------------------------------------- */
 /*  Author: @aMediocreDad                       */
 /* -------------------------------------------- */
-import semverComp from '@utils/semver-compare';
+import semverComp from '../utils/semver-compare.js';
 
 const SYSTEM_NAME = 'fvtt-yze-generic-stepped';
 

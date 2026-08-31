@@ -1,8 +1,9 @@
-import { YZEGS } from './config';
-import { getActiveActor } from '@utils/get-actor';
+import { YZEGS } from './config.js';
+import { getActiveActor } from '../utils/get-actor.js';
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
 import { getSkillCombatType } from './combat-modifiers.js';
 import { getActorActionSkill } from './action-skills.js';
+import { buildItemMacroCommand, resolveActorMacroItem } from './macro-rules.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 const LEGACY_SYSTEM_MACRO_FOLDER = 'YZE Stepped Dice Roll Macros';
@@ -88,7 +89,7 @@ async function _createYZEGSStatMacro(data, slot) {
 }
 
 async function _createYZEGSItemMacro(item, slot) {
-  const command = `game.yzegs.macros.rollItem("${item.name}");`;
+  const command = buildItemMacroCommand(item);
   let macro = findMacro(item.name, command);
   if (!macro) {
     macro = await Macro.create({
@@ -158,27 +159,26 @@ export async function rollAction(actionKey) {
 
 /**
  * Rolls an item.
- * @param {string} itemName
+ * New macros provide an embedded Item id and its name. Existing name-only macros remain supported.
+ * @param {string} itemReference Embedded Item id for new macros, or Item name for legacy macros
+ * @param {string?} fallbackName Item name used when the active Actor does not contain the original id
  */
-export async function rollItem(itemName) {
+export async function rollItem(itemReference, fallbackName = null) {
   const actor = await getActiveActor();
-
-  // Gets matching items.
-  const items = actor ? actor.items.filter(i => i.name === itemName) : [];
-  if (items.length > 1) {
-    ui.notifications.warn(game.i18n.format('YZEGS.MACRO.MultipleItems', {
+  const { item, itemName, matches } = resolveActorMacroItem(actor, itemReference, fallbackName);
+  if (matches.length > 1) {
+    return ui.notifications.warn(game.i18n.format('YZEGS.MACRO.MultipleItems', {
       actor: actor.name,
       item: itemName,
     }));
   }
-  else if (items.length === 0) {
+  if (!item) {
     return ui.notifications.warn(game.i18n.format('YZEGS.MACRO.NoItem', {
       actor: actor?.name ?? game.i18n.localize('YZEGS.Dialog.Actor.ChooseActor'),
       item: itemName,
     }));
   }
-
-  return items[0].roll({ actor });
+  return item.roll({ actor });
 }
 
 /* ------------------------------------------ */

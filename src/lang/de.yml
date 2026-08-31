@@ -285,8 +285,6 @@ YZEGS.Dialog.Roll.RollMode: Würfelmodus
 YZEGS.Dialog.CuF.UnitMorale: Einheitsmoral einrechnen?
 YZEGS.Dialog.Actor.ChooseActor: Akteur auswählen
 YZEGS.Dialog.Damage.ChooseDamage: Schadenshöhe
-YZEGS.Dialog.Damage.DamageQuantity: Basiswert
-YZEGS.Dialog.Damage.ExtraHits: Extra Treffer
 YZEGS.Dialog.Damage.BarrierArmors: Rüstungslevel der Deckung
 YZEGS.MACRO.GetActorTitle: Akteur wählen
 YZEGS.MACRO.GetActorHint: Du hast mehrere Tokens ausgewählt. Wähle ein einzelnes aus.
@@ -444,11 +442,10 @@ YZEGS.VehicleSheet.HasSmokeDischarger: Nebelmittelwurfanlage
 YZEGS.UnitSheet.Faction: Fraktion
 YZEGS.UnitSheet.Vehicles: Gefechtsfahrzeuge
 YZEGS.UnitAffiliationNames.friendly: Verbündet
-YZEGS.UnitModifierNames.moutain: Gebirgs
+YZEGS.UnitModifierNames.mountain: Gebirgs
 YZEGS.UnitModifierNames.wheeled: Rad
 YZEGS.UnitSizeNames.staffel: Staffel ••••
 YZEGS.Dialog.CuF.CoolnessUnderFire: Resilienz im Gefecht (RIG)
-YZEGS.Dialog.Damage.Description: Wähle Schadenshöhe für <b>{target}</b>.
 YZEGS.Dialog.Damage.BarrierArmorsHint: Mehrere Deckungen werden durch Komma getrennt.
 YZEGS.MACRO.MultipleItems: Dein kontrollierter Akteur {actor} hat mehr als einen Gegenstand mit dem Namen {item}. Der erste übereinstimmende Gegenstand wird ausgewählt.
 YZEGS.MACRO.NoItem: Dein kontrollierter Akteur {actor} besitzt keinen Gegenstand namens {item}.

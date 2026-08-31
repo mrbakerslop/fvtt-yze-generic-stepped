@@ -1,6 +1,6 @@
 import ActorSheetYZEGS from '../actorSheet.js';
 import { YZEGSRoller, getAttributeAndSkill } from '../../components/roll/dice.js';
-import { enrichTextFields } from '@utils/utils.js';
+import { enrichTextFields } from '../../utils/utils.js';
 import { getCharacterFieldLabels } from '../../system/character-field-labels.js';
 import { getExperienceConfig } from '../../system/experience-config.js';
 import {

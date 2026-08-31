@@ -1541,16 +1541,30 @@ class YearZeroRoll extends Roll {
 
     let term = this.getTerms(search)[0];
     if (term) {
-      for (; qty > 0; qty--) {
-        term.number++;
-        if (this._evaluated) {
-          term.roll();
-          // TODO missing term._evaluateModifiers() for this new result only
-          if (value != undefined) {
-            term.results[term.results.length - 1].result = value;
+      if (this._evaluated) {
+        const existingResults = term.results;
+        const addedResults = [];
+        let completed = false;
+        const indexPush = term.pushCount;
+        const indexResult = 1 + existingResults.reduce(
+          (maximum, result) => Math.max(maximum, Number(result.indexResult) || 0),
+          -1,
+        );
+        term.results = addedResults;
+        try {
+          for (let index = 0; index < qty; index++) {
+            const result = await term.roll({ indexPush, indexResult: indexResult + index });
+            if (value != undefined) result.result = value;
           }
+          await term._evaluateModifiers();
+          term.number += qty;
+          completed = true;
+        }
+        finally {
+          term.results = completed ? existingResults.concat(addedResults) : existingResults;
         }
       }
+      else term.number += qty;
     }
     // If the DieTerm doesn't exist, creates it.
     else {

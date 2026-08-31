@@ -594,7 +594,7 @@ YZEGS.UnitModifierNames.airmobile: Airmobile
 YZEGS.UnitModifierNames.airmobileOrganicLift: Airm. O. L.
 YZEGS.UnitModifierNames.amphibious: Amphibious
 YZEGS.UnitModifierNames.motorized: Motorized
-YZEGS.UnitModifierNames.moutain: Mountain
+YZEGS.UnitModifierNames.mountain: Mountain
 YZEGS.UnitModifierNames.cannon: Cannon
 YZEGS.UnitModifierNames.wheeled: Wheeled
 YZEGS.UnitSizeNames.army: Army XXXX
@@ -872,7 +872,8 @@ YZEGS.Dialog.Damage.BarrierArmorsHint: Multiple barriers are comma-separated.
 YZEGS.MACRO.GetActorTitle: Choose an Actor
 YZEGS.MACRO.GetActorHint: You have selected multiple tokens. Please choose one of them.
 YZEGS.MACRO.MultipleItems: >-
-  Your controlled Actor {actor} has more than one Item with name {item}. The first matched item will be chosen.
+  Your controlled Actor {actor} has more than one Item named {item}. Edit the names or create a new hotbar macro
+  from the intended Item before rolling.
 YZEGS.MACRO.NoActor: Your controlled Actor {actor} was not found.
 YZEGS.MACRO.NoItem: Your controlled Actor {actor} does not have an item named {item}.
 YZEGS.MACRO.RollAction: Action {action}

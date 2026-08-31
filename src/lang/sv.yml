@@ -252,7 +252,7 @@ YZEGS.UnitModifierNames.airmobile: Flygmobil
 YZEGS.UnitModifierNames.airmobileOrganicLift: Flygm. O. L.
 YZEGS.UnitModifierNames.amphibious: Ampfibisk
 YZEGS.UnitModifierNames.motorized: Motoriserad
-YZEGS.UnitModifierNames.moutain: Berg
+YZEGS.UnitModifierNames.mountain: Berg
 YZEGS.UnitModifierNames.cannon: Kanon
 YZEGS.UnitModifierNames.wheeled: Hjulförsedd
 YZEGS.UnitSizeNames.army: Armé XXXX
@@ -353,13 +353,8 @@ YZEGS.Dialog.CuF.CoolnessUnderFire: Stridsvana (CUF)
 YZEGS.Dialog.CuF.UnitMorale: Lägg till Enhetens moral?
 YZEGS.Dialog.Actor.ChooseActor: Välj en karaktär
 YZEGS.Dialog.Damage.ChooseDamage: Skadans omfattning
-YZEGS.Dialog.Damage.Description: Ange hur mycket skada du vill tillfoga <b>{target}</b>.
-YZEGS.Dialog.Damage.DamageQuantity: Grundantal
-YZEGS.Dialog.Damage.ExtraHits: Extraträffar
 YZEGS.Dialog.Damage.BarrierArmors: Barriärens skyddsnivå
 YZEGS.Dialog.Damage.BarrierArmorsHint: Multipla barriärer kommasepareras.
-YZEGS.Macro.MultipleItems: Din aktiva aktör {actor} har mer än ett föremål med namnet {item}. Det första matchade objektet kommer att väljas.
-YZEGS.Macro.NoItem: Din aktiva aktör {actor} har inte ett objekt som heter {item}.
 FLPS.TAB.MAIN: Grupp
 FLPS.TAB.TRAVEL: Resehandlingar
 FLPS.TAB.NOTE: Anteckningar

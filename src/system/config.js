@@ -182,9 +182,9 @@ YZEGS.unit = {
     airmobileOrganicLift: 'YZEGS.UnitModifierNames.airmobileOrganicLift',
     amphibious: 'YZEGS.UnitModifierNames.amphibious',
     motorized: 'YZEGS.UnitModifierNames.motorized',
-    moutain: 'YZEGS.UnitModifierNames.moutain',
+    mountain: 'YZEGS.UnitModifierNames.mountain',
     cannon: 'YZEGS.UnitModifierNames.cannon',
-    wheeled: 'YZEGS.UnitModifierNameswheeled.',
+    wheeled: 'YZEGS.UnitModifierNames.wheeled',
   },
 };
 

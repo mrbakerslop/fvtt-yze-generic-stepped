@@ -67,6 +67,7 @@ import {
   usesHeavyWeaponRules,
 } from '../system/heavy-weapons.js';
 import { pickExplosionTargetPoint, snapshotCanvasPoint } from '../system/blast-workflows.js';
+import { ITEM_CHAT_TEMPLATES } from '../system/item-chat-templates.js';
 
 /**
  * Year Zero Engine - Generic Stepped Dice Item.
@@ -1702,12 +1703,4 @@ export default class ItemYZEGS extends Item {
  * Default templates for the items in the chat.
  * @constant
  */
-ItemYZEGS.CHAT_TEMPLATE = {
-  weapon: 'systems/fvtt-yze-generic-stepped/templates/components/chat/weapon-chat.hbs',
-  grenade: 'systems/fvtt-yze-generic-stepped/templates/components/chat/weapon-chat.hbs',
-  armor: 'systems/fvtt-yze-generic-stepped/templates/components/chat/armor-chat.hbs',
-  gear: 'systems/fvtt-yze-generic-stepped/templates/components/chat/gear-chat.hbs',
-  ammunition: 'systems/fvtt-yze-generic-stepped/templates/components/chat/gear-chat.hbs',
-  // TODO injury template
-  // TODO better templates
-};
+ItemYZEGS.CHAT_TEMPLATE = ITEM_CHAT_TEMPLATES;

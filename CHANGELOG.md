@@ -1,5 +1,52 @@
 # Changelog
 
+## 14.0.15 — 2026-08-31
+
+### Headline Changes
+
+- Hardened hotbar Item macros, production diagnostics, and release publication.
+- Added automated Foundry startup and combat smoke coverage plus legacy-data
+  migration coverage.
+
+### Added
+
+- Added release metadata validation for the Git tag, package, system manifest,
+  and changelog before publishing.
+- Added a Foundry v14 runtime smoke harness covering initialization, data-model
+  and sheet registration, character-sheet templates, pushed attacks, and Block.
+- Added migration tests for world Actors and Items, synthetic tokens, Scenes,
+  and world compendiums.
+- Added localization catalog-parity checks and a dedicated Foundry smoke-test
+  command.
+- Added an Actor compendium-integrity gate which fails on embedded Items whose
+  parent Actor is absent.
+
+### Changed
+
+- New Item macros prefer the original embedded Item ID and fall back by name
+  when used by another Actor.
+- GitHub releases are now built and tested before creation, uploaded as drafts,
+  and published only after their artifacts are present.
+- Production builds retain warning and error diagnostics while removing routine
+  log and debug calls.
+- Build tasks now wait for stylesheet and translation streams to finish.
+- Compendium integrity and localization parity now run as part of the default
+  test and release pipeline.
+
+### Fixed
+
+- Prevented duplicate Item names from making legacy or cross-Actor hotbar
+  macros roll an arbitrary first match.
+- Added descriptive chat-card fallbacks for every supported Item type.
+- Applied die modifiers only to newly added results when changing an already
+  evaluated roll, including correct asynchronous and failure handling.
+- Corrected the `moutain` Unit modifier field and migrated existing world and
+  synthetic-token data to `mountain`.
+- Corrected the Unit modifier localization key for Wheeled.
+- Restored compendium lock state even when its server-side migration fails.
+- Removed 206 orphaned embedded records from the bundled Actor compendium while
+  preserving all 277 records linked to its 47 Actors.
+
 ## 14.0.14 — 2026-08-23
 
 ### Headline Changes

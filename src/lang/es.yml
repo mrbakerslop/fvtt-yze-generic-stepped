@@ -252,7 +252,7 @@ YZEGS.UnitModifierNames.airmobile: Aeromóvil
 YZEGS.UnitModifierNames.airmobileOrganicLift: Aerm. O. L.
 YZEGS.UnitModifierNames.amphibious: Anfibia
 YZEGS.UnitModifierNames.motorized: Motorizada
-YZEGS.UnitModifierNames.moutain: Montaña
+YZEGS.UnitModifierNames.mountain: Montaña
 YZEGS.UnitModifierNames.cannon: Cañón
 YZEGS.UnitModifierNames.wheeled: Sobre ruedas
 YZEGS.UnitSizeNames.army: Ejército XXXX
@@ -353,9 +353,6 @@ YZEGS.Dialog.CuF.CoolnessUnderFire: Frialdad bajo el fuego (CUF)
 YZEGS.Dialog.CuF.UnitMorale: '¿Añadir la Moral de la Unidad?'
 YZEGS.Dialog.Actor.ChooseActor: Elige un actor
 YZEGS.Dialog.Damage.ChooseDamage: Cantidad de daño
-YZEGS.Dialog.Damage.Description: Elige cuánto daño infligir a <b>{target}</b>.
-YZEGS.Dialog.Damage.DamageQuantity: Cantidad base
-YZEGS.Dialog.Damage.ExtraHits: Impactos extras
 YZEGS.Dialog.Damage.BarrierArmors: Niveles de blindaje de la barrera
 YZEGS.Dialog.Damage.BarrierArmorsHint: Varias barreras están separadas por comas.
 YZEGS.MACRO.GetActorTitle: Elige un actor

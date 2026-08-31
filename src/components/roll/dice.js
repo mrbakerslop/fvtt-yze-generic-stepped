@@ -1,7 +1,7 @@
 import YZEGSDialog from '../dialog/dialog.js';
 import { YearZeroRoll } from '../../lib/yzur.js';
 import { YZEGS } from '../../system/config.js';
-import { range } from '@utils/utils.js';
+import { range } from '../../utils/utils.js';
 import {
   getCombatActionGroups,
   getCombatModifierGroups,

@@ -1,4 +1,4 @@
-const NEEDS_MIGRATION_VERSION = '1.5.0';
+const NEEDS_MIGRATION_VERSION = '14.0.15';
 const COMPATIBLE_MIGRATION_VERSION = '0.7.3';
 const deleteField = () => new foundry.data.operators.ForcedDeletion();
 
@@ -114,42 +114,44 @@ export async function migrateCompendium(pack) {
   // Unlocks the pack for editing.
   const wasLocked = pack.locked;
   await pack.configure({ locked: false });
+  try {
+    // Begins by requesting server-side data model migration and get the migrated content.
+    await pack.migrate();
+    const documents = await pack.getDocuments();
 
-  // Begins by requesting server-side data model migration and get the migrated content.
-  await pack.migrate();
-  const documents = await pack.getDocuments();
+    // Iterates over compendium entries - applying fine-tuned migration functions.
+    for (const doc of documents) {
+      let updateData = {};
+      try {
+        switch (entity) {
+          case 'Actor':
+            updateData = migrateActorData(doc);
+            break;
+          case 'Item':
+            updateData = migrateItemData(doc.toObject());
+            break;
+          case 'Scene':
+            updateData = migrateSceneData(doc);
+            break;
+        }
 
-  // Iterates over compendium entries - applying fine-tuned migration functions.
-  for (const doc of documents) {
-    let updateData = {};
-    try {
-      switch (entity) {
-        case 'Actor':
-          updateData = migrateActorData(doc);
-          break;
-        case 'Item':
-          updateData = migrateItemData(doc.toObject());
-          break;
-        case 'Scene':
-          updateData = migrateSceneData(doc);
-          break;
+        // Saves the entry, if data was changed.
+        if (foundry.utils.isEmpty(updateData)) continue;
+        await doc.update(updateData);
+        console.log(`Migrated ${entity} entity ${doc.name} in Compendium ${pack.collection}`);
       }
 
-      // Saves the entry, if data was changed.
-      if (foundry.utils.isEmpty(updateData)) continue;
-      await doc.update(updateData);
-      console.log(`Migrated ${entity} entity ${doc.name} in Compendium ${pack.collection}`);
-    }
-
-    // Handles migration failures.
-    catch(err) {
-      err.message = `Failed YZEGS system migration for entity ${doc.name} in pack ${pack.collection}: ${err.message}`;
-      console.error(err);
+      // Handles migration failures.
+      catch(err) {
+        err.message = `Failed YZEGS system migration for entity ${doc.name} in pack ${pack.collection}: ${err.message}`;
+        console.error(err);
+      }
     }
   }
-
-  // Applies the original locked status for the pack.
-  await pack.configure({ locked: wasLocked });
+  finally {
+    // Applies the original locked status even when the server-side migration fails.
+    await pack.configure({ locked: wasLocked });
+  }
   console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
 }
 
@@ -174,6 +176,9 @@ export function migrateActorData(actorData) {
       _migrateVehicleCrew(actorData, updateData);
       _migrateVehicleComponents(actorData, updateData);
       _migrateVehicleArmor(actorData, updateData);
+    }
+    else if (actorData.type === 'unit') {
+      _migrateUnitModifierSpelling(actorData, updateData);
     }
   }
 
@@ -393,6 +398,17 @@ function _migrateCharacterInjuries(actorData, updateData) {
     // Deletes old properties.
     updateData['system.crits'] = deleteField();
   }
+  return updateData;
+}
+
+/** Migrate the historical misspelling of the Mountain Unit modifier. */
+function _migrateUnitModifierSpelling(actorData, updateData) {
+  const modifiers = actorData._source?.system?.unitModifiers ?? actorData.system.unitModifiers;
+  if (modifiers?.moutain === undefined) return updateData;
+  if (modifiers.mountain === undefined) {
+    updateData['system.unitModifiers.mountain'] = Boolean(modifiers.moutain);
+  }
+  updateData['system.unitModifiers.moutain'] = deleteField();
   return updateData;
 }
 

@@ -2,7 +2,7 @@ import { YZEGS } from '../system/config.js';
 import { getActorActionSkill } from '../system/action-skills.js';
 import YZEGSDialog from '../components/dialog/dialog.js';
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
-import { enrichTextFields } from '@utils/utils.js';
+import { enrichTextFields } from '../utils/utils.js';
 import { activateRatingMenus } from '../components/rating-menu.js';
 import { activateCheckboxControls } from '../components/checkbox-control.js';
 import {

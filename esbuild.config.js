@@ -1,8 +1,8 @@
 import { build, context } from 'esbuild';
 // import templatePaths from './tools/get-template-paths.js';
 
-export default async ({ watch = false, production = false } = {}) => {
-  const options = {
+export function getBuildOptions({ production = false } = {}) {
+  return {
     bundle: true,
     entryPoints: ['./src/yzegs.js'],
     outdir: 'dist',
@@ -12,7 +12,9 @@ export default async ({ watch = false, production = false } = {}) => {
     ignoreAnnotations: !production,
     minifyWhitespace: true,
     minifySyntax: true,
-    drop: production ? ['console', 'debugger'] : [],
+    // Keep warnings and errors in production so failed hooks and migrations remain diagnosable.
+    drop: production ? ['debugger'] : [],
+    pure: production ? ['console.log', 'console.debug'] : [],
     // define: {
     //   PATHS: JSON.stringify(templatePaths),
     // },
@@ -32,6 +34,10 @@ export default async ({ watch = false, production = false } = {}) => {
     //   },
     // ],
   };
+}
+
+export default async ({ watch = false, production = false } = {}) => {
+  const options = getBuildOptions({ production });
 
   if (!watch) return build(options);
 

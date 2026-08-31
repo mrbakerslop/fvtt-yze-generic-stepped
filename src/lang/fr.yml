@@ -254,7 +254,7 @@ YZEGS.UnitModifierNames.airmobile: Aéromobile
 YZEGS.UnitModifierNames.airmobileOrganicLift: Héli-aérom.
 YZEGS.UnitModifierNames.amphibious: Amphibie
 YZEGS.UnitModifierNames.motorized: Motorisé
-YZEGS.UnitModifierNames.moutain: Montagne
+YZEGS.UnitModifierNames.mountain: Montagne
 YZEGS.UnitModifierNames.cannon: Canon
 YZEGS.UnitModifierNames.wheeled: À roues
 YZEGS.UnitSizeNames.army: Armée XXXX
@@ -359,15 +359,8 @@ YZEGS.Dialog.CuF.CoolnessUnderFire: Sang-froid (SF)
 YZEGS.Dialog.CuF.UnitMorale: Ajouter le moral de la compagnie ?
 YZEGS.Dialog.Actor.ChooseActor: Choisissez un Acteur
 YZEGS.Dialog.Damage.ChooseDamage: Quantité de dégats
-YZEGS.Dialog.Damage.Description: Choisissez la quantité de dégâts à infliger à <b>{cible}</b>.
-YZEGS.Dialog.Damage.DamageQuantity: Quantité de base
-YZEGS.Dialog.Damage.ExtraHits: Touchés supplémentaires
 YZEGS.Dialog.Damage.BarrierArmors: Niveaux d'armure de l'obstacle
 YZEGS.Dialog.Damage.BarrierArmorsHint: Les obstacles multiples sont séparés par des virgules.
-YZEGS.Macro.MultipleItems: >-
-  L'acteur {actor} que vous contrôlez a plus d'un Item avec le nom {item}. Le
-  premier objet correspondant sera choisi.
-YZEGS.Macro.NoItem: L'acteur {actor} que vous contrôlez n'a pas d'objet nommé {item}.
 FLPS.TAB.MAIN: Composition
 FLPS.TAB.TRAVEL: Actions
 FLPS.TAB.NOTE: Notes

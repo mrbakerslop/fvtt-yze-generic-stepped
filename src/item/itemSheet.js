@@ -1,4 +1,4 @@
-import { enrichTextFields } from '@utils/utils';
+import { enrichTextFields } from '../utils/utils.js';
 import { getCharacterFieldLabels } from '../system/character-field-labels.js';
 import { activateRatingMenus } from '../components/rating-menu.js';
 import { activateCheckboxControls } from '../components/checkbox-control.js';

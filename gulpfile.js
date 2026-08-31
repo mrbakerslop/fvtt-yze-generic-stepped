@@ -56,13 +56,10 @@ async function pipeTemplates() {
 /**
  * Creates CSS styles from LESS.
  */
-async function pipeStyles() {
-  gulp
+function pipeStyles() {
+  return gulp
     .src('src/less/yzegs.less')
-    .pipe(less().on('error', err => {
-      console.error(chalk.red(err.toString()));
-      this.emit('end');
-    }))
+    .pipe(less())
     .pipe(cleanCSS({ debug: true }, details => {
       console.log(`${chalk.bold('Styles:')} ${chalk.blueBright(details.name)}`
         + ` in ${chalk.magenta(details.stats.timeSpent + ' ms')}`
@@ -79,8 +76,8 @@ async function pipeStyles() {
 /**
  * Creates the JSON translation files, from the Yaml ones.
  */
-async function pipeTranslations() {
-  gulp
+function pipeTranslations() {
+  return gulp
     .src('src/lang/**/*.{yml,yaml}')
     .pipe(yaml({ safe: true }))
     .pipe(gulp.dest('./dist/lang'));

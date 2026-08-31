@@ -14,9 +14,9 @@ setting.
 
 ## Compatibility
 
-- System version: 14.0.12
+- System version: 14.0.15
 - Minimum Foundry version: 14.359
-- Verified Foundry version: 14.366
+- Verified Foundry version: 14.367
 
 ## Installation
 
@@ -50,9 +50,24 @@ Development commands:
 ```bash
 npm run dev
 npm run dev:watch
+npm run test:foundry
+npm run test:packs
+npm run test:i18n
 npm run lint
 npm run build
 ```
+
+`npm test` is the release-candidate gate. It runs the complete rule suite, the
+mocked Foundry lifecycle smoke test, actor-compendium integrity checks,
+localization parity checks, linting, and the production build. Translation
+catalogs may intentionally fall back to English, but they cannot introduce
+unknown or duplicate keys or regress below their recorded coverage baseline.
+
+Before tagging a release, also open the linked development world in the
+verified Foundry build and check that a Character sheet renders, duplicate-name
+Item macros resolve the intended Item, an attack can be pushed and Blocked
+before damage is applied, and advancing combat produces no hook or socket
+errors.
 
 ## Development namespace
 

@@ -231,7 +231,7 @@ class UnitData extends foundry.abstract.TypeDataModel {
         airmobileOrganicLift: booleanField(),
         amphibious: booleanField(),
         motorized: booleanField(),
-        moutain: booleanField(),
+        mountain: booleanField(),
         cannon: booleanField(),
         wheeled: booleanField(),
       }),
