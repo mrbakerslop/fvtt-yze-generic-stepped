@@ -1,5 +1,34 @@
 # Changelog
 
+## 14.0.18 — 2026-09-09
+
+### Headline Changes
+
+- Theme Controls Phase Two adds custom sheet backgrounds and decorative borders
+  for characters, items, and journal text pages.
+- Preview each sheet type and save its artwork settings with custom theme presets.
+
+### Added
+
+- Background image pickers with opacity, fill, fit, tile, and position controls.
+- Single-image decorative frames with adjustable thickness, corner slice, and edge layout.
+- Separate image controls for all four corners and edges, including stretch, repeat,
+  and repeat-and-fit layouts.
+- A World Theme Settings compendium guide covering configuration, presets, artwork,
+  and readability recovery.
+- Labels for the new theme controls in all seven language catalogs.
+
+### Changed
+
+- Backgrounds and borders follow saved world themes and the per-device default-theme override.
+- Builds preserve existing output compendium databases and copy newly added packs,
+  avoiding overwrites while Foundry has a development pack open.
+
+### Validation
+
+- Added regression coverage for background and border sanitisation, generated styles,
+  preset persistence, localization parity, and preservation of live build-output packs.
+
 ## 14.0.17 — 2026-09-09
 
 ### Headline Changes

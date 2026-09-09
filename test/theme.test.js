@@ -4,7 +4,7 @@ import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import {
   DEFAULT_THEME, THEME_PRESETS, normalizeTheme, resolveTheme, themeCSS,
-  themeVariables, contrastRatio, hasLowContrast,
+  themeVariables, contrastRatio, hasLowContrast, backgroundCSS, normalizeBackground, frameCSS, normalizeFrame,
   addCustomPreset, normalizeCustomPresets, renameCustomPreset, deleteCustomPreset,
 } from '../src/system/theme.js';
 
@@ -78,7 +78,7 @@ test('themes reject unknown properties, malformed values and CSS injection', () 
   assert.deepEqual(theme, { ...DEFAULT_THEME, overrides: { background: '#abcdef' } });
   assert.deepEqual(normalizeTheme(null), DEFAULT_THEME);
   assert.deepEqual(normalizeTheme({ overrides: [] }), DEFAULT_THEME);
-  assert.doesNotMatch(themeCSS(theme), /url\(|display:|__proto__/);
+  assert.doesNotMatch(themeCSS(theme), /url\(|display:\s*none|__proto__/);
 });
 
 test('preset overrides are isolated and original monochrome is the default', () => {
@@ -180,7 +180,13 @@ test('Save Theme updates the selected custom snapshot and preserves other preset
   try {
     const editor = new ThemeConfig();
     await editor._prepareContext({});
-    const fields = { ...resolveTheme(presets[1].theme), preset: 'custom-v2', background: '#800080' };
+    const fields = {
+      ...resolveTheme(presets[1].theme), preset: 'custom-v2', background: '#800080',
+      'backgrounds.character.image': 'worlds/test/paper.webp',
+      'backgrounds.character.opacity': '35', 'backgrounds.character.layout': 'tile',
+      'frames.item.image': 'worlds/test/frame.png', 'frames.item.width': '24',
+      'frames.item.slice': '20', 'frames.item.repeat': 'round',
+    };
     editor.element = { querySelector: selector => ({ value: fields[selector.match(/name="([^"]+)"/)[1]] }) };
     const submit = () => ThemeConfig.DEFAULT_OPTIONS.form.handler.call(editor);
     // Keep a rename made after the editor opened.
@@ -197,6 +203,14 @@ test('Save Theme updates the selected custom snapshot and preserves other preset
     const reopened = await new ThemeConfig()._prepareContext({});
     assert.equal(reopened.preset, 'custom-v2');
     assert.equal(reopened.values.background, '#800080');
+    assert.equal(saved[1].theme.backgrounds.character.image, 'worlds/test/paper.webp');
+    assert.equal(reopened.backgrounds[0].image, 'worlds/test/paper.webp');
+    assert.equal(reopened.backgrounds[0].opacity, 35);
+    assert.equal(reopened.backgrounds[0].layout, 'tile');
+    assert.deepEqual({ ...reopened.frames[1], pieces: undefined }, {
+      pieces: undefined, kind: 'item', label: 'YZEGS.Theme.Sheets.item',
+      image: 'worlds/test/frame.png', width: 24, slice: 20, repeat: 'round' });
+    assert.equal(saved[1].theme.frames.item.width, 24);
     for (const preset of Object.keys(THEME_PRESETS)) {
       fields.preset = preset;
       await submit();
@@ -211,5 +225,79 @@ test('Save Theme updates the selected custom snapshot and preserves other preset
   finally {
     delete globalThis.game;
     delete globalThis.ui;
+  }
+});
+
+
+test('backgrounds survive preset snapshots and sanitize paths, layout and opacity', () => {
+  const theme = { backgrounds: { character: {
+    image: 'worlds/test/paper texture.webp', opacity: 40, layout: 'tile', position: 'top',
+  } } };
+  const presets = addCustomPreset([], { id: 'custom-image', name: 'Paper', theme });
+  assert.deepEqual(presets[0].theme.backgrounds, theme.backgrounds);
+  assert.match(backgroundCSS(theme, 'character'), /rgba\(255,255,255,0.6\)/);
+  assert.match(themeCSS(theme), /background-repeat:no-repeat,repeat/);
+  assert.equal(backgroundCSS(DEFAULT_THEME, 'character'), '');
+  for (const image of ['javascript:alert(1)', 'data:image/svg+xml,test', 'a";color:red;', '//other.test/a']) {
+    assert.equal(normalizeBackground({ image }).image, '');
+  }
+  assert.equal(normalizeBackground({ opacity: 150 }).opacity, 100);
+  assert.equal(normalizeBackground({ opacity: 'bad', layout: 'bad' }).opacity, 25);
+  assert.equal(normalizeBackground({ layout: 'bad' }).layout, 'cover');
+});
+
+
+test('decorative frames sanitize settings and stay scoped to sheet content', () => {
+  const theme = { frames: { item: { image: 'frames/brass.png', width: 24, slice: 20, repeat: 'round' } } };
+  assert.deepEqual(normalizeTheme(theme).frames, theme.frames);
+  assert.equal(frameCSS(theme, 'character'), '');
+  assert.equal(frameCSS(DEFAULT_THEME, 'item'), '');
+  assert.match(frameCSS(theme, 'item'), /border:24px solid/);
+  assert.match(frameCSS(theme, 'item'), /border-image-slice:20%;/);
+  assert.match(frameCSS(theme, 'item'), /border-image-repeat:round/);
+  assert.doesNotMatch(frameCSS(theme, 'item'), /fill/);
+  assert.match(themeCSS(theme), /\.item:not\(\.yzegs-settings\) > \.window-content\{border:/);
+  assert.equal(normalizeFrame({ image: 'javascript:bad' }).image, '');
+  assert.equal(normalizeFrame({ image: 'x";color:red' }).image, '');
+  assert.equal(normalizeFrame({ width: 500, slice: 60 }).width, 48);
+  assert.equal(normalizeFrame({ width: 500, slice: 60 }).slice, 49);
+  assert.equal(normalizeFrame({ repeat: 'bad' }).repeat, 'stretch');
+  assert.equal(frameCSS({ frames: { item: { image: 'frame.png', width: 0 } } }, 'item'), '');
+  assert.equal(normalizeTheme({ frames: { item: { image: '' } } }).frames, undefined);
+});
+
+
+test('separate frame pieces preserve blank slots, backgrounds and independent preset snapshots', () => {
+  const theme = { backgrounds: { character: { image: 'paper;texture.png' } }, frames: { character: {
+    mode: 'pieces', image: 'old-frame.png', topLeft: 'corner.png', top: 'horizontal.png', left: 'vertical.png',
+    width: 20,
+  } } };
+  const stored = addCustomPreset([], { id: 'custom-pieces', name: 'Pieces', theme })[0].theme;
+  assert.equal(stored.frames.character.mode, 'pieces');
+  assert.equal(stored.frames.character.image, 'old-frame.png');
+  const css = frameCSS(stored, 'character');
+  assert.match(css, /corner.png/);
+  assert.match(css, /horizontal.png/);
+  assert.match(css, /vertical.png/);
+  assert.match(css, /paper;texture.png/);
+  assert.match(css, /calc\(100% - 40px\)/);
+  assert.doesNotMatch(css, /old-frame.png/);
+  assert.equal(frameCSS(stored, 'item'), '');
+  assert.equal(normalizeFrame({ mode: 'pieces', top: 'javascript:bad' }).top, undefined);
+  assert.equal(frameCSS({ frames: { character: { mode: 'pieces', image: 'old-frame.png' } } }, 'character'), '');
+});
+
+
+test('separate edges repeat in bounded horizontal and vertical areas without tiling corners', () => {
+  for (const repeat of ['repeat', 'round']) {
+    const theme = { frames: { character: { mode: 'pieces', repeat, width: 24,
+      top: 'top.png', left: 'left.png', topLeft: 'corner.png' } } };
+    const css = frameCSS(theme, 'character');
+    assert.match(css, new RegExp(`--yzegs-frame-repeat:${repeat}`));
+    assert.match(css, /--yzegs-frame-top:url\("top.png"\)/);
+    assert.match(css, /background-image:url\("corner.png"\),none/);
+    assert.match(themeCSS(theme), /background-size:auto var\(--yzegs-frame-width\)/);
+    assert.match(themeCSS(theme), /pointer-events:none/);
+    assert.equal(normalizeTheme(theme).frames.character.repeat, repeat);
   }
 });

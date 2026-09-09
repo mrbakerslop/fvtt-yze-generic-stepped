@@ -8,6 +8,7 @@ import * as fs from 'fs-extra-plus';
 import semver from 'semver';
 import argv from './tools/args-parser.js';
 import esBuild from './esbuild.config.js';
+import { cleanBuildOutput, copyMissingPacks } from './tools/build-output.js';
 
 /* ------------------------------------------ */
 /*  Configuration                             */
@@ -91,6 +92,10 @@ function pipeTranslations() {
  */
 async function pipeStatics() {
   for (const file of staticFiles) {
+    if (file === 'packs') {
+      await copyMissingPacks('static/packs', `${distDirectory}/packs`);
+      continue;
+    }
     if (fs.existsSync(`static/${file}`)) await fs.copy(`static/${file}`, `${distDirectory}/${file}`);
   }
   for (const file of rootFiles) {
@@ -120,11 +125,11 @@ function buildWatch() {
 /* ------------------------------------------ */
 
 /**
- * Removes built files from `dist` folder while ignoring source files.
+ * Removes generated files while preserving databases potentially open in Foundry.
  * @async
  */
 async function cleanDist() {
-  if (fs.existsSync('./dist')) await fs.remove('./dist');
+  await cleanBuildOutput(distDirectory);
 }
 
 /* ------------------------------------------ */

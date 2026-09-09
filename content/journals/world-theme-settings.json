@@ -1,0 +1,62 @@
+{
+  "entry": {
+    "_id": "YZEThemeGuide001",
+    "name": "Using World Theme Settings",
+    "categories": [],
+    "folder": null,
+    "sort": 1700000,
+    "ownership": {
+      "default": 2
+    },
+    "flags": {
+      "fvtt-yze-generic-stepped": {
+        "systemGuide": true,
+        "guideId": "world-theme-settings"
+      }
+    }
+  },
+  "pages": [
+    {
+      "_id": "YZEThemePage0001",
+      "name": "Quick Start",
+      "sort": 100000,
+      "content": "<p>World Theme lets the GM match sheet colours, fonts, background images and decorative borders to the game being played. The settings are shared by the world.</p><ol><li>Open the <strong>Settings</strong> sidebar, then <strong>Game Settings</strong>.</li><li>Select <strong>Year Zero Engine - Generic Stepped Dice</strong> and click <strong>Configure Theme</strong>.</li><li>Choose a preset as your starting point.</li><li>Adjust the colours and fonts. Expand <strong>Sheet background images</strong> or <strong>Decorative borders</strong> for optional artwork.</li><li>Choose a <strong>Preview sheet type</strong> to inspect the character, item or journal sample.</li><li>To keep the starting preset, enter a name under <strong>New or replacement name</strong> and click <strong>Save as New Preset</strong>.</li><li>Click <strong>Save Theme</strong> to apply the result to the world.</li></ol><p>The preview is a sample, not a complete sheet. Open an actual sheet after saving to check its layout and readability.</p><p>System configuration windows retain Foundry’s native theme, so you can always return here to correct an unreadable sheet theme.</p>"
+    },
+    {
+      "_id": "YZEThemePage0002",
+      "name": "Creating and Managing Presets",
+      "sort": 200000,
+      "content": "<h2>Built-in presets</h2><p><strong>Monochrome, Military, Parchment</strong> and <strong>Dark Sci-Fi</strong> are protected starting points. You cannot rename or delete them. You may adjust their appearance and save those changes as the active world theme; the built-in preset itself stays unchanged.</p><h2>Save as New Preset</h2><p>Enter a unique name in <strong>New or replacement name</strong>, then click <strong>Save as New Preset</strong>. This creates an independent snapshot of the current colours, fonts, backgrounds and borders and selects it. It does not apply the appearance to the world until you click <strong>Save Theme</strong>. The new preset remains saved even if you later cancel the window.</p><h2>Update an existing custom preset</h2><p>Select the GM-created preset, edit it, and click <strong>Save Theme</strong>. This updates both the selected custom preset and the active world theme. To preserve an earlier version, use <strong>Save as New Preset</strong> before applying your variation.</p><h2>Rename and delete</h2><p>Select a custom preset, edit <strong>New or replacement name</strong> and click <strong>Rename</strong>. Changing the name field alone does not rename it. <strong>Delete Preset</strong> asks for confirmation and removes it from the library. Deleting a preset does not erase the appearance already applied to the world. These library actions take effect immediately; Cancel does not undo them.</p><p>Names must be unique, nonblank and no longer than 80 characters. Choosing a different preset replaces the current unsaved draft.</p>"
+    },
+    {
+      "_id": "YZEThemePage0003",
+      "name": "Colours, Fonts and Preview",
+      "sort": 300000,
+      "content": "<p>The palette controls <strong>Background</strong>, <strong>Panels and inputs</strong>, <strong>Body text</strong>, <strong>Headings</strong>, <strong>Borders</strong>, <strong>Accent and title bars</strong> and <strong>Text on accent</strong>. Use contrasting text and surfaces so labels and controls remain readable.</p><p>Choose separate heading and body fonts, and select uppercase or normal-case headings. The available fonts are bundled fonts and standard system font families; there is no font upload control.</p><p>A contrast warning flags potentially difficult colour combinations. It does not assess the detail or brightness of artwork, so also inspect the preview and real sheets.</p><h2>Preview sheet type</h2><p><strong>Character sheets</strong> shows a character sample, <strong>Item sheets</strong> shows equipment details, and <strong>Journal text pages</strong> shows sample prose. Each uses its own background and border selections. Switching the preview type does not copy settings between sheet types or change the active world theme.</p><p>Colours and fonts style supported system sheets, gameplay dialogs and system chat cards. Backgrounds and decorative borders target character sheets, item sheets and displayed journal text content; they do not decorate chat cards or journal editing controls.</p>"
+    },
+    {
+      "_id": "YZEThemePage0004",
+      "name": "Background Images",
+      "sort": 400000,
+      "content": "<ol><li>Expand <strong>Sheet background images</strong>.</li><li>Find the character, item or journal section you want to change.</li><li>Use the image picker beside <strong>Background image</strong>, or enter a Foundry-accessible image path.</li><li>Set <strong>Image opacity (%)</strong>. Start at 25–40% for subtle texture. Zero hides the image; 100 shows it without the theme-colour overlay.</li><li>Choose <strong>Fill (crop to fit)</strong>, <strong>Fit whole image</strong> or <strong>Repeat texture</strong>.</li><li>Set the image position and select the corresponding preview type.</li></ol><p>Fill covers the available area but may crop the image. Fit preserves the whole image and may leave some theme colour visible around it. Repeat works best with a texture designed to tile. Text stays opaque; the opacity control affects the image’s visibility over the background colour.</p><p>Clear the image path to remove a background. Each sheet type is independent. Journal backgrounds apply to displayed text pages, not image, video or PDF pages.</p><p>Use paths available to all players through Foundry’s file picker rather than local operating-system paths. Uploaded artwork must remain available at its saved path.</p>"
+    },
+    {
+      "_id": "YZEThemePage0005",
+      "name": "Single-Image Decorative Frames",
+      "sort": 500000,
+      "content": "<ol><li>Expand <strong>Decorative borders</strong> and find the desired sheet type.</li><li>Set <strong>Frame mode</strong> to <strong>Single frame image</strong>.</li><li>Choose a <strong>Frame image</strong>.</li><li>Set <strong>Border thickness (px)</strong>, from 0 to 48 pixels. Try 24 or 32 pixels first; zero hides the frame.</li><li>Adjust <strong>Corner slice (%)</strong>, from 1 to 49. This cuts that percentage inward from every edge of the source image to identify the corners and edge strips.</li><li>Choose <strong>Stretch edges</strong>, <strong>Repeat edges</strong> or <strong>Repeat and fit edges</strong>.</li></ol><p>The four corners are preserved while the edge strips fill the space between them. The centre of the image is not drawn. A purpose-made frame image works better than an ordinary photograph.</p><p>Corner slice changes how the source image is divided; thickness changes the space occupied on the sheet. They are different controls. A starting point for the supplied sci-fi panel is 24px thickness and 15% corner slice.</p><p>Click <strong>Clear</strong> beside Frame image to remove it from the draft. Save Theme applies that removal. Borders reserve space around content, so thick frames leave less room inside the sheet.</p>"
+    },
+    {
+      "_id": "YZEThemePage0006",
+      "name": "Separate Corners and Edges",
+      "sort": 600000,
+      "content": "<p>Choose <strong>Separate corners and edges</strong> under Frame mode for more detailed control. You can select eight independent images:</p><ul><li>Top-left, top-right, bottom-left and bottom-right corners.</li><li>Top and bottom horizontal edges.</li><li>Left and right vertical edges.</li></ul><p>Each corner is drawn in a square whose size equals <strong>Border thickness (px)</strong>. Choose Edge layout: Stretch edges extends each image between its corners; Repeat edges tiles it and may clip the last tile; Repeat and fit edges adjusts tiles so whole copies fit. Repeated images scale to the border thickness while preserving their aspect ratio. Corners remain fixed. Corner slice applies only to single-image frames.</p><p>Images keep their supplied orientation: the system does not rotate or mirror them. Choose square corner images, horizontal top/bottom strips and vertical left/right strips. Blank slots stay empty, so you can use only the pieces you need.</p><p>Click the <strong>Clear</strong> button beside a piece to remove just that piece. Switching between single-image and separate-pieces modes preserves the selections for both modes. Only the selected mode is drawn, and both sets of selections save with the preset.</p><p>Choose the appropriate preview sheet type to inspect each frame. Save as New Preset keeps a separate variation; Save Theme updates the selected custom preset and applies it.</p>"
+    },
+    {
+      "_id": "YZEThemePage0007",
+      "name": "Artwork and Recovery",
+      "sort": 700000,
+      "content": "<h2>Using your own artwork</h2><p>Choose background and border images through Foundry’s file picker. For separate corners and edges, assign each image to its matching position; images retain their supplied orientation. Keep the files available at their saved paths so all players can load them.</p><h2>Undoing draft changes</h2><p><strong>Reset to Preset</strong> restores the selected preset’s saved appearance. <strong>Reset to Default</strong> returns the draft to Monochrome without artwork. These reset actions affect the preview until you save. <strong>Cancel</strong> discards unsaved appearance changes, but does not undo preset creation, renaming or deletion.</p><h2>Recovering readability</h2><p>Open the system’s Game Settings and enable <strong>Use Default Theme on This Device</strong>, then save settings. This restores the original monochrome appearance locally and suppresses background and border images without changing the world theme for other users. Disable it again when ready to see the GM’s theme.</p><p>If artwork appears missing, check the file path, opacity, border thickness, selected frame mode and preview sheet type. If your local appearance does not follow the GM’s settings, check whether the default-theme override is enabled. Configuration windows always retain Foundry’s native theme.</p>"
+    }
+  ]
+}

@@ -452,3 +452,26 @@ Select a GM-created preset to rename or delete it. Edit **New or replacement nam
 and click **Rename**, or use **Delete Preset** and confirm. The four built-in presets
 are protected. Renaming or deleting a preset does not change the active world
 appearance; deleting also keeps the colours and fonts currently in the preview.
+
+Sheet background images can be configured separately for characters, items and journal text
+pages. Expand **Sheet background images**, choose a file, and adjust opacity, layout and
+position. Clear the image path to remove it. The preview selector shows each sheet type's
+background. Images save with custom presets; **Use Default Theme on This Device** removes
+them locally. Journal editing controls retain Foundry's appearance. Decorative borders
+can be added separately for each sheet type under **Decorative borders**. Choose a frame
+image, set its thickness (0–48 pixels), and adjust the corner slice (1–49% from each
+edge of the source image). The centre is omitted. Edges can stretch, repeat, or repeat
+and fit. Clear the image path to remove the frame. Borders reserve space around sheet
+content, save with presets, and are disabled by the local default-theme override.
+
+For finer control, select **Separate corners and edges** as the frame mode. Each of
+the four corners and four edges has its own image picker. Corners use the border
+thickness as their square size; edges stretch or repeat between them according to Edge layout. Blank pieces remain
+empty, and images retain their supplied orientation. Both modes' selections are
+preserved when switching modes and saved in the custom preset.
+
+Development builds preserve existing `dist/packs` databases because Foundry may have them open. New packs are copied automatically. To refresh an existing pack after editing its source, fully stop Foundry first, back up and move the corresponding `dist/packs/<pack>` directory out of `dist`, then rebuild. A browser refresh is not sufficient. Release builds should use a fresh checkout/output directory.
+
+Separate edges support Stretch edges, Repeat edges (partial tiles may appear at the end),
+and Repeat and fit edges (whole tiles adjusted to fit). Repeated artwork retains its
+aspect ratio at the selected border thickness; corner images remain fixed.

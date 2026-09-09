@@ -23,3 +23,7 @@ src/lang/foundry
 # Distribution Files
 /dist
 /foundry.js
+
+# Local test-world theme artwork
+/static/assets/theme-backgrounds/
+/static/assets/theme-borders/

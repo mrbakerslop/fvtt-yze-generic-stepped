@@ -26,6 +26,10 @@ export function compareLocalizationKeys(englishKeys, translatedKeys) {
   const translated = new Set(translatedKeys);
   return {
     duplicateKeys: translatedKeys.filter((key, index) => translatedKeys.indexOf(key) !== index),
+    conflictingKeys: [...translated].filter(key => {
+      const parts = key.split('.');
+      return parts.some((_part, index) => index > 0 && translated.has(parts.slice(0, index).join('.')));
+    }).sort(),
     extraKeys: [...translated].filter(key => !english.has(key)).sort(),
     missingKeys: [...english].filter(key => !translated.has(key)).sort(),
     translatedKeys: translated.size,
@@ -53,6 +57,9 @@ async function main() {
 
   for (const [language, result] of Object.entries(audit)) {
     if (result.duplicateKeys.length) failures.push(`${language}: duplicate keys: ${result.duplicateKeys.join(', ')}`);
+    if (result.conflictingKeys.length) {
+      failures.push(`${language}: keys nested beneath a text value: ${result.conflictingKeys.join(', ')}`);
+    }
     if (result.extraKeys.length) failures.push(`${language}: keys absent from English: ${result.extraKeys.join(', ')}`);
     const baseline = LOCALIZATION_BASELINES[language];
     if (baseline && result.translatedKeys < baseline) {

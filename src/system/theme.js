@@ -39,7 +39,50 @@ export const DEFAULT_THEME = { version: 1, preset: 'monochrome', overrides: {} }
 const owns = (object, key) => typeof key === 'string' && Object.hasOwn(object, key);
 const isCustomId = id => typeof id === 'string' && /^custom-[a-z0-9-]{1,64}$/i.test(id);
 
-/** Accept only known keys and finite choices; never interpolate arbitrary CSS or URLs. */
+export const THEME_SHEETS = ['character', 'item', 'journal'];
+export const DEFAULT_BACKGROUND = { image: '', opacity: 25, layout: 'cover', position: 'center' };
+
+function imagePath(value) {
+  if (typeof value !== 'string') return '';
+  const path = value.trim();
+  // Only relative asset paths and HTTP(S); reject CSS delimiters and active URL schemes.
+  // eslint-disable-next-line no-control-regex
+  if (/[\\\x00-\x1f"'<>]/.test(path) || path.startsWith('//')) return '';
+  if (/^[a-z][a-z0-9+.-]*:/i.test(path) && !/^https?:\/\//i.test(path)) return '';
+  return path;
+}
+
+export function normalizeBackground(value = {}) {
+  return {
+    image: imagePath(value?.image),
+    opacity: Number.isFinite(Number(value?.opacity))
+      ? Math.min(100, Math.max(0, Number(value.opacity))) : DEFAULT_BACKGROUND.opacity,
+    layout: ['cover', 'contain', 'tile'].includes(value?.layout) ? value.layout : 'cover',
+    position: ['center', 'top', 'bottom', 'left', 'right'].includes(value?.position) ? value.position : 'center',
+  };
+}
+
+export const FRAME_PIECES = ['topLeft', 'top', 'topRight', 'right', 'bottomRight', 'bottom', 'bottomLeft', 'left'];
+
+/** Slice is the percentage cut from each edge to preserve the four image corners. */
+export function normalizeFrame(value = {}) {
+  const bounded = (input, fallback, min, max) => input !== '' && Number.isFinite(Number(input))
+    ? Math.min(max, Math.max(min, Number(input))) : fallback;
+  const result = {
+    image: imagePath(value?.image),
+    width: bounded(value?.width, 16, 0, 48),
+    slice: bounded(value?.slice, 15, 1, 49),
+    repeat: ['stretch', 'repeat', 'round'].includes(value?.repeat) ? value.repeat : 'stretch',
+  };
+  if (value?.mode === 'pieces') result.mode = 'pieces';
+  for (const key of FRAME_PIECES) {
+    const path = imagePath(value?.[key]);
+    if (path) result[key] = path;
+  }
+  return result;
+}
+
+/** Accept only known keys, finite choices and sanitized image paths. */
 export function normalizeTheme(value) {
   const source = value && typeof value === 'object' ? value : {};
   const preset = owns(THEME_PRESETS, source.preset) ? source.preset : 'monochrome';
@@ -56,6 +99,18 @@ export function normalizeTheme(value) {
   if (['none', 'uppercase'].includes(input.headingCase)) overrides.headingCase = input.headingCase;
   const result = { version: 1, preset, overrides };
   if (isCustomId(source.customPresetId)) result.customPresetId = source.customPresetId;
+  const backgrounds = {};
+  for (const kind of THEME_SHEETS) {
+    const background = normalizeBackground(source.backgrounds?.[kind]);
+    if (background.image) backgrounds[kind] = background;
+  }
+  if (Object.keys(backgrounds).length) result.backgrounds = backgrounds;
+  const sheetFrames = {};
+  for (const kind of THEME_SHEETS) {
+    const frame = normalizeFrame(source.frames?.[kind]);
+    if (frame.image || FRAME_PIECES.some(key => frame[key])) sheetFrames[kind] = frame;
+  }
+  if (Object.keys(sheetFrames).length) result.frames = sheetFrames;
   return result;
 }
 
@@ -148,7 +203,100 @@ export function themeVariables(value) {
 export const THEME_SELECTOR = '.application.yzegs:is(.sheet, .dialog):not(.yzegs-settings), '
   + '.chat-message:has(.yzegs.chat-card)';
 
+function backgroundDeclarations(value, kind) {
+  const theme = normalizeTheme(value);
+  const background = normalizeBackground(theme.backgrounds?.[kind]);
+  if (!background.image) return {};
+  const color = resolveTheme(theme).background;
+  const channels = color.slice(1).match(/../g).map(channel => parseInt(channel, 16)).join(',');
+  const wash = `rgba(${channels},${1 - background.opacity / 100})`;
+  return {
+    'background-color': color,
+    'background-image': `linear-gradient(${wash},${wash}),url("${background.image}")`,
+    'background-size': `auto,${background.layout === 'tile' ? 'auto' : background.layout}`,
+    'background-repeat': `no-repeat,${background.layout === 'tile' ? 'repeat' : 'no-repeat'}`,
+    'background-position': `center,${background.position}`,
+  };
+}
+
+export function backgroundCSS(value, kind) {
+  return Object.entries(backgroundDeclarations(value, kind)).map(([key, val]) => `${key}:${val}`).join(';');
+}
+
+export function frameCSS(value, kind) {
+  const theme = normalizeTheme(value);
+  const frame = normalizeFrame(theme.frames?.[kind]);
+  if (frame.mode === 'pieces') return pieceFrameCSS(theme, kind, frame);
+  if (!frame.image || !frame.width) return '';
+  return `border:${frame.width}px solid ${resolveTheme(theme).border};`
+    + `border-image-source:url("${frame.image}");border-image-slice:${frame.slice}%;`
+    + `border-image-width:1;border-image-outset:0;border-image-repeat:${frame.repeat};box-sizing:border-box`;
+}
+
+function pieceFrameCSS(theme, kind, frame) {
+  if (!frame.width || !FRAME_PIECES.some(key => frame[key])) return '';
+  const w = `${frame.width}px`;
+  const span = `calc(100% - ${frame.width * 2}px)`;
+  const positions = ['left top', 'center top', 'right top', 'right center',
+    'right bottom', 'center bottom', 'left bottom', 'left center'];
+  const sizes = [`${w} ${w}`, `${span} ${w}`, `${w} ${w}`, `${w} ${span}`,
+    `${w} ${w}`, `${span} ${w}`, `${w} ${w}`, `${w} ${span}`];
+  // Each piece has its own fixed area. The transparent border reserves space without covering inputs.
+  const tiled = frame.repeat !== 'stretch';
+  const images = FRAME_PIECES.map((key, index) => frame[key] && !(tiled && index % 2)
+    ? `url("${frame[key]}")` : 'none');
+  const repeats = FRAME_PIECES.map(() => 'no-repeat');
+  const origins = FRAME_PIECES.map(() => 'border-box');
+  const declarations = backgroundDeclarations(theme, kind);
+  if (declarations['background-image']) {
+    images.push(declarations['background-image']);
+    sizes.push(declarations['background-size']);
+    positions.push(declarations['background-position']);
+    repeats.push(declarations['background-repeat']);
+    origins.push('padding-box', 'padding-box');
+  }
+  const edges = tiled ? `position:relative;--yzegs-frame-edge-display:block;--yzegs-frame-width:${w};`
+    + `--yzegs-frame-repeat:${frame.repeat};`
+    + ['top', 'bottom', 'left', 'right'].map(key =>
+      `--yzegs-frame-${key}:${frame[key] ? `url("${frame[key]}")` : 'none'}`).join(';') + ';' : '';
+  return edges + `border:${w} solid transparent;border-image:none;box-sizing:border-box;`
+    + `background-image:${images.join(',')};background-size:${sizes.join(',')};`
+    + `background-position:${positions.join(',')};background-repeat:${repeats.join(',')};`
+    + `background-origin:${origins.join(',')};background-clip:border-box`
+    + (tiled ? `;border-width:0;padding:calc(${w} + 12px)` : '');
+}
+
+/** Two clipped edge areas repeat up to, but never underneath, the corner squares. */
+export function frameEdgeCSS(selector) {
+  return `${selector}::before,${selector}::after{content:"";display:var(--yzegs-frame-edge-display,none);`
+    + 'position:absolute;pointer-events:none;box-sizing:border-box;}'
+    + `${selector}::before{left:var(--yzegs-frame-width);right:var(--yzegs-frame-width);top:0;bottom:0;`
+    + 'background-image:var(--yzegs-frame-top),var(--yzegs-frame-bottom);'
+    + 'background-position:left top,left bottom;background-size:auto var(--yzegs-frame-width);'
+    + 'background-repeat:var(--yzegs-frame-repeat) no-repeat;}'
+    + `${selector}::after{top:var(--yzegs-frame-width);bottom:var(--yzegs-frame-width);left:0;right:0;`
+    + 'background-image:var(--yzegs-frame-left),var(--yzegs-frame-right);'
+    + 'background-position:left top,right top;background-size:var(--yzegs-frame-width) auto;'
+    + 'background-repeat:no-repeat var(--yzegs-frame-repeat);}';
+}
+
+export const BACKGROUND_SELECTORS = {
+  character: '.application.yzegs.actor.character:not(.yzegs-settings) > .window-content',
+  item: '.application.yzegs.item:not(.yzegs-settings) > .window-content',
+  journal: '.journal-entry .journal-entry-page.text section.journal-page-content',
+};
+
 export function themeCSS(value) {
   const declarations = Object.entries(themeVariables(value)).map(([key, val]) => `${key}:${val}`).join(';');
-  return `${THEME_SELECTOR}{${declarations}}`;
+  return `${THEME_SELECTOR}{${declarations}}`
+    + frameEdgeCSS('.application.theme-config .theme-preview-content') + THEME_SHEETS.map(kind => {
+    const css = [backgroundCSS(value, kind), frameCSS(value, kind)].filter(Boolean).join(';');
+    const text = resolveTheme(value).text;
+    const font = THEME_FONTS[resolveTheme(value).bodyFont];
+    const journal = kind === 'journal' ? `color:${text};font-family:${font};padding:12px;` : '';
+    const frame = normalizeFrame(normalizeTheme(value).frames?.[kind]);
+    const edgeRules = frame.mode === 'pieces' && frame.repeat !== 'stretch'
+      ? frameEdgeCSS(BACKGROUND_SELECTORS[kind]) : '';
+    return css ? `${BACKGROUND_SELECTORS[kind]}{${journal}${css}}${edgeRules}` : '';
+  }).join('');
 }

@@ -16,17 +16,20 @@
     </div>
   </div>
   <p class="hint">{{localize "YZEGS.Theme.CustomPresetHint"}}</p>
-  <fieldset>
-    <legend>{{localize "YZEGS.Theme.Palette"}}</legend>
+  <details class="theme-palette-settings">
+    <summary>{{localize "YZEGS.Theme.Palette"}}</summary>
+    <fieldset aria-label="{{localize 'YZEGS.Theme.Palette'}}">
     <div class="theme-color-grid">
       {{#each colors}}
       <label for="yzegs-theme-{{key}}">{{localize label}}</label>
       <input type="color" id="yzegs-theme-{{key}}" name="{{key}}" value="{{value}}">
       {{/each}}
     </div>
-  </fieldset>
-  <fieldset>
-    <legend>{{localize "YZEGS.Theme.Typography"}}</legend>
+    </fieldset>
+  </details>
+  <details class="theme-typography-settings">
+    <summary>{{localize "YZEGS.Theme.Typography"}}</summary>
+    <fieldset aria-label="{{localize 'YZEGS.Theme.Typography'}}">
     <div class="form-group">
       <label for="yzegs-theme-heading-font">{{localize "YZEGS.Theme.HeadingFont"}}</label>
       <div class="form-fields"><select id="yzegs-theme-heading-font" name="headingFont">{{selectOptions fonts selected=values.headingFont localize=true}}</select></div>
@@ -42,17 +45,101 @@
         <option value="none" {{#if (eq values.headingCase "none")}}selected{{/if}}>{{localize "YZEGS.Theme.NormalCase"}}</option>
       </select></div>
     </div>
-  </fieldset>
+    </fieldset>
+  </details>
+  <details class="theme-background-settings">
+    <summary>{{localize "YZEGS.Theme.Backgrounds"}}</summary>
+    <p class="hint">{{localize "YZEGS.Theme.BackgroundHint"}}</p>
+    {{#each backgrounds}}
+    <fieldset>
+      <legend>{{localize label}}</legend>
+      <div class="form-group">
+        <label for="theme-image-{{kind}}">{{localize "YZEGS.Theme.Image"}}</label>
+        <div class="form-fields"><file-picker id="theme-image-{{kind}}" name="backgrounds.{{kind}}.image" type="image" value="{{image}}"></file-picker></div>
+      </div>
+      <div class="form-group">
+        <label for="theme-opacity-{{kind}}">{{localize "YZEGS.Theme.Opacity"}}</label>
+        <div class="form-fields"><input id="theme-opacity-{{kind}}" type="number" min="0" max="100" name="backgrounds.{{kind}}.opacity" value="{{opacity}}"></div>
+      </div>
+      <div class="form-group">
+        <label for="theme-layout-{{kind}}">{{localize "YZEGS.Theme.Layout"}}</label>
+        <div class="form-fields"><select id="theme-layout-{{kind}}" name="backgrounds.{{kind}}.layout">{{selectOptions ../layouts selected=layout localize=true}}</select></div>
+      </div>
+      <div class="form-group">
+        <label for="theme-position-{{kind}}">{{localize "YZEGS.Theme.ImagePosition"}}</label>
+        <div class="form-fields"><select id="theme-position-{{kind}}" name="backgrounds.{{kind}}.position">{{selectOptions ../positions selected=position localize=true}}</select></div>
+      </div>
+    </fieldset>
+    {{/each}}
+  </details>
+  <details class="theme-frame-settings">
+    <summary>{{localize "YZEGS.Theme.Frames"}}</summary>
+    <p class="hint">{{localize "YZEGS.Theme.FrameHint"}}</p>
+    {{#each frames}}
+    <fieldset>
+      <legend>{{localize label}}</legend>
+      <div class="form-group">
+        <label for="theme-frame-mode-{{kind}}">{{localize "YZEGS.Theme.FrameMode"}}</label>
+        <div class="form-fields"><select id="theme-frame-mode-{{kind}}" name="frames.{{kind}}.mode">{{selectOptions ../frameModes selected=mode localize=true}}</select></div>
+      </div>
+      <div data-frame-kind="{{kind}}" data-frame-mode="pieces" hidden>
+        <p class="hint">{{localize "YZEGS.Theme.FramePiecesHint"}}</p>
+        {{#each pieces}}
+        <div class="form-group">
+          <label for="theme-frame-{{key}}-{{kind}}">{{localize label}}</label>
+          <div class="form-fields"><file-picker id="theme-frame-{{key}}-{{kind}}" name="frames.{{kind}}.{{key}}" type="image" value="{{image}}"></file-picker><button type="button" data-action="clearFramePiece" data-kind="{{kind}}" data-piece="{{key}}">{{localize "YZEGS.Theme.ClearPiece"}}</button></div>
+        </div>
+        {{/each}}
+      </div>
+      <div class="form-group" data-frame-kind="{{kind}}" data-frame-mode="single">
+        <label for="theme-frame-image-{{kind}}">{{localize "YZEGS.Theme.FrameImage"}}</label>
+        <div class="form-fields"><file-picker id="theme-frame-image-{{kind}}" name="frames.{{kind}}.image" type="image" value="{{image}}"></file-picker><button type="button" data-action="clearFramePiece" data-kind="{{kind}}" data-piece="image">{{localize "YZEGS.Theme.ClearPiece"}}</button></div>
+      </div>
+      <div class="form-group">
+        <label for="theme-frame-width-{{kind}}">{{localize "YZEGS.Theme.FrameWidth"}}</label>
+        <div class="form-fields"><input id="theme-frame-width-{{kind}}" type="number" min="0" max="48" name="frames.{{kind}}.width" value="{{width}}"></div>
+      </div>
+      <div class="form-group" data-frame-kind="{{kind}}" data-frame-mode="single">
+        <label for="theme-frame-slice-{{kind}}">{{localize "YZEGS.Theme.FrameSlice"}}</label>
+        <div class="form-fields"><input id="theme-frame-slice-{{kind}}" type="number" min="1" max="49" name="frames.{{kind}}.slice" value="{{slice}}"></div>
+      </div>
+      <div class="form-group">
+        <label for="theme-frame-repeat-{{kind}}">{{localize "YZEGS.Theme.FrameEdges"}}</label>
+        <div class="form-fields"><select id="theme-frame-repeat-{{kind}}" name="frames.{{kind}}.repeat">{{selectOptions ../frameRepeats selected=repeat localize=true}}</select></div>
+      </div>
+    </fieldset>
+    {{/each}}
+  </details>
+  <div class="form-group">
+    <label for="theme-preview-sheet">{{localize "YZEGS.Theme.PreviewSheet"}}</label>
+    <div class="form-fields"><select id="theme-preview-sheet" name="previewSheet">
+      {{#each backgrounds}}<option value="{{kind}}">{{localize label}}</option>{{/each}}
+    </select></div>
+  </div>
   <p class="theme-contrast-warning" role="status" hidden>{{localize "YZEGS.Theme.ContrastWarning"}}</p>
   <p class="hint">{{localize "YZEGS.Theme.PreviewHint"}}</p>
   <section class="theme-preview" aria-label="{{localize 'YZEGS.Theme.Preview'}}">
     <header>{{localize "YZEGS.Theme.Preview"}}</header>
     <div class="theme-preview-content">
+      <div data-preview-sheet="character">
       <h2>{{localize "YZEGS.Theme.SampleHeading"}}</h2>
       <p>{{localize "YZEGS.Theme.SampleBody"}}</p>
       <label>{{localize "YZEGS.Theme.SampleInput"}} <input type="text" value="D8 + D6" readonly></label>
       <button type="button">{{localize "YZEGS.Theme.SampleButton"}}</button>
       <article><h3>{{localize "YZEGS.Theme.SampleChat"}}</h3><p>{{localize "YZEGS.Theme.SampleResult"}}</p></article>
+      </div>
+      <div data-preview-sheet="item" hidden>
+        <h2>{{localize "YZEGS.Theme.ItemSampleHeading"}}</h2>
+        <p>{{localize "YZEGS.Theme.ItemSampleBody"}}</p>
+        <label>{{localize "YZEGS.Theme.ItemSampleQuantity"}} <input type="text" value="1" readonly></label>
+        <article><h3>{{localize "YZEGS.Theme.ItemSampleDetails"}}</h3><p>{{localize "YZEGS.Theme.ItemSampleDescription"}}</p></article>
+      </div>
+      <div data-preview-sheet="journal" hidden>
+        <h2>{{localize "YZEGS.Theme.JournalSampleHeading"}}</h2>
+        <p>{{localize "YZEGS.Theme.JournalSampleBody"}}</p>
+        <h3>{{localize "YZEGS.Theme.JournalSampleEntry"}}</h3>
+        <p>{{localize "YZEGS.Theme.JournalSampleStory"}}</p>
+      </div>
     </div>
   </section>
   <footer class="form-footer">
