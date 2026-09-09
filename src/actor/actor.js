@@ -47,8 +47,11 @@ export default class ActorYZEGS extends Actor {
   }
 
   get cover() {
-    if (this.effects.some(e => e.getFlag('core', 'statusId') === 'fullCover')) return 'fullCover';
-    if (this.effects.some(e => e.getFlag('core', 'statusId') === 'partialCover')) return 'partialCover';
+    for (const statusId of ['fullCover', 'partialCover']) {
+      if (this.statuses?.has(statusId) || this.effects.some(effect => (
+        !effect.disabled && !effect.isSuppressed && effect.getFlag('core', 'statusId') === statusId
+      ))) return statusId;
+    }
     return null;
   }
 

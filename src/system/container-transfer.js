@@ -1,4 +1,12 @@
 import { YZEGS } from './config.js';
+import { getPrimaryActiveGM } from './active-gm.js';
+
+const SYSTEM_ID = 'fvtt-yze-generic-stepped';
+const TRANSFER_FLAG = 'containerTransferRequests';
+const transferQueues = new Map();
+const transferRequests = new Map();
+const activeTransferRequests = new Set();
+const pendingTransfers = new Map();
 
 /**
  * Test whether a drag represents a supported Character/Container transfer.
@@ -109,11 +117,91 @@ export async function transferContainerItem(item, destinationActor, { quantity }
     if (quantity === null) return null;
   }
 
-  const sourceItem = sourceActor.items.get(item.id);
-  if (!sourceItem) {
-    ui.notifications.warn(game.i18n.localize('YZEGS.ContainerSheet.Errors.SourceMissing'));
-    return null;
+  const authority = getTransferAuthority(sourceActor);
+  if (!authority) throw transferError('NoAuthority');
+  const request = {
+    requestId: foundry.utils.randomID(),
+    requesterId: game.user.id,
+    authorityId: authority.id,
+    sourceUuid: sourceActor.uuid,
+    destinationUuid: destinationActor.uuid,
+    itemId: item.id,
+    quantity,
+  };
+  const createdItem = authority.id === game.user.id
+    ? await executeContainerTransferRequest(request)
+    : await requestRemoteTransfer(request, sourceActor, destinationActor);
+  if (!createdItem) return null;
+  ui.notifications.info(game.i18n.format('YZEGS.ContainerSheet.ItemMoved', {
+    quantity: createdItem.system.qty,
+    item: item.name,
+    source: sourceActor.name,
+    destination: destinationActor.name,
+  }));
+  return createdItem;
+}
+
+function transferError(key) {
+  return new Error(game.i18n.localize(`YZEGS.ContainerSheet.Errors.${key}`));
+}
+
+function ownsActor(user, actor) {
+  return Boolean(user && actor && (user.isGM
+    || actor.testUserPermission(user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER)));
+}
+
+/** Election depends only on the source, so different destinations cannot use different queues. */
+function getTransferAuthority(sourceActor) {
+  return getPrimaryActiveGM() ?? game.users.filter(user => user.active && ownsActor(user, sourceActor))
+    .sort((left, right) => left.id.localeCompare(right.id))[0] ?? null;
+}
+
+/** Execute on the elected client; revalidate ownership and quantities inside the source queue. */
+export async function executeContainerTransferRequest(request) {
+  const sourceActor = await fromUuid(request.sourceUuid);
+  if (!sourceActor || getTransferAuthority(sourceActor)?.id !== game.user.id) return null;
+  const requestKey = `${request.requesterId}:${request.requestId}`;
+  if (transferRequests.has(requestKey)) return transferRequests.get(requestKey);
+  const queueKey = `${request.sourceUuid}.Item.${request.itemId}`;
+  const previous = transferQueues.get(queueKey) ?? Promise.resolve();
+  const operation = previous.catch(() => null).then(async () => {
+    // Do not continue queued work after responsibility has moved to another client.
+    if (getTransferAuthority(sourceActor)?.id !== game.user.id) throw transferError('NoAuthority');
+    const destinationActor = await fromUuid(request.destinationUuid);
+    const requester = game.users.get(request.requesterId);
+    if (!ownsActor(requester, sourceActor) || !ownsActor(requester, destinationActor)
+      || !ownsActor(game.user, destinationActor)) throw transferError('Permission');
+    if (!isContainerTransfer(sourceActor, destinationActor)) throw transferError('TransferFailed');
+    const sourceItem = sourceActor.items.get(request.itemId);
+    if (!sourceItem || !(Number(sourceItem.system.qty) > 0)) throw transferError('SourceMissing');
+    if (!YZEGS.physicalItems.includes(sourceItem.type)) throw transferError('PhysicalItemsOnly');
+    if (destinationActor.type === 'container' && !canContainerStoreItemType(destinationActor, sourceItem.type)) {
+      throw transferError('TransferFailed');
+    }
+    if (!Number.isSafeInteger(request.quantity) || request.quantity <= 0) throw transferError('TransferFailed');
+    return moveContainerItem(sourceItem, destinationActor, request.quantity);
+  });
+  transferQueues.set(queueKey, operation);
+  transferRequests.set(requestKey, operation);
+  activeTransferRequests.add(requestKey);
+  try {
+    return await operation;
   }
+  finally {
+    activeTransferRequests.delete(requestKey);
+    if (transferQueues.get(queueKey) === operation) transferQueues.delete(queueKey);
+    // Keep recent completed responses for duplicate requests, without evicting active work.
+    if (transferRequests.size > 256) {
+      for (const key of transferRequests.keys()) {
+        if (!activeTransferRequests.has(key)) transferRequests.delete(key);
+        if (transferRequests.size <= 256) break;
+      }
+    }
+  }
+}
+
+async function moveContainerItem(sourceItem, destinationActor, quantity) {
+  const sourceActor = sourceItem.parent;
   const plan = getContainerTransferPlan(sourceItem.system.qty, quantity);
   const itemData = sourceItem.toObject();
   foundry.utils.setProperty(itemData, 'system.qty', plan.quantity);
@@ -127,8 +215,15 @@ export async function transferContainerItem(item, destinationActor, { quantity }
   let createdItem;
   try {
     [createdItem] = await destinationActor.createEmbeddedDocuments('Item', [itemData], { keepId });
-    if (plan.isFull) await sourceActor.deleteEmbeddedDocuments('Item', [sourceItem.id]);
-    else await sourceItem.update({ 'system.qty': plan.remaining });
+    if (!createdItem) throw transferError('TransferFailed');
+    if (plan.isFull) {
+      const deleted = await sourceActor.deleteEmbeddedDocuments('Item', [sourceItem.id]);
+      if (!deleted.length) throw transferError('SourceMissing');
+    }
+    else {
+      const updated = await sourceItem.update({ 'system.qty': plan.remaining });
+      if (!updated) throw transferError('TransferFailed');
+    }
   }
   catch (error) {
     if (createdItem && destinationActor.items.has(createdItem.id)) {
@@ -136,12 +231,62 @@ export async function transferContainerItem(item, destinationActor, { quantity }
     }
     throw error;
   }
-
-  ui.notifications.info(game.i18n.format('YZEGS.ContainerSheet.ItemMoved', {
-    quantity: plan.quantity,
-    item: sourceItem.name,
-    source: sourceActor.name,
-    destination: destinationActor.name,
-  }));
   return createdItem;
+}
+
+function requestRemoteTransfer(request, sourceActor, destinationActor) {
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      pendingTransfers.delete(request.requestId);
+      // Do not retry an uncertain write automatically: the elected client may have completed it.
+      reject(transferError('TransferTimeout'));
+    }, 30000);
+    pendingTransfers.set(request.requestId, { resolve, reject, timeout, destinationActor, request });
+    sourceActor.setFlag(SYSTEM_ID, `${TRANSFER_FLAG}.${request.requestId}`, request).catch(error => {
+      pendingTransfers.delete(request.requestId);
+      clearTimeout(timeout);
+      reject(error);
+    });
+  });
+}
+
+/** Use document hooks' server-supplied userId, never a socket payload's claimed identity. */
+export function registerContainerTransfers() {
+  Hooks.on('updateActor', async (sourceActor, changes, _options, userId) => {
+    const requests = foundry.utils.getProperty(changes, `flags.${SYSTEM_ID}.${TRANSFER_FLAG}`);
+    if (!requests) return;
+    for (const requestId of Object.keys(requests)) {
+      const request = sourceActor.getFlag(SYSTEM_ID, `${TRANSFER_FLAG}.${requestId}`);
+      if (!request || request.requestId !== requestId || request.sourceUuid !== sourceActor.uuid) continue;
+      if (request.result) {
+        const pending = pendingTransfers.get(requestId);
+        if (!pending || userId !== pending.request.authorityId || request.requesterId !== game.user.id) continue;
+        pendingTransfers.delete(requestId);
+        clearTimeout(pending.timeout);
+        if (request.result.error) pending.reject(new Error(request.result.error));
+        else pending.resolve(pending.destinationActor.items.get(request.result.itemId) ?? null);
+        continue;
+      }
+      if (getTransferAuthority(sourceActor)?.id !== game.user.id) continue;
+      // An owner cannot impersonate another owner (or a GM) by changing requesterId in the flag.
+      if (request.requesterId !== userId) continue;
+      let result;
+      try {
+        const item = await executeContainerTransferRequest(request);
+        if (!item) throw transferError('TransferFailed');
+        result = { itemId: item.id };
+      }
+      catch (error) {
+        console.error('yzegs | Container transfer failed.', error);
+        result = { error: error.message };
+      }
+      try {
+        await sourceActor.setFlag(SYSTEM_ID, `${TRANSFER_FLAG}.${requestId}`, { ...request, result });
+        await sourceActor.unsetFlag(SYSTEM_ID, `${TRANSFER_FLAG}.${requestId}`);
+      }
+      catch (error) {
+        console.error('yzegs | Container transfer confirmation failed.', error);
+      }
+    }
+  });
 }

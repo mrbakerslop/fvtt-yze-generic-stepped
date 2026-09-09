@@ -2,6 +2,7 @@ import { YZEGSRoller, getAttributeAndSkill } from '../components/roll/dice.js';
 import YZEGSDialog from '../components/dialog/dialog.js';
 import { getActorActionSkill } from './action-skills.js';
 import { killActor } from './critical-injuries.js';
+import { getPrimaryActiveGM } from './active-gm.js';
 import {
   diseaseBlocksRecovery,
   diseaseCheckModifier,
@@ -10,10 +11,6 @@ import {
 } from './disease-rules.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
-
-function primaryActiveGM() {
-  return game.users.find(user => user.active && user.isGM) ?? null;
-}
 
 async function rollFormula(formula) {
   try {
@@ -150,8 +147,8 @@ export async function chooseDiseaseCaregiver(patient, disease) {
   return resolveDiseaseCheck(patient, disease, { healer: game.actors.get(result.actor) });
 }
 
-export async function advanceDiseaseWorldTime(_worldTime, _delta, _options, userId) {
-  if (userId !== game.user.id || primaryActiveGM()?.id !== game.user.id) return;
+export async function advanceDiseaseWorldTime(_worldTime, _delta, _options, _userId) {
+  if (getPrimaryActiveGM()?.id !== game.user.id) return;
   const now = Number(game.time.worldTime) || 0;
   for (const actor of game.actors.filter(entry => ['character', 'npc'].includes(entry.type))) {
     for (const disease of actor.itemTypes.disease ?? []) {
@@ -173,7 +170,7 @@ export async function advanceDiseaseWorldTime(_worldTime, _delta, _options, user
 }
 
 export async function initializeDiseaseStates() {
-  if (primaryActiveGM()?.id !== game.user.id) return;
+  if (getPrimaryActiveGM()?.id !== game.user.id) return;
   for (const actor of game.actors.filter(entry => ['character', 'npc'].includes(entry.type))) {
     for (const disease of actor.itemTypes.disease ?? []) await initializeOwnedDisease(actor, disease);
   }

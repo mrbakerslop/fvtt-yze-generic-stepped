@@ -1,5 +1,34 @@
 # Changelog
 
+## 14.0.16 — 2026-09-09
+
+### Headline Changes
+
+- Fixed inventory transfer consistency, cover protection, and migration failure handling.
+- Corrected environmental timers and hypothermia, including games with multiple active GMs.
+
+### Fixed
+
+- Recognize modern cover statuses while ignoring disabled or suppressed legacy effects.
+- Serialize container transfers through an elected client, recheck permissions and quantities,
+  and handle duplicate requests, failed writes, and confirmation timeouts.
+- Keep failed world and compendium migrations incomplete so startup can retry them,
+  and stop dependent startup migrations after a failure.
+- Accrue condition damage and radiation decay correctly when timers start at world time zero.
+- Apply forced sleep only when sleeplessness has exhausted stress capacity.
+- Process environmental, disease, and combat-fire updates once through an elected GM,
+  including updates initiated by another GM.
+- Synchronize hypothermia's mechanical condition and status for cold water, cold regions,
+  manual effect changes, and recovery.
+- Add the missing Disease Item type label.
+
+### Validation
+
+- Added regression coverage for transfers, migration failures, cover, environmental timers,
+  GM responsibility, and hypothermia state.
+- Passed all 53 test files, compendium integrity, localization parity, lint, and production build.
+- Maintainer confirmed the fixes were checked in Foundry before publication.
+
 ## 14.0.15 — 2026-08-31
 
 ### Headline Changes

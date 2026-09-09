@@ -153,3 +153,67 @@ test('Compendium migration restores the pack lock after a server migration failu
   await assert.rejects(migrateCompendium(pack), /server migration failed/);
   assert.deepEqual(lockStates, [false, true]);
 });
+
+test('failed world documents keep the migration pending and successful retries complete it', async () => {
+  installFoundryRuntime();
+  const { migrateWorld } = await import('../src/system/migration.js');
+  const errors = [];
+  const notices = [];
+  ui.notifications.error = message => errors.push(message);
+  ui.notifications.info = message => notices.push(message);
+  await game.settings.set('fvtt-yze-generic-stepped', 'systemMigrationVersion', '14.0.14');
+  let fail = true;
+  let successfulUpdates = 0;
+  const failingUpdate = async () => {
+    if (fail) throw new Error('write failed');
+  };
+  game.actors.set('actor', { name: 'Broken Actor', type: 'character', system: { crits: [] }, update: failingUpdate });
+  game.items.set('item', { name: 'Broken Item', toObject: () => legacyGear(), update: failingUpdate });
+  game.scenes.set('scene', { name: 'Broken Scene', tokens: [], update: failingUpdate });
+  game.items.set('good', {
+    name: 'Good Item', toObject: () => legacyGear('good'),
+    async update() { successfulUpdates++; },
+  });
+  assert.equal(await migrateWorld(), false);
+  assert.equal(game.settings.get('fvtt-yze-generic-stepped', 'systemMigrationVersion'), '14.0.14');
+  assert.equal(successfulUpdates, 1);
+  assert.equal(notices.some(message => message.includes('completed!')), false);
+  assert.match(errors[0], /Broken Actor/);
+  assert.match(errors[0], /Broken Item/);
+  assert.match(errors[0], /Broken Scene/);
+  fail = false;
+  assert.equal(await migrateWorld(), true);
+  assert.equal(game.settings.get('fvtt-yze-generic-stepped', 'systemMigrationVersion'), '14.0.15');
+});
+
+test('compendium document failures propagate to the world result while restoring locks', async () => {
+  installFoundryRuntime();
+  const { migrateWorld } = await import('../src/system/migration.js');
+  await game.settings.set('fvtt-yze-generic-stepped', 'systemMigrationVersion', '14.0.14');
+  const lockStates = [];
+  let fail = true;
+  let otherPackMigrated = false;
+  const pack = {
+    collection: 'world.failed', metadata: { package: 'world' }, documentName: 'Item', locked: true,
+    async configure({ locked }) { lockStates.push(locked); },
+    async migrate() { return true; },
+    async getDocuments() {
+      return [{ name: 'Broken Pack Item', toObject: () => legacyGear(), async update() {
+        if (fail) throw new Error('write failed');
+      } }];
+    },
+  };
+  game.packs = [pack, {
+    ...pack, collection: 'world.working',
+    async configure() { return true; },
+    async getDocuments() { otherPackMigrated = true; return []; },
+  }];
+  assert.equal(await migrateWorld(), false);
+  assert.equal(game.settings.get('fvtt-yze-generic-stepped', 'systemMigrationVersion'), '14.0.14');
+  assert.deepEqual(lockStates, [false, true]);
+  assert.equal(otherPackMigrated, true);
+  fail = false;
+  assert.equal(await migrateWorld(), true);
+  assert.deepEqual(lockStates, [false, true, false, true]);
+  assert.equal(game.settings.get('fvtt-yze-generic-stepped', 'systemMigrationVersion'), '14.0.15');
+});

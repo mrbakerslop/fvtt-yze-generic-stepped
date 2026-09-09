@@ -458,6 +458,8 @@ YZEGS.ContainerSheet.Errors.Permission: >-
   Items between them.
 YZEGS.ContainerSheet.Errors.SourceMissing: The Item is no longer present in its source inventory.
 YZEGS.ContainerSheet.Errors.TransferFailed: The Item could not be moved. Check both inventories before trying again.
+YZEGS.ContainerSheet.Errors.NoAuthority: No active owner is available to coordinate this transfer.
+YZEGS.ContainerSheet.Errors.TransferTimeout: Transfer confirmation timed out. Check both inventories before trying again.
 YZEGS.ActorSheet.HitCapacity: Hit Capacity
 YZEGS.ActorSheet.StressCapacity: Stress Capacity
 YZEGS.ActorSheet.CapacityModifier: 'Modifier:'
@@ -1199,6 +1201,7 @@ TYPES.Item.ammunition: Ammo
 TYPES.Item.grenade: Explosive
 TYPES.Item.gear: Gear
 TYPES.Item.injury: Critical Injury
+TYPES.Item.disease: Disease
 TYPES.Item.specialty: Specialty
 EFFECT.StatusFullCover: Full Cover
 EFFECT.StatusPartialCover: Partial Cover

@@ -2,6 +2,8 @@ import { applyFireCriticalInjury, killActor } from './critical-injuries.js';
 import { YZEGSRoller, getAttributeAndSkill } from '../components/roll/dice.js';
 import { getActorActionSkill } from './action-skills.js';
 import { exposeActorToDisease } from './disease-workflows.js';
+import { getPrimaryActiveGM } from './active-gm.js';
+import { setHypothermia } from './hypothermia.js';
 import {
   fireDieFaces,
   increaseFireIntensity,
@@ -12,8 +14,8 @@ const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 const DAY = 86400;
 const CONDITION_INTERVALS = Object.freeze({ starving: 7 * DAY, dehydrated: DAY, sleepless: DAY });
 
-function primaryActiveGM() {
-  return game.users.find(user => user.active && user.isGM) ?? null;
+function timestampOr(value, fallback) {
+  return value != null && Number.isFinite(Number(value)) ? Number(value) : fallback;
 }
 
 async function postHazardMessage(actor, title, body, icon = 'fa-triangle-exclamation') {
@@ -78,8 +80,8 @@ export async function resolveFireAttack(actor, intensity = 'C', { ongoing = fals
   return { damage, extinguished: false };
 }
 
-export async function advanceCombatFire(combat, changes, userId) {
-  if (userId !== game.user.id || primaryActiveGM()?.id !== game.user.id) return;
+export async function advanceCombatFire(combat, changes, _userId) {
+  if (getPrimaryActiveGM()?.id !== game.user.id) return;
   if (!Object.hasOwn(changes, 'turn') && !Object.hasOwn(changes, 'round')) return;
   const actor = combat.combatant?.actor;
   const state = actor?.getFlag(SYSTEM_ID, 'fireHazard');
@@ -113,8 +115,8 @@ export async function synchronizeConditionTimers(actor, changes = {}) {
   if (changed) await actor.setFlag(SYSTEM_ID, 'conditionTimers', timers);
 }
 
-export async function advanceEnvironmentalWorldTime(_worldTime, _delta, _options, userId) {
-  if (userId !== game.user.id || primaryActiveGM()?.id !== game.user.id) return;
+export async function advanceEnvironmentalWorldTime(_worldTime, _delta, _options, _userId) {
+  if (getPrimaryActiveGM()?.id !== game.user.id) return;
   const now = Number(game.time.worldTime) || 0;
   for (const actor of game.actors.filter(entry => ['character', 'npc'].includes(entry.type))) {
     const timers = foundry.utils.deepClone(actor.getFlag(SYSTEM_ID, 'conditionTimers') ?? {});
@@ -125,13 +127,14 @@ export async function advanceEnvironmentalWorldTime(_worldTime, _delta, _options
       if (
         condition !== 'sleepless'
         && Number(actor.system.health.value) <= 0
-        && timer.incapacitatedAt
+        && timer.incapacitatedAt != null
         && now >= Number(timer.incapacitatedAt) + interval
       ) {
         await killActor(actor, { reason: game.i18n.localize(`YZEGS.ConditionNames.${condition}`) });
         continue;
       }
-      const elapsed = Math.max(0, now - Number(timer.lastHarm || now));
+      const lastHarm = timestampOr(timer.lastHarm, now);
+      const elapsed = Math.max(0, now - lastHarm);
       const ticks = Math.floor(elapsed / interval);
       if (!ticks) {
         if (!timers[condition]) {
@@ -141,27 +144,28 @@ export async function advanceEnvironmentalWorldTime(_worldTime, _delta, _options
         continue;
       }
       if (condition === 'sleepless') {
-        await applyEnvironmentalHarm(actor, {
+        const result = await applyEnvironmentalHarm(actor, {
           stress: ticks,
           reason: game.i18n.localize('YZEGS.ConditionNames.sleepless'),
         });
-        if (Number(actor.system.sanity.value) <= ticks) await actor.toggleStatusEffect('sleep', { active: true });
+        if (result.sanity <= 0) await actor.toggleStatusEffect('sleep', { active: true });
       }
       else {
         const result = await applyEnvironmentalHarm(actor, {
           damage: ticks,
           reason: game.i18n.localize(`YZEGS.ConditionNames.${condition}`),
         });
-        if (result.health <= 0 && !timer.incapacitatedAt) timer.incapacitatedAt = now;
+        if (result.health <= 0 && timer.incapacitatedAt == null) timer.incapacitatedAt = now;
       }
-      timer.lastHarm = Number(timer.lastHarm || now) + ticks * interval;
+      timer.lastHarm = lastHarm + ticks * interval;
       timers[condition] = timer;
       changed = true;
     }
     if (changed) await actor.setFlag(SYSTEM_ID, 'conditionTimers', timers);
 
     if (actor.type === 'character' && Number(actor.system.rads?.temporary) > 0) {
-      const lastDecay = Number(actor.getFlag(SYSTEM_ID, 'radiationDecayAt')) || now;
+      const storedDecay = actor.getFlag(SYSTEM_ID, 'radiationDecayAt');
+      const lastDecay = timestampOr(storedDecay, now);
       const lost = Math.floor(Math.max(0, now - lastDecay) / DAY);
       if (lost > 0) {
         await actor.update({
@@ -169,7 +173,7 @@ export async function advanceEnvironmentalWorldTime(_worldTime, _delta, _options
         });
         await actor.setFlag(SYSTEM_ID, 'radiationDecayAt', lastDecay + lost * DAY);
       }
-      else if (!actor.getFlag(SYSTEM_ID, 'radiationDecayAt')) {
+      else if (storedDecay == null || !Number.isFinite(Number(storedDecay))) {
         await actor.setFlag(SYSTEM_ID, 'radiationDecayAt', now);
       }
     }
@@ -208,8 +212,7 @@ export async function applyHazardRegion(actor, behavior) {
       return amount;
     }
     case 'cold':
-      await actor.update({ 'system.conditions.hypothermic': true });
-      await actor.toggleStatusEffect('hypothermia', { active: true });
+      await setHypothermia(actor, true);
       return true;
   }
   return null;

@@ -1,5 +1,6 @@
 import { getAttributeAndSkill, YZEGSRoller } from '../components/roll/dice.js';
 import { getActorActionSkill } from './action-skills.js';
+import { setHypothermia } from './hypothermia.js';
 
 const SYSTEM_ID = 'fvtt-yze-generic-stepped';
 
@@ -88,9 +89,7 @@ export async function resolveColdWaterCheck(actor, modifier = 0) {
       content: `<p>${game.i18n.format('YZEGS.Water.Cold.ModifierReminder', { modifier })}</p>`,
     });
   }
-  if (successCount(result) < 1 && !hasWaterStatus(actor, 'hypothermia')) {
-    await actor.toggleStatusEffect('hypothermia', { active: true });
-  }
+  if (successCount(result) < 1) await setHypothermia(actor, true);
   return successCount(result) > 0;
 }
 

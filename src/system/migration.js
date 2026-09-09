@@ -35,6 +35,7 @@ export function checkMigration() {
  * @return {Promise} A Promise which resolves once the migration is completed
  */
 export async function migrateWorld() {
+  const failures = [];
   ui.notifications.info(
     `Applying YZEGS System Migration for version ${game.system.version}.`
     + ' Please be patient and do not close your game or shut down your server.',
@@ -51,6 +52,7 @@ export async function migrateWorld() {
     }
     catch (err) {
       err.message = `Failed YZEGS system migration for Actor ${a.name}: ${err.message}`;
+      failures.push(err);
       console.error(err);
     }
   }
@@ -66,6 +68,7 @@ export async function migrateWorld() {
     }
     catch (err) {
       err.message = `Failed YZEGS system migration for Item ${i.name}: ${err.message}`;
+      failures.push(err);
       console.error(err);
     }
   }
@@ -81,6 +84,7 @@ export async function migrateWorld() {
     }
     catch (err) {
       err.message = `Failed YZEGS system migration for Scene ${s.name}: ${err.message}`;
+      failures.push(err);
       console.error(err);
     }
   }
@@ -89,14 +93,29 @@ export async function migrateWorld() {
   for (const p of game.packs) {
     if (p.metadata.package !== 'world') continue;
     if (!['Actor', 'Item', 'Scene'].includes(p.documentName)) continue;
-    await migrateCompendium(p);
+    try {
+      await migrateCompendium(p);
+    }
+    catch (err) {
+      err.message = `Failed YZEGS system migration for Compendium ${p.collection}: ${err.message}`;
+      failures.push(err);
+      console.error(err);
+    }
   }
 
+  if (failures.length) {
+    ui.notifications.error(
+      'YZEGS migration incomplete; it will be retried on the next startup. '
+      + failures.map(err => err.message).join('; '),
+      { permanent: true },
+    );
+    return false;
+  }
 
   // Sets the migration as complete.
   await game.settings.set('fvtt-yze-generic-stepped', 'systemMigrationVersion', game.system.version);
   ui.notifications.info(`YZEGS System Migration to version ${game.system.version} completed!`);
-  // migrateDialog.close();
+  return true;
 }
 
 /* -------------------------------------------- */
@@ -108,6 +127,7 @@ export async function migrateWorld() {
  * @async
  */
 export async function migrateCompendium(pack) {
+  const failures = [];
   const entity = pack.documentName;
   if (!['Actor', 'Item', 'Scene'].includes(entity)) return;
 
@@ -144,6 +164,7 @@ export async function migrateCompendium(pack) {
       // Handles migration failures.
       catch(err) {
         err.message = `Failed YZEGS system migration for entity ${doc.name} in pack ${pack.collection}: ${err.message}`;
+        failures.push(err);
         console.error(err);
       }
     }
@@ -152,6 +173,7 @@ export async function migrateCompendium(pack) {
     // Applies the original locked status even when the server-side migration fails.
     await pack.configure({ locked: wasLocked });
   }
+  if (failures.length) throw new Error(failures.map(err => err.message).join('; '));
   console.log(`Migrated all ${entity} entities from Compendium ${pack.collection}`);
 }
 

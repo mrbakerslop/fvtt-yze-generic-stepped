@@ -55,6 +55,8 @@ import * as Archetypes from './system/archetypes.js';
 import { migrateAdvancementItemSource } from './system/experience-config.js';
 import { resetCombatantActions } from './system/combat-actions.js';
 import { registerDefenseSocket } from './system/defense-workflows.js';
+import { setHypothermia } from './system/hypothermia.js';
+import { registerContainerTransfers } from './system/container-transfer.js';
 import {
   advanceCombatSuppression,
   clearCombatantSuppression,
@@ -223,6 +225,7 @@ Hooks.once('init', function () {
 });
 
 Hooks.once('ready', async function () {
+  registerContainerTransfers();
   registerDefenseSocket();
   registerSuppressionSocket();
   registerUrbanSocket();
@@ -235,7 +238,7 @@ Hooks.once('ready', async function () {
   Hooks.on('hotbarDrop', (_bar, data, slot) => createYZEGSMacro(data, slot));
 
   // Determines whether a system migration is required and feasible.
-  await checkMigration();
+  if (await checkMigration() === false) return;
   await migrateAdvancementItemSource();
   await migrateLegacySkills();
   await removeMigratedWorldSkills();
@@ -355,6 +358,9 @@ Hooks.on('deleteCombatant', async (combatant, _options, userId) => {
 });
 
 Hooks.on('createActiveEffect', async (effect, _options, userId) => {
+  if (userId === game.user.id && effect.statuses?.has?.('hypothermia') && !effect.disabled) {
+    await setHypothermia(effect.parent, true);
+  }
   if (userId !== game.user.id || !effect.statuses?.has?.('suppressed')) return;
   const actor = effect.parent;
   if (!actor?.statuses?.has?.('overwatch')) return;
@@ -363,10 +369,19 @@ Hooks.on('createActiveEffect', async (effect, _options, userId) => {
 });
 
 Hooks.on('deleteActiveEffect', async (effect, _options, userId) => {
+  if (userId === game.user.id && effect.statuses?.has?.('hypothermia')) {
+    await setHypothermia(effect.parent, effect.parent?.statuses?.has('hypothermia'));
+  }
   if (userId !== game.user.id || !effect.statuses?.has?.('suppressed')) return;
   const actor = effect.parent;
   if (actor?.getFlag('fvtt-yze-generic-stepped', 'suppressionTurn')) {
     await actor.unsetFlag('fvtt-yze-generic-stepped', 'suppressionTurn');
+  }
+});
+
+Hooks.on('updateActiveEffect', async (effect, _changes, _options, userId) => {
+  if (userId === game.user.id && effect.statuses?.has?.('hypothermia')) {
+    await setHypothermia(effect.parent, effect.parent?.statuses?.has('hypothermia'));
   }
 });
 
@@ -375,6 +390,8 @@ Hooks.on('updateActor', async (actor, changes, _options, userId) => {
   const health = foundry.utils.getProperty(changes, 'system.health.value');
   const sanity = foundry.utils.getProperty(changes, 'system.sanity.value');
   try {
+    const hypothermic = foundry.utils.getProperty(changes, 'system.conditions.hypothermic');
+    if (hypothermic !== undefined && !_options?.yzegsHypothermiaSync) await setHypothermia(actor, hypothermic);
     await synchronizeConditionTimers(actor, changes);
     if (health !== undefined && actor.statuses?.has?.('overwatch')) {
       await actor.toggleStatusEffect('overwatch', { active: false });
