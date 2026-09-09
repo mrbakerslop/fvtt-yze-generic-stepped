@@ -1,66 +1,64 @@
 /* ------------------------------------------- */
-/*  V2 Sheet Monochrome Theme                  */
+/*  V2 Sheet Theme Mapping                     */
 /* ------------------------------------------- */
 
-// Foundry V2 document sheets expose their visual theme through custom
-// properties. Pin those properties here so both the light and dark Foundry
-// themes produce the same deliberately black-and-white system sheets.
+// Map Foundry V2 tokens onto the system palette, scoped to document sheets.
 .application.sheet.yzegs {
-  --background: #fff;
-  --color-header-background: #000;
-  --color-border: #000;
-  --color-tabs-border: #000;
-  --color-fieldset-border: #000;
-  --color-form-label: #000;
-  --color-form-label-hover: #000;
-  --color-form-hint: #000;
-  --color-form-hint-hover: #000;
-  --color-select-option-bg: #fff;
-  --color-data-border: #000;
-  --color-data-background: #fff;
-  --color-scrollbar: #000;
-  --color-scrollbar-track: #fff;
-  --color-text-emphatic: #000;
-  --color-text-primary: #000;
-  --color-text-secondary: #000;
-  --color-text-subtle: #000;
+  --background: var(--yzegs-background);
+  --color-header-background: var(--yzegs-accent);
+  --color-border: var(--yzegs-border);
+  --color-tabs-border: var(--yzegs-border);
+  --color-fieldset-border: var(--yzegs-border);
+  --color-form-label: var(--yzegs-text);
+  --color-form-label-hover: var(--yzegs-text);
+  --color-form-hint: var(--yzegs-text);
+  --color-form-hint-hover: var(--yzegs-text);
+  --color-select-option-bg: var(--yzegs-surface);
+  --color-data-border: var(--yzegs-border);
+  --color-data-background: var(--yzegs-surface);
+  --color-scrollbar: var(--yzegs-text);
+  --color-scrollbar-track: var(--yzegs-on-accent);
+  --color-text-emphatic: var(--yzegs-text);
+  --color-text-primary: var(--yzegs-text);
+  --color-text-secondary: var(--yzegs-text);
+  --color-text-subtle: var(--yzegs-text);
   --color-text-accent: @colorRed;
-  --color-text-selection: #fff;
-  --color-text-selection-bg: #000;
-  --content-link-background: #fff;
-  --content-link-border-color: #000;
-  --content-link-icon-color: #000;
-  --content-link-text-color: #000;
-  --input-background-color: #fff;
-  --input-border-color: #000;
+  --color-text-selection: var(--yzegs-on-accent);
+  --color-text-selection-bg: var(--yzegs-text);
+  --content-link-background: var(--yzegs-surface);
+  --content-link-border-color: var(--yzegs-border);
+  --content-link-icon-color: var(--yzegs-text);
+  --content-link-text-color: var(--yzegs-text);
+  --input-background-color: var(--yzegs-surface);
+  --input-border-color: var(--yzegs-border);
   --input-box-shadow: none;
-  --input-text-color: #000;
-  --input-placeholder-color: #000;
+  --input-text-color: var(--yzegs-text);
+  --input-placeholder-color: var(--yzegs-text);
   --input-focus-outline-color: @colorRed;
-  --input-focus-text-color: #000;
-  --checkbox-background-color: #fff;
-  --checkbox-checked-color: #fff;
-  --checkbox-checkmark-color: #000;
-  --checkbox-disabled-color: #fff;
-  --button-background-color: #fff;
-  --button-border-color: #000;
-  --button-text-color: #000;
-  --button-focus-outline-color: #000;
-  --button-hover-background-color: #fff;
-  --button-hover-border-color: #000;
-  --button-hover-text-color: #000;
-  --table-background-color: #fff;
-  --table-header-bg-color: #fff;
-  --table-header-border-color: #000;
-  --table-header-text-color: #000;
-  --table-row-color-even: #fff;
-  --table-row-color-odd: #fff;
-  --table-row-color-highlight: #fff;
-  --hr-border: 1px solid #000;
+  --input-focus-text-color: var(--yzegs-text);
+  --checkbox-background-color: var(--yzegs-surface);
+  --checkbox-checked-color: var(--yzegs-on-accent);
+  --checkbox-checkmark-color: var(--yzegs-text);
+  --checkbox-disabled-color: var(--yzegs-on-accent);
+  --button-background-color: var(--yzegs-surface);
+  --button-border-color: var(--yzegs-border);
+  --button-text-color: var(--yzegs-text);
+  --button-focus-outline-color: var(--yzegs-border);
+  --button-hover-background-color: var(--yzegs-surface);
+  --button-hover-border-color: var(--yzegs-border);
+  --button-hover-text-color: var(--yzegs-text);
+  --table-background-color: var(--yzegs-surface);
+  --table-header-bg-color: var(--yzegs-surface);
+  --table-header-border-color: var(--yzegs-border);
+  --table-header-text-color: var(--yzegs-text);
+  --table-row-color-even: var(--yzegs-surface);
+  --table-row-color-odd: var(--yzegs-surface);
+  --table-row-color-highlight: var(--yzegs-surface);
+  --hr-border: 1px solid var(--yzegs-border);
   --hr-gradient: none;
-  color-scheme: light;
-  background: #fff;
-  color: #000;
+  color-scheme: var(--yzegs-color-scheme);
+  background: var(--yzegs-background);
+  color: var(--yzegs-text);
   font-family: var(--yzegs-font-body);
 
   // Let Foundry collapse document windows to their title bar. Individual
@@ -75,15 +73,15 @@
 
   // The sheet's heading rules must not style the V2 application frame title.
   > .window-header {
-    background: #000;
-    border-color: #000;
-    color: #fff;
+    background: var(--yzegs-accent);
+    border-color: var(--yzegs-border);
+    color: var(--yzegs-on-accent);
     font-family: var(--yzegs-font-body);
     font-size: var(--font-size-13);
     font-weight: normal;
 
     .window-title {
-      color: #fff;
+      color: var(--yzegs-on-accent);
       font-family: inherit;
       font-size: inherit;
       font-weight: inherit;
@@ -94,19 +92,19 @@
     button.header-control {
       --button-background-color: transparent;
       --button-border-color: transparent;
-      --button-text-color: #fff;
-      --button-hover-background-color: #fff;
-      --button-hover-border-color: #fff;
-      --button-hover-text-color: #000;
+      --button-text-color: var(--yzegs-on-accent);
+      --button-hover-background-color: var(--yzegs-surface);
+      --button-hover-border-color: var(--yzegs-border);
+      --button-hover-text-color: var(--yzegs-text);
       background: transparent;
       border: none;
-      color: #fff;
+      color: var(--yzegs-on-accent);
     }
   }
 
   .window-content {
-    background: #fff;
-    color: #000;
+    background: var(--yzegs-background);
+    color: var(--yzegs-text);
     font-family: var(--yzegs-font-body);
 
     h1,
@@ -125,7 +123,7 @@
     dd,
     a,
     span {
-      color: #000;
+      color: var(--yzegs-text);
     }
 
     h1,
@@ -142,44 +140,44 @@
     select,
     textarea,
     option {
-      background-color: #fff;
-      border-color: #000;
-      color: #000;
+      background-color: var(--yzegs-surface);
+      border-color: var(--yzegs-border);
+      color: var(--yzegs-text);
     }
 
     input::placeholder,
     textarea::placeholder {
-      color: #000;
+      color: var(--yzegs-text);
       opacity: 1;
     }
 
     input:disabled,
     select:disabled,
     textarea:disabled {
-      background-color: #fff;
-      border-color: #000;
-      color: #000;
+      background-color: var(--yzegs-surface);
+      border-color: var(--yzegs-border);
+      color: var(--yzegs-text);
       opacity: 1;
     }
 
     button,
     a.button {
-      background-color: #fff;
-      border-color: #000;
-      color: #000;
+      background-color: var(--yzegs-surface);
+      border-color: var(--yzegs-border);
+      color: var(--yzegs-text);
 
       &:hover,
       &:focus {
-        background-color: #fff;
-        border-color: #000;
-        color: #000;
+        background-color: var(--yzegs-surface);
+        border-color: var(--yzegs-border);
+        color: var(--yzegs-text);
         box-shadow: @hoverShadow;
       }
     }
 
     .sheet-tabs a.item.active,
     .sheet-tabs a.item.active * {
-      color: #fff;
+      color: var(--yzegs-on-accent);
     }
   }
 }

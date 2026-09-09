@@ -12,7 +12,7 @@ a.content-link,
 a.inline-roll {
   border: none;
   background: transparent;
-  border-bottom: 1px dotted #000;
+  border-bottom: 1px dotted var(--yzegs-border);
   padding: 0;
   text-indent: 0;
 }
@@ -33,7 +33,7 @@ a.button{
 
 .yzegs {
   .window-content {
-    background: #fff;
+    background: var(--yzegs-background);
     font-size: 11pt;
     color: @colorDark;
     .font-text-normal();
@@ -61,7 +61,7 @@ a.button{
     height: auto; // calc(100% - 2px);
     border: 1px solid @colorTan;
     border-radius: 3px;
-    background: #fff;
+    background: var(--yzegs-background);
     color: @colorDark;
   }
 
@@ -70,7 +70,7 @@ a.button{
   input[list] {
     &:hover,
     &:focus {
-      border: 1px solid #000;
+      border: 1px solid var(--yzegs-border);
       box-shadow: @hoverShadow;
     }
   }
@@ -93,7 +93,7 @@ a.button{
   }
 
   button {
-    background: #fff;
+    background: var(--yzegs-background);
     border: @borderGroove;
     &:hover {
       box-shadow: @hoverShadow;
@@ -107,10 +107,10 @@ a.button{
 /* ------------------------------------------- */
 
 .yzegs.sheet {
-  color-scheme: light;
+  color-scheme: var(--yzegs-color-scheme);
 
   .window-content {
-    background: #fff;
+    background: var(--yzegs-background);
     overflow-y: hidden;
     padding: 5px;
     font-size: 13px;
@@ -136,8 +136,8 @@ a.button{
   input,
   select,
   textarea {
-    accent-color: #000;
-    caret-color: #000;
+    accent-color: var(--yzegs-text);
+    caret-color: var(--yzegs-text);
   }
 
   .editor {
@@ -164,7 +164,7 @@ a.button{
     margin: 1px 0;
 
     &:hover {
-      background: #fff;
+      background: var(--yzegs-background);
       border: 1px solid @colorLightBrown;
     }
 
@@ -202,7 +202,7 @@ a.button{
     &:hover,
     &:focus {
       border: 1px solid @colorBrown;
-      background: #fff;
+      background: var(--yzegs-background);
     }
     &.smallbox {
       max-width: 40px;
@@ -229,7 +229,7 @@ a.button{
 
   .editable h4.rollable:hover,
   .editable .rollable:hover > h4 {
-    color: #000;
+    color: var(--yzegs-text);
     text-shadow: @hoverShadow;
   }
 

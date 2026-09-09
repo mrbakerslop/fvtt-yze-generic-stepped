@@ -52,7 +52,7 @@
 
   .sheet-tabs {
     .font-monospace();
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
     font-size: 11pt;
     color: @colorBrown;
 
@@ -95,7 +95,7 @@
         border: 1px solid transparent;
         &:hover,
         &:focus {
-          background: #fff;
+          background: var(--yzegs-background);
           border: 1px solid @colorBrown;
         }
 
@@ -111,7 +111,7 @@
       padding: 4px 7px;
       border: 1px solid @colorBrown;
       border-radius: 3px;
-      background: fade(@colorItemLabel, 45%);
+      background: color-mix(in srgb, @colorItemLabel 45%, transparent);
       color: @colorBrown;
       font-size: 11px;
 
@@ -129,7 +129,7 @@
       padding: 4px 7px;
       border: 1px solid @colorRed;
       border-radius: 3px;
-      background: fade(@colorRed, 12%);
+      background: color-mix(in srgb, @colorRed 12%, transparent);
       color: @colorRed;
 
       button {
@@ -160,7 +160,7 @@
         overflow: hidden;
         border: 1px solid @colorBrown;
         border-radius: 3px;
-        background: #fff;
+        background: var(--yzegs-background);
         color: @colorBrown;
         line-height: 18px;
         text-overflow: ellipsis;
@@ -225,17 +225,20 @@
       label.checkbox {
         display: flex;
         align-items: center;
+        gap: 3px;
         width: 100%;
         min-width: 0;
         margin: 0;
-        line-height: 20px;
-        white-space: nowrap;
+        min-height: 20px;
+        line-height: 1.3;
+        white-space: normal;
+        overflow-wrap: anywhere;
       }
     }
 
     .roll-modifiers {
       .roll-modifiers-title {
-        text-transform: uppercase;
+        text-transform: var(--yzegs-heading-case);
         border-bottom: @borderGroove;
         .font-header();
         font-size: 1rem;
@@ -252,8 +255,8 @@
         flex-direction: row;
         margin: (@gap / 2) (@gap / 2) 0 (@gap / 2);
         padding: 3px (@gap / 2) 3px @gap;
-        background-color: #fff;
-        border: 1px solid #000;
+        background-color: var(--yzegs-surface);
+        border: 1px solid var(--yzegs-border);
         border-radius: 10px;
         color: @colorBlue;
 

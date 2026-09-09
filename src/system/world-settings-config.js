@@ -52,7 +52,7 @@ export class WorldSettingsConfig extends foundry.applications.api.HandlebarsAppl
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-world-settings',
-    classes: ['yzegs', 'world-settings-config'],
+    classes: ['yzegs-settings', 'world-settings-config'],
     tag: 'form',
     position: { width: 780, height: 760 },
     window: {

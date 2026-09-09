@@ -14,7 +14,7 @@ setting.
 
 ## Compatibility
 
-- System version: 14.0.16
+- System version: 14.0.17
 - Minimum Foundry version: 14.359
 - Verified Foundry version: 14.367
 
@@ -416,3 +416,39 @@ welcome. New contributions should be setting-neutral and must not include text,
 artwork, logos, or other material copied from a published game unless that
 material is covered by an applicable license or the contributor has permission
 to distribute it.
+
+## World themes
+
+Game Masters can open **Game Settings → Year Zero Engine - Generic Stepped Dice →
+Configure Theme** to choose Monochrome, Military, Parchment, or Dark Sci-Fi and
+customise the background, panels, text, headings, borders, accent and text-on-accent
+colours. Heading and body fonts can use the bundled fonts or standard system font
+families; heading case can be uppercase or normal.
+
+Changes appear only in the preview until **Save Theme** is selected. Saving updates
+open actor/item sheets, gameplay dialogs and system chat cards for connected clients.
+Choosing a preset replaces draft customisations. **Reset to Preset** clears the
+current preset's overrides; **Reset to Default** selects the original Monochrome
+appearance. Both resets require Save to change the world. Cancel or closing the
+window discards the draft. Low-contrast combinations display a warning.
+
+All system configuration windows always use Foundry's own appearance, including
+the Theme editor's controls, so a GM can recover even from unreadable sheet colours.
+Players can enable **Use Default Theme on This Device** in system settings for a
+local readability override. This does not change the GM's saved world theme.
+Existing worlds keep the monochrome appearance until the GM saves a theme.
+
+Background and border artwork for character, item and journal sheets are planned
+for phase two; the phase-one theme changes do not add journal artwork controls.
+
+To keep multiple custom themes, enter a **New or replacement name** and select **Save as
+New Preset**. This saves an independent copy of the current preview in the world's
+preset list, without changing the active theme. Select **Save Theme** to apply it.
+Save Theme also updates the selected GM-created preset with the current colours and
+fonts. Built-in presets stay unchanged. Use Save as New Preset to keep another variation. Reset to Preset restores the selected preset's saved values.
+A newly created preset remains available even if the editor is subsequently cancelled.
+
+Select a GM-created preset to rename or delete it. Edit **New or replacement name**
+and click **Rename**, or use **Delete Preset** and confirm. The four built-in presets
+are protected. Renaming or deleting a preset does not change the active world
+appearance; deleting also keeps the colours and fonts currently in the preview.

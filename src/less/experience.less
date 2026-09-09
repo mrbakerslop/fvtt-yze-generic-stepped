@@ -18,12 +18,12 @@
     justify-content: space-between;
     min-height: 44px;
     padding: 6px 10px;
-    border: 1px solid #000;
-    background: #fff;
+    border: 1px solid var(--yzegs-border);
+    background: var(--yzegs-background);
 
     span {
       font-weight: 700;
-      text-transform: uppercase;
+      text-transform: var(--yzegs-heading-case);
     }
 
     strong {
@@ -42,7 +42,7 @@
   .experience-subtabs {
     display: flex;
     margin-top: 10px;
-    border: 1px solid #000;
+    border: 1px solid var(--yzegs-border);
 
     .item {
       flex: 1 1 0;
@@ -50,27 +50,27 @@
       padding: 0 8px;
       overflow: hidden;
       border: 0;
-      background: #fff;
-      color: #000;
+      background: var(--yzegs-background);
+      color: var(--yzegs-text);
       line-height: 30px;
       text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
 
       + .item {
-        border-left: 1px solid #000;
+        border-left: 1px solid var(--yzegs-border);
       }
 
       &:hover,
       &:focus {
-        background: #fff;
-        color: #000;
+        background: var(--yzegs-background);
+        color: var(--yzegs-text);
         text-shadow: none;
       }
 
       &.active {
-        background: #000;
-        color: #fff;
+        background: var(--yzegs-accent);
+        color: var(--yzegs-on-accent);
       }
     }
   }
@@ -85,7 +85,7 @@
     justify-content: space-between;
     min-height: 28px;
     margin-bottom: 4px;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid var(--yzegs-border);
 
     > span {
       flex: 1 1 auto;
@@ -124,7 +124,7 @@
 
     &:first-child:not(:last-child) {
       padding-right: 10px;
-      border-right: 1px solid #000;
+      border-right: 1px solid var(--yzegs-border);
     }
 
     + .experience-skill-column {
@@ -134,11 +134,11 @@
 
   .experience-table-header {
     min-height: 20px;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid var(--yzegs-border);
     font-size: .6rem;
     font-weight: 700;
     text-align: center;
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
 
     span:first-child {
       padding-left: 5px;
@@ -148,8 +148,8 @@
 
   .experience-skill-row {
     min-height: 25px;
-    border-bottom: 1px solid #000;
-    background: #fff;
+    border-bottom: 1px solid var(--yzegs-border);
+    background: var(--yzegs-background);
 
     > strong {
       min-width: 0;
@@ -189,9 +189,9 @@
 
     > span {
       padding: 2px 8px;
-      border: 1px solid #000;
+      border: 1px solid var(--yzegs-border);
       border-radius: 12px;
-      background: #fff;
+      background: var(--yzegs-background);
     }
   }
 
@@ -200,8 +200,8 @@
     grid-template-columns: 180px minmax(0, 1fr) 55px;
     align-items: center;
     min-height: 28px;
-    border-bottom: 1px solid #000;
-    background: #fff;
+    border-bottom: 1px solid var(--yzegs-border);
+    background: var(--yzegs-background);
 
     time {
       padding-left: 8px;
@@ -219,7 +219,7 @@
       text-align: right;
 
       &.earned {
-        color: #000;
+        color: var(--yzegs-text);
       }
 
       &.spent {
@@ -242,7 +242,7 @@
   }
 
   .experience-award-questions {
-    border-top: 1px solid #000;
+    border-top: 1px solid var(--yzegs-border);
   }
 
   .experience-award-question,
@@ -252,14 +252,14 @@
     gap: 6px;
     align-items: center;
     min-height: 28px;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid var(--yzegs-border);
   }
 
   .experience-training-confirmation {
     grid-template-columns: 18px minmax(0, 1fr);
     margin-top: 10px;
     padding: 5px;
-    border: 1px solid #000;
+    border: 1px solid var(--yzegs-border);
   }
 
   .experience-dialog-summary {
@@ -268,8 +268,8 @@
     justify-content: space-between;
     margin-top: 10px;
     padding: 7px 10px;
-    border: 2px solid #000;
-    background: #fff;
+    border: 2px solid var(--yzegs-border);
+    background: var(--yzegs-background);
     font-size: 1rem;
   }
 
@@ -282,7 +282,7 @@
     dd {
       margin: 0;
       padding: 4px 6px;
-      border-bottom: 1px solid #000;
+      border-bottom: 1px solid var(--yzegs-border);
     }
 
     dd {
@@ -299,169 +299,5 @@
   .warning {
     color: @colorRed;
     font-weight: 700;
-  }
-}
-
-.application.yzegs.experience-config,
-.application.yzegs.world-settings-config,
-.application.yzegs.character-field-label-settings,
-.application.yzegs.token-size-defaults,
-.application.yzegs.combat-modifier-config {
-  --background: #fff;
-  --color-border: #000;
-  --color-form-label: #000;
-  --color-form-label-hover: #000;
-  --color-form-hint: #000;
-  --color-form-hint-hover: #000;
-  --color-text-accent: #000;
-  --color-text-primary: #000;
-  --color-text-secondary: #000;
-  --color-text-subtle: #000;
-  --input-background-color: #fff;
-  --input-border-color: #000;
-  --input-focus-outline-color: #000;
-  --input-text-color: #000;
-  color-scheme: light;
-
-  .window-content {
-    background: #fff;
-    color: #000;
-  }
-
-  .standard-form,
-  .world-settings-form,
-  .experience-config-form,
-  .character-field-labels-form,
-  .token-size-defaults-form {
-    color: #000;
-
-    label,
-    legend,
-    .hint {
-      color: #000;
-      opacity: 1;
-    }
-
-    fieldset {
-      border-color: #000;
-    }
-
-    input:not([type='hidden']),
-    select,
-    textarea {
-      border: 1px solid #000;
-      background: #fff;
-      color: #000;
-
-      &:hover,
-      &:focus {
-        border-color: #000;
-        background: #fff;
-        color: #000;
-        box-shadow: none;
-        outline: 1px solid #000;
-      }
-    }
-
-    button[type='submit'] {
-      border: 1px solid #000;
-      background: #fff;
-      color: #000;
-
-      &:hover,
-      &:focus {
-        background: #000;
-        color: #fff;
-        box-shadow: none;
-      }
-    }
-
-    .rating-menu {
-      .rating-menu-trigger,
-      .rating-menu-options {
-        border-color: #000;
-      }
-
-      .rating-menu-trigger:focus-visible {
-        outline-color: #000;
-      }
-    }
-
-    .checkbox-control .checkbox-control-toggle:focus-visible {
-      outline-color: #000;
-    }
-  }
-}
-
-.application.yzegs.token-size-defaults .token-size-defaults-form {
-  .token-size-defaults-grid {
-    display: grid;
-    grid-template-columns: minmax(180px, 1fr) 90px 90px;
-    align-items: center;
-    gap: 6px 10px;
-    padding: 8px 0;
-
-    > strong {
-      padding-bottom: 4px;
-      border-bottom: 1px solid #000;
-      text-align: center;
-
-      &:first-child {
-        text-align: left;
-      }
-    }
-
-    > label {
-      font-weight: 700;
-    }
-
-    > input[type='number'] {
-      width: 100%;
-      text-align: center;
-    }
-  }
-}
-
-.application.experience-config .experience-config-form {
-  .experience-cost-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  textarea {
-    width: 100%;
-    resize: vertical;
-  }
-
-  .experience-prerequisite-menu {
-    --option-menu-width: 100%;
-  }
-
-  fieldset .experience-question {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 24px;
-    gap: 8px;
-    align-items: center;
-    min-height: 28px;
-    margin: 0;
-    padding: 2px 0;
-
-    label {
-      width: auto;
-      overflow: hidden;
-      color: #000;
-      font-size: var(--font-size-13);
-      font-weight: normal;
-      line-height: 20px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .form-fields {
-      display: flex;
-      justify-content: flex-end;
-      min-width: 14px;
-    }
   }
 }

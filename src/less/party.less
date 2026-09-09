@@ -20,7 +20,7 @@
   margin: @gap 0 4px @gap;
   // width: 100px;
   // height: 100px;
-  background-color: #fff;
+  background-color: var(--yzegs-surface);
 
   &:focus,
   &:hover {
@@ -35,7 +35,7 @@
 
 .party-member:hover {
   background-color: @colorBeige;
-  box-shadow: inset 0 0 0 1px #000;
+  box-shadow: inset 0 0 0 1px var(--yzegs-border);
 }
 
 .party-member .party-member-avatar {
@@ -178,23 +178,23 @@ table.travel-actions td {
 }
 
 .travel-action-header .entity-link {
-  background-color: white;
+  background-color: var(--yzegs-surface);
   border: 0px solid;
 }
 
 .travel-action .travel-action-help {
   border: 1px solid;
   border-radius: 6px;
-  color: #000;
-  background-color: #fff;
+  color: var(--yzegs-text);
+  background-color: var(--yzegs-surface);
   display: flex;
   width: 20px;
   margin-left: 4px;
   justify-content: center;
 }
 .travel-action .travel-action-help:hover {
-  color: #fff;
-  background-color: #000;
+  color: var(--yzegs-on-accent);
+  background-color: var(--yzegs-accent);
 }
 
 .travel-action button.travel-roll {
@@ -209,7 +209,7 @@ table.travel-actions td {
 
   &:focus,
   &:hover {
-    color: #fff;
-    background-color: #000;
+    color: var(--yzegs-on-accent);
+    background-color: var(--yzegs-accent);
   }
 }

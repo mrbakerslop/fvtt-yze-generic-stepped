@@ -13,7 +13,7 @@ export class SocialConflictConfig extends foundry.applications.api.HandlebarsApp
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-social-conflict-config',
-    classes: ['yzegs', 'social-conflict-config'],
+    classes: ['yzegs-settings', 'social-conflict-config'],
     tag: 'form',
     position: { width: 620, height: 'auto' },
     window: { icon: 'fa-solid fa-comments', title: 'SETTINGS.socialConflict.name' },

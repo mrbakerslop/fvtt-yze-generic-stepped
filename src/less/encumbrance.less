@@ -2,7 +2,7 @@
 
 .yzegs.sheet.actor .encumbrance {
 	flex: 0 0 @encumbranceBarHeight;
-	background: #fff;
+	background: var(--yzegs-background);
 	margin: 4px 6px 0 4px;
 	border: 1px solid @colorDark;
 	border-radius: 3px;
@@ -13,7 +13,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		background: #000;
+		background: var(--yzegs-accent);
 		height: 100%;
 		border: 0;
 		border-radius: 0;
@@ -39,7 +39,7 @@
 	&.encumbered {
 		.encumbrance-bar {
 			background: @colorRed;
-			border-color: #000;
+			border-color: var(--yzegs-border);
 			background-image: repeating-linear-gradient(
 				45deg,
 				#000 0,

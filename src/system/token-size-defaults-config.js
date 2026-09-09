@@ -15,7 +15,7 @@ export class TokenSizeDefaultsConfig extends foundry.applications.api.Handlebars
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-token-size-defaults',
-    classes: ['yzegs', 'token-size-defaults'],
+    classes: ['yzegs-settings', 'token-size-defaults'],
     tag: 'form',
     position: { width: 540, height: 'auto' },
     window: {

@@ -267,7 +267,7 @@ export class CombatModifierConfig extends foundry.applications.api.HandlebarsApp
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-combat-modifiers',
-    classes: ['yzegs', 'combat-modifier-config'],
+    classes: ['yzegs-settings', 'combat-modifier-config'],
     tag: 'form',
     position: { width: 780, height: 760 },
     window: {

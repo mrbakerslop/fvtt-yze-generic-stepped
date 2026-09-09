@@ -1,31 +1,3 @@
-.application.yzegs.social-conflict-config > .window-header {
-  background: #000;
-  color: #fff;
-
-  .window-title,
-  .window-icon { color: #fff; }
-
-  button.header-control {
-    background: transparent;
-    border: 0;
-    color: #fff;
-
-    &:hover,
-    &:focus-visible {
-      background: #fff;
-      color: #000;
-    }
-  }
-}
-
-.application.yzegs.social-conflict-config .window-content {
-  color: #000;
-
-  .form-group { align-items: center; }
-  .rating-menu { min-width: 18rem; }
-  label, .hint, input, button { color: #000; }
-}
-
 .application.dialog.yzegs .social-conflict-dialog {
   min-width: 540px;
 
@@ -51,6 +23,6 @@
   }
   .social-resistance-list { padding-left: 1.25rem; }
   .social-resistance-list li { margin-bottom: .3rem; }
-  .social-success { color: #214d25; }
-  .social-failure { color: #702020; }
+  .social-success { color: var(--yzegs-success); }
+  .social-failure { color: var(--yzegs-danger); }
 }

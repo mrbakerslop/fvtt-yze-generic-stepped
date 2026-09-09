@@ -65,7 +65,7 @@ export class CharacterFieldLabelsConfig extends foundry.applications.api.Handleb
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-character-field-labels',
-    classes: ['yzegs', 'character-field-label-settings'],
+    classes: ['yzegs-settings', 'character-field-label-settings'],
     tag: 'form',
     position: { width: 520, height: 'auto' },
     window: {

@@ -2,7 +2,7 @@
 /*  Shared stepped-die rating menu             */
 /* ------------------------------------------- */
 
-.application.yzegs .window-content .rating-menu {
+.application:is(.yzegs, .yzegs-settings) .window-content .rating-menu {
   position: relative;
   width: 52px;
   height: 24px;
@@ -32,9 +32,9 @@
     height: 100%;
     min-height: 0;
     padding: 0 14px;
-    border: 1px solid @colorTan;
-    background: #fff;
-    color: @colorDark;
+    border: 1px solid var(--yzegs-border);
+    background: var(--yzegs-background);
+    color: var(--yzegs-text);
     cursor: pointer;
 
     &::after {
@@ -43,7 +43,7 @@
       right: 6px;
       width: 0;
       height: 0;
-      border-top: 4px solid @colorDark;
+      border-top: 4px solid var(--yzegs-text);
       border-right: 3px solid transparent;
       border-left: 3px solid transparent;
       content: '';
@@ -52,20 +52,20 @@
 
     &:hover,
     &:focus {
-      border-color: @colorDark;
-      background: #fff;
-      color: @colorDark;
+      border-color: var(--yzegs-text);
+      background: var(--yzegs-background);
+      color: var(--yzegs-text);
       box-shadow: none;
       outline: none;
     }
 
     &:focus-visible {
-      outline: 1px solid @colorRed;
+      outline: 1px solid var(--yzegs-danger);
       outline-offset: 1px;
     }
 
     &:disabled {
-      color: @colorDark;
+      color: var(--yzegs-text);
       cursor: default;
       opacity: 1;
     }
@@ -79,9 +79,9 @@
     flex-direction: column;
     width: 100%;
     padding: 0;
-    border: 1px solid @colorTan;
+    border: 1px solid var(--yzegs-border);
     border-radius: 0;
-    background: #fff;
+    background: var(--yzegs-background);
     box-shadow: 0 2px 4px rgb(0 0 0 / 25%);
 
     &[popover] {
@@ -91,8 +91,8 @@
     }
 
     &:hover .rating-menu-option.is-selected:not(:hover) {
-      background: #fff;
-      color: @colorDark;
+      background: var(--yzegs-background);
+      color: var(--yzegs-text);
     }
   }
 
@@ -105,23 +105,23 @@
     padding: 0;
     border: 0;
     border-radius: 0;
-    background: #fff;
-    color: @colorDark;
+    background: var(--yzegs-background);
+    color: var(--yzegs-text);
     text-align: center;
     cursor: pointer;
 
     &:hover,
     &:focus {
       border: 0;
-      background: @colorDark;
-      color: #fff;
+      background: var(--yzegs-accent);
+      color: var(--yzegs-on-accent);
       box-shadow: none;
       outline: none;
     }
 
     &.is-selected {
-      background: @colorDark;
-      color: #fff;
+      background: var(--yzegs-accent);
+      color: var(--yzegs-on-accent);
     }
   }
 }
@@ -130,7 +130,7 @@
   align-self: center;
 }
 
-.application.yzegs .window-content .rating-menu.option-menu {
+.application:is(.yzegs, .yzegs-settings) .window-content .rating-menu.option-menu {
   align-self: center;
   flex: 0 0 auto;
   width: var(--option-menu-width, 140px);
@@ -160,13 +160,13 @@
     box-sizing: border-box;
     height: 22px;
     padding: 3px 8px 0;
-    border-top: 1px solid @colorTan;
-    background: #e5e5e5;
-    color: @colorDark;
+    border-top: 1px solid var(--yzegs-border);
+    background: var(--yzegs-surface);
+    color: var(--yzegs-text);
     font-weight: 700;
     line-height: 18px;
     text-align: left;
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
 
     &:first-child {
       border-top: 0;
@@ -218,13 +218,12 @@
   }
 }
 
-.application.yzegs .window-content .rating-menu.combo-menu {
+.application:is(.yzegs, .yzegs-settings) .window-content .rating-menu.combo-menu {
   .combo-menu-input {
     display: block;
     box-sizing: border-box;
     padding: 0 24px 0 8px;
-    background-color: #fff;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23000' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-color: var(--yzegs-surface);
     background-position: right 7px center;
     background-repeat: no-repeat;
     background-size: 9px 6px;
@@ -239,4 +238,17 @@
 .yzegs.sheet.item .tab.rating-menu-scroll-locked {
   overflow-y: hidden;
   scrollbar-gutter: stable;
+}
+
+.application:is(.yzegs, .yzegs-settings) .window-content .rating-menu.combo-menu::after {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  width: 6px;
+  height: 6px;
+  border: solid var(--yzegs-text);
+  border-width: 0 1px 1px 0;
+  content: "";
+  pointer-events: none;
+  transform: translateY(-75%) rotate(45deg);
 }

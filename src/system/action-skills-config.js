@@ -15,7 +15,7 @@ export class ActionSkillsConfig extends foundry.applications.api.HandlebarsAppli
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-action-skills-config',
-    classes: ['yzegs', 'action-skills-config'],
+    classes: ['yzegs-settings', 'action-skills-config'],
     tag: 'form',
     position: { width: 760, height: 720 },
     window: {

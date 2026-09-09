@@ -126,7 +126,7 @@ export class ExperienceConfig extends foundry.applications.api.HandlebarsApplica
 ) {
   static DEFAULT_OPTIONS = {
     id: 'yzegs-experience-config',
-    classes: ['yzegs', 'experience-config'],
+    classes: ['yzegs-settings', 'experience-config'],
     tag: 'form',
     position: { width: 760, height: 'auto' },
     window: {

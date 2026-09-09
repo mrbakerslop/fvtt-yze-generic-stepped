@@ -38,7 +38,7 @@
 
 			&:hover {
 				background-color: @colorBeige;
-				box-shadow: inset 0 0 0 1px #000;
+				box-shadow: inset 0 0 0 1px var(--yzegs-border);
 			}
 
 			.item-name > img {
@@ -90,7 +90,7 @@
 	}
 
 	.item.is-jammed {
-		background: fade(@colorRed, 10%);
+		background: color-mix(in srgb, @colorRed 10%, transparent);
 
 		.weapon-jammed-marker,
 		.item-clear-jam {

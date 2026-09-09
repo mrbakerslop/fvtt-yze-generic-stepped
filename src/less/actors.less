@@ -58,7 +58,7 @@
   }
 
   h2, h3, h5 {
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
   }
 
   h1 {
@@ -99,7 +99,7 @@
       height: 120px;
       flex-basis: 120px;
       transform: none;
-      background-color: #fff;
+      background-color: var(--yzegs-surface);
     }
 
     .name,
@@ -218,7 +218,7 @@
 
   .sheet-tabs {
     color: @colorBrown;
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
     font-size: 11pt;
 
   }
@@ -344,7 +344,7 @@
         &:hover,
         &:focus {
           color: @colorRed;
-          background: #fff;
+          background: var(--yzegs-background);
           border-color: @colorDark;
           box-shadow: none;
           text-shadow: none;
@@ -432,7 +432,7 @@
         .empty-skills {
           min-height: 32px;
           padding: 8px 4px;
-          color: #555;
+          color: var(--yzegs-surface);
           font-size: 10px;
           font-style: italic;
           text-align: center;
@@ -615,9 +615,9 @@
           min-height: 24px;
           margin: 0;
           padding: 2px 8px;
-          border: 1px solid #000;
-          background: #fff;
-          color: #000;
+          border: 1px solid var(--yzegs-border);
+          background: var(--yzegs-background);
+          color: var(--yzegs-text);
           font-size: 11px;
           line-height: 1;
           text-transform: none;
@@ -842,8 +842,8 @@
           align-items: center;
           gap: 4px;
           padding: 2px 6px 2px 8px;
-          background-color: #fff;
-          border: 1px solid #000;
+          background-color: var(--yzegs-surface);
+          border: 1px solid var(--yzegs-border);
           border-radius: 20px;
           .font-text-normal();
           color: @colorBlue;
@@ -884,7 +884,7 @@
 
           &:hover,
           &:focus {
-            background-color: #fff;
+            background-color: var(--yzegs-surface);
             border: 1px solid @colorDark;
             box-shadow: @hoverShadow;
   
@@ -898,11 +898,11 @@
       .critical-impairment-banner {
         grid-column: 1 / -1;
         padding: 4px 8px;
-        border: 2px solid #000;
-        background: #fff;
-        color: #000;
+        border: 2px solid var(--yzegs-border);
+        background: var(--yzegs-background);
+        color: var(--yzegs-text);
         text-align: center;
-        text-transform: uppercase;
+        text-transform: var(--yzegs-heading-case);
       }
     }
 
@@ -946,7 +946,7 @@
     .tab-description {
       .editor .editor-content {
         .font-text-normal();
-        color: #000;
+        color: var(--yzegs-text);
       }
     }
   }

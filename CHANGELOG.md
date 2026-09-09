@@ -1,5 +1,36 @@
 # Changelog
 
+## 14.0.17 — 2026-09-09
+
+### Headline Changes
+
+- Added World Theme settings with live previews, four built-in themes, and custom presets.
+- Apply world colours and fonts consistently across system sheets, gameplay dialogs,
+  and chat cards while keeping configuration windows readable.
+
+### Added
+
+- Choose Monochrome, Military, Parchment, or Dark Sci-Fi, then customise background,
+  panel, text, heading, border, accent, and text-on-accent colours.
+- Select heading and body fonts and heading case, with low-contrast warnings,
+  preview-only edits, and explicit save, cancel, and reset controls.
+- Save independent custom presets, update them with Save Theme, and rename or delete
+  them while protecting built-in presets.
+- Added a per-device default-theme override for players who need the original appearance.
+- Added theme labels to all seven language catalogs and documented theme configuration.
+
+### Changed
+
+- Saving a world theme updates connected clients; existing worlds retain Monochrome
+  until the GM saves a theme.
+- System configuration windows use Foundry's appearance so theme controls remain usable.
+
+### Validation
+
+- Added regression coverage for theme sanitisation, preset management, contrast,
+  configuration-window isolation, settings propagation, and the local readability override.
+- Passed the full unit suite, compendium integrity, localization parity, lint, and production build.
+
 ## 14.0.16 — 2026-09-09
 
 ### Headline Changes

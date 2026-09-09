@@ -4,7 +4,7 @@
       <p>
         {{{localize 'YZEGS.Chat.Damage.DamageDealt' name=name amount=amount}}}
         {{#if incapacited}}
-          <br /><span style='color: #9b2423; font-weight: bold;'>{{{@root.config.Icons.buttons.lethal}}}&nbsp;{{localize
+          <br /><span style='color: var(--yzegs-danger); font-weight: bold;'>{{{@root.config.Icons.buttons.lethal}}}&nbsp;{{localize
               'YZEGS.Chat.Damage.Incapacited'
             }}</span>
         {{/if}}

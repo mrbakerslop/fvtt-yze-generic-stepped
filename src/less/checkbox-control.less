@@ -2,7 +2,7 @@
 /*  Shared checkbox control                    */
 /* ------------------------------------------- */
 
-.application.yzegs .window-content .checkbox-control {
+.application:is(.yzegs, .yzegs-settings) .window-content .checkbox-control {
   display: inline-flex;
   flex: 0 0 14px;
   align-items: center;
@@ -12,38 +12,49 @@
   vertical-align: middle;
 
   .checkbox-control-toggle {
-    display: block;
+    display: grid;
+    place-items: center;
+    color: var(--yzegs-text);
     width: 14px;
     min-width: 14px;
     height: 14px;
     min-height: 14px;
     margin: 0;
     padding: 0;
-    border: 1px solid #000;
+    border: 1px solid var(--yzegs-border);
     border-radius: 2px;
-    background-color: #fff;
+    background-color: var(--yzegs-surface);
     background-position: center;
     background-repeat: no-repeat;
     background-size: 12px 12px;
     box-shadow: none;
     cursor: pointer;
 
+    &.is-checked::after {
+      content: "";
+      width: 5px;
+      height: 9px;
+      margin-top: -2px;
+      border: solid currentColor;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
     &.is-checked {
-      border: 1px solid #000;
-      background-color: #fff;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2.5 7.5 5.5 10.5 11.5 3.5' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      border: 1px solid var(--yzegs-border);
+      background-color: var(--yzegs-surface);
     }
 
     &:hover,
     &:focus {
-      border: 1px solid #000;
-      background-color: #fff;
-      color: #000;
+      border: 1px solid var(--yzegs-border);
+      background-color: var(--yzegs-surface);
+      color: var(--yzegs-text);
       box-shadow: none;
     }
 
     &:focus-visible {
-      outline: 1px solid @colorRed;
+      outline: 1px solid var(--yzegs-danger);
       outline-offset: 1px;
     }
 

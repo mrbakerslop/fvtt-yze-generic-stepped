@@ -23,7 +23,7 @@
     object-fit: cover;
     border: 2px solid @colorBrown;
     border-radius: 4px;
-    background: #fff;
+    background: var(--yzegs-background);
   }
 
   .container-header-fields {
@@ -35,7 +35,7 @@
 
     label {
       font-weight: bold;
-      text-transform: uppercase;
+      text-transform: var(--yzegs-heading-case);
     }
 
     input {
@@ -101,7 +101,7 @@
     margin: 0;
     padding: 3px 6px;
     border-bottom: @borderSheetBold;
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
   }
 
   .container-type-count {
@@ -115,7 +115,7 @@
     border-bottom: @borderSheetBold;
     font-size: 0.8em;
     font-weight: bold;
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
   }
 
   .container-item-list {
@@ -128,7 +128,7 @@
     border-bottom: @borderSheet;
 
     &:hover {
-      background: fade(@colorBeige, 45%);
+      background: color-mix(in srgb, @colorBeige 45%, transparent);
     }
 
     > span {
@@ -200,7 +200,7 @@
     legend {
       padding: 0 5px;
       font-weight: bold;
-      text-transform: uppercase;
+      text-transform: var(--yzegs-heading-case);
     }
 
     p {

@@ -11,22 +11,22 @@
     -webkit-appearance: none;
     height: 12px;
     overflow: hidden;
-    border: 1px solid #000;
+    border: 1px solid var(--yzegs-border);
     border-radius: 3px;
-    background: #fff;
-    color: #000;
-    accent-color: #000;
+    background: var(--yzegs-background);
+    color: var(--yzegs-text);
+    accent-color: var(--yzegs-text);
 
     &::-webkit-progress-bar {
-      background: #fff;
+      background: var(--yzegs-background);
     }
 
     &::-webkit-progress-value {
-      background: #000;
+      background: var(--yzegs-accent);
     }
 
     &::-moz-progress-bar {
-      background: #000;
+      background: var(--yzegs-accent);
     }
   }
 
@@ -114,7 +114,7 @@
 
   .sheet-tabs {
     .font-monospace();
-    text-transform: uppercase;
+    text-transform: var(--yzegs-heading-case);
     font-size: 11pt;
     color: @colorBrown;
 
@@ -138,7 +138,7 @@
       padding: 2px 4px;
       margin-bottom: @gap;
       color: @colorBrown;
-      text-transform: uppercase;
+      text-transform: var(--yzegs-heading-case);
       font-weight: bold;
       background-color: @colorItemLabel;
       border-bottom: 1px solid @colorBrown;
@@ -162,13 +162,13 @@
         border-bottom: @borderVehicle;
 
         > div h2 {
-          text-transform: uppercase;
+          text-transform: var(--yzegs-heading-case);
           font-size: 1rem;
           font-weight: bold;
         }
 
         > div h5 {
-          text-transform: uppercase;
+          text-transform: var(--yzegs-heading-case);
           font-size: .6rem;
           font-weight: normal;
           border-left: @borderVehicle;
@@ -211,7 +211,7 @@
         }
 
         .armor-location {
-          text-transform: uppercase;
+          text-transform: var(--yzegs-heading-case);
         }
 
         .armor-values {

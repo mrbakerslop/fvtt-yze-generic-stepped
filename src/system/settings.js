@@ -1,3 +1,4 @@
+import { registerThemeSettings } from './theme-config.js';
 import {
   CHARACTER_FIELD_LABELS_SETTING,
   CharacterFieldLabelsConfig,
@@ -111,6 +112,7 @@ function refreshArmorSheets() {
  * Registers system settings.
  */
 export function registerSystemSettings() {
+  registerThemeSettings();
   game.settings.registerMenu(SYSTEM_ID, 'worldSettings', {
     name: 'SETTINGS.worldSettings.name',
     label: 'SETTINGS.worldSettings.label',

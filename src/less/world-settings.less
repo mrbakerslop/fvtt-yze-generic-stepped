@@ -1,4 +1,4 @@
-.application.yzegs.world-settings-config {
+.application.yzegs-settings.world-settings-config {
   .window-content {
     overflow-y: auto;
   }
@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    color: #000;
+    color: var(--color-text-primary);
 
     .world-settings-intro {
       margin: 0;
@@ -17,12 +17,12 @@
       min-width: 0;
       margin: 0;
       padding: 8px 12px 10px;
-      border: 1px solid #000;
+      border: 1px solid var(--color-border);
     }
 
     legend {
       padding: 0 5px;
-      color: #000;
+      color: var(--color-text-primary);
       font-weight: 700;
       text-transform: uppercase;
     }
@@ -34,7 +34,7 @@
       gap: 12px;
       margin: 0;
       padding: 7px 0;
-      border-bottom: 1px solid #bbb;
+      border-bottom: 1px solid var(--color-border);
 
       &:last-child {
         border-bottom: 0;
@@ -46,13 +46,13 @@
 
       > label {
         display: block;
-        color: #000;
+        color: var(--color-text-primary);
         font-weight: 700;
       }
 
       > .hint {
         margin: 2px 0 0;
-        color: #000;
+        color: var(--color-text-primary);
         line-height: 1.25;
         opacity: 1;
       }
@@ -81,7 +81,7 @@
 
     .section-hint {
       margin: 5px 0 7px;
-      color: #000;
+      color: var(--color-text-primary);
       opacity: 1;
     }
 
@@ -91,10 +91,10 @@
       align-items: center;
       gap: 6px 12px;
       padding-bottom: 8px;
-      border-bottom: 1px solid #bbb;
+      border-bottom: 1px solid var(--color-border);
 
       label {
-        color: #000;
+        color: var(--color-text-primary);
         font-weight: 700;
       }
 
@@ -111,7 +111,7 @@
       gap: 6px 12px;
 
       > label {
-        color: #000;
+        color: var(--color-text-primary);
         font-weight: 700;
       }
 
@@ -124,7 +124,7 @@
       position: sticky;
       bottom: 0;
       padding-top: 4px;
-      background: #fff;
+      background: var(--yzegs-surface);
     }
   }
 }

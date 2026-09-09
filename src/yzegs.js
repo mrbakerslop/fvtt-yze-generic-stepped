@@ -1,3 +1,4 @@
+import { applyWorldTheme } from './system/theme-config.js';
 /* eslint-disable no-unused-vars */
 /* ============================================================================
  * YEAR ZERO ENGINE - GENERIC STEPPED DICE
@@ -225,6 +226,7 @@ Hooks.once('init', function () {
 });
 
 Hooks.once('ready', async function () {
+  applyWorldTheme();
   registerContainerTransfers();
   registerDefenseSocket();
   registerSuppressionSocket();

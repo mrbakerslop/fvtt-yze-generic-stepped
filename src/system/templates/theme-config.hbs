@@ -1,0 +1,64 @@
+<div class="theme-config-form">
+  <p class="hint">{{localize "YZEGS.Theme.Hint"}}</p>
+  <div class="form-group">
+    <label for="yzegs-theme-preset">{{localize "YZEGS.Theme.Preset"}}</label>
+    <div class="form-fields">
+      <select id="yzegs-theme-preset" name="preset">{{selectOptions presets selected=preset}}</select>
+      <button type="button" data-action="deletePreset" disabled>{{localize "YZEGS.Theme.DeletePreset"}}</button>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="yzegs-theme-preset-name">{{localize "YZEGS.Theme.NewPresetName"}}</label>
+    <div class="form-fields">
+      <input type="text" id="yzegs-theme-preset-name" name="newPresetName" maxlength="80" autocomplete="off">
+      <button type="button" data-action="renamePreset" disabled>{{localize "YZEGS.Theme.RenamePreset"}}</button>
+      <button type="button" data-action="saveNewPreset">{{localize "YZEGS.Theme.SaveNewPreset"}}</button>
+    </div>
+  </div>
+  <p class="hint">{{localize "YZEGS.Theme.CustomPresetHint"}}</p>
+  <fieldset>
+    <legend>{{localize "YZEGS.Theme.Palette"}}</legend>
+    <div class="theme-color-grid">
+      {{#each colors}}
+      <label for="yzegs-theme-{{key}}">{{localize label}}</label>
+      <input type="color" id="yzegs-theme-{{key}}" name="{{key}}" value="{{value}}">
+      {{/each}}
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>{{localize "YZEGS.Theme.Typography"}}</legend>
+    <div class="form-group">
+      <label for="yzegs-theme-heading-font">{{localize "YZEGS.Theme.HeadingFont"}}</label>
+      <div class="form-fields"><select id="yzegs-theme-heading-font" name="headingFont">{{selectOptions fonts selected=values.headingFont localize=true}}</select></div>
+    </div>
+    <div class="form-group">
+      <label for="yzegs-theme-body-font">{{localize "YZEGS.Theme.BodyFont"}}</label>
+      <div class="form-fields"><select id="yzegs-theme-body-font" name="bodyFont">{{selectOptions fonts selected=values.bodyFont localize=true}}</select></div>
+    </div>
+    <div class="form-group">
+      <label for="yzegs-theme-heading-case">{{localize "YZEGS.Theme.HeadingCase"}}</label>
+      <div class="form-fields"><select id="yzegs-theme-heading-case" name="headingCase">
+        <option value="uppercase" {{#if (eq values.headingCase "uppercase")}}selected{{/if}}>{{localize "YZEGS.Theme.Uppercase"}}</option>
+        <option value="none" {{#if (eq values.headingCase "none")}}selected{{/if}}>{{localize "YZEGS.Theme.NormalCase"}}</option>
+      </select></div>
+    </div>
+  </fieldset>
+  <p class="theme-contrast-warning" role="status" hidden>{{localize "YZEGS.Theme.ContrastWarning"}}</p>
+  <p class="hint">{{localize "YZEGS.Theme.PreviewHint"}}</p>
+  <section class="theme-preview" aria-label="{{localize 'YZEGS.Theme.Preview'}}">
+    <header>{{localize "YZEGS.Theme.Preview"}}</header>
+    <div class="theme-preview-content">
+      <h2>{{localize "YZEGS.Theme.SampleHeading"}}</h2>
+      <p>{{localize "YZEGS.Theme.SampleBody"}}</p>
+      <label>{{localize "YZEGS.Theme.SampleInput"}} <input type="text" value="D8 + D6" readonly></label>
+      <button type="button">{{localize "YZEGS.Theme.SampleButton"}}</button>
+      <article><h3>{{localize "YZEGS.Theme.SampleChat"}}</h3><p>{{localize "YZEGS.Theme.SampleResult"}}</p></article>
+    </div>
+  </section>
+  <footer class="form-footer">
+    <button type="button" data-action="resetPreset">{{localize "YZEGS.Theme.ResetPreset"}}</button>
+    <button type="button" data-action="resetDefault">{{localize "YZEGS.Theme.ResetDefault"}}</button>
+    <button type="button" data-action="cancel">{{localize "YZEGS.Theme.Cancel"}}</button>
+    <button type="submit"><i class="fa-solid fa-save"></i>{{localize "YZEGS.Theme.Save"}}</button>
+  </footer>
+</div>

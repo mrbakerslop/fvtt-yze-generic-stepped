@@ -1,0 +1,125 @@
+// Configuration chrome is native Foundry. Only this sample consumes draft tokens.
+.application.theme-config {
+  .theme-config-form { display: flex; flex-direction: column; gap: 12px; }
+  .theme-color-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1fr) 56px;
+    align-items: center;
+    gap: 8px 12px;
+    input[type="color"] { width: 100%; height: 30px; }
+  }
+  .theme-contrast-warning { margin: 0; color: var(--color-text-primary); font-weight: bold; }
+  .theme-contrast-warning[hidden] { display: none; }
+  .form-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    flex-wrap: wrap;
+    padding-block: 8px;
+    background: var(--yzegs-surface);
+  }
+  .form-footer button { flex: 1 1 auto; }
+}
+
+.application.yzegs:is(.sheet, .dialog) .window-content {
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--yzegs-heading);
+    text-transform: var(--yzegs-heading-case);
+  }
+  .sheet-tabs a.item.active,
+  .sheet-tabs a.item.active * {
+    background: var(--yzegs-accent);
+    color: var(--yzegs-on-accent);
+  }
+  input, select, textarea, option { background-color: var(--yzegs-surface); }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--yzegs-accent);
+    outline-offset: 1px;
+  }
+  .warning, .error { color: var(--yzegs-danger); }
+}
+
+.chat-message:has(.yzegs.chat-card) {
+  color-scheme: var(--yzegs-color-scheme);
+  background: var(--yzegs-background);
+  color: var(--yzegs-text);
+  border-color: var(--yzegs-border);
+  --color-text-primary: var(--yzegs-text);
+  --color-text-secondary: var(--yzegs-text);
+  --color-text-emphatic: var(--yzegs-heading);
+  --color-text-subtle: var(--yzegs-text);
+  --button-background-color: var(--yzegs-surface);
+  --button-text-color: var(--yzegs-text);
+  --button-border-color: var(--yzegs-border);
+  --button-hover-background-color: var(--yzegs-accent);
+  --button-hover-text-color: var(--yzegs-on-accent);
+  .message-header { color: var(--yzegs-text); }
+  h1, h2, h3, h4 {
+    color: var(--yzegs-heading);
+    font-family: var(--yzegs-font-heading);
+    text-transform: var(--yzegs-heading-case);
+  }
+  .message-header h4 {
+    color: var(--yzegs-text);
+    font-family: var(--yzegs-font-body);
+    text-transform: none;
+  }
+  .yzegs.chat-card button {
+    background: var(--yzegs-surface);
+    border-color: var(--yzegs-border);
+    color: var(--yzegs-text);
+    font-family: var(--yzegs-font-body);
+    &:hover, &:focus-visible {
+      background: var(--yzegs-accent);
+      color: var(--yzegs-on-accent);
+      outline-color: var(--yzegs-accent);
+    }
+  }
+  .dice-formula, .dice-total {
+    background: var(--yzegs-surface);
+    border-color: var(--yzegs-border);
+    box-shadow: none;
+  }
+  .dice-total.success { color: var(--yzegs-success); }
+  .dice-total.failure { color: var(--yzegs-danger); }
+}
+
+.application.theme-config .theme-preview {
+  color-scheme: var(--yzegs-color-scheme);
+  background: var(--yzegs-background);
+  color: var(--yzegs-text);
+  border: 1px solid var(--yzegs-border);
+  border-radius: 4px;
+  font-family: var(--yzegs-font-body);
+  line-height: 1.4;
+  > header {
+    padding: 8px 12px;
+    background: var(--yzegs-accent);
+    color: var(--yzegs-on-accent);
+  }
+  .theme-preview-content { padding: 12px; }
+  h2, h3 {
+    margin: 0 0 6px;
+    border: 0;
+    color: var(--yzegs-heading);
+    font-family: var(--yzegs-font-heading);
+    text-transform: var(--yzegs-heading-case);
+  }
+  p, label { color: var(--yzegs-text); }
+  label { display: flex; align-items: center; gap: 12px; }
+  input, button, article {
+    background: var(--yzegs-surface);
+    color: var(--yzegs-text);
+    border: 1px solid var(--yzegs-border);
+    font-family: inherit;
+  }
+  input { max-width: 140px; }
+  button { margin: 8px 0; width: auto; }
+  button:hover, button:focus-visible {
+    background: var(--yzegs-accent);
+    color: var(--yzegs-on-accent);
+    outline-color: var(--yzegs-accent);
+  }
+  article { padding: 10px; }
+  article p { margin: 0; }
+}

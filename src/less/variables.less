@@ -3,6 +3,18 @@
 /* ------------------------------------------- */
 
 :root {
+  --yzegs-background: #fff;
+  --yzegs-surface: #fff;
+  --yzegs-text: #000;
+  --yzegs-heading: #000;
+  --yzegs-border: #000;
+  --yzegs-accent: #000;
+  --yzegs-on-accent: #fff;
+  --yzegs-danger: #9b2423;
+  --yzegs-success: #214d25;
+  --yzegs-heading-case: uppercase;
+  --yzegs-color-scheme: light;
+
   --yzegs-font-heading: 'Nunito Sans', sans-serif;
   --yzegs-font-body: 'Mukta', sans-serif;
   --yzegs-font-monospace: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
@@ -52,7 +64,7 @@
   font-family: var(--yzegs-font-heading);
   font-weight: 800;
   // font-size: 20px;
-  text-transform: uppercase;
+  text-transform: var(--yzegs-heading-case);
 }
 
 .font-text-normal() {
@@ -65,7 +77,7 @@
   font-family: var(--yzegs-font-body);
   font-weight: 700;
   // font-size: .9em;
-  text-transform: uppercase;
+  text-transform: var(--yzegs-heading-case);
 }
 
 .font-monospace() {
@@ -88,34 +100,31 @@
 /*  Styles                                     */
 /* ------------------------------------------- */
 
-// The legacy variable names are retained to avoid needless churn throughout the
-// sheet styles. The visual palette itself is deliberately monochrome.
-@colorDark: #000;
-@colorBeige: #fff;
-@colorBrown: #000;
-@colorItemLabel: #fff;
-@colorLightBrown: #000;
-@colorVeryLightBrown: #fff;
-@colorTan: #000;
-@colorKhaki: #000;
-@colorLightKhaki: #fff;
-@colorRed: #9b2423;
-@colorGreen: #000;
-@colorBlue: #000;
-@colorActorH2: #fff;
-
-@colorFriendly: #000;
-@colorUnknown: #000;
-@colorNeutral: #000;
-@colorHostile: #000;
-@colorGrey: #000;
-
-@colorCoresetBrown: #000;
-@colorCoresetLightGreen: #000;
-@colorCoresetGreen: #000;
-@colorCoresetTeal: #000;
-@colorCoresetTableHeader: #fff;
-@colorCoresetTableLine: #000;
+// Legacy aliases now resolve the runtime semantic palette.
+@colorDark: var(--yzegs-text);
+@colorBeige: var(--yzegs-surface);
+@colorBrown: var(--yzegs-heading);
+@colorItemLabel: var(--yzegs-surface);
+@colorLightBrown: var(--yzegs-border);
+@colorVeryLightBrown: var(--yzegs-surface);
+@colorTan: var(--yzegs-border);
+@colorKhaki: var(--yzegs-border);
+@colorLightKhaki: var(--yzegs-surface);
+@colorRed: var(--yzegs-danger);
+@colorGreen: var(--yzegs-text);
+@colorBlue: var(--yzegs-text);
+@colorActorH2: var(--yzegs-surface);
+@colorFriendly: var(--yzegs-text);
+@colorUnknown: var(--yzegs-text);
+@colorNeutral: var(--yzegs-text);
+@colorHostile: var(--yzegs-text);
+@colorGrey: var(--yzegs-text);
+@colorCoresetBrown: var(--yzegs-heading);
+@colorCoresetLightGreen: var(--yzegs-heading);
+@colorCoresetGreen: var(--yzegs-heading);
+@colorCoresetTeal: var(--yzegs-heading);
+@colorCoresetTableHeader: var(--yzegs-surface);
+@colorCoresetTableLine: var(--yzegs-border);
 
 @gap: 10px;
 
@@ -126,13 +135,13 @@
 @borderSheetBold: 2px solid @colorBrown;
 
 .actor-sheet-background() {
-  background: #fff;
+  background: var(--yzegs-background);
 }
 
 .item-sheet-background() {
-  background: #fff;
+  background: var(--yzegs-background);
 }
 
 .actor-sheet-border() {
-  border: 2px solid #000;
+  border: 2px solid var(--yzegs-border);
 }

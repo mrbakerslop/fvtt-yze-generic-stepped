@@ -1,0 +1,171 @@
+.application.yzegs-settings.combat-modifier-config {
+  .window-content {
+    overflow-y: auto;
+  }
+
+  .combat-modifier-config-form {
+    color: var(--color-text-primary);
+  }
+
+  .combat-modifier-section {
+    margin-bottom: 12px;
+    padding: 8px 10px 10px;
+    border: 1px solid var(--color-border);
+
+    > legend {
+      padding: 0 5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    > h3 {
+      margin: 8px 0 4px;
+    }
+  }
+
+  .combat-modifier-config-row {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) 76px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+
+    input[type='number'] {
+      text-align: center;
+    }
+  }
+}
+
+.application.yzegs-settings.character-field-label-settings .character-field-labels-form {
+  .character-field-label-group {
+    padding: 8px 10px 4px;
+    border: 1px solid var(--color-border);
+
+    + .character-field-label-group {
+      margin-top: 12px;
+    }
+
+    legend {
+      padding: 0 5px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.application.yzegs-settings.token-size-defaults .token-size-defaults-form {
+  .token-size-defaults-grid {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 90px 90px;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 8px 0;
+
+    > strong {
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--color-border);
+      text-align: center;
+
+      &:first-child {
+        text-align: left;
+      }
+    }
+
+    > label {
+      font-weight: 700;
+    }
+
+    > input[type='number'] {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+.application.experience-config .experience-config-form {
+  .experience-cost-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    resize: vertical;
+  }
+
+  .experience-prerequisite-menu {
+    --option-menu-width: 100%;
+  }
+
+  fieldset .experience-question {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 24px;
+    gap: 8px;
+    align-items: center;
+    min-height: 28px;
+    margin: 0;
+    padding: 2px 0;
+
+    label {
+      width: auto;
+      overflow: hidden;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-13);
+      font-weight: normal;
+      line-height: 20px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .form-fields {
+      display: flex;
+      justify-content: flex-end;
+      min-width: 14px;
+    }
+  }
+}
+
+.action-skills-form {
+  fieldset {
+    margin-block: 0.75rem;
+  }
+
+  .action-skills-grid {
+    display: grid;
+    grid-template-columns: minmax(13rem, 1fr) minmax(18rem, 1.35fr);
+    gap: 0.35rem 0.75rem;
+    align-items: center;
+  }
+
+  .action-skill-menu {
+    --option-menu-width: 100%;
+
+    min-width: 0;
+  }
+}
+
+.application.yzegs-settings.social-conflict-config {
+  .form-group { align-items: center; }
+  .rating-menu { min-width: 18rem; }
+}
+
+.application.yzegs-settings {
+  --yzegs-background: light-dark(var(--color-light-1), var(--color-cool-5));
+  --yzegs-surface: light-dark(var(--color-light-1), var(--color-cool-5));
+  --yzegs-text: var(--color-text-primary);
+  --yzegs-border: var(--color-border);
+  --yzegs-accent: var(--color-text-selection-bg);
+  --yzegs-on-accent: var(--color-text-selection);
+  --yzegs-danger: var(--color-text-emphatic);
+  --yzegs-heading-case: uppercase;
+
+  .window-content { overflow-y: auto; }
+  .yzegs-symbol { font-family: inherit; }
+  .rating-menu-options { background: var(--yzegs-surface); }
+  .rating-menu button, .checkbox-control-toggle {
+    --yzegs-accent: var(--button-hover-background-color);
+    --yzegs-on-accent: var(--button-hover-text-color);
+    --yzegs-danger: var(--button-focus-outline-color);
+  }
+}

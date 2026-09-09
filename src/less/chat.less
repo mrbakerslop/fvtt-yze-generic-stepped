@@ -1,6 +1,6 @@
 @import "./variables.less";
 
-.chat-message {
+.chat-message:has(.yzegs.chat-card) {
   @dieSize: 32px;
   .actor-sheet-background();
   .font-text-normal();
@@ -47,7 +47,7 @@
     .dice-flavor {
       font-family: var(--yzegs-font-monospace);
       font-size: .9rem;
-      text-transform: uppercase;
+      text-transform: var(--yzegs-heading-case);
       text-align: center;
       color: @colorGreen;
       margin-bottom: 2px;
@@ -76,7 +76,7 @@
         width: auto;
         min-width: 30%;
         margin: 0 2px 2px 0;
-        border: 1px solid #999;
+        border: 1px solid var(--yzegs-surface);
         border-radius: 3px;
 
         .part-header {
@@ -320,7 +320,7 @@
         gap: 4px;
         margin-top: 4px;
         padding-top: 4px;
-        border-top: 1px solid fade(@colorTan, 45%);
+        border-top: 1px solid color-mix(in srgb, @colorTan 45%, transparent);
       }
 
       .suppression-target-name {
